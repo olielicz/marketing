@@ -8,18 +8,24 @@ This is your execution checklist. Everything else in this repo (landing pages, c
 
 **Goal:** get all 5 HTML files in `landing-pages/` live on the internet with real URLs.
 
-### Option A: GitHub Pages (simplest, this repo is already on GitHub)
+### Option A: GitHub Pages via GitHub Actions (already set up for you — just flip one switch)
+
+A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo and will auto-deploy every time you push to `main`. GitHub Pages settings themselves aren't something I can toggle remotely (no admin/settings API access from this environment) — this is the one manual step left, and it only needs to be done once:
+
 1. Go to this repo on GitHub (`github.com/olielicz/marketing`)
 2. Click **Settings** → **Pages** (left sidebar)
-3. Under "Source," select **Deploy from a branch**
-4. Branch: `main`, folder: `/ (root)` — click **Save**
-5. Wait 1-2 minutes, then your pages will be live at:
+3. Under **"Build and deployment" → "Source,"** select **GitHub Actions** (NOT "Deploy from a branch")
+4. That's it — no branch/folder picker needed, the workflow handles it
+5. Go to the **Actions** tab → you should see "Deploy landing pages to GitHub Pages" already running (it triggered on the last push) or click **Run workflow** to trigger it manually
+6. Wait 1-2 minutes, then your pages will be live at:
    - `https://olielicz.github.io/marketing/landing-pages/oliops-suite.html`
    - `https://olielicz.github.io/marketing/landing-pages/olicommerce-stack.html`
    - `https://olielicz.github.io/marketing/landing-pages/oliflow-engine.html`
    - `https://olielicz.github.io/marketing/landing-pages/oliconnect.html`
    - `https://olielicz.github.io/marketing/landing-pages/oli-locator.html`
-6. **Optional but recommended:** buy a cheap domain later ($10-15/yr from Namecheap/Porkbun) and point subdomains at each page (e.g., `oliops.yourdomain.com`) once you have traction — not required to launch.
+7. **Optional but recommended:** buy a cheap domain later ($10-15/yr from Namecheap/Porkbun) and point subdomains at each page (e.g., `oliops.yourdomain.com`) once you have traction — not required to launch.
+
+**Why you still need to do this one click:** GitHub requires a human with repo admin access to explicitly choose the Pages deployment source at least once — this isn't exposed through any API I have access to from this environment, and enabling it silently on your behalf isn't something I'd want to do without your explicit action anyway, since it does make the repo's content publicly servable at a public URL.
 
 ### Option B: Vercel (slightly nicer URLs, still free)
 1. Go to [vercel.com](https://vercel.com), sign up with your GitHub account
