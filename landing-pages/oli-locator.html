@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oli-Locator — Leads, Property Search &amp; Call Center for Real Estate Agents</title>
+<meta name="description" content="One app for solo real estate agents and small teams: lead generation, property search, inbox, and call center. Subscribe monthly, cancel anytime.">
+<style>
+  :root { --ink:#14161a; --sub:#55606e; --accent:#2563eb; --accent-dark:#1d4ed8; --bg:#fafafa; --card:#fff; --line:#e7e9ee; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  a { color: var(--accent); }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; }
+  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; }
+  .logo span { color:var(--accent); }
+  nav a { margin-left:24px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
+  .cta-btn { display:inline-block; background:var(--accent); color:#fff !important; padding:12px 22px; border-radius:8px; font-weight:700; text-decoration:none; font-size:15px; border:none; cursor:pointer; }
+  .cta-btn:hover { background:var(--accent-dark); }
+  .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; }
+  .hero { padding:64px 0 48px; text-align:center; }
+  .badge { display:inline-block; background:#eff6ff; color:var(--accent-dark); font-size:13px; font-weight:700; padding:6px 14px; border-radius:20px; margin-bottom:20px; }
+  h1 { font-size:44px; line-height:1.14; margin:0 0 18px; letter-spacing:-0.02em; }
+  h1 .hl { color:var(--accent); }
+  .sub-headline { font-size:19px; color:var(--sub); max-width:640px; margin:0 auto 32px; }
+  .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+  .price-note { font-size:13px; color:var(--sub); }
+  .tools-strip { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:36px; }
+  .tool-pill { background:var(--card); border:1px solid var(--line); padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; color:var(--sub); }
+  section { padding:56px 0; }
+  .problem { background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-top:36px; }
+  @media (max-width:800px) { .grid2 { grid-template-columns:1fr; } h1 { font-size:30px; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px; }
+  .card h3 { margin:0 0 10px; font-size:17px; }
+  .card p { margin:0; color:var(--sub); font-size:14.5px; }
+  .section-title { text-align:center; margin-bottom:8px; font-size:30px; letter-spacing:-0.01em; }
+  .section-sub { text-align:center; color:var(--sub); max-width:560px; margin:0 auto 8px; }
+  .pricing { text-align:center; }
+  .price-card { max-width:420px; margin:32px auto 0; background:var(--card); border:2px solid var(--accent); border-radius:16px; padding:36px; position:relative; }
+  .price-card .tag { position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:5px 14px; border-radius:20px; }
+  .price-big { font-size:48px; font-weight:800; margin:12px 0 4px; }
+  .price-big span { font-size:18px; font-weight:600; color:var(--sub); }
+  .price-list { text-align:left; list-style:none; padding:0; margin:24px 0; font-size:14.5px; }
+  .price-list li { padding:8px 0; border-bottom:1px solid var(--line); }
+  .price-list li:before { content:"✓ "; color:#16a34a; font-weight:800; }
+  .signup { background:#eff6ff; border-top:1px solid var(--line); }
+  .signup-box { max-width:480px; margin:0 auto; text-align:center; }
+  .form-row { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center; }
+  .form-row input[type="email"] { flex:1; min-width:220px; padding:13px 16px; border-radius:8px; border:1.5px solid var(--line); font-size:15px; }
+  footer { text-align:center; padding:40px 0; color:var(--sub); font-size:13px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">Oli-<span>Locator</span></div>
+  <nav>
+    <a href="#tools">Features</a>
+    <a href="#pricing">Pricing</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <div class="badge">🏡 Built for solo agents &amp; small teams</div>
+  <h1>Leads, listings, and calls — <span class="hl">one app, not five</span></h1>
+  <p class="sub-headline">Oli-Locator gives independent real estate agents lead generation, property search, a shared inbox, and a call center — everything a small team needs, without enterprise-CRM pricing.</p>
+  <div class="hero-ctas">
+    <a href="#signup" class="cta-btn">Start free trial</a>
+    <a href="#tools" class="cta-btn ghost">See features</a>
+  </div>
+  <div class="price-note">Cancel anytime · No setup fees · Free demo login available now</div>
+  <div class="tools-strip">
+    <div class="tool-pill">📍 Property Search</div>
+    <div class="tool-pill">📇 Lead Generation</div>
+    <div class="tool-pill">📥 Shared Inbox</div>
+    <div class="tool-pill">📞 Call Center</div>
+  </div>
+</section>
+
+<section class="problem" id="tools">
+  <div class="wrap">
+    <h2 class="section-title">Everything a solo agent needs to compete with big teams</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>📇 Lead Generation</h3>
+        <p>Capture and manage leads from multiple sources in one dashboard, with opt-in forms ready to embed on your own site.</p>
+      </div>
+      <div class="card">
+        <h3>📍 Property Locator</h3>
+        <p>Search and filter property listings by city, type, and category — built for both agents and their clients to use.</p>
+      </div>
+      <div class="card">
+        <h3>📥 Unified Inbox</h3>
+        <p>Every lead conversation in one place — no more digging through email, texts, and a separate CRM.</p>
+      </div>
+      <div class="card">
+        <h3>📞 Call Center</h3>
+        <p>Manage and track calls with leads and clients directly inside the same app you're already using.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <h2 class="section-title">Simple monthly pricing</h2>
+    <p class="section-sub">Try the demo account free, right now, no signup required.</p>
+    <div class="price-card">
+      <div class="tag">AGENCY PLAN</div>
+      <div>Oli-Locator — Monthly</div>
+      <div class="price-big">$39 <span>/ month</span></div>
+      <ul class="price-list">
+        <li>Unlimited search — both countries</li>
+        <li>Lead generation + opt-in forms</li>
+        <li>Shared inbox + call center</li>
+        <li>Cancel anytime, no contract</li>
+        <li>Free demo login: try it before you subscribe</li>
+      </ul>
+      <a href="#signup" class="cta-btn" style="width:100%; text-align:center;">Start Free Trial</a>
+    </div>
+  </div>
+</section>
+
+<section class="signup" id="signup">
+  <div class="wrap signup-box">
+    <h2 class="section-title">Want a personal walkthrough first?</h2>
+    <p class="section-sub">Leave your email and we'll reach out to set up a 10-minute demo call.</p>
+
+    <!-- BREVO_FORM: Replace with embedded Brevo form code -->
+    <form class="form-row" action="#" method="post">
+      <input type="email" name="EMAIL" placeholder="you@realty.com" required>
+      <button type="submit" class="cta-btn">Request Demo</button>
+    </form>
+    <!-- END BREVO_FORM -->
+
+  </div>
+</section>
+
+<footer class="wrap">
+  © 2026 Oli-Locator — a product line by olielicz.
+</footer>
+
+</body>
+</html>

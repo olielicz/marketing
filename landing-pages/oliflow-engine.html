@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OliFlow Automation Engine — The Zapier Alternative You Own</title>
+<meta name="description" content="A self-hosted, zero-dependency AI workflow automation engine with a visual builder. Trigger it from any CRM/SaaS via webhooks, embed it in your site, or run it headless via REST API. One-time payment, own it forever.">
+<style>
+  :root { --ink:#14161a; --sub:#55606e; --accent:#ea580c; --accent-dark:#c2410c; --bg:#fafafa; --card:#fff; --line:#e7e9ee; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  a { color: var(--accent); }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; }
+  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; }
+  .logo span { color:var(--accent); }
+  nav a { margin-left:24px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
+  .cta-btn { display:inline-block; background:var(--accent); color:#fff !important; padding:12px 22px; border-radius:8px; font-weight:700; text-decoration:none; font-size:15px; border:none; cursor:pointer; }
+  .cta-btn:hover { background:var(--accent-dark); }
+  .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; }
+  .hero { padding:64px 0 48px; text-align:center; }
+  .badge { display:inline-block; background:#fff7ed; color:var(--accent-dark); font-size:13px; font-weight:700; padding:6px 14px; border-radius:20px; margin-bottom:20px; }
+  h1 { font-size:44px; line-height:1.14; margin:0 0 18px; letter-spacing:-0.02em; }
+  h1 .hl { color:var(--accent); }
+  .sub-headline { font-size:19px; color:var(--sub); max-width:660px; margin:0 auto 32px; }
+  .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+  .price-note { font-size:13px; color:var(--sub); }
+  .tools-strip { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:36px; }
+  .tool-pill { background:var(--card); border:1px solid var(--line); padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; color:var(--sub); }
+  section { padding:56px 0; }
+  .problem { background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-top:36px; }
+  @media (max-width:800px) { .grid2 { grid-template-columns:1fr; } h1 { font-size:30px; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px; }
+  .card h3 { margin:0 0 10px; font-size:17px; }
+  .card p { margin:0; color:var(--sub); font-size:14.5px; }
+  .section-title { text-align:center; margin-bottom:8px; font-size:30px; letter-spacing:-0.01em; }
+  .section-sub { text-align:center; color:var(--sub); max-width:600px; margin:0 auto 8px; }
+  .compare { width:100%; border-collapse:collapse; margin-top:32px; font-size:14.5px; }
+  .compare th, .compare td { border:1px solid var(--line); padding:12px 16px; text-align:center; }
+  .compare th { background:#f4f4f6; }
+  .compare td:first-child, .compare th:first-child { text-align:left; font-weight:600; }
+  .compare .yes { color:#16a34a; font-weight:800; }
+  .compare .no { color:#dc2626; font-weight:800; }
+  .pricing { text-align:center; }
+  .price-card { max-width:420px; margin:32px auto 0; background:var(--card); border:2px solid var(--accent); border-radius:16px; padding:36px; position:relative; }
+  .price-card .tag { position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:5px 14px; border-radius:20px; }
+  .price-big { font-size:48px; font-weight:800; margin:12px 0 4px; }
+  .price-big span { font-size:18px; font-weight:600; color:var(--sub); }
+  .price-list { text-align:left; list-style:none; padding:0; margin:24px 0; font-size:14.5px; }
+  .price-list li { padding:8px 0; border-bottom:1px solid var(--line); }
+  .price-list li:before { content:"✓ "; color:#16a34a; font-weight:800; }
+  .signup { background:#fff7ed; border-top:1px solid var(--line); }
+  .signup-box { max-width:480px; margin:0 auto; text-align:center; }
+  .form-row { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center; }
+  .form-row input[type="email"] { flex:1; min-width:220px; padding:13px 16px; border-radius:8px; border:1.5px solid var(--line); font-size:15px; }
+  footer { text-align:center; padding:40px 0; color:var(--sub); font-size:13px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">Oli<span>Flow</span></div>
+  <nav>
+    <a href="#tools">What's Inside</a>
+    <a href="#pricing">Pricing</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <div class="badge">⚡ Self-hosted · zero dependencies · you own it</div>
+  <h1>The <span class="hl">Zapier alternative</span> you actually own</h1>
+  <p class="sub-headline">A visual workflow automation builder you self-host — no per-task pricing, no vendor lock-in. Trigger it from any CRM or SaaS via webhooks, embed it in your site, or run it headless via REST API. Comes with prebuilt n8n, Make, and Zapier-style templates.</p>
+  <div class="hero-ctas">
+    <a href="#signup" class="cta-btn">Get lifetime access — $99</a>
+    <a href="#tools" class="cta-btn ghost">See what's inside</a>
+  </div>
+  <div class="price-note">One-time payment · Self-host free forever · 30-day money-back guarantee</div>
+  <div class="tools-strip">
+    <div class="tool-pill">🎨 Visual Workflow Builder</div>
+    <div class="tool-pill">🔌 Webhook Triggers</div>
+    <div class="tool-pill">📄 Prebuilt Templates (n8n/Make/Zapier)</div>
+    <div class="tool-pill">🧩 Headless REST API</div>
+  </div>
+</section>
+
+<section class="problem" id="tools">
+  <div class="wrap">
+    <h2 class="section-title">Why pay per-task forever when you can own the engine?</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>⚙️ OliFlow Engine</h3>
+        <p>A standalone, zero-dependency AI workflow automation engine with a visual builder. Trigger it from any CRM/SaaS via webhooks, embed it in your site, or run it headless via REST API.</p>
+      </div>
+      <div class="card">
+        <h3>🧰 auto-tools Template Pack</h3>
+        <p>A library of ready-to-import n8n workflows, Make blueprints, and Zapier app configs plus 7 CRM adapters — skip the blank-canvas problem entirely.</p>
+      </div>
+    </div>
+
+    <table class="compare">
+      <tr><th></th><th>OliFlow (lifetime)</th><th>Zapier</th><th>Make</th></tr>
+      <tr><td>Pricing model</td><td>$99 once</td><td>$20–$70+/mo</td><td>$9–$50+/mo</td></tr>
+      <tr><td>Task/run limits</td><td class="yes">None — self-hosted</td><td class="no">Metered</td><td class="no">Metered</td></tr>
+      <tr><td>Data leaves your servers</td><td class="yes">No</td><td class="no">Yes</td><td class="no">Yes</td></tr>
+      <tr><td>Own it forever</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <h2 class="section-title">Simple, one-time pricing</h2>
+    <p class="section-sub">No metered runs. No monthly bill. Ever.</p>
+    <div class="price-card">
+      <div class="tag">LAUNCH PRICE — FIRST 50 BUYERS</div>
+      <div>OliFlow Engine — Lifetime</div>
+      <div class="price-big">$99 <span>one-time</span></div>
+      <ul class="price-list">
+        <li>Full visual workflow builder + REST API</li>
+        <li>Prebuilt n8n / Make / Zapier template pack</li>
+        <li>Self-host free forever, unlimited runs</li>
+        <li>Lifetime updates included</li>
+        <li>30-day money-back guarantee</li>
+      </ul>
+      <a href="#signup" class="cta-btn" style="width:100%; text-align:center;">Get Lifetime Access</a>
+    </div>
+  </div>
+</section>
+
+<section class="signup" id="signup">
+  <div class="wrap signup-box">
+    <h2 class="section-title">Not ready to buy? Join the waitlist</h2>
+    <p class="section-sub">Get launch-day pricing and first access when more lifetime seats open.</p>
+
+    <!-- BREVO_FORM: Replace with embedded Brevo form code -->
+    <form class="form-row" action="#" method="post">
+      <input type="email" name="EMAIL" placeholder="you@company.com" required>
+      <button type="submit" class="cta-btn">Join Waitlist</button>
+    </form>
+    <!-- END BREVO_FORM -->
+
+  </div>
+</section>
+
+<footer class="wrap">
+  © 2026 OliFlow Automation Engine — a product line by olielicz. MIT-licensed core tools.
+</footer>
+
+</body>
+</html>
