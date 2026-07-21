@@ -3,59 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OliConnect — Recycle Your Best Social Posts Across Every Account</title>
-<meta name="description" content="OliConnect logs into all your social media accounts in one tool, collects your best-performing posts, and recycles them automatically across platforms. One-time payment, lifetime access.">
+<title>OliConnect — The Gem That Multiplies Every Great Post You Write</title>
+<meta name="description" content="You already wrote the post that worked. OliConnect finds it and multiplies it across every account automatically — one login, one payment, endless reach.">
 <style>
-  :root { --ink:#14161a; --sub:#55606e; --accent:#db2777; --accent-dark:#be185d; --bg:#fafafa; --card:#fff; --line:#e7e9ee; }
+  :root { --ink:#14161a; --sub:#55606e; --accent:#db2777; --accent2:#9333ea; --accent-dark:#be185d; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; }
   * { box-sizing: border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
   a { color: var(--accent); }
-  .wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
-  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; }
-  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; position:sticky; top:0; background:rgba(250,250,250,0.85); backdrop-filter:blur(8px); z-index:50; }
+  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:6px; }
   .logo span { color:var(--accent); }
-  nav a { margin-left:24px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
-  .cta-btn { display:inline-block; background:var(--accent); color:#fff !important; padding:12px 22px; border-radius:8px; font-weight:700; text-decoration:none; font-size:15px; border:none; cursor:pointer; }
-  .cta-btn:hover { background:var(--accent-dark); }
-  .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; }
-  .hero { padding:64px 0 48px; text-align:center; }
-  .badge { display:inline-block; background:#fdf2f8; color:var(--accent-dark); font-size:13px; font-weight:700; padding:6px 14px; border-radius:20px; margin-bottom:20px; }
-  h1 { font-size:44px; line-height:1.14; margin:0 0 18px; letter-spacing:-0.02em; }
-  h1 .hl { color:var(--accent); }
-  .sub-headline { font-size:19px; color:var(--sub); max-width:640px; margin:0 auto 32px; }
-  .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
-  .price-note { font-size:13px; color:var(--sub); }
-  .tools-strip { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:36px; }
-  .tool-pill { background:var(--card); border:1px solid var(--line); padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; color:var(--sub); }
-  section { padding:56px 0; }
-  .problem { background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:36px; }
-  @media (max-width:800px) { .grid3 { grid-template-columns:1fr; } h1 { font-size:30px; } }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px; }
-  .card h3 { margin:0 0 10px; font-size:17px; }
-  .card p { margin:0; color:var(--sub); font-size:14.5px; }
-  .section-title { text-align:center; margin-bottom:8px; font-size:30px; letter-spacing:-0.01em; }
-  .section-sub { text-align:center; color:var(--sub); max-width:560px; margin:0 auto 8px; }
-  .pricing { text-align:center; }
-  .price-card { max-width:420px; margin:32px auto 0; background:var(--card); border:2px solid var(--accent); border-radius:16px; padding:36px; position:relative; }
-  .price-card .tag { position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:5px 14px; border-radius:20px; }
-  .price-big { font-size:48px; font-weight:800; margin:12px 0 4px; }
+  nav a { margin-left:26px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
+  nav a:hover { color: var(--ink); }
+  .cta-btn { display:inline-block; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff !important; padding:14px 26px; border-radius:10px; font-weight:700; text-decoration:none; font-size:15.5px; border:none; cursor:pointer; box-shadow:0 8px 20px -6px rgba(219,39,119,0.5); transition:transform .15s, box-shadow .15s; }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(219,39,119,0.6); }
+  .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; box-shadow:none; }
+  .cta-btn.ghost:hover { background:#fdf2f8; transform:none; }
+  .hero { padding:72px 0 40px; text-align:center; position:relative; overflow:hidden; }
+  .hero:before { content:""; position:absolute; top:-180px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse at center, rgba(147,51,234,0.13), transparent 70%); pointer-events:none; }
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#fdf2f8; color:var(--accent-dark); font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:24px; border:1px solid #fbcfe8; }
+  h1 { font-size:52px; line-height:1.1; margin:0 0 20px; letter-spacing:-0.025em; font-weight:800; }
+  h1 .hl { background:linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub-headline { font-size:20px; color:var(--sub); max-width:680px; margin:0 auto 36px; }
+  .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; }
+  .price-note { font-size:13.5px; color:var(--sub); display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  .tools-strip { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:44px; }
+  .tool-pill { background:var(--card); border:1px solid var(--line); padding:10px 18px; border-radius:999px; font-size:13.5px; font-weight:600; color:var(--sub); box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+  section { padding:64px 0; }
+  .section-title { text-align:center; margin-bottom:10px; font-size:34px; letter-spacing:-0.02em; font-weight:800; }
+  .section-sub { text-align:center; color:var(--sub); max-width:600px; margin:0 auto 12px; font-size:17px; }
+  .gem-banner { background:linear-gradient(135deg, #14161a, #3d0f33); color:#fff; border-radius:20px; padding:44px; text-align:center; }
+  .gem-banner .gem-icon { font-size:40px; margin-bottom:14px; }
+  .gem-banner h2 { font-size:28px; margin:0 0 12px; letter-spacing:-0.01em; }
+  .gem-banner p { color:#e6c9de; max-width:600px; margin:0 auto; font-size:16.5px; }
+  .steps { display:flex; justify-content:center; gap:20px; margin-top:40px; flex-wrap:wrap; }
+  .step { flex:1; min-width:200px; max-width:280px; text-align:center; position:relative; }
+  .step .num { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; margin:0 auto 14px; font-size:17px; }
+  .step h3 { margin:0 0 8px; font-size:17px; }
+  .step p { margin:0; color:var(--sub); font-size:14px; }
+  .arrow { display:flex; align-items:center; font-size:22px; color:var(--line); font-weight:800; }
+  @media (max-width:800px) { .steps { flex-direction:column; } .arrow { display:none; } h1 { font-size:34px; } .section-title { font-size:26px; } }
+  .note { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:18px 22px; font-size:14px; color:#92400e; margin-top:36px; display:flex; gap:12px; align-items:flex-start; }
+  .pricing { text-align:center; background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .price-card { max-width:460px; margin:32px auto 0; background:linear-gradient(160deg, #fff, #fdf2f8); border:2px solid var(--accent); border-radius:20px; padding:40px; position:relative; box-shadow:0 24px 48px -20px rgba(219,39,119,0.22); }
+  .price-card .tag { position:absolute; top:-15px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; white-space:nowrap; }
+  .price-big { font-size:54px; font-weight:800; margin:12px 0 4px; }
   .price-big span { font-size:18px; font-weight:600; color:var(--sub); }
-  .price-list { text-align:left; list-style:none; padding:0; margin:24px 0; font-size:14.5px; }
-  .price-list li { padding:8px 0; border-bottom:1px solid var(--line); }
-  .price-list li:before { content:"✓ "; color:#16a34a; font-weight:800; }
-  .signup { background:#fdf2f8; border-top:1px solid var(--line); }
-  .signup-box { max-width:480px; margin:0 auto; text-align:center; }
-  .form-row { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center; }
-  .form-row input[type="email"] { flex:1; min-width:220px; padding:13px 16px; border-radius:8px; border:1.5px solid var(--line); font-size:15px; }
-  footer { text-align:center; padding:40px 0; color:var(--sub); font-size:13px; }
-  .note { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:16px 20px; font-size:13.5px; color:#92400e; margin-top:28px; }
+  .price-list { text-align:left; list-style:none; padding:0; margin:26px 0; font-size:15px; }
+  .price-list li { padding:9px 0; border-bottom:1px solid var(--line); }
+  .price-list li:before { content:"✓ "; color:var(--good); font-weight:800; }
+  .guarantee { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:18px; font-size:13.5px; color:var(--sub); }
+  .signup { background:#fdf2f8; border-bottom:1px solid var(--line); }
+  .signup-box { max-width:500px; margin:0 auto; text-align:center; }
+  .form-row { display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; justify-content:center; }
+  .form-row input[type="email"] { flex:1; min-width:240px; padding:14px 16px; border-radius:10px; border:1.5px solid var(--line); font-size:15px; }
+  .form-note { font-size:12.5px; color:var(--sub); margin-top:12px; }
+  footer { text-align:center; padding:44px 0; color:var(--sub); font-size:13px; }
 </style>
 </head>
 <body>
 
 <header class="wrap nav">
-  <div class="logo">Oli<span>Connect</span></div>
+  <div class="logo">💎 Oli<span>Connect</span></div>
   <nav>
     <a href="#tools">How It Works</a>
     <a href="#pricing">Pricing</a>
@@ -63,14 +74,18 @@
 </header>
 
 <section class="hero wrap">
-  <div class="badge">📱 One login, every social account</div>
-  <h1>Your best posts deserve <span class="hl">more than one platform</span></h1>
-  <p class="sub-headline">OliConnect logs into all your social media accounts from one place, collects your top-performing posts, and recycles them automatically across every platform — so great content works harder without you re-writing it.</p>
+  <div class="eyebrow">💎 The gem buried in your own post history</div>
+  <h1>Your best post already exists.<br><span class="hl">It just needs to travel.</span></h1>
+  <p class="sub-headline">Somewhere in your accounts is a post that outperformed everything else — and it's probably only living on one platform. OliConnect finds it and multiplies it everywhere else, automatically.</p>
   <div class="hero-ctas">
     <a href="#signup" class="cta-btn">Get lifetime access — $29</a>
-    <a href="#tools" class="cta-btn ghost">See how it works</a>
+    <a href="#tools" class="cta-btn ghost">See how it works ↓</a>
   </div>
-  <div class="price-note">One-time payment · Browser extension · 30-day money-back guarantee</div>
+  <div class="price-note">
+    <span>✅ One-time payment</span>
+    <span>✅ Your credentials stay yours</span>
+    <span>✅ 30-day money-back guarantee</span>
+  </div>
   <div class="tools-strip">
     <div class="tool-pill">🔗 Connects all your accounts</div>
     <div class="tool-pill">♻️ Recycles top posts</div>
@@ -78,54 +93,70 @@
   </div>
 </section>
 
-<section class="problem" id="tools">
+<section id="tools">
+  <div class="wrap">
+    <div class="gem-banner">
+      <div class="gem-icon">💎</div>
+      <h2>You did the hard part already. Let the post do the rest.</h2>
+      <p>Writing a post that resonates is the hard 20%. Reformatting and reposting it across every platform is tedious, repetitive work that eats your week — the exact kind of thing a tool should be doing instead of you.</p>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
   <div class="wrap">
     <h2 class="section-title">Built for social media managers and small agencies</h2>
     <p class="section-sub">Stop manually copy-pasting captions between platforms. OliConnect handles it once you connect your accounts.</p>
-    <div class="grid3">
-      <div class="card">
-        <h3>1. Connect</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Connect</h3>
         <p>Log into your social accounts once, inside the OliConnect browser extension — nothing else to install.</p>
       </div>
-      <div class="card">
-        <h3>2. Collect</h3>
+      <div class="arrow">→</div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Collect</h3>
         <p>OliConnect identifies your best-performing posts across every connected account automatically.</p>
       </div>
-      <div class="card">
-        <h3>3. Recycle</h3>
-        <p>Top posts get reformatted and reposted across your other accounts — turning one good post into ongoing reach.</p>
+      <div class="arrow">→</div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Recycle</h3>
+        <p>Top posts get reformatted and reposted across your other accounts — one good post, ongoing reach.</p>
       </div>
     </div>
     <div class="note">
-      🔒 Your login credentials stay in your own browser session — OliConnect works alongside your existing accounts, it doesn't store your passwords on our servers.
+      🔒 <span><strong>Your login credentials stay in your own browser session</strong> — OliConnect works alongside your existing accounts, it doesn't store your passwords on our servers.</span>
     </div>
   </div>
 </section>
 
 <section class="pricing" id="pricing">
   <div class="wrap">
-    <h2 class="section-title">Simple, one-time pricing</h2>
+    <h2 class="section-title">One price. Multiply every good post.</h2>
     <p class="section-sub">Perfect for solo creators, social media managers, and small agencies.</p>
     <div class="price-card">
-      <div class="tag">LAUNCH PRICE — FIRST 50 BUYERS</div>
-      <div>OliConnect — Lifetime</div>
+      <div class="tag">🔥 LAUNCH PRICE — FIRST 50 BUYERS ONLY</div>
+      <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliConnect — Lifetime</div>
       <div class="price-big">$29 <span>one-time</span></div>
       <ul class="price-list">
         <li>Connect unlimited social accounts</li>
         <li>Automatic best-post detection</li>
         <li>Cross-platform recycling</li>
-        <li>Lifetime updates included</li>
-        <li>30-day money-back guarantee</li>
+        <li>Every future update, included</li>
+        <li>30-day money-back guarantee, no questions asked</li>
       </ul>
-      <a href="#signup" class="cta-btn" style="width:100%; text-align:center;">Get Lifetime Access</a>
+      <a href="#signup" class="cta-btn" style="width:100%; text-align:center; display:block;">Claim Lifetime Access</a>
+      <div class="guarantee">🛡️ Risk-free — full refund within 30 days if it's not for you</div>
     </div>
   </div>
 </section>
 
 <section class="signup" id="signup">
   <div class="wrap signup-box">
-    <h2 class="section-title">Not ready to buy? Join the waitlist</h2>
-    <p class="section-sub">Get launch-day pricing and first access when more lifetime seats open.</p>
+    <h2 class="section-title">Not ready to buy yet?</h2>
+    <p class="section-sub">Join the waitlist and get launch-day pricing plus first access when more lifetime seats open.</p>
 
     <!-- BREVO_FORM: Replace with embedded Brevo form code -->
     <form class="form-row" action="#" method="post">
@@ -133,12 +164,12 @@
       <button type="submit" class="cta-btn">Join Waitlist</button>
     </form>
     <!-- END BREVO_FORM -->
-
+    <div class="form-note">No spam. Unsubscribe anytime.</div>
   </div>
 </section>
 
 <footer class="wrap">
-  © 2026 OliConnect — a product line by olielicz.
+  💎 OliConnect — a product line by olielicz.
 </footer>
 
 </body>
