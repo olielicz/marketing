@@ -7,13 +7,16 @@ Everything needed to launch and sell 5 product lines bundled from olielicz's too
 
 ## The 5 product lines
 
-| Line | Landing page | Repos bundled |
+| Line | Clean URL (once Pages is live) | Repos bundled |
 |---|---|---|
-| OliOps Suite | `landing-pages/oliops-suite.html` | OliCRM, OliCompute, automate-CSR |
-| OliCommerce Stack | `landing-pages/olicommerce-stack.html` | ecomm-automation, project-2 |
-| OliFlow Automation Engine | `landing-pages/oliflow-engine.html` | project-3, auto-tools |
-| OliConnect | `landing-pages/oliconnect.html` | oliconnect |
-| Oli-Locator | `landing-pages/oli-locator.html` | lead-gen |
+| Hub / all tools | `/` | — |
+| OliOps Suite | `/oliops/` | OliCRM, OliCompute, automate-CSR |
+| OliCommerce Stack | `/olicommerce/` | ecomm-automation, project-2 |
+| OliFlow Automation Engine | `/oliflow/` | project-3, auto-tools |
+| OliConnect | `/oliconnect/` | oliconnect |
+| Oli-Locator | `/oli-locator/` | lead-gen |
+
+Each product folder has its own `index.html`, so once GitHub Pages is live the URLs are clean — e.g. `olielicz.github.io/marketing/oliops/` — no `.html` extension, no `landing-pages/` prefix.
 
 ## File map
 
@@ -21,12 +24,12 @@ Everything needed to launch and sell 5 product lines bundled from olielicz's too
 00-master-calendar.md                    ← the 30-day plan
 STEP-BY-STEP-INSTRUCTIONS.md             ← exactly what to click, per tool
 
-landing-pages/
-  oliops-suite.html
-  olicommerce-stack.html
-  oliflow-engine.html
-  oliconnect.html
-  oli-locator.html
+index.html                                ← hub homepage linking to all 5 tools
+oliops/index.html                         ← OliOps Suite landing page
+olicommerce/index.html                    ← OliCommerce Stack landing page
+oliflow/index.html                        ← OliFlow Automation Engine landing page
+oliconnect/index.html                     ← OliConnect landing page
+oli-locator/index.html                    ← Oli-Locator landing page
 
 product-hunt-oliops-suite.md             ← PH launch copy per line
 product-hunt-olicommerce-stack.md
@@ -50,6 +53,7 @@ directory-submission-list.md             ← 40+ free directory/backlink submiss
 
 ## Status
 
+- [ ] Repo made public (required for free GitHub Pages — see STEP-BY-STEP-INSTRUCTIONS.md #1)
 - [ ] Landing pages deployed (GitHub Pages / Vercel)
 - [ ] Brevo account + 5 waitlist lists + 5 automation sequences live
 - [ ] Analytics installed on all 5 pages

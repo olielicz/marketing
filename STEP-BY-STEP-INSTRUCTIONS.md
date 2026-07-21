@@ -6,33 +6,49 @@ This is your execution checklist. Everything else in this repo (landing pages, c
 
 ## 1. GitHub Pages / Vercel — Deploy the 5 landing pages
 
-**Goal:** get all 5 HTML files in `landing-pages/` live on the internet with real URLs.
+**Goal:** get the hub page + all 5 product pages live on the internet with clean URLs (no `.html`, no `landing-pages/` prefix).
 
-### Option A: GitHub Pages via GitHub Actions (already set up for you — just flip one switch)
+### ⚠️ First: GitHub Pages requires either a Pro plan or a public repo
 
-A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo and will auto-deploy every time you push to `main`. GitHub Pages settings themselves aren't something I can toggle remotely (no admin/settings API access from this environment) — this is the one manual step left, and it only needs to be done once:
+If you saw **"Upgrade or make this repository public to enable Pages"** in Settings → Pages, that's GitHub's standard restriction — **free GitHub accounts can only use Pages on public repositories.** Pro ($4/mo) unlocks it for private repos, but there's no free-tier private-Pages option.
+
+**Recommended: make this repo public.** It contains only marketing copy and landing page HTML — no API keys, no customer data, no business logic from your actual products. There's nothing sensitive in it, and public marketing sites are the norm (your competitors' landing page source is public too, it's just rendered HTML — this repo being visible on GitHub doesn't expose anything a visitor to the live site couldn't already see).
+
+**To make it public:**
+1. Go to `github.com/olielicz/marketing` → **Settings** → scroll to the bottom **"Danger Zone"**
+2. Click **Change repository visibility** → **Change to public** → type the repo name to confirm
+
+**If you'd rather keep it private instead:** skip to Option B (Vercel) below — Vercel's free tier deploys private repos with no restriction, so you don't need to change visibility at all.
+
+### Option A: GitHub Pages via GitHub Actions (once the repo is public)
+
+A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo and will auto-deploy every time you push to `main`. After making the repo public:
 
 1. Go to this repo on GitHub (`github.com/olielicz/marketing`)
 2. Click **Settings** → **Pages** (left sidebar)
-3. Under **"Build and deployment" → "Source,"** select **GitHub Actions** (NOT "Deploy from a branch")
-4. That's it — no branch/folder picker needed, the workflow handles it
-5. Go to the **Actions** tab → you should see "Deploy landing pages to GitHub Pages" already running (it triggered on the last push) or click **Run workflow** to trigger it manually
-6. Wait 1-2 minutes, then your pages will be live at:
-   - `https://olielicz.github.io/marketing/landing-pages/oliops-suite.html`
-   - `https://olielicz.github.io/marketing/landing-pages/olicommerce-stack.html`
-   - `https://olielicz.github.io/marketing/landing-pages/oliflow-engine.html`
-   - `https://olielicz.github.io/marketing/landing-pages/oliconnect.html`
-   - `https://olielicz.github.io/marketing/landing-pages/oli-locator.html`
-7. **Optional but recommended:** buy a cheap domain later ($10-15/yr from Namecheap/Porkbun) and point subdomains at each page (e.g., `oliops.yourdomain.com`) once you have traction — not required to launch.
+3. Under **"Build and deployment" → "Source,"** select **GitHub Actions** (NOT "Deploy from a branch") — this option now appears since the repo is public
+4. Go to the **Actions** tab → you should see "Deploy landing pages to GitHub Pages" already available, or click **Run workflow** to trigger it manually
+5. Wait 1-2 minutes, then your pages will be live at clean URLs:
+   - `https://olielicz.github.io/marketing/` — the hub page linking to all 5
+   - `https://olielicz.github.io/marketing/oliops/`
+   - `https://olielicz.github.io/marketing/olicommerce/`
+   - `https://olielicz.github.io/marketing/oliflow/`
+   - `https://olielicz.github.io/marketing/oliconnect/`
+   - `https://olielicz.github.io/marketing/oli-locator/`
+6. **Optional but recommended:** buy a cheap domain later ($10-15/yr from Namecheap/Porkbun) and point subdomains at each page (e.g., `oliops.yourdomain.com`) once you have traction — not required to launch.
 
-**Why you still need to do this one click:** GitHub requires a human with repo admin access to explicitly choose the Pages deployment source at least once — this isn't exposed through any API I have access to from this environment, and enabling it silently on your behalf isn't something I'd want to do without your explicit action anyway, since it does make the repo's content publicly servable at a public URL.
-
-### Option B: Vercel (slightly nicer URLs, still free)
+### Option B: Vercel (works with a private repo, no visibility change needed)
 1. Go to [vercel.com](https://vercel.com), sign up with your GitHub account
-2. Click **Add New Project** → select the `marketing` repo
-3. Set **Root Directory** to `landing-pages`
+2. Click **Add New Project** → select the `marketing` repo (Vercel can access private repos you grant it)
+3. Leave **Root Directory** as the repo root (not `landing-pages` — the new structure puts `index.html` files directly in `oliops/`, `olicommerce/`, etc. at the root)
 4. Click **Deploy**
-5. Vercel gives you a URL like `marketing-olielicz.vercel.app` — each HTML file is accessible at `/oliops-suite.html` etc.
+5. Vercel gives you a URL like `marketing-olielicz.vercel.app` — clean URLs work automatically:
+   - `marketing-olielicz.vercel.app/` — hub page
+   - `marketing-olielicz.vercel.app/oliops/`
+   - `marketing-olielicz.vercel.app/olicommerce/`
+   - `marketing-olielicz.vercel.app/oliflow/`
+   - `marketing-olielicz.vercel.app/oliconnect/`
+   - `marketing-olielicz.vercel.app/oli-locator/`
 
 **Do this on Day 1 of the master calendar.**
 
@@ -57,10 +73,10 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 5. Choose a simple form: just an email field
 6. Under **Settings**, select the matching list (e.g., link the OliOps form to the `OliOps Waitlist` list)
 7. Click **Embed** (not "Share a link") — copy the HTML code Brevo gives you
-8. Open the matching landing page HTML file (e.g., `landing-pages/oliops-suite.html`) in a text editor
+8. Open the matching landing page HTML file (e.g., `oliops/index.html`) in a text editor
 9. Find the `<!-- BREVO_FORM -->` comment block and replace the placeholder `<form>...</form>` code between the comments with Brevo's embed code
 10. Save, commit, and push the updated file (or just ask me to do this step for you once your Brevo forms are created — I can wire in the real embed codes directly)
-11. Repeat for all 5 landing pages
+11. Repeat for all 5 landing pages (`oliops/index.html`, `olicommerce/index.html`, `oliflow/index.html`, `oliconnect/index.html`, `oli-locator/index.html`)
 
 ### Load the email sequences (Day 3)
 12. Go to **Automation** → **Create a workflow**
@@ -77,9 +93,9 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 **Goal:** track visitors and conversions on all 5 pages.
 
 1. Go to [plausible.io](https://plausible.io) (free 14-day trial, no credit card) OR [Google Analytics](https://analytics.google.com) (free forever, more setup)
-2. Create a new site/property for each domain/subdomain you're using
+2. Create a new site/property for your domain (one property can track the hub + all 5 sub-pages if they're on the same domain, e.g. `olielicz.github.io`)
 3. Copy the tracking script snippet
-4. Paste it into the `<head>` section of each of the 5 HTML files, right before `</head>`
+4. Paste it into the `<head>` section of `index.html` and all 5 product `index.html` files (`oliops/`, `olicommerce/`, `oliflow/`, `oliconnect/`, `oli-locator/`), right before `</head>`
 5. Push the updated files
 
 ---
@@ -173,7 +189,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 | Already written (in this repo) | You need to do (external sites) |
 |---|---|
-| ✅ 5 landing pages (HTML) | Deploy to GitHub Pages/Vercel |
+| ✅ Hub page + 5 landing pages, clean URLs | Make repo public (or use Vercel) + deploy |
 | ✅ 3 Product Hunt launch posts + first comments | Create PH account, submit, engage on launch day |
 | ✅ 5 email nurture sequences (25 emails total) | Create Brevo account, build forms, load sequences |
 | ✅ 3 AppSumo pitches with deal tiers | Create AppSumo account, submit for review |
