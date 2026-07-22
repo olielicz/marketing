@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust & Security Center — Oli Tools</title>
+<meta name="description" content="How Oli Tools handles security, data protection, and GDPR compliance across OliOps Suite, OliCommerce Stack, OliFlow Engine, OliConnect, and Oli-Locator — explained honestly, with no overclaiming.">
+<style>
+  :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --good:#16a34a; --warn:#d97706; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.65; -webkit-font-smoothing:antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
+  .logo { font-weight:800; font-size:20px; }
+  nav a { margin-left:20px; color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .hero { padding: 56px 0 24px; text-align:center; }
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#eef2ff; color:#3730a3; font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:20px; }
+  h1 { font-size: 40px; margin: 0 0 14px; letter-spacing:-0.02em; }
+  .sub { color: var(--sub); font-size: 17px; max-width: 640px; margin: 0 auto; }
+  section { padding: 36px 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: none; }
+  h2 { font-size: 24px; margin: 0 0 16px; }
+  h3 { font-size: 16px; margin: 24px 0 8px; }
+  p, li { color: #33363c; font-size: 15.5px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; margin: 16px 0; }
+  .card.good { border-left: 4px solid var(--good); }
+  .card.honest { border-left: 4px solid var(--warn); background: #fffbeb; }
+  ul.check { list-style: none; padding: 0; margin: 0; }
+  ul.check li { padding: 8px 0; padding-left: 28px; position: relative; }
+  ul.check li:before { content: "✓"; position: absolute; left: 0; color: var(--good); font-weight: 800; }
+  ul.cross { list-style: none; padding: 0; margin: 0; }
+  ul.cross li { padding: 8px 0; padding-left: 28px; position: relative; }
+  ul.cross li:before { content: "✕"; position: absolute; left: 0; color: #dc2626; font-weight: 800; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  th { background: #f4f4f6; font-weight: 700; }
+  .badge-row { display:flex; gap:10px; flex-wrap:wrap; margin: 20px 0; }
+  .badge { background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; }
+  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+  footer a { color: var(--sub); margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">💎 Oli Tools</div>
+  <nav>
+    <a href="../">All Tools</a>
+    <a href="../privacy/">Privacy</a>
+    <a href="../support/">Support</a>
+    <a href="../contact/">Contact</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <div class="eyebrow">🛡️ Trust &amp; Security Center</div>
+  <h1>What's actually true about our security</h1>
+  <p class="sub">We'd rather tell you exactly what's implemented than make a vague claim that sounds reassuring but doesn't hold up. Here's the real picture, tool by tool.</p>
+  <div class="badge-row" style="justify-content:center;">
+    <span class="badge">🔐 Scrypt password hashing</span>
+    <span class="badge">🔍 Zero secrets found in any repo (audited)</span>
+    <span class="badge">📖 Open-source core (MIT)</span>
+    <span class="badge">🚫 No data sold, ever</span>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>The honest headline</h2>
+  <div class="card honest">
+    <p style="margin:0;"><strong>We do not hold SOC 2, ISO 27001, or any third-party security certification.</strong> We're a small, independent toolmaker, not an enterprise vendor — and we'd rather say that plainly than imply otherwise with vague "bank-level security" language. What follows is a specific, verifiable account of what each tool actually does.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>What's true for every Oli tool</h2>
+  <ul class="check">
+    <li><strong>Passwords are never stored in plain text.</strong> Every product that has user accounts (OliOps/OliCRM, OliCompute, OliFlow, Oli-Locator's backend, project-2/OliMind) hashes passwords with <code>scrypt</code> (a memory-hard, industry-standard algorithm) or <code>bcrypt</code>, each with a unique per-user salt.</li>
+    <li><strong>Session tokens use timing-safe comparison.</strong> Login sessions are verified using constant-time comparison (<code>crypto.timingSafeEqual</code>), which protects against timing-attack side channels.</li>
+    <li><strong>We manually audited every repo for leaked secrets</strong> — API keys, private keys, hardcoded credentials — before any tool was made available. None were found in the current codebases. (One historical issue was found and fixed — see "Past incident, disclosed" below. We're including it because hiding it would undercut everything else on this page.)</li>
+    <li><strong>Core code is open-source (MIT licensed).</strong> You — or a security professional you hire — can read exactly how each tool handles your data, rather than trusting a black box.</li>
+    <li><strong>We do not sell customer data.</strong> Not to advertisers, not to data brokers, not to anyone. See the Privacy Policy for exactly what we do collect and why.</li>
+  </ul>
+</section>
+
+<section class="wrap">
+  <h2>Self-hosted tools: what "self-hosted" means for your security</h2>
+  <p>OliOps Suite, OliCommerce Stack, OliFlow Engine, and OliConnect's core engines are <strong>self-hosted</strong> — you run them on your own server or hosting provider, not ours. This has real security implications in both directions, and we want you to understand both:</p>
+  <table>
+    <tr><th>What this means</th><th>Upside</th><th>What's on you</th></tr>
+    <tr><td>Your data lives on infrastructure you choose</td><td>We never have access to your customer/business data — there's no central Oli database to breach</td><td>You're responsible for keeping that infrastructure patched and secured</td></tr>
+    <tr><td>You control HTTPS/TLS setup</td><td>You can use your own certificate provider (Let's Encrypt is free) and your own hosting security posture</td><td>The app itself doesn't force HTTPS — you need to configure it (see setup guide below)</td></tr>
+    <tr><td>You control backups</td><td>No third party has copies of your backups</td><td>If you don't back up your own data directory, we can't recover it for you</td></tr>
+  </table>
+  <h3>Recommended hardening checklist (5 minutes, once)</h3>
+  <ul class="check">
+    <li>Put your instance behind HTTPS — most hosts (Render, Railway, Vercel) provide this automatically; if self-hosting on a VPS, use <a href="https://letsencrypt.org" target="_blank" rel="noopener">Let's Encrypt</a> (free)</li>
+    <li>Set a strong, unique <code>AUTH_SECRET</code> / signing secret environment variable — never leave it as a default/example value in production</li>
+    <li>Back up your data directory on a schedule (a simple daily cron + off-site copy is enough for most small businesses)</li>
+    <li>Keep Node.js and your OS patched — these tools use zero or minimal npm dependencies specifically to shrink this burden, but the runtime itself still needs updates</li>
+  </ul>
+</section>
+
+<section class="wrap">
+  <h2>OliOps Suite &amp; Oli-Locator's hosted option</h2>
+  <p>If you use the optional managed-hosting add-on (rather than self-hosting) for OliOps Suite, or if you use Oli-Locator (which is hosted-only, login-based SaaS), here's what applies specifically:</p>
+  <ul class="check">
+    <li>We manage TLS/HTTPS termination for you on hosted instances</li>
+    <li>Data is stored on the hosting provider's infrastructure we've configured (currently: free/low-cost tiers of mainstream providers — see Privacy Policy for the current list)</li>
+  </ul>
+  <ul class="cross">
+    <li>We do not currently run a formal penetration test program — this is realistic for our current size, and we'll update this page the day that changes</li>
+    <li>We do not offer a bug bounty program yet — if you find a security issue, please use responsible disclosure (see below) and we'll credit you here once we have a formal program</li>
+  </ul>
+</section>
+
+<section class="wrap">
+  <h2>OliConnect (browser extension) specifically</h2>
+  <div class="card good">
+    <p style="margin:0;"><strong>Your social media login credentials never touch our servers.</strong> OliConnect operates entirely within your own authenticated browser session — it does not ask for, store, or transmit your passwords anywhere. Post content it reads/recycles stays local to your browser and the platforms you're already logged into.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Past incident, disclosed</h2>
+  <div class="card honest">
+    <p><strong>What happened:</strong> during development, an earlier version of the Oli-Locator (lead-gen) codebase had a real owner-account password hardcoded in plain text inside client-side JavaScript, plus a matching password hash in the server code.</p>
+    <p><strong>What we did:</strong> removed the hardcoded credential entirely, moved account seeding to environment variables never committed to source, and treated the exposed password as permanently compromised (rotated, not reused). This is documented in the repository's commit history for anyone who wants to verify it independently.</p>
+    <p style="margin:0;"><strong>Why we're telling you:</strong> a security page that only lists good news isn't credible. If we find something wrong, we'll say so here — that's the only way "trust" on this page means anything.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Responsible disclosure</h2>
+  <p>If you find a security issue in any Oli tool, please report it privately before disclosing publicly, so we have a chance to fix it first:</p>
+  <ul class="check">
+    <li>Email <strong>security@[your-domain-here]</strong> (see note in Contact page — replace with your real address before this goes live)</li>
+    <li>Include which tool, what you found, and steps to reproduce if possible</li>
+    <li>We aim to acknowledge reports within 3 business days</li>
+  </ul>
+</section>
+
+<section class="wrap">
+  <h2>Questions about a specific tool's security setup?</h2>
+  <p>Every product page has its own FAQ covering device licensing and payment security. For anything not covered there or here, <a href="../contact/">contact us</a> — security/privacy questions are one of the categories you can flag directly.</p>
+</section>
+
+<footer class="wrap">
+  💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
+</footer>
+
+<script src="../shared/cookie-consent.js"></script>
+
+</body>
+</html>

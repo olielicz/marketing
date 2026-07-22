@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Oli Tools</title>
+<meta name="description" content="Get in touch about any Oli Tools product — billing, technical support, security, licensing, or partnerships. We respond to every message.">
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+<style>
+  :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --accent2:#7c3aed; --good:#16a34a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
+  .logo { font-weight:800; font-size:20px; }
+  nav a { margin-left:20px; color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .hero { padding: 48px 0 32px; text-align:center; }
+  h1 { font-size: 38px; margin: 0 0 12px; letter-spacing:-0.02em; }
+  .sub { color: var(--sub); font-size: 17px; max-width: 600px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 20px 0 60px; align-items: start; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  .routes { display: grid; gap: 14px; }
+  .route-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .route-card .icon { font-size: 24px; margin-bottom: 8px; display: block; }
+  .route-card h3 { margin: 0 0 6px; font-size: 16px; }
+  .route-card p { margin: 0; color: var(--sub); font-size: 14px; }
+  .route-card .email { display: block; margin-top: 8px; font-weight: 700; font-size: 14px; }
+  .form-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; position: sticky; top: 20px; }
+  .form-card h2 { margin: 0 0 6px; font-size: 20px; }
+  .form-card .sub2 { color: var(--sub); font-size: 14px; margin: 0 0 20px; }
+  select, input[type="text"], input[type="email"], textarea {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line);
+    font-size: 14.5px; font-family: inherit; margin-bottom: 14px; background: #fff; color: var(--ink);
+  }
+  label { display: block; font-size: 13.5px; font-weight: 700; margin-bottom: 6px; color: #33363c; }
+  .cta-btn {
+    display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff !important;
+    padding: 13px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 15px;
+    border: none; cursor: pointer; width: 100%;
+  }
+  .response-note { display:flex; align-items:center; gap:8px; background:#ecfdf5; color:#047857; font-weight:600; font-size:13px; padding:10px 14px; border-radius:8px; margin-top:16px; }
+  #sib-form-container { margin: 0; }
+  #sib-container { background: transparent !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
+  #sib-form .entry__label { font-size: 13.5px; font-weight: 700 !important; color: #33363c !important; }
+  #sib-form input.input { width: 100%; padding: 12px 14px !important; border-radius: 10px !important; border: 1.5px solid var(--line) !important; font-size: 14.5px !important; font-family: inherit !important; }
+  #sib-form .sib-form-block__button { background: linear-gradient(135deg, var(--accent), var(--accent2)) !important; color: #fff !important; padding: 13px 24px !important; border-radius: 10px !important; font-weight: 700 !important; font-size: 15px !important; border: none !important; width: 100%; }
+  #sib-form .entry__specification { display: none; }
+  #error-message, #success-message { margin-bottom: 14px; }
+  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+  footer a { color: var(--sub); margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">💎 Oli Tools</div>
+  <nav>
+    <a href="../">All Tools</a>
+    <a href="../support/">Support</a>
+    <a href="../security/">Security</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <h1>We read every message</h1>
+  <p class="sub">Billing question, something's broken, a security concern, or you just want to talk before buying — pick the right channel below or use the form and we'll route it internally.</p>
+</section>
+
+<section class="wrap">
+  <div class="grid">
+    <div class="routes">
+      <div class="route-card">
+        <span class="icon">🛠️</span>
+        <h3>Technical support</h3>
+        <p>Something's not working, setup help, or a bug report. Check the <a href="../support/">Troubleshooting Guide</a> first — most issues are covered there and you'll get a faster answer.</p>
+        <span class="email">support@[your-domain-here]</span>
+      </div>
+      <div class="route-card">
+        <span class="icon">💳</span>
+        <h3>Billing &amp; licensing</h3>
+        <p>Refunds, receipts, moving your license to a new device, or payment issues.</p>
+        <span class="email">billing@[your-domain-here]</span>
+      </div>
+      <div class="route-card">
+        <span class="icon">🔒</span>
+        <h3>Security &amp; privacy</h3>
+        <p>Report a security issue (see our <a href="../security/">responsible disclosure process</a>) or a data/privacy request under GDPR.</p>
+        <span class="email">security@[your-domain-here]</span>
+      </div>
+      <div class="route-card">
+        <span class="icon">🤝</span>
+        <h3>Partnerships &amp; press</h3>
+        <p>Reseller inquiries, integration partnerships, or media requests.</p>
+        <span class="email">hello@[your-domain-here]</span>
+      </div>
+      <div class="route-card">
+        <span class="icon">💬</span>
+        <h3>Pre-sale questions</h3>
+        <p>Not sure which tool fits, or have a question before buying? Ask away — no pressure, no sales calls required.</p>
+        <span class="email">hello@[your-domain-here]</span>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h2>Or use this form</h2>
+      <p class="sub2">Tell us what's going on and which tool it's about — we'll route it to the right place internally.</p>
+
+      <!-- BREVO_FORM: this reuses the OliOps waitlist form structure as a starting point.
+           For a real contact form, create a dedicated Brevo form with these fields:
+           EMAIL (required), a text field for "Which tool", a dropdown for "Topic"
+           (Technical Support / Billing / Security / Partnership / Pre-sale / Other),
+           and a textarea "Message". Brevo forms support custom attributes for all of these
+           via Contacts -> Settings -> Contact attributes, then add them to the form builder.
+           Swap the action URL below once that dedicated form exists. -->
+      <div id="error-message" class="sib-form-message-panel" style="font-family:Helvetica, sans-serif; font-size:14px; text-align:left; color:#661d1d; background-color:#ffeded; border-color:#ff4949; border-radius:8px; padding:12px 14px; display:none;">
+        Something went wrong. Please try again or email us directly.
+      </div>
+      <div id="success-message" class="sib-form-message-panel" style="font-family:Helvetica, sans-serif; font-size:14px; text-align:left; color:#085229; background-color:#e7faf0; border-color:#13ce66; border-radius:8px; padding:12px 14px; display:none;">
+        Message received — we'll get back to you soon.
+      </div>
+
+      <form id="oli-contact-form" method="POST" action="https://1aab3e8b.sibforms.com/serve/REPLACE_WITH_YOUR_CONTACT_FORM_ID">
+        <label for="ct-name">Your name</label>
+        <input type="text" id="ct-name" name="NAME" placeholder="Jane Smith" required>
+
+        <label for="ct-email">Email address</label>
+        <input type="email" id="ct-email" name="EMAIL" placeholder="you@company.com" required>
+
+        <label for="ct-product">Which tool is this about?</label>
+        <select id="ct-product" name="PRODUCT">
+          <option value="OliOps Suite">OliOps Suite</option>
+          <option value="OliCommerce Stack">OliCommerce Stack</option>
+          <option value="OliFlow Automation Engine">OliFlow Automation Engine</option>
+          <option value="OliConnect">OliConnect</option>
+          <option value="Oli-Locator">Oli-Locator</option>
+          <option value="Not sure / general question">Not sure / general question</option>
+        </select>
+
+        <label for="ct-topic">Topic</label>
+        <select id="ct-topic" name="TOPIC">
+          <option value="Technical Support">Technical support / something's broken</option>
+          <option value="Billing">Billing / licensing / refund</option>
+          <option value="Security">Security / privacy / data request</option>
+          <option value="Partnership">Partnership / press</option>
+          <option value="Pre-sale">Pre-sale question</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="ct-message">Message</label>
+        <textarea id="ct-message" name="MESSAGE" rows="5" placeholder="What's going on? Include any error messages if relevant." required></textarea>
+
+        <button type="submit" class="cta-btn">Send Message</button>
+      </form>
+      <div class="response-note">⏱️ We aim to respond within 1-2 business days</div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../security/">Security</a> · <a href="../support/">Support</a> · <a href="../">All Tools</a>
+</footer>
+
+<script src="../shared/cookie-consent.js"></script>
+
+</body>
+</html>

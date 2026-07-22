@@ -46,6 +46,13 @@ oliconnect/buy/index.html                 ← OliConnect checkout page
 oli-locator/index.html                    ← Oli-Locator landing page
 oli-locator/buy/index.html                ← Oli-Locator subscription checkout page
 
+security/index.html                       ← Trust & Security Center (honest disclosure, no SOC2/ISO overclaiming)
+privacy/index.html                        ← GDPR-compliant Privacy Policy
+terms/index.html                          ← Terms of Service (license terms, refund policy, liability limits)
+contact/index.html                        ← Contact Us page, routed by category (support/billing/security/partnerships/pre-sale)
+support/index.html                        ← Troubleshooting & Support hub, general + per-tool FAQs
+shared/cookie-consent.js                  ← GDPR/ePrivacy cookie notice banner, included on every page
+
 product-hunt-oliops-suite.md             ← PH launch copy per line
 product-hunt-olicommerce-stack.md
 product-hunt-oliflow-engine.md
@@ -73,6 +80,17 @@ licensing/                                ← shared serial-code / 5-device acti
   scripts/                                ← CLI: generate-keys.js, generate-license.js
   test/                                   ← unit tests (node --test), all passing
 ```
+
+## Trust & Compliance
+
+- `security/`, `privacy/`, `terms/`, `contact/`, and `support/` are linked from the nav and footer of the hub page, all 5 product pages, and all 5 buy pages.
+- `shared/cookie-consent.js` is a lightweight, no-tracking-by-default cookie notice (informational, not a hard consent gate — the site itself sets no cookies; only third-party widgets like Brevo/Stripe/PayPal do on interaction).
+- Each self-hosted product repo (`OliCompute`, `OliCRM`, `project-3`, `oliconnect`) has its own `SECURITY.md` disclosing what's actually implemented (password hashing, timing-safe comparison) vs. not implemented (no encryption at rest, no built-in TLS/rate-limiting, no SOC2/pen-testing) — no unverifiable claims.
+- **Before going live**, replace these placeholders across `security/`, `privacy/`, `terms/`, `contact/`:
+  - Emails: `security@[your-domain-here]`, `privacy@[your-domain-here]`, `legal@[your-domain-here]`, `billing@[your-domain-here]`, `hello@[your-domain-here]`, `support@[your-domain-here]`
+  - `terms/index.html`: `[Insert your jurisdiction here before publishing]` (governing law)
+  - `privacy/index.html` and `terms/index.html`: `[insert date before publishing]` (Last updated)
+  - `contact/index.html`: Brevo form action URL placeholder `REPLACE_WITH_YOUR_CONTACT_FORM_ID`
 
 ## Status
 
