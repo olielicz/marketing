@@ -7,16 +7,18 @@ Everything needed to launch and sell 5 product lines bundled from olielicz's too
 
 ## The 5 product lines
 
-| Line | Clean URL (once Pages is live) | Repos bundled |
-|---|---|---|
-| Hub / all tools | `/` | — |
-| OliOps Suite | `/oliops/` | OliCRM, OliCompute, automate-CSR |
-| OliCommerce Stack | `/olicommerce/` | ecomm-automation, project-2 |
-| OliFlow Automation Engine | `/oliflow/` | project-3, auto-tools |
-| OliConnect | `/oliconnect/` | oliconnect |
-| Oli-Locator | `/oli-locator/` | lead-gen |
+| Line | Clean URL (once Pages is live) | Repos bundled | Pricing |
+|---|---|---|---|
+| Hub / all tools | `/` | — | — |
+| OliOps Suite | `/oliops/` | OliCRM, OliCompute, automate-CSR | $149/year, up to 5 devices |
+| OliCommerce Stack | `/olicommerce/` | ecomm-automation, project-2 | $119/year, up to 5 devices |
+| OliFlow Automation Engine | `/oliflow/` | project-3, auto-tools | $129/year, up to 5 devices |
+| OliConnect | `/oliconnect/` | oliconnect | $39/year, up to 5 devices |
+| Oli-Locator | `/oli-locator/` | lead-gen | $39/month (hosted SaaS, no device cap — log in from anywhere) |
 
 Each product folder has its own `index.html`, so once GitHub Pages is live the URLs are clean — e.g. `olielicz.github.io/marketing/oliops/` — no `.html` extension, no `landing-pages/` prefix.
+
+**Pricing model:** the 4 self-hosted products (OliOps, OliCommerce, OliFlow, OliConnect) are annual subscriptions, not lifetime deals — each license comes with one serial code activatable on up to 5 devices. See [`licensing/README.md`](./licensing/README.md) for the license server that enforces this. Oli-Locator is hosted SaaS with its own login, so it has no device cap or serial code.
 
 ## File map
 
@@ -49,6 +51,14 @@ outreach-oli-locator.md                  ← cold outreach playbooks (no PH laun
 outreach-oliconnect.md
 
 directory-submission-list.md             ← 40+ free directory/backlink submissions, tracked
+competitor-comparison.md                 ← pros/cons table: all 5 tools vs. named competitors
+
+licensing/                                ← shared serial-code / 5-device activation server
+  README.md                               ← full docs: how it works, deployment, honest DRM caveat
+  server/                                 ← zero-dependency Node activation API
+  client/                                 ← drop-in client library for each product to embed
+  scripts/                                ← CLI: generate-keys.js, generate-license.js
+  test/                                   ← unit tests (node --test), all passing
 ```
 
 ## Status
@@ -58,7 +68,9 @@ directory-submission-list.md             ← 40+ free directory/backlink submiss
 - [ ] Brevo account + 5 waitlist lists + 5 automation sequences live
 - [ ] Analytics installed on all 5 pages
 - [ ] Directory submissions complete
-- [ ] AppSumo submissions filed (OliOps, OliCommerce, OliFlow, OliConnect)
+- [ ] Licensing server deployed + Ed25519 keys generated (see `licensing/README.md`)
+- [ ] First serial codes generated for each of the 4 self-hosted products
+- [ ] AppSumo submissions filed (OliOps, OliCommerce, OliFlow, OliConnect) — note LTD-vs-annual tension in each pitch file
 - [ ] Product Hunt launch — OliOps Suite
 - [ ] Product Hunt launch — OliFlow Automation Engine
 - [ ] Product Hunt launch — OliCommerce Stack

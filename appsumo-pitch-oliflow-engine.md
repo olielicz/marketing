@@ -2,7 +2,9 @@
 
 **Submit at:** sell.appsumo.com — free to submit. Review typically 1–3 weeks, so file on Day 5 alongside OliOps and OliCommerce.
 
-**Note on mechanics:** AppSumo takes a revenue share on deals sold through their marketplace (confirm the current split during their review conversation). Keep your own landing page LTD price slightly higher than whatever AppSumo negotiates.
+**⚠️ Same tension as the other pitches:** AppSumo's platform defaults to lifetime deals; OliFlow is now a $129/year annual subscription. Go into review flexible — see the note in `appsumo-pitch-oliops-suite.md` for the full explanation and options if AppSumo pushes for an LTD structure.
+
+**Note on mechanics:** AppSumo takes a revenue share on deals sold through their marketplace (confirm the current split during their review conversation).
 
 ---
 
@@ -10,7 +12,7 @@
 **OliFlow Automation Engine**
 
 ## One-line pitch
-> Own your workflow automation engine — no per-task fees, ever.
+> Own your workflow automation engine on one flat annual plan — no per-task fees, ever, licensed for up to 5 devices.
 
 ## Category
 Automation / Productivity / Developer Tools
@@ -35,15 +37,15 @@ OliFlow is a self-hosted, zero-dependency workflow automation engine with a visu
 **Differentiation:**
 Most AppSumo automation-category deals are either (a) another metered SaaS with a discounted LTD price that still caps usage, or (b) a narrow single-purpose integration. OliFlow is the rare "actually unlimited because you own the infrastructure" pitch.
 
-## Suggested deal tiers
+## Suggested annual deal tiers
 
-| Tier | Price | Included |
+| Tier | Price/year | Included |
 |---|---|---|
-| Tier 1 | $69 | Core engine + visual builder, self-hosted, unlimited runs |
-| Tier 2 | $99 | + full template pack (n8n/Make/Zapier configs + 7 CRM adapters) |
-| Tier 3 | $149 | + 12 months of email support + priority template requests |
+| Tier 1 | $89/yr | Core engine + visual builder, self-hosted, unlimited runs, up to 3 devices |
+| Tier 2 | $129/yr | + full template pack (n8n/Make/Zapier configs + 7 CRM adapters), up to 5 devices |
+| Tier 3 | $199/yr | + priority email support + priority template requests, up to 5 devices |
 
-*(Adjust once AppSumo gives tier-pricing guidance during review.)*
+*(Adjust once AppSumo gives tier-pricing guidance during review — and see the LTD-vs-annual tension note above.)*
 
 ## Assets to prepare
 

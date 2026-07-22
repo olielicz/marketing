@@ -1,0 +1,5 @@
+# Secrets and generated data — never commit these
+.env
+data/
+node_modules/
+*.log
