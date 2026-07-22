@@ -2,7 +2,7 @@
 
 **Setup in Brevo:** Contacts → Automation → new workflow triggered by "Contact added to list: OliFlow Waitlist."
 
-**Pricing note:** OliFlow Engine is a $129/year annual subscription (introductory price for the first 100 subscribers), licensed for up to 5 devices per serial code — not a lifetime one-time deal. All copy below reflects that.
+**Pricing note:** OliFlow Engine is a $249 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
 
 ---
 
@@ -18,10 +18,10 @@ Hey {{contact.FIRSTNAME|default:"there"}},
 
 Thanks for joining the OliFlow waitlist.
 
-Quick recap: **a self-hosted visual workflow automation engine** — trigger it via webhooks, embed it in your site, or run it headless via REST API. One flat annual subscription, no per-task metering, ever.
+Quick recap: **a self-hosted visual workflow automation engine** — trigger it via webhooks, embed it in your site, or run it headless via REST API. One payment, no per-task metering, ever, no renewal.
 
 What happens next:
-- Introductory pricing before anyone else ($129/year, goes up after the first 100 subscribers)
+- Launch pricing before anyone else ($249 one-time, limited lifetime seats)
 - A couple of short emails showing exactly how it compares to Zapier/Make
 - No spam
 
@@ -39,9 +39,9 @@ Reply if you want a private demo before launch.
 
 **Body:**
 
-If you're running enough automations to matter, you're probably paying $20–70/month on Zapier or Make — that's $240-828+/year — and that bill scales with usage, not value. The workflow logic is essentially the same every month; you're just paying more for running it more.
+If you're running enough automations to matter, you're probably paying $20–70/month on Zapier or Make — that's $240-828+/year, every year, forever — and that bill scales with usage, not value. The workflow logic is essentially the same every month; you're just paying more for running it more.
 
-OliFlow: **$129/year flat**, self-hosted, unlimited runs, no metering, licensed for up to 5 devices.
+OliFlow: **$249 once**, self-hosted, unlimited runs, no metering, licensed for up to 5 devices, no renewal.
 
 More on what's actually included in the next email.
 
@@ -57,7 +57,7 @@ More on what's actually included in the next email.
 
 **Body:**
 
-What's inside the $129/year subscription:
+What's inside the $249 lifetime purchase:
 
 **🎨 Visual workflow builder** — drag-and-drop, no code required
 **🔌 Webhook triggers** — connect any CRM/SaaS that can send a webhook
@@ -66,7 +66,7 @@ What's inside the $129/year subscription:
 
 [Watch the 2-minute build-a-workflow demo →]
 
-Self-hosted, zero external dependencies to run the core engine — your workflow data and credentials never leave your own infrastructure. One serial code activates up to 5 devices.
+Self-hosted, zero external dependencies to run the core engine — your workflow data and credentials never leave your own infrastructure. One serial code activates up to 5 devices, forever.
 
 Questions? Reply — I read everything.
 
@@ -85,7 +85,7 @@ Questions? Reply — I read everything.
 Two things:
 
 **1. We're live on Product Hunt right now** → [link]
-Today's introductory pricing ($129/year) is the best it'll ever be.
+Today's launch pricing ($249 one-time) is the best it'll ever be.
 
 **2. Most common question: "Can this replace my existing automations?"**
 For most standard trigger→action patterns, yes — the template pack covers common cases out of the box. Reply with what you're currently automating and I'll tell you honestly if OliFlow handles it today.
@@ -103,16 +103,16 @@ An upvote/comment on Product Hunt today genuinely helps → [link]
 ## Email 5 — Urgency/close (Day 19, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Introductory pricing ends soon"
-- B: "Last call on $129/year introductory pricing"
+- A: "Limited lifetime seats"
+- B: "Last call on $249 lifetime pricing"
 
 **Body:**
 
 ⚠️ Only send if scarcity is real — never fabricate a countdown.
 
-Quick update: introductory pricing has been live a few days. Once the first 100 subscriber seats are gone, price goes up.
+Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price goes up for good.
 
-If you've been meaning to grab it: [Start annual subscription — $129/year →]
+If you've been meaning to grab it: [Buy lifetime access — $249 →]
 
 If it's not the right fit right now, no worries — I'll keep you posted without spamming your inbox.
 

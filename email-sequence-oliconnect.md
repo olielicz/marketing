@@ -4,7 +4,7 @@
 
 **Note:** OliConnect's primary acquisition channel is direct outreach + community posts (see `outreach-oliconnect.md`), not a Product Hunt launch. This sequence still applies to anyone who signs up via the landing page waitlist regardless of how they found it — swap Email 4's "we're live on PH" framing for whatever channel is actually driving signups (a Reddit post, a cold email reply, etc.) if you don't end up running the optional PH launch.
 
-**Pricing note:** OliConnect is a $39/year annual subscription (introductory price for the first 100 subscribers), licensed for up to 5 devices per serial code — not a lifetime one-time deal. All copy below reflects that.
+**Pricing note:** OliConnect is an $89 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
 
 ---
 
@@ -20,10 +20,10 @@ Hey {{contact.FIRSTNAME|default:"there"}},
 
 Thanks for joining the OliConnect waitlist.
 
-Quick recap: **connect all your social accounts once, and OliConnect automatically finds your best-performing posts and recycles them across every platform.** One simple annual subscription, not another social-media-tool bill.
+Quick recap: **connect all your social accounts once, and OliConnect automatically finds your best-performing posts and recycles them across every platform.** One payment, not another social-media-tool bill.
 
 What happens next:
-- Introductory pricing before anyone else ($39/year, goes up after the first 100 subscribers)
+- Launch pricing before anyone else ($89 one-time, limited lifetime seats)
 - A couple of short emails showing exactly how the recycling flow works
 - No spam
 
@@ -43,9 +43,9 @@ Reply if you want a private demo.
 
 If you manage social accounts across multiple platforms, you know the drill: a post does well on one platform, so you manually reformat and repost it everywhere else — resizing images, rewriting captions, tracking what's already been posted where.
 
-That's hours a week of manual work for content you already know performs. Tools like MeetEdgar and SocialBee that automate this run $348-1,188/year.
+That's hours a week of manual work for content you already know performs. Tools like MeetEdgar and SocialBee that automate this run $348-1,188/year, every year, forever.
 
-OliConnect: connect once, and it handles the detection + recycling automatically. **$39/year**, licensed for up to 5 devices.
+OliConnect: connect once, and it handles the detection + recycling automatically. **$89 once**, licensed for up to 5 devices, no renewal.
 
 More on exactly how it works in the next email.
 
@@ -61,7 +61,7 @@ More on exactly how it works in the next email.
 
 **Body:**
 
-What's inside the $39/year subscription:
+What's inside the $89 lifetime purchase:
 
 **🔗 Connect** — log into your social accounts once, inside the browser extension
 **📊 Collect** — OliConnect identifies your best-performing posts across every connected account automatically
@@ -69,7 +69,7 @@ What's inside the $39/year subscription:
 
 [Watch the demo →]
 
-Your login credentials stay in your own browser session — OliConnect doesn't store your passwords server-side. One serial code activates up to 5 devices.
+Your login credentials stay in your own browser session — OliConnect doesn't store your passwords server-side. One serial code activates up to 5 devices, forever.
 
 Questions? Reply — I read everything.
 
@@ -92,9 +92,9 @@ Yes — OliConnect works through your own logged-in browser session. It doesn't 
 Other FAQs:
 - *"Which platforms are supported?"* — [fill in with actual supported platform list]
 - *"What if it's not for me?"* — 30-day money-back guarantee.
-- *"How many devices?"* — Up to 5 per license, one serial code.
+- *"How many devices?"* — Up to 5 per license, one serial code, forever.
 
-Introductory pricing is $39/year for early signups — [Start annual subscription →]
+Launch pricing is $89 one-time for early signups — [Buy lifetime access →]
 
 — olielicz
 
@@ -103,16 +103,16 @@ Introductory pricing is $39/year for early signups — [Start annual subscriptio
 ## Email 5 — Urgency/close (Day 12, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Introductory pricing ends soon"
-- B: "Last call on $39/year introductory pricing"
+- A: "Limited lifetime seats"
+- B: "Last call on $89 lifetime pricing"
 
 **Body:**
 
 ⚠️ Only send if scarcity is real — never fabricate a countdown.
 
-Quick update: introductory pricing has been live a few days. Once the first 100 subscriber seats are gone, price goes up.
+Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price goes up for good.
 
-If you've been meaning to grab it: [Start annual subscription — $39/year →]
+If you've been meaning to grab it: [Buy lifetime access — $89 →]
 
 If it's not the right fit right now, no worries — I'll keep you posted without spamming your inbox.
 

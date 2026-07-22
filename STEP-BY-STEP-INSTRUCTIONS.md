@@ -54,7 +54,17 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 2. Brevo — Email capture + nurture sequences
+## 2. Payments — Stripe + PayPal checkout on every Buy Now page
+
+**Goal:** every product's `buy/index.html` page actually charges real money instead of showing a placeholder link.
+
+**Full instructions:** see [`PAYMENTS-SETUP.md`](./PAYMENTS-SETUP.md) — it covers creating Stripe Payment Links, PayPal Buy Now buttons (for the 4 lifetime products), a PayPal Subscribe button (for Oli-Locator's recurring plan), and how to wire up automatic serial-code delivery after payment.
+
+**Do this before announcing any tool as "for sale"** — ideally Day 1-2, right after deployment, so the Buy Now buttons work the moment anyone clicks through from a Product Hunt launch or cold email.
+
+---
+
+## 3. Brevo — Email capture + nurture sequences
 
 **Goal:** every landing page's signup form actually captures emails, and the 5-email sequences send automatically.
 
@@ -88,7 +98,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 3. Analytics — Know what's actually working
+## 4. Analytics — Know what's actually working
 
 **Goal:** track visitors and conversions on all 5 pages.
 
@@ -100,7 +110,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 4. Product Hunt — 3 scheduled launches
+## 5. Product Hunt — 3 scheduled launches
 
 **Goal:** execute the 3 launches from the master calendar (OliOps Day 9, OliFlow Day 16, OliCommerce Day 23) using the copy already written in `product-hunt-*.md`.
 
@@ -120,7 +130,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 5. AppSumo — 3 lifetime deal submissions
+## 6. AppSumo — 3 lifetime deal submissions
 
 **Goal:** file OliOps, OliCommerce, and OliFlow pitches by Day 5; OliConnect when you have bandwidth.
 
@@ -136,7 +146,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 6. Directory submissions — 40+ free listings
+## 7. Directory submissions — 40+ free listings
 
 **Goal:** complete every checkbox in `directory-submission-list.md`.
 
@@ -149,7 +159,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 7. Reddit / Indie Hackers / community posts
+## 8. Reddit / Indie Hackers / community posts
 
 **Goal:** post in the right communities at the right time, without getting flagged as spam.
 
@@ -160,7 +170,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 8. Cold outreach — Oli-Locator + OliConnect
+## 9. Cold outreach — Oli-Locator + OliConnect
 
 **Goal:** execute the outreach playbooks in `outreach-oli-locator.md` and `outreach-oliconnect.md`.
 
@@ -174,7 +184,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 9. Buffer — Social post scheduling (optional but recommended)
+## 10. Buffer — Social post scheduling (optional but recommended)
 
 **Goal:** keep a steady drip of social posts without manually posting every day.
 
@@ -189,7 +199,8 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 | Already written (in this repo) | You need to do (external sites) |
 |---|---|
-| ✅ Hub page + 5 landing pages, clean URLs | Make repo public (or use Vercel) + deploy |
+| ✅ Hub page + 5 landing pages + 5 Buy Now pages, clean URLs | Make repo public (or use Vercel) + deploy |
+| ✅ Stripe/PayPal buttons built into every Buy Now page | Create real Stripe Payment Links + PayPal buttons, swap in the placeholder links |
 | ✅ 3 Product Hunt launch posts + first comments | Create PH account, submit, engage on launch day |
 | ✅ 5 email nurture sequences (25 emails total) | Create Brevo account, build forms, load sequences |
 | ✅ 3 AppSumo pitches with deal tiers | Create AppSumo account, submit for review |

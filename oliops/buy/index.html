@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buy OliOps Suite — Lifetime Access, $299</title>
+<meta name="description" content="Purchase OliOps Suite lifetime access. Pay securely with Stripe or PayPal — cards, wallets, and local payment methods accepted worldwide.">
+<meta name="robots" content="noindex">
+<style>
+  :root { --ink:#14161a; --sub:#55606e; --accent:#4f46e5; --accent2:#7c3aed; --accent-dark:#3730a3; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
+  .logo { font-weight:800; font-size:20px; }
+  .logo span { color: var(--accent); }
+  nav a { color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  main { padding: 40px 0 80px; }
+  .grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items:start; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  h1 { font-size: 32px; margin: 0 0 10px; letter-spacing:-0.02em; }
+  .sub { color: var(--sub); font-size: 16px; margin: 0 0 28px; }
+  .summary-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .line:last-child { border-bottom: none; }
+  .total { display: flex; justify-content: space-between; padding-top: 16px; margin-top: 6px; border-top: 2px solid var(--ink); font-weight: 800; font-size: 20px; }
+  .included { list-style:none; padding:0; margin: 20px 0 0; font-size: 14.5px; }
+  .included li { padding: 6px 0; }
+  .included li:before { content: "✓ "; color: var(--good); font-weight: 800; }
+  .pay-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; position: sticky; top: 24px; }
+  .pay-card h2 { font-size: 18px; margin: 0 0 6px; }
+  .pay-card .price { font-size: 40px; font-weight: 800; margin: 4px 0 20px; }
+  .pay-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    padding: 15px; border-radius: 10px; font-weight: 700; font-size: 15.5px; text-decoration: none;
+    margin-bottom: 12px; border: none; cursor: pointer;
+  }
+  .pay-btn.stripe { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+  .pay-btn.stripe:hover { opacity: 0.92; }
+  .pay-btn.paypal { background: #ffc439; color: #003087; }
+  .pay-btn.paypal:hover { background: #ffb800; }
+  .pay-note { font-size: 12.5px; color: var(--sub); text-align: center; margin-top: 16px; line-height: 1.5; }
+  .trust-row { display:flex; justify-content:center; gap:16px; margin-top:18px; flex-wrap:wrap; font-size:12px; color:var(--sub); }
+  .setup-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 18px 20px; font-size: 13.5px; color: #92400e; margin-top: 28px; }
+  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">💎 Oli<span>Ops</span> Suite</div>
+  <nav><a href="../">← Back to OliOps Suite</a></nav>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <div>
+      <h1>Complete your purchase</h1>
+      <p class="sub">You're one step away from owning OliOps Suite outright — no renewal, ever.</p>
+
+      <div class="summary-card">
+        <div class="line"><span>OliOps Suite — Lifetime License</span><span>$299.00</span></div>
+        <div class="line"><span>Devices included</span><span>Up to 5</span></div>
+        <div class="line"><span>Updates</span><span>All future updates included</span></div>
+        <div class="total"><span>Total (one-time)</span><span>$299.00 USD</span></div>
+
+        <ul class="included">
+          <li>CRM, invoicing/payroll, accounting, and AI support — all connected</li>
+          <li>Self-hosted, license valid on up to 5 devices</li>
+          <li>Serial code delivered by email immediately after payment</li>
+          <li>Priority email support included</li>
+          <li>30-day money-back guarantee, no questions asked</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pay-card">
+      <h2>Pay securely</h2>
+      <div class="price">$299</div>
+
+      <!--
+        STRIPE PAYMENT LINK
+        Create this once at https://dashboard.stripe.com/payment-links (no code required).
+        Set the product name "OliOps Suite — Lifetime License", price $299 USD, one-time.
+        Paste the generated link's URL as the href below.
+      -->
+      <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLIOPS_PAYMENT_LINK" target="_blank" rel="noopener">
+        💳 Pay with Stripe (Card)
+      </a>
+
+      <!--
+        PAYPAL BUY NOW BUTTON
+        Create this once at https://www.paypal.com/paypalme or the PayPal Button Builder
+        (developer.paypal.com/payment-links-buttons/create-buy-button). Set item name
+        "OliOps Suite — Lifetime License", price $299 USD. PayPal gives you a hosted_button_id —
+        drop it into the form below in place of REPLACE_WITH_YOUR_HOSTED_BUTTON_ID.
+      -->
+      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID">
+        <input type="hidden" name="currency_code" value="USD">
+        <button type="submit" class="pay-btn paypal">🅿️ Pay with PayPal</button>
+      </form>
+
+      <div class="pay-note">Both options accept major cards, digital wallets, and local payment methods in 100+ countries. You'll receive your serial code by email within minutes of payment.</div>
+      <div class="trust-row">
+        <span>🔒 256-bit SSL</span>
+        <span>🛡️ 30-day refund</span>
+        <span>🌍 100+ countries</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-note">
+    ⚠️ <strong>Site owner setup note:</strong> the two buttons above are placeholders. Replace the Stripe href and the PayPal <code>hosted_button_id</code> with your own live payment link/button before this page goes live. Full step-by-step instructions are in <code>PAYMENTS-SETUP.md</code> at the root of this repo.
+  </div>
+</main>
+
+<footer class="wrap">
+  💎 OliOps Suite — a product line by olielicz. · <a href="../">Back to product page</a> · <a href="../../">All Oli Tools</a>
+</footer>
+
+</body>
+</html>

@@ -2,13 +2,9 @@
 
 **Submit at:** sell.appsumo.com — free to submit. Review typically 1–3 weeks, so file on Day 5.
 
-**⚠️ Important tension to know about before submitting:** AppSumo's whole platform is built around **lifetime deals** — their own reviewers describe deals as "pay-once, own-forever by nature," and most sellers report AppSumo pushing hard for an LTD structure during review. Since OliOps Suite is now a $149/year annual subscription (not a lifetime deal), expect one of two outcomes:
-1. AppSumo's review team asks you to convert this into an LTD tier structure anyway (common for their platform), or
-2. They accept an annual-plan listing — AppSumo does list some annual-only products (e.g. FlexiFunnels' $418-997/year tiers exist alongside their LTD), just less commonly.
+**Good news on structure:** OliOps Suite is now priced as a one-time lifetime purchase ($299), which matches AppSumo's native model exactly — "pay-once, own-forever," per AppSumo's own reviewer language. No LTD-vs-subscription tension to navigate during review, unlike an annual-plan submission would have.
 
-**Recommended approach:** submit as described below (annual pricing, framed as a subscription), but go into the review conversation flexible — if AppSumo insists on an LTD structure to feature you, decide then whether a limited-run "founding member" lifetime tier (priced high enough to still make sense, e.g. $399-499) makes sense as an AppSumo-exclusive alongside your regular annual plan elsewhere. That's a business decision for you, not something to lock in on the initial submission.
-
-**Note on mechanics:** AppSumo takes a revenue share on deals sold through their marketplace (confirm the current split during your review conversation).
+**Note on mechanics:** AppSumo takes a revenue share on deals sold through their marketplace (confirm the current split during your review conversation). Keep your own landing-page price ($299) at or above whatever tier AppSumo negotiates, since AppSumo buyers are price-sensitive deal-hunters, not your full-price audience.
 
 ---
 
@@ -16,7 +12,7 @@
 **OliOps Suite**
 
 ## One-line pitch
-> Replace your CRM, invoicing, payroll, and support tool with one annual subscription — licensed for up to 5 devices.
+> Replace your CRM, invoicing, payroll, and support tool with one lifetime purchase — licensed for up to 5 devices.
 
 ## Category
 Business Management / CRM / Productivity
@@ -24,32 +20,32 @@ Business Management / CRM / Productivity
 ## Deal description
 
 **The problem:**
-Solo founders and small service businesses typically juggle 4+ separate subscriptions: a CRM, an invoicing/accounting tool, and a customer-support tool — none sharing data. $55–150/month stacked, plus manual sync work.
+Solo founders and small service businesses typically juggle 4+ separate subscriptions: a CRM, an invoicing/accounting tool, and a customer-support tool — none sharing data. $55–150/month stacked, forever, plus manual sync work.
 
 **The solution:**
-OliOps Suite bundles three connected tools into one annual subscription:
+OliOps Suite bundles three connected tools into one lifetime purchase:
 - **CRM** — clients, deals, conversation history
 - **Back office** — invoicing with tax calc, payroll from logged hours, expenses, full P&L / tax report
 - **AI support router** — auto-resolves common questions, escalates the rest
-- **Licensing** — one serial code per subscription, activatable on up to 5 devices
+- **Licensing** — one serial code per purchase, activatable on up to 5 devices, forever
 
 **Why AppSumo buyers specifically:**
 - AppSumo's audience is overwhelmingly solo founders/freelancers/small agencies — exactly this segment
 - Self-hostable → zero ongoing infra cost for budget-conscious buyers
-- A predictable annual price still reads as a clear win against $660-1,800/year of stacked competitor subscriptions
+- A one-time price is a natural fit against $1,700-3,500+/year of stacked competitor subscriptions, every year, forever
 
 **Differentiation:**
 Most AppSumo CRM deals are single-purpose. OliOps Suite replaces 3 categories at once — a bigger "subscriptions replaced" story.
 
-## Suggested annual deal tiers
+## Suggested deal tiers
 
-| Tier | Price/year | Included |
+| Tier | Price | Included |
 |---|---|---|
-| Tier 1 | $99/yr | Core CRM + invoicing/payroll, self-hosted, up to 3 devices |
-| Tier 2 | $149/yr | + AI support router + accounting/tax reports, up to 5 devices |
-| Tier 3 | $229/yr | + 12 months managed hosting included, up to 5 devices |
+| Tier 1 | $199 | Core CRM + invoicing/payroll, self-hosted, up to 3 devices |
+| Tier 2 | $299 | + AI support router + accounting/tax reports, up to 5 devices |
+| Tier 3 | $449 | + 12 months managed hosting included, up to 5 devices |
 
-*(Adjust once AppSumo gives tier-pricing guidance during review — and see the tension note above regarding LTD vs. annual structure.)*
+*(Adjust once AppSumo gives tier-pricing guidance during review.)*
 
 ## Assets to prepare
 

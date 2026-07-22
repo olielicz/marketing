@@ -4,7 +4,7 @@
 
 **Note:** OliConnect is a lower-priority AppSumo submission than OliOps/OliCommerce/OliFlow in the master calendar (Week 1 files 3 pitches: OliOps, OliCommerce, OliFlow). File this one once those are submitted and you have bandwidth — ideally still within Week 1–2 so review time doesn't push it past the 30-day sprint window.
 
-**⚠️ Same LTD-vs-annual tension as the other pitches:** AppSumo's platform defaults to lifetime deals; OliConnect is now a $39/year annual subscription. See the note in `appsumo-pitch-oliops-suite.md` for the full explanation and options if AppSumo pushes for an LTD structure — this matters even more here since $39/year is a genuinely low price point where AppSumo may be especially likely to suggest an LTD conversion instead.
+**Good news on structure:** OliConnect is now priced as a one-time lifetime purchase ($89), matching AppSumo's native LTD model — no annual-vs-lifetime tension to navigate during review.
 
 ---
 
@@ -12,7 +12,7 @@
 **OliConnect**
 
 ## One-line pitch
-> Connect all your social accounts once. Recycle your best posts everywhere — one annual subscription, up to 5 devices.
+> Connect all your social accounts once. Recycle your best posts everywhere — one lifetime purchase, up to 5 devices.
 
 ## Category
 Social Media Management / Marketing Tools
@@ -31,19 +31,19 @@ OliConnect is a browser extension that:
 **Why AppSumo buyers specifically:**
 - AppSumo's audience includes a large base of solo marketers, social media freelancers, and small agency operators managing exactly this workflow manually today
 - Session-based (not credential-storing) architecture is an easy trust story for a security-conscious buyer base
-- Even as an annual plan, $39/year is dramatically cheaper than named competitors' monthly pricing — a strong "impulse buy" story even without an LTD structure
+- $89 lifetime is dramatically cheaper than named competitors' monthly pricing (MeetEdgar $360+/yr, SocialBee $348-1,188/yr, every year) — a strong "impulse buy" LTD story
 
 **Differentiation:**
 Most social scheduling tools on AppSumo are broad scheduling/calendar suites. OliConnect's specific angle — automatic best-post detection + cross-platform recycling — is a narrower, sharper pitch that's easy to explain in one sentence.
 
-## Suggested annual deal tiers
+## Suggested deal tiers
 
-| Tier | Price/year | Included |
+| Tier | Price | Included |
 |---|---|---|
-| Tier 1 | $39/yr | Connect unlimited accounts, automatic best-post detection + recycling, up to 5 devices |
-| Tier 2 | $59/yr | + priority support + early access to new platform integrations, up to 5 devices |
+| Tier 1 | $89 | Connect unlimited accounts, automatic best-post detection + recycling, up to 5 devices |
+| Tier 2 | $129 | + priority support + early access to new platform integrations, up to 5 devices |
 
-*(Two tiers is often enough for a lower-price-point product; adjust based on AppSumo's guidance — and see the LTD-vs-annual tension note above.)*
+*(Two tiers is often enough for a lower-price-point product; adjust based on AppSumo's guidance.)*
 
 ## Assets to prepare
 

@@ -2,7 +2,7 @@
 
 **Setup in Brevo:** Contacts → Automation → new workflow triggered by "Contact added to list: OliCommerce Waitlist."
 
-**Pricing note:** OliCommerce Stack is a $119/year annual subscription (introductory price for the first 100 subscribers), licensed for up to 5 devices per serial code — not a lifetime one-time deal. All copy below reflects that.
+**Pricing note:** OliCommerce Stack is a $199 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
 
 ---
 
@@ -18,10 +18,10 @@ Hey {{contact.FIRSTNAME|default:"there"}},
 
 Thanks for joining the OliCommerce Stack waitlist.
 
-Quick recap: **automated abandoned-cart recovery, order emails, supplier CSV forwarding, and an AI shopping assistant** for your Shopify store — one simple annual subscription, not another monthly app-store bill.
+Quick recap: **automated abandoned-cart recovery, order emails, supplier CSV forwarding, and an AI shopping assistant** for your Shopify store — one payment, not another monthly app-store bill.
 
 What happens next:
-- Introductory pricing before anyone else ($119/year, goes up after the first 100 subscribers)
+- Launch pricing before anyone else ($199 one-time, limited lifetime seats)
 - A couple of short emails showing exactly how the cart-recovery flow works
 - No spam
 
@@ -41,9 +41,9 @@ Reply if you want a private demo before launch.
 
 Cart abandonment rates across e-commerce sit around 70% industry-wide. If your store gets 1,000 checkout starts a month and even a fraction of those abandoned carts could be recovered with a timely follow-up, that's real revenue sitting on the table every single month.
 
-Most small stores don't have cart-recovery automation because the tools that do it well are yet another monthly app-store subscription stacked on top of Shopify's own fees — often $240-480/year for cart recovery alone.
+Most small stores don't have cart-recovery automation because the tools that do it well are yet another monthly app-store subscription stacked on top of Shopify's own fees — often $240-480/year, every year, for cart recovery alone.
 
-OliCommerce Stack: **$119/year**, covering both cart recovery and an AI shopping assistant.
+OliCommerce Stack: **$199 once**, covering both cart recovery and an AI shopping assistant, forever.
 
 More on exactly how the recovery flow works in the next email.
 
@@ -59,7 +59,7 @@ More on exactly how the recovery flow works in the next email.
 
 **Body:**
 
-What's inside the $119/year subscription:
+What's inside the $199 lifetime purchase:
 
 **🛍 Abandoned cart recovery** — automatic, timed follow-up when a checkout starts but isn't completed
 **📧 Order automation** — thank-you emails triggered directly off Shopify's order-paid webhook
@@ -68,7 +68,7 @@ What's inside the $119/year subscription:
 
 [Watch the setup walkthrough →]
 
-Plugs into your existing Shopify store via standard webhooks — no theme changes, no migration. Self-hosted, license valid on up to 5 devices.
+Plugs into your existing Shopify store via standard webhooks — no theme changes, no migration. Self-hosted, license valid on up to 5 devices, no renewal ever.
 
 Questions? Reply — I read everything.
 
@@ -87,7 +87,7 @@ Questions? Reply — I read everything.
 Two things:
 
 **1. We're live on Product Hunt right now** → [link]
-Today's introductory pricing ($119/year) is the best it'll ever be.
+Today's launch pricing ($199 one-time) is the best it'll ever be.
 
 **2. Most common question: "Will this work with my store?"**
 Yes — it hooks into Shopify's standard webhooks, so no theme changes or migration needed. Works alongside whatever theme/apps you already have.
@@ -105,16 +105,16 @@ An upvote/comment on Product Hunt today genuinely helps → [link]
 ## Email 5 — Urgency/close (Day 12, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Introductory pricing ends soon"
-- B: "Last call on $119/year introductory pricing"
+- A: "Limited lifetime seats"
+- B: "Last call on $199 lifetime pricing"
 
 **Body:**
 
 ⚠️ Only send if scarcity is real — never fabricate a countdown.
 
-Quick update: introductory pricing has been live a few days. Once the first 100 subscriber seats are gone, price goes up.
+Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price goes up for good.
 
-If you've been meaning to grab it: [Start annual subscription — $119/year →]
+If you've been meaning to grab it: [Buy lifetime access — $199 →]
 
 If it's not the right fit right now, no worries — I'll keep you posted without spamming your inbox.
 

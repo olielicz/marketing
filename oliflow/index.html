@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OliFlow Automation Engine — The Gem That Ends Your Zapier Bill</title>
-<meta name="description" content="Every month you pay Zapier or Make, you're renting logic you could just own. OliFlow is a self-hosted workflow automation engine with a visual builder — one simple annual subscription, unlimited runs, up to 5 devices.">
+<meta name="description" content="Every month you pay Zapier or Make, you're renting logic you could just own. OliFlow is a self-hosted workflow automation engine with a visual builder — one lifetime purchase, unlimited runs, up to 5 devices.">
 <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 <style>
   :root { --ink:#14161a; --sub:#55606e; --accent:#ea580c; --accent2:#dc2626; --accent-dark:#c2410c; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; --bad:#dc2626; }
@@ -16,9 +16,11 @@
   header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; position:sticky; top:0; background:rgba(250,250,250,0.85); backdrop-filter:blur(8px); z-index:50; }
   .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:6px; }
   .logo span { color:var(--accent); }
-  nav a { margin-left:26px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
+  nav a { margin-left:22px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
   nav a:hover { color: var(--ink); }
   nav a.all-tools { color: var(--accent); }
+  nav a.buy-now { background: var(--accent); color: #fff !important; padding: 8px 16px; border-radius: 8px; }
+  nav a.buy-now:hover { background: var(--accent-dark); }
   .cta-btn { display:inline-block; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff !important; padding:14px 26px; border-radius:10px; font-weight:700; text-decoration:none; font-size:15.5px; border:none; cursor:pointer; box-shadow:0 8px 20px -6px rgba(234,88,12,0.5); transition:transform .15s, box-shadow .15s; }
   .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(234,88,12,0.6); }
   .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; box-shadow:none; }
@@ -65,6 +67,8 @@
   .price-list li { padding:9px 0; border-bottom:1px solid var(--line); }
   .price-list li:before { content:"✓ "; color:var(--good); font-weight:800; }
   .guarantee { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:18px; font-size:13.5px; color:var(--sub); }
+  .pay-icons { display:flex; align-items:center; justify-content:center; gap:10px; margin-top:14px; font-size:12.5px; color:var(--sub); }
+  .pay-icons .badge { border:1px solid var(--line); border-radius:6px; padding:3px 8px; font-weight:700; }
   .signup { background:#fff7ed; border-bottom:1px solid var(--line); }
   .signup-box { max-width:500px; margin:0 auto; text-align:center; }
   .form-row { display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; justify-content:center; }
@@ -92,20 +96,21 @@
     <a href="#tools">What's Inside</a>
     <a href="#pricing">Pricing</a>
     <a href="../" class="all-tools">All Oli Tools</a>
+    <a href="./buy/" class="buy-now">Buy Now</a>
   </nav>
 </header>
 
 <section class="hero wrap">
   <div class="eyebrow">💎 The gem hiding in your Zapier invoice</div>
   <h1>You're paying <span class="hl">rent on logic</span><br>you already wrote</h1>
-  <p class="sub-headline">Every month, your automation bill goes up with your task count — but the workflows themselves never change. OliFlow is a self-hosted automation engine on one predictable annual plan. No per-task metering, no ceiling.</p>
+  <p class="sub-headline">Every month, your automation bill goes up with your task count — but the workflows themselves never change. OliFlow is a self-hosted automation engine you buy once and own outright. No metering, no rent, no ceiling.</p>
   <div class="hero-ctas">
-    <a href="#signup" class="cta-btn">Start annual plan — $129/year</a>
+    <a href="./buy/" class="cta-btn">Buy Lifetime Access — $249</a>
     <a href="#tools" class="cta-btn ghost">See what's inside ↓</a>
   </div>
   <div class="price-note">
-    <span>✅ Annual subscription, cancel anytime</span>
-    <span>✅ Up to 5 devices per license</span>
+    <span>✅ One-time payment, own it forever</span>
+    <span>✅ Unlimited runs, self-hosted</span>
     <span>✅ 30-day money-back guarantee</span>
   </div>
   <div class="tools-strip">
@@ -121,7 +126,7 @@
     <div class="gem-banner">
       <div class="gem-icon">💎</div>
       <h2>The logic is yours. Why should the pricing punish usage?</h2>
-      <p>Zapier and Make charge by the task — the more your business runs, the more you pay, even though the workflow logic itself never changes. OliFlow flips that: one flat annual subscription, unlimited runs, self-hosted on your own infrastructure.</p>
+      <p>Zapier and Make charge by the task — the more your business runs, the more you pay, even though the workflow logic itself never changes. OliFlow flips that: one payment, unlimited runs, self-hosted on your own infrastructure, forever.</p>
     </div>
   </div>
 </section>
@@ -143,8 +148,8 @@
     </div>
 
     <table class="compare">
-      <tr><th></th><th>OliFlow (annual)</th><th>Zapier</th><th>Make</th></tr>
-      <tr><td>Pricing model</td><td>$129/year flat</td><td>$19.99–$69+/mo ($240-828+/yr)</td><td>~$9–$50+/mo (credit-metered)</td></tr>
+      <tr><th></th><th>OliFlow (lifetime)</th><th>Zapier</th><th>Make</th></tr>
+      <tr><td>Pricing model</td><td>$249 once</td><td>$19.99–$69+/mo ($240-828+/yr, forever)</td><td>~$9–$50+/mo (credit-metered, forever)</td></tr>
       <tr><td>Task/run limits</td><td class="yes">None — self-hosted</td><td class="no">750+ tasks/mo, overage fees</td><td class="no">Credits per step, run out fast</td></tr>
       <tr><td>Data leaves your servers</td><td class="yes">No</td><td class="no">Yes</td><td class="no">Yes</td></tr>
       <tr><td>Devices per license</td><td class="yes">5 devices, one code</td><td class="no">Per-seat pricing</td><td class="no">Per-seat pricing</td></tr>
@@ -155,14 +160,14 @@
 
 <section class="pricing" id="pricing">
   <div class="wrap">
-    <h2 class="section-title">One flat annual price. No metered runs.</h2>
-    <p class="section-sub">Run it a hundred times or a hundred thousand times — the price doesn't move.</p>
+    <h2 class="section-title">One price. No metered runs. Ever.</h2>
+    <p class="section-sub">Pay once. Run it a hundred times or a hundred thousand times — the price doesn't move, and it never comes back around for renewal.</p>
     <div class="price-card">
-      <div class="tag">🔥 INTRODUCTORY PRICE — FIRST 100 SUBSCRIBERS</div>
-      <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliFlow Engine — Annual</div>
-      <div class="price-was">Zapier Professional runs $240-828/year — and that's before overage fees</div>
-      <div class="price-big">$129 <span>/year</span></div>
-      <div class="price-save">Cheaper than Zapier's entry plan, with zero task limits</div>
+      <div class="tag">🔥 LAUNCH PRICE — LIMITED LIFETIME SEATS</div>
+      <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliFlow Engine — Lifetime</div>
+      <div class="price-was">Zapier Professional runs $240-828/year, every year — and that's before overage fees</div>
+      <div class="price-big">$249 <span>one-time</span></div>
+      <div class="price-save">Break even in under a year vs. Zapier's cheapest paid plan, then free forever</div>
       <ul class="price-list">
         <li>Full visual workflow builder + REST API</li>
         <li>Prebuilt n8n / Make / Zapier template pack</li>
@@ -170,8 +175,9 @@
         <li>Every future update, included</li>
         <li>30-day money-back guarantee, no questions asked</li>
       </ul>
-      <a href="#signup" class="cta-btn" style="width:100%; text-align:center; display:block;">Start Annual Subscription</a>
+      <a href="./buy/" class="cta-btn" style="width:100%; text-align:center; display:block;">Buy Lifetime Access Now</a>
       <div class="guarantee">🛡️ Risk-free — full refund within 30 days if it's not for you</div>
+      <div class="pay-icons"><span class="badge">Stripe</span><span class="badge">PayPal</span><span>secure checkout · cards, wallets &amp; bank transfers worldwide</span></div>
     </div>
   </div>
 </section>
@@ -179,7 +185,7 @@
 <section class="signup" id="signup">
   <div class="wrap signup-box">
     <h2 class="section-title">Not ready to buy yet?</h2>
-    <p class="section-sub">Join the waitlist and get launch-day pricing plus first access before introductory-price subscriber seats fill up.</p>
+    <p class="section-sub">Join the waitlist and get launch-day pricing plus first access before the limited lifetime seats sell out.</p>
 
     <!-- BREVO_FORM: live embed from Brevo - currently reusing the same form/list as OliOps.
          Create a dedicated "OliFlow Waitlist" list + form in Brevo and swap the action URL
@@ -247,17 +253,21 @@
     <h2 class="section-title">Questions, answered honestly</h2>
     <div style="border-bottom:1px solid var(--line); padding:20px 0;">
       <h4 style="margin:0 0 8px; font-size:16px;">How does the serial code / 5-device limit work?</h4>
-      <p style="margin:0; color:var(--sub); font-size:15px;">Your subscription includes one serial code, activatable on up to 5 devices at a time. Moving to a new server or laptop? Deactivate the old device to free a slot — no email required.</p>
+      <p style="margin:0; color:var(--sub); font-size:15px;">Your purchase includes one serial code, activatable on up to 5 devices at a time. Moving to a new server or laptop? Deactivate the old device to free a slot — no email required.</p>
     </div>
     <div style="border-bottom:1px solid var(--line); padding:20px 0;">
-      <h4 style="margin:0 0 8px; font-size:16px;">The core engine is MIT-licensed — why an annual fee at all?</h4>
-      <p style="margin:0; color:var(--sub); font-size:15px;">The underlying code is open-source and readable by anyone. Your subscription funds the packaged build, the prebuilt template pack, ongoing updates, and support — not an exclusive claim on code you could otherwise read for free. We're upfront about that tradeoff.</p>
+      <h4 style="margin:0 0 8px; font-size:16px;">How do I pay, and is it safe?</h4>
+      <p style="margin:0; color:var(--sub); font-size:15px;">Checkout runs through Stripe and PayPal — the two most widely used payment processors in the world, supporting cards, wallets, and local payment methods across 100+ countries. We never see or store your card details.</p>
+    </div>
+    <div style="border-bottom:1px solid var(--line); padding:20px 0;">
+      <h4 style="margin:0 0 8px; font-size:16px;">The core engine is MIT-licensed — why a purchase price at all?</h4>
+      <p style="margin:0; color:var(--sub); font-size:15px;">The underlying code is open-source and readable by anyone. Your purchase funds the packaged build, the prebuilt template pack, ongoing updates, and support — not an exclusive claim on code you could otherwise read for free. We're upfront about that tradeoff.</p>
     </div>
   </div>
 </section>
 
 <footer class="wrap">
-  💎 OliFlow Automation Engine — a product line by olielicz. MIT-licensed core tools. · <a href="../">See all Oli Tools</a>
+  💎 OliFlow Automation Engine — a product line by olielicz. MIT-licensed core tools. · <a href="../">See all Oli Tools</a> · <a href="./buy/">Buy Now</a>
 </footer>
 
 </body>

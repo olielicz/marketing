@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscribe to Oli-Locator — $49/month</title>
+<meta name="description" content="Subscribe to Oli-Locator. Pay securely with Stripe or PayPal — cards, wallets, and local payment methods accepted worldwide. Cancel anytime.">
+<meta name="robots" content="noindex">
+<style>
+  :root { --ink:#14161a; --sub:#55606e; --accent:#2563eb; --accent2:#0891b2; --accent-dark:#1d4ed8; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
+  .logo { font-weight:800; font-size:20px; }
+  .logo span { color: var(--accent); }
+  nav a { color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  main { padding: 40px 0 80px; }
+  .grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items:start; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  h1 { font-size: 32px; margin: 0 0 10px; letter-spacing:-0.02em; }
+  .sub { color: var(--sub); font-size: 16px; margin: 0 0 28px; }
+  .summary-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .line:last-child { border-bottom: none; }
+  .total { display: flex; justify-content: space-between; padding-top: 16px; margin-top: 6px; border-top: 2px solid var(--ink); font-weight: 800; font-size: 20px; }
+  .included { list-style:none; padding:0; margin: 20px 0 0; font-size: 14.5px; }
+  .included li { padding: 6px 0; }
+  .included li:before { content: "✓ "; color: var(--good); font-weight: 800; }
+  .pay-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; position: sticky; top: 24px; }
+  .pay-card h2 { font-size: 18px; margin: 0 0 6px; }
+  .pay-card .price { font-size: 40px; font-weight: 800; margin: 4px 0 4px; }
+  .pay-card .price span { font-size: 16px; font-weight: 600; color: var(--sub); }
+  .demo-strip { display:flex; align-items:center; justify-content:center; gap:10px; background:#ecfdf5; color:#047857; font-weight:700; font-size:13.5px; padding:12px 16px; border-radius:10px; margin-bottom:18px; }
+  .pay-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    padding: 15px; border-radius: 10px; font-weight: 700; font-size: 15.5px; text-decoration: none;
+    margin-bottom: 12px; border: none; cursor: pointer;
+  }
+  .pay-btn.stripe { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+  .pay-btn.stripe:hover { opacity: 0.92; }
+  .pay-btn.paypal { background: #ffc439; color: #003087; }
+  .pay-btn.paypal:hover { background: #ffb800; }
+  .pay-note { font-size: 12.5px; color: var(--sub); text-align: center; margin-top: 16px; line-height: 1.5; }
+  .trust-row { display:flex; justify-content:center; gap:16px; margin-top:18px; flex-wrap:wrap; font-size:12px; color:var(--sub); }
+  .setup-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 18px 20px; font-size: 13.5px; color: #92400e; margin-top: 28px; }
+  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">💎 Oli-<span>Locator</span></div>
+  <nav><a href="../">← Back to Oli-Locator</a></nav>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <div>
+      <h1>Start your subscription</h1>
+      <p class="sub">Not sure yet? Try the free demo account first — no signup, no card required.</p>
+
+      <div class="summary-card">
+        <div class="line"><span>Oli-Locator — Agency Plan</span><span>$49.00 / month</span></div>
+        <div class="line"><span>Devices</span><span>Unlimited — hosted login, no cap</span></div>
+        <div class="line"><span>Contract</span><span>None — cancel anytime</span></div>
+        <div class="total"><span>Billed monthly</span><span>$49.00 USD</span></div>
+
+        <ul class="included">
+          <li>Unlimited property search — both countries</li>
+          <li>Lead generation + opt-in forms</li>
+          <li>Shared inbox + call center — bring your own phone app</li>
+          <li>Cancel anytime, no contract, no setup fee</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pay-card">
+      <h2>Subscribe securely</h2>
+      <div class="demo-strip">🎬 Try the free demo first — no signup required</div>
+      <div class="price">$49 <span>/ month</span></div>
+
+      <!--
+        STRIPE PAYMENT LINK (RECURRING)
+        Create at https://dashboard.stripe.com/payment-links. Product: "Oli-Locator — Agency
+        Plan", $49 USD, RECURRING monthly. Paste the generated URL below.
+      -->
+      <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLILOCATOR_PAYMENT_LINK" target="_blank" rel="noopener">
+        💳 Subscribe with Stripe (Card)
+      </a>
+
+      <!--
+        PAYPAL SUBSCRIBE BUTTON (RECURRING)
+        PayPal recurring billing uses a Subscribe button, not a Buy Now button — set this up
+        at paypal.com/business under Products & Services > Subscriptions. Create a "$49/month"
+        plan, then drop your hosted_button_id below (from a Subscribe button, not Buy Now).
+      -->
+      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="REPLACE_WITH_YOUR_SUBSCRIBE_BUTTON_ID">
+        <input type="hidden" name="currency_code" value="USD">
+        <button type="submit" class="pay-btn paypal">🅿️ Subscribe with PayPal</button>
+      </form>
+
+      <div class="pay-note">Both options accept major cards, digital wallets, and local payment methods in 100+ countries. Cancel anytime from your account settings — no lock-in.</div>
+      <div class="trust-row">
+        <span>🔒 256-bit SSL</span>
+        <span>🛡️ Cancel anytime</span>
+        <span>🌍 100+ countries</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-note">
+    ⚠️ <strong>Site owner setup note:</strong> the two buttons above are placeholders, and unlike the other 4 tools, this one needs <strong>recurring</strong> billing set up (Stripe Payment Link with "recurring" pricing, PayPal Subscribe button not Buy Now). Replace the Stripe href and PayPal <code>hosted_button_id</code> before going live. Full instructions are in <code>PAYMENTS-SETUP.md</code> at the root of this repo.
+  </div>
+</main>
+
+<footer class="wrap">
+  💎 Oli-Locator — a product line by olielicz. · <a href="../">Back to product page</a> · <a href="../../">All Oli Tools</a>
+</footer>
+
+</body>
+</html>
