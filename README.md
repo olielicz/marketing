@@ -46,6 +46,13 @@ oliconnect/buy/index.html                 ← OliConnect checkout page
 oli-locator/index.html                    ← Oli-Locator landing page
 oli-locator/buy/index.html                ← Oli-Locator subscription checkout page
 
+launch-checklists/                        ← one plain-text, start-to-finish launch checklist per tool
+  oliops-suite-launch-checklist.txt
+  olicommerce-stack-launch-checklist.txt
+  oliflow-engine-launch-checklist.txt
+  oliconnect-launch-checklist.txt
+  oli-locator-launch-checklist.txt
+
 security/index.html                       ← Trust & Security Center (honest disclosure, no SOC2/ISO overclaiming)
 privacy/index.html                        ← GDPR-compliant Privacy Policy
 terms/index.html                          ← Terms of Service (license terms, refund policy, liability limits)
@@ -86,11 +93,14 @@ licensing/                                ← shared serial-code / 5-device acti
 - `security/`, `privacy/`, `terms/`, `contact/`, and `support/` are linked from the nav and footer of the hub page, all 5 product pages, and all 5 buy pages.
 - `shared/cookie-consent.js` is a lightweight, no-tracking-by-default cookie notice (informational, not a hard consent gate — the site itself sets no cookies; only third-party widgets like Brevo/Stripe/PayPal do on interaction).
 - Each self-hosted product repo (`OliCompute`, `OliCRM`, `project-3`, `oliconnect`) has its own `SECURITY.md` disclosing what's actually implemented (password hashing, timing-safe comparison) vs. not implemented (no encryption at rest, no built-in TLS/rate-limiting, no SOC2/pen-testing) — no unverifiable claims.
-- **Before going live**, replace these placeholders across `security/`, `privacy/`, `terms/`, `contact/`:
-  - Emails: `security@[your-domain-here]`, `privacy@[your-domain-here]`, `legal@[your-domain-here]`, `billing@[your-domain-here]`, `hello@[your-domain-here]`, `support@[your-domain-here]`
-  - `terms/index.html`: `[Insert your jurisdiction here before publishing]` (governing law)
+- Contact email across the whole site is `workitlikeapr01@gmail.com` (company: **WorkItLikeAPro**). The `/contact/` page form posts directly to that address via [FormSubmit.co](https://formsubmit.co/) — no third-party marketing platform, no account/API key needed. **The first submission triggers a one-time confirmation email from FormSubmit.co to that inbox — open it and click "Confirm" once**, and every submission after that arrives automatically.
+- **Before going live**, still need to fill in:
+  - `terms/index.html`: `[Insert your jurisdiction here before publishing]` (governing law, section 10)
   - `privacy/index.html` and `terms/index.html`: `[insert date before publishing]` (Last updated)
-  - `contact/index.html`: Brevo form action URL placeholder `REPLACE_WITH_YOUR_CONTACT_FORM_ID`
+  - `contact/index.html`: the `_next` redirect URL currently points to a relative path — update it to your real live domain once deployed
+  - Each product page's Brevo waitlist form (`<!-- BREVO_FORM -->` comment blocks) currently all point at the same OliOps list/form — create a dedicated Brevo list+form per product and swap in the real embed code (see `STEP-BY-STEP-INSTRUCTIONS.md` section 3, or each tool's file in `launch-checklists/`)
+  - All 5 `buy/index.html` pages' Stripe/PayPal placeholder links (see `PAYMENTS-SETUP.md` and `launch-checklists/`)
+- **Testimonials on each product page are illustrative placeholders, not real customer quotes** — each testimonials section has a visible disclaimer saying so. Replace them with real customer feedback once you have paying customers willing to share it. Publishing fabricated reviews as if real can violate consumer-protection rules (e.g. FTC guidance in the US).
 
 ## Status
 

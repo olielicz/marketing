@@ -1,0 +1,106 @@
+OLIFLOW AUTOMATION ENGINE — START TO FINISH LAUNCH CHECKLIST
+Company: WorkItLikeAPro
+Contact email: workitlikeapr01@gmail.com
+Product: OliFlow Automation Engine (self-hosted workflow builder + REST API)
+Price: $249 one-time, lifetime license, up to 5 devices
+Repos bundled: project-3, auto-tools
+
+Work through this top to bottom. Check off each line as you finish it.
+Anything marked (EXTERNAL SITE) happens outside this repo — on that site's own dashboard.
+
+============================================================
+STEP 1 — GET THE CODE READY
+============================================================
+[ ] 1.1 Confirm project-3 runs locally without errors (npm install, npm test — 59 tests
+        should pass as of the last check)
+[ ] 1.2 Confirm auto-tools' template pack validator passes:
+        cd auto-tools && python3 scripts/validate_repo.py
+[ ] 1.3 Confirm project-3 has a LICENSE file (MIT) and now has SECURITY.md — both already added
+[ ] 1.4 Test at least 2-3 of the prebuilt templates from auto-tools import correctly into
+        a fresh project-3 instance before advertising the template pack as a selling point
+
+============================================================
+STEP 2 — DOMAIN & HOSTING FOR THE LANDING PAGE
+============================================================
+[ ] 2.1 Decide: GitHub Pages (repo must be public) or Vercel (works with private repo)
+[ ] 2.2 If GitHub Pages: Settings -> Danger Zone -> make the `marketing` repo public,
+        then Settings -> Pages -> Source -> GitHub Actions (workflow already exists)
+[ ] 2.3 If Vercel: (EXTERNAL SITE) vercel.com -> sign in with GitHub -> Add New Project ->
+        select `marketing` repo -> Root Directory = repo root -> Deploy
+[ ] 2.4 Confirm the live URL works: yoursite.com/oliflow/
+[ ] 2.5 Confirm the Buy Now page works: yoursite.com/oliflow/buy/
+[ ] 2.6 (Optional) Buy a domain, point it at the hosting above
+
+============================================================
+STEP 3 — PAYMENTS (Stripe + PayPal)
+============================================================
+[ ] 3.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
+[ ] 3.2 Payments -> Payment Links -> Create a new product:
+        Name: "OliFlow Engine — Lifetime License", Price: $249 USD, Billing: One time
+[ ] 3.3 Copy the generated buy.stripe.com link
+[ ] 3.4 Open oliflow/buy/index.html, find
+        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLIFLOW_PAYMENT_LINK"
+        and paste your real link
+[ ] 3.5 (EXTERNAL SITE) paypal.com -> log in with a Business account
+[ ] 3.6 developer.paypal.com/payment-links-buttons/create-buy-button -> Buy Now button
+        Item name: "OliFlow Engine — Lifetime License", Price: $249 USD
+[ ] 3.7 Copy the hosted_button_id value
+[ ] 3.8 In oliflow/buy/index.html, replace value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID"
+[ ] 3.9 Test both buttons in Stripe test mode and PayPal Sandbox before going live
+[ ] 3.10 Commit + push the updated oliflow/buy/index.html
+
+============================================================
+STEP 4 — LICENSING (serial codes / 5-device limit)
+============================================================
+[ ] 4.1 Deploy the shared license server once if not already done for another Oli tool
+        (see marketing/licensing/README.md)
+[ ] 4.2 Copy licensing/client/oli-license-client.js into project-3, wire it in at startup
+        (product code: FLW)
+[ ] 4.3 Test: node scripts/generate-license.js --product oliflow --email test@example.com
+[ ] 4.4 Decide how you'll generate + email a real serial code after a real purchase —
+        manual at first is fine; PAYMENTS-SETUP.md covers automating this later
+
+============================================================
+STEP 5 — EMAIL (waitlist + delivery)
+============================================================
+[ ] 5.1 (EXTERNAL SITE) brevo.com -> Contacts -> Lists -> Create "OliFlow Waitlist" list
+[ ] 5.2 Contacts -> Forms -> Create a form -> link to that list -> Embed -> copy HTML
+[ ] 5.3 Open oliflow/index.html, find the <!-- BREVO_FORM --> comment block, swap in your
+        real embed code (currently reuses OliOps's form/list — dedicate this one)
+[ ] 5.4 Automation -> workflow -> Trigger: "contact added to OliFlow Waitlist" -> load the
+        5 emails from email-sequence-oliflow-engine.md with noted delays
+[ ] 5.5 Turn the workflow ON
+[ ] 5.6 Confirm workitlikeapr01@gmail.com is the inbox you check for buyer replies and
+        contact-page submissions (first submission triggers a one-time FormSubmit.co
+        confirmation email — click "Confirm" once)
+
+============================================================
+STEP 6 — TRUST PAGES (already built, just verify)
+============================================================
+[ ] 6.1 Read through security/index.html, privacy/index.html, terms/index.html once
+[ ] 6.2 Fill in remaining placeholders: terms/index.html jurisdiction (section 10), and the
+        "Last updated" dates
+[ ] 6.3 Test contact/index.html's form end to end
+
+============================================================
+STEP 7 — MARKETING / LAUNCH
+============================================================
+[ ] 7.1 Read product-hunt-oliflow-engine.md, prepare screenshots/GIF of the visual builder
+        and a template import
+[ ] 7.2 (EXTERNAL SITE) producthunt.com -> Submit -> schedule per 00-master-calendar.md (Day 16)
+[ ] 7.3 On launch day: post the first comment immediately, reply to every comment
+[ ] 7.4 Read appsumo-pitch-oliflow-engine.md -> sell.appsumo.com -> submit for review
+[ ] 7.5 Go through directory-submission-list.md's Tier 1 + 2 + OliFlow-specific entries
+[ ] 7.6 Post in automation-focused communities (r/nocode, r/automation, Indie Hackers) —
+        read each community's self-promo rules first, lead with the per-task-pricing problem
+        you solved, not a bare pitch
+
+============================================================
+STEP 8 — GO LIVE
+============================================================
+[ ] 8.1 Final click-through test on both payment buttons
+[ ] 8.2 Remove "noindex" from oliflow/buy/index.html's robots meta tag once payments
+        are fully live and tested
+[ ] 8.3 Announce it — you're live.
+
+Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.

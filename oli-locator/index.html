@@ -73,6 +73,15 @@
   #error-message, #success-message { max-width: 500px; margin: 0 auto 16px; }
   footer { text-align:center; padding:44px 0; color:var(--sub); font-size:13px; }
   footer a { color: var(--sub); }
+  .t-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
+  @media (max-width: 800px) { .t-grid { grid-template-columns: 1fr; } }
+  .t-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .t-stars { color: #f59e0b; font-size: 15px; letter-spacing: 2px; margin-bottom: 10px; }
+  .t-quote { margin: 0 0 18px; font-size: 15px; color: #33363c; line-height: 1.6; }
+  .t-person { display: flex; align-items: center; gap: 12px; }
+  .t-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+  .t-name { font-weight: 700; font-size: 14px; margin: 0; }
+  .t-role { font-size: 13px; color: var(--sub); margin: 0; }
 </style>
 </head>
 <body>
@@ -265,8 +274,39 @@
   </div>
 </section>
 
+<section id="testimonials">
+  <div class="wrap">
+    <h2 class="section-title">What early users are saying</h2>
+    <p class="section-sub">
+      ⚠️ <strong>Illustrative examples</strong> — these represent the kind of feedback we expect based on the problems Oli-Locator solves, not verified customer quotes yet. Swap these for real reviews as soon as you have paying customers willing to share one. Publishing fabricated reviews as if they were real customer testimonials can violate consumer-protection rules (e.g. FTC guidance in the US) — always replace this section with genuine feedback before relying on it.
+    </p>
+    <div class="t-grid">
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"As a solo agent, I couldn't justify $60+/month for a CRM that didn't even include lead gen or calling. This covers all three for less."</p>
+        <div class="t-person"><div class="t-avatar">KF</div><div><p class="t-name">Kevin F.</p><p class="t-role">Independent real estate agent</p></div></div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Being able to keep my existing VoIP app instead of getting forced into a new phone number was the deciding factor over the bigger-name CRMs."</p>
+        <div class="t-person"><div class="t-avatar">SM</div><div><p class="t-name">Sofia M.</p><p class="t-role">Realtor, small brokerage</p></div></div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★☆</div>
+        <p class="t-quote">"Property search and the shared inbox in one place cut down a lot of the app-switching I used to do between clients. Would like a couple more filter options, but it's a big step up from spreadsheets."</p>
+        <div class="t-person"><div class="t-avatar">TR</div><div><p class="t-name">Tyler R.</p><p class="t-role">New agent, first year in the field</p></div></div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Tried the free demo on a whim, ended up subscribing that same week. It's the closest thing to what the big teams run, at a price that actually makes sense solo."</p>
+        <div class="t-person"><div class="t-avatar">EJ</div><div><p class="t-name">Elena J.</p><p class="t-role">Independent real estate agent</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="wrap">
-  💎 Oli-Locator — a product line by olielicz.
+  💎 Oli-Locator — a product line by WorkItLikeAPro.
   <div style="margin-top:10px;">
     <a href="../security/">Security</a> · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> ·
     <a href="../support/">Support</a> · <a href="../contact/">Contact</a> ·

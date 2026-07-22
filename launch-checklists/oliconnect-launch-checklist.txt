@@ -1,0 +1,110 @@
+OLICONNECT — START TO FINISH LAUNCH CHECKLIST
+Company: WorkItLikeAPro
+Contact email: workitlikeapr01@gmail.com
+Product: OliConnect (browser extension — social post recycling)
+Price: $89 one-time, lifetime license, up to 5 devices
+Repo: oliconnect
+
+Work through this top to bottom. Check off each line as you finish it.
+Anything marked (EXTERNAL SITE) happens outside this repo — on that site's own dashboard.
+
+============================================================
+STEP 1 — GET THE CODE READY
+============================================================
+[ ] 1.1 Confirm oliconnect's extension code has no syntax errors:
+        find . -name "*.js" -not -path "*/node_modules/*" | xargs -I{} node --check {}
+[ ] 1.2 Confirm oliconnect has a LICENSE file and now has SECURITY.md — both already added
+[ ] 1.3 Load the extension "unpacked" in Chrome/Edge (chrome://extensions -> Developer mode
+        -> Load unpacked) and manually test: connect a social account, confirm it detects a
+        top post, confirm the recycle/repost flow works end to end
+[ ] 1.4 Decide whether to submit to the Chrome Web Store / Firefox Add-ons (adds legitimacy
+        and easier installs, but has its own review process and a one-time $5 Chrome
+        developer registration fee) or distribute the unpacked extension directly from your
+        site for now. Either is fine to start — a store listing can be added later without
+        changing the price or license model.
+
+============================================================
+STEP 2 — DOMAIN & HOSTING FOR THE LANDING PAGE
+============================================================
+[ ] 2.1 Decide: GitHub Pages (repo must be public) or Vercel (works with private repo)
+[ ] 2.2 If GitHub Pages: Settings -> Danger Zone -> make the `marketing` repo public,
+        then Settings -> Pages -> Source -> GitHub Actions (workflow already exists)
+[ ] 2.3 If Vercel: (EXTERNAL SITE) vercel.com -> sign in with GitHub -> Add New Project ->
+        select `marketing` repo -> Root Directory = repo root -> Deploy
+[ ] 2.4 Confirm the live URL works: yoursite.com/oliconnect/
+[ ] 2.5 Confirm the Buy Now page works: yoursite.com/oliconnect/buy/
+[ ] 2.6 (Optional) Buy a domain, point it at the hosting above
+
+============================================================
+STEP 3 — PAYMENTS (Stripe + PayPal)
+============================================================
+[ ] 3.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
+[ ] 3.2 Payments -> Payment Links -> Create a new product:
+        Name: "OliConnect — Lifetime License", Price: $89 USD, Billing: One time
+[ ] 3.3 Copy the generated buy.stripe.com link
+[ ] 3.4 Open oliconnect/buy/index.html, find
+        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLICONNECT_PAYMENT_LINK"
+        and paste your real link
+[ ] 3.5 (EXTERNAL SITE) paypal.com -> log in with a Business account
+[ ] 3.6 developer.paypal.com/payment-links-buttons/create-buy-button -> Buy Now button
+        Item name: "OliConnect — Lifetime License", Price: $89 USD
+[ ] 3.7 Copy the hosted_button_id value
+[ ] 3.8 In oliconnect/buy/index.html, replace value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID"
+[ ] 3.9 Test both buttons in Stripe test mode and PayPal Sandbox before going live
+[ ] 3.10 Commit + push the updated oliconnect/buy/index.html
+
+============================================================
+STEP 4 — LICENSING (serial codes / 5-device limit)
+============================================================
+[ ] 4.1 Deploy the shared license server once if not already done for another Oli tool
+        (see marketing/licensing/README.md)
+[ ] 4.2 Wire the license check into the extension's popup/background script using the
+        browser-storage variant described in licensing/README.md's "Why not fingerprint
+        hardware?" section (uses chrome.storage.local instead of a filesystem device-id file)
+[ ] 4.3 Test: node scripts/generate-license.js --product oliconnect --email test@example.com
+[ ] 4.4 Decide how you'll generate + email a real serial code after a real purchase —
+        manual at first is fine; PAYMENTS-SETUP.md covers automating this later
+
+============================================================
+STEP 5 — EMAIL (waitlist + delivery)
+============================================================
+[ ] 5.1 (EXTERNAL SITE) brevo.com -> Contacts -> Lists -> Create "OliConnect Waitlist" list
+[ ] 5.2 Contacts -> Forms -> Create a form -> link to that list -> Embed -> copy HTML
+[ ] 5.3 Open oliconnect/index.html, find the <!-- BREVO_FORM --> comment block, swap in
+        your real embed code (currently reuses OliOps's form/list — dedicate this one)
+[ ] 5.4 Automation -> workflow -> Trigger: "contact added to OliConnect Waitlist" -> load
+        the 5 emails from email-sequence-oliconnect.md with noted delays
+[ ] 5.5 Turn the workflow ON
+[ ] 5.6 Confirm workitlikeapr01@gmail.com is the inbox you check for buyer replies and
+        contact-page submissions (first submission triggers a one-time FormSubmit.co
+        confirmation email — click "Confirm" once)
+
+============================================================
+STEP 6 — TRUST PAGES (already built, just verify)
+============================================================
+[ ] 6.1 Read through security/index.html, privacy/index.html, terms/index.html once
+[ ] 6.2 Fill in remaining placeholders: terms/index.html jurisdiction (section 10), and the
+        "Last updated" dates
+[ ] 6.3 Test contact/index.html's form end to end
+
+============================================================
+STEP 7 — MARKETING / LAUNCH
+============================================================
+[ ] 7.1 Read product-hunt-oliconnect.md, prepare a short screen-recording of the connect ->
+        collect -> recycle flow
+[ ] 7.2 (EXTERNAL SITE) producthunt.com -> Submit -> schedule per 00-master-calendar.md
+[ ] 7.3 On launch day: post the first comment immediately, reply to every comment
+[ ] 7.4 Read appsumo-pitch-oliconnect.md -> sell.appsumo.com -> submit for review
+[ ] 7.5 Read outreach-oliconnect.md -> build a list of 20-50 social media managers/small
+        agencies -> send the cold outreach templates -> log replies in a spreadsheet
+[ ] 7.6 Go through directory-submission-list.md's Tier 1 + 2 + OliConnect-specific entries
+
+============================================================
+STEP 8 — GO LIVE
+============================================================
+[ ] 8.1 Final click-through test on both payment buttons
+[ ] 8.2 Remove "noindex" from oliconnect/buy/index.html's robots meta tag once payments
+        are fully live and tested
+[ ] 8.3 Announce it — you're live.
+
+Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.

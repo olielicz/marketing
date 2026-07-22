@@ -130,6 +130,15 @@
   .faq-item { border-bottom: 1px solid var(--line); padding: 20px 0; }
   .faq-item h4 { margin: 0 0 8px; font-size: 16px; }
   .faq-item p { margin: 0; color: var(--sub); font-size: 15px; }
+  .t-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
+  @media (max-width: 800px) { .t-grid { grid-template-columns: 1fr; } }
+  .t-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .t-stars { color: #f59e0b; font-size: 15px; letter-spacing: 2px; margin-bottom: 10px; }
+  .t-quote { margin: 0 0 18px; font-size: 15px; color: #33363c; line-height: 1.6; }
+  .t-person { display: flex; align-items: center; gap: 12px; }
+  .t-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+  .t-name { font-weight: 700; font-size: 14px; margin: 0; }
+  .t-role { font-size: 13px; color: var(--sub); margin: 0; }
 </style>
 </head>
 <body>
@@ -353,8 +362,39 @@
   </div>
 </section>
 
+<section id="testimonials">
+  <div class="wrap">
+    <h2 class="section-title">What early users are saying</h2>
+    <p class="section-sub">
+      ⚠️ <strong>Illustrative examples</strong> — these represent the kind of feedback we expect based on the problems OliOps Suite solves, not verified customer quotes yet. Swap these for real reviews as soon as you have paying customers willing to share one (a quick <a href="../contact/">email request</a> after a good support interaction works well). Publishing fabricated reviews as if they were real customer testimonials can violate consumer-protection rules (e.g. FTC guidance in the US) — always replace this section with genuine feedback before relying on it.
+    </p>
+    <div class="t-grid">
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"We were paying for three different subscriptions before this. Now it's one login and everything actually talks to each other — the invoicing alone saved me hours every week."</p>
+        <div class="t-person"><div class="t-avatar">MT</div><div><p class="t-name">Maria T.</p><p class="t-role">Owner, boutique marketing agency</p></div></div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"The AI support agent handles the repetitive questions so my team can focus on actual jobs. Setup took an afternoon, not a week."</p>
+        <div class="t-person"><div class="t-avatar">JO</div><div><p class="t-name">James O.</p><p class="t-role">Founder, home renovation contractor</p></div></div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★☆</div>
+        <p class="t-quote">"Payroll and invoicing in the same place as our client records is a small thing that turned out to matter a lot. Wish the reports were a bit more customizable, but support was quick to help."</p>
+        <div class="t-person"><div class="t-avatar">PS</div><div><p class="t-name">Priya S.</p><p class="t-role">Operations Manager, small accounting firm</p></div></div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Paying once instead of four monthly bills paid for itself in under three months. Wish we'd found this sooner."</p>
+        <div class="t-person"><div class="t-avatar">DL</div><div><p class="t-name">Derek L.</p><p class="t-role">Owner, IT consulting shop</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="wrap">
-  💎 OliOps Suite — a product line by olielicz. MIT-licensed core tools.
+  💎 OliOps Suite — a product line by WorkItLikeAPro. MIT-licensed core tools.
   <div style="margin-top:10px;">
     <a href="../security/">Security</a> · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> ·
     <a href="../support/">Support</a> · <a href="../contact/">Contact</a> ·

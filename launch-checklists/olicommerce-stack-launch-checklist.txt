@@ -1,0 +1,113 @@
+OLICOMMERCE STACK — START TO FINISH LAUNCH CHECKLIST
+Company: WorkItLikeAPro
+Contact email: workitlikeapr01@gmail.com
+Product: OliCommerce Stack (Shopify Cart Recovery + AI Shopping Assistant)
+Price: $199 one-time, lifetime license, up to 5 devices
+Repos bundled: ecomm-automation, project-2 (OliMind)
+
+Work through this top to bottom. Check off each line as you finish it.
+Anything marked (EXTERNAL SITE) happens outside this repo — on that site's own dashboard.
+
+============================================================
+STEP 1 — GET THE CODE READY
+============================================================
+[ ] 1.1 Confirm ecomm-automation and project-2 both run locally without errors
+        (cd into each repo, npm install, npm test — all should pass)
+[ ] 1.2 Confirm each repo has a LICENSE file (MIT)
+[ ] 1.3 Set up a real Shopify development store (free, via partners.shopify.com) to test
+        the webhook integration end to end before your first real customer connects their store
+[ ] 1.4 Confirm ecomm-automation's webhook endpoints (order-paid, cart-abandoned) work
+        against that test store
+[ ] 1.5 Confirm project-2's AI shopping assistant embed script loads correctly on a test
+        Shopify theme
+
+============================================================
+STEP 2 — DOMAIN & HOSTING FOR THE LANDING PAGE
+============================================================
+[ ] 2.1 Decide: GitHub Pages (repo must be public) or Vercel (works with private repo)
+[ ] 2.2 If GitHub Pages: Settings -> Danger Zone -> make the `marketing` repo public,
+        then Settings -> Pages -> Source -> GitHub Actions (workflow already exists)
+[ ] 2.3 If Vercel: (EXTERNAL SITE) vercel.com -> sign in with GitHub -> Add New Project ->
+        select `marketing` repo -> Root Directory = repo root -> Deploy
+[ ] 2.4 Confirm the live URL works: yoursite.com/olicommerce/
+[ ] 2.5 Confirm the Buy Now page works: yoursite.com/olicommerce/buy/
+[ ] 2.6 (Optional) Buy a domain from Namecheap/Porkbun ($10-15/yr), point it at the hosting
+
+============================================================
+STEP 3 — PAYMENTS (Stripe + PayPal)
+============================================================
+[ ] 3.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
+[ ] 3.2 Payments -> Payment Links -> Create a new product:
+        Name: "OliCommerce Stack — Lifetime License", Price: $199 USD, Billing: One time
+[ ] 3.3 Copy the generated buy.stripe.com link
+[ ] 3.4 Open olicommerce/buy/index.html, find
+        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLICOMMERCE_PAYMENT_LINK"
+        and paste your real link in its place
+[ ] 3.5 (EXTERNAL SITE) paypal.com -> log in with a Business account
+[ ] 3.6 developer.paypal.com/payment-links-buttons/create-buy-button -> Buy Now button
+        Item name: "OliCommerce Stack — Lifetime License", Price: $199 USD
+[ ] 3.7 Copy the hosted_button_id value
+[ ] 3.8 In olicommerce/buy/index.html, replace value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID"
+        with your real hosted_button_id
+[ ] 3.9 Test both buttons in Stripe test mode and PayPal Sandbox before going live
+[ ] 3.10 Commit + push the updated olicommerce/buy/index.html
+
+============================================================
+STEP 4 — LICENSING (serial codes / 5-device limit)
+============================================================
+[ ] 4.1 If you haven't already deployed the shared license server for another Oli tool,
+        follow marketing/licensing/README.md's Deployment section once (it's shared across
+        all 4 lifetime products — you only need to deploy it a single time)
+[ ] 4.2 Copy licensing/client/oli-license-client.js into ecomm-automation, wire it in at
+        startup per the README's example (product code: COM)
+[ ] 4.3 Test: node scripts/generate-license.js --product olicommerce --email test@example.com
+        Confirm it activates correctly
+[ ] 4.4 Decide how you'll generate + email a real serial code after a real purchase —
+        manual at first is fine; see PAYMENTS-SETUP.md for automating this later
+
+============================================================
+STEP 5 — EMAIL (waitlist + delivery)
+============================================================
+[ ] 5.1 (EXTERNAL SITE) brevo.com -> Contacts -> Lists -> Create "OliCommerce Waitlist" list
+[ ] 5.2 Contacts -> Forms -> Create a form (email field only) -> link to that list
+[ ] 5.3 Click Embed, copy the HTML
+[ ] 5.4 Open olicommerce/index.html, find the <!-- BREVO_FORM --> comment block, swap in
+        your real embed code (it currently reuses OliOps's form/list — dedicate this one)
+[ ] 5.5 Automation -> Create a workflow -> Trigger: "contact added to OliCommerce Waitlist" ->
+        load the 5 emails from email-sequence-olicommerce-stack.md with noted delays
+[ ] 5.6 Turn the workflow ON
+[ ] 5.7 Confirm workitlikeapr01@gmail.com is the inbox you check for buyer replies and
+        contact-page submissions (first contact-form submission triggers a one-time
+        FormSubmit.co confirmation email — click "Confirm" once)
+
+============================================================
+STEP 6 — TRUST PAGES (already built, just verify)
+============================================================
+[ ] 6.1 Read through security/index.html, privacy/index.html, terms/index.html once
+[ ] 6.2 Fill in remaining placeholders: terms/index.html jurisdiction (section 10), and the
+        "Last updated" dates on privacy/index.html and terms/index.html
+[ ] 6.3 Test contact/index.html's form end to end
+
+============================================================
+STEP 7 — MARKETING / LAUNCH
+============================================================
+[ ] 7.1 Read product-hunt-olicommerce-stack.md, prepare screenshots/GIF showing a recovered
+        cart notification and the AI assistant answering a question
+[ ] 7.2 (EXTERNAL SITE) producthunt.com -> Submit -> schedule per 00-master-calendar.md (Day 23)
+[ ] 7.3 On launch day: post the first comment immediately, reply to every comment
+[ ] 7.4 There is no dedicated appsumo-pitch file for OliCommerce yet in this repo — reuse the
+        structure from appsumo-pitch-oliops-suite.md as a template if you want to submit here too
+[ ] 7.5 Go through directory-submission-list.md's Tier 1 + 2 + OliCommerce-specific entries
+[ ] 7.6 Post in Shopify-specific communities (Shopify forums, r/shopify, r/ecommerce) —
+        read each community's self-promo rules first, lead with the cart-recovery problem
+        you solved, not a bare pitch
+
+============================================================
+STEP 8 — GO LIVE
+============================================================
+[ ] 8.1 Final click-through test on both payment buttons
+[ ] 8.2 Remove "noindex" from olicommerce/buy/index.html's robots meta tag once payments
+        are fully live and tested
+[ ] 8.3 Announce it — you're live.
+
+Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.

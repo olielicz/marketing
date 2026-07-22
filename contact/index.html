@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Us — Oli Tools</title>
+<title>Contact Us — Oli Tools by WorkItLikeAPro</title>
 <meta name="description" content="Get in touch about any Oli Tools product — billing, technical support, security, licensing, or partnerships. We respond to every message.">
-<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 <style>
   :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --accent2:#7c3aed; --good:#16a34a; }
   * { box-sizing: border-box; }
@@ -40,13 +39,7 @@
     border: none; cursor: pointer; width: 100%;
   }
   .response-note { display:flex; align-items:center; gap:8px; background:#ecfdf5; color:#047857; font-weight:600; font-size:13px; padding:10px 14px; border-radius:8px; margin-top:16px; }
-  #sib-form-container { margin: 0; }
-  #sib-container { background: transparent !important; border: none !important; max-width: 100% !important; padding: 0 !important; }
-  #sib-form .entry__label { font-size: 13.5px; font-weight: 700 !important; color: #33363c !important; }
-  #sib-form input.input { width: 100%; padding: 12px 14px !important; border-radius: 10px !important; border: 1.5px solid var(--line) !important; font-size: 14.5px !important; font-family: inherit !important; }
-  #sib-form .sib-form-block__button { background: linear-gradient(135deg, var(--accent), var(--accent2)) !important; color: #fff !important; padding: 13px 24px !important; border-radius: 10px !important; font-weight: 700 !important; font-size: 15px !important; border: none !important; width: 100%; }
-  #sib-form .entry__specification { display: none; }
-  #error-message, #success-message { margin-bottom: 14px; }
+  .setup-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 18px 20px; font-size: 13.5px; color: #92400e; margin-top: 24px; line-height: 1.5; }
   footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
   footer a { color: var(--sub); margin: 0 8px; }
 </style>
@@ -64,7 +57,13 @@
 
 <section class="hero wrap">
   <h1>We read every message</h1>
-  <p class="sub">Billing question, something's broken, a security concern, or you just want to talk before buying — pick the right channel below or use the form and we'll route it internally.</p>
+  <p class="sub">Billing question, something's broken, a security concern, or you just want to talk before buying — pick the right channel below or use the form and we'll route it internally. Oli Tools is a product line by <strong>WorkItLikeAPro</strong>.</p>
+  <p id="sent-banner" style="display:none; margin-top:18px;"><span style="background:#ecfdf5; color:#047857; font-weight:700; padding:10px 18px; border-radius:8px; display:inline-block;">✅ Message sent — thanks, we'll get back to you soon.</span></p>
+  <script>
+    if (window.location.search.includes('sent=1')) {
+      document.getElementById('sent-banner').style.display = 'block';
+    }
+  </script>
 </section>
 
 <section class="wrap">
@@ -74,61 +73,69 @@
         <span class="icon">🛠️</span>
         <h3>Technical support</h3>
         <p>Something's not working, setup help, or a bug report. Check the <a href="../support/">Troubleshooting Guide</a> first — most issues are covered there and you'll get a faster answer.</p>
-        <span class="email">support@[your-domain-here]</span>
+        <span class="email">workitlikeapr01@gmail.com</span>
       </div>
       <div class="route-card">
         <span class="icon">💳</span>
         <h3>Billing &amp; licensing</h3>
         <p>Refunds, receipts, moving your license to a new device, or payment issues.</p>
-        <span class="email">billing@[your-domain-here]</span>
+        <span class="email">workitlikeapr01@gmail.com</span>
       </div>
       <div class="route-card">
         <span class="icon">🔒</span>
         <h3>Security &amp; privacy</h3>
         <p>Report a security issue (see our <a href="../security/">responsible disclosure process</a>) or a data/privacy request under GDPR.</p>
-        <span class="email">security@[your-domain-here]</span>
+        <span class="email">workitlikeapr01@gmail.com</span>
       </div>
       <div class="route-card">
         <span class="icon">🤝</span>
         <h3>Partnerships &amp; press</h3>
         <p>Reseller inquiries, integration partnerships, or media requests.</p>
-        <span class="email">hello@[your-domain-here]</span>
+        <span class="email">workitlikeapr01@gmail.com</span>
       </div>
       <div class="route-card">
         <span class="icon">💬</span>
         <h3>Pre-sale questions</h3>
         <p>Not sure which tool fits, or have a question before buying? Ask away — no pressure, no sales calls required.</p>
-        <span class="email">hello@[your-domain-here]</span>
+        <span class="email">workitlikeapr01@gmail.com</span>
       </div>
     </div>
 
     <div class="form-card">
       <h2>Or use this form</h2>
-      <p class="sub2">Tell us what's going on and which tool it's about — we'll route it to the right place internally.</p>
+      <p class="sub2">Tell us what's going on and which tool it's about. This sends directly to our inbox — no third-party marketing platform in the loop.</p>
 
-      <!-- BREVO_FORM: this reuses the OliOps waitlist form structure as a starting point.
-           For a real contact form, create a dedicated Brevo form with these fields:
-           EMAIL (required), a text field for "Which tool", a dropdown for "Topic"
-           (Technical Support / Billing / Security / Partnership / Pre-sale / Other),
-           and a textarea "Message". Brevo forms support custom attributes for all of these
-           via Contacts -> Settings -> Contact attributes, then add them to the form builder.
-           Swap the action URL below once that dedicated form exists. -->
-      <div id="error-message" class="sib-form-message-panel" style="font-family:Helvetica, sans-serif; font-size:14px; text-align:left; color:#661d1d; background-color:#ffeded; border-color:#ff4949; border-radius:8px; padding:12px 14px; display:none;">
-        Something went wrong. Please try again or email us directly.
-      </div>
-      <div id="success-message" class="sib-form-message-panel" style="font-family:Helvetica, sans-serif; font-size:14px; text-align:left; color:#085229; background-color:#e7faf0; border-color:#13ce66; border-radius:8px; padding:12px 14px; display:none;">
-        Message received — we'll get back to you soon.
-      </div>
+      <!--
+        This form uses FormSubmit.co — a free, no-backend form-to-email service. No account,
+        no API key, and no code needed on your end. How it works:
+        1. The form POSTs directly to https://formsubmit.co/workitlikeapr01@gmail.com
+        2. The FIRST time anyone submits this form, FormSubmit.co sends a one-time confirmation
+           email to workitlikeapr01@gmail.com — click "Confirm" in that email once, and every
+           submission after that is delivered straight to the inbox automatically.
+        3. _subject sets the email subject line; _template=table formats the fields as a clean
+           table instead of raw text; _captcha=false skips their optional captcha step (turn it
+           back on by removing that line if spam becomes an issue); _next sends the visitor to a
+           friendly confirmation page after submitting instead of FormSubmit's default page.
+        4. Docs / more options: https://formsubmit.co/
+      -->
+      <form id="oli-contact-form" method="POST" action="https://formsubmit.co/workitlikeapr01@gmail.com">
+        <input type="hidden" name="_subject" value="New message from Oli Tools contact page">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <!-- _next: where FormSubmit redirects after a successful send. Update this to your
+             actual live domain once deployed (e.g. https://yourdomain.com/contact/?sent=1) —
+             it's currently a relative path, which works but skips FormSubmit's nicer default
+             thank-you page in favor of just reloading this page with a query string. -->
+        <input type="hidden" name="_next" value="./?sent=1">
 
-      <form id="oli-contact-form" method="POST" action="https://1aab3e8b.sibforms.com/serve/REPLACE_WITH_YOUR_CONTACT_FORM_ID">
         <label for="ct-name">Your name</label>
-        <input type="text" id="ct-name" name="NAME" placeholder="Jane Smith" required>
+        <input type="text" id="ct-name" name="Name" placeholder="Jane Smith" required>
 
         <label for="ct-email">Email address</label>
-        <input type="email" id="ct-email" name="EMAIL" placeholder="you@company.com" required>
+        <input type="email" id="ct-email" name="_replyto" placeholder="you@company.com" required>
 
         <label for="ct-product">Which tool is this about?</label>
-        <select id="ct-product" name="PRODUCT">
+        <select id="ct-product" name="Product">
           <option value="OliOps Suite">OliOps Suite</option>
           <option value="OliCommerce Stack">OliCommerce Stack</option>
           <option value="OliFlow Automation Engine">OliFlow Automation Engine</option>
@@ -138,7 +145,7 @@
         </select>
 
         <label for="ct-topic">Topic</label>
-        <select id="ct-topic" name="TOPIC">
+        <select id="ct-topic" name="Topic">
           <option value="Technical Support">Technical support / something's broken</option>
           <option value="Billing">Billing / licensing / refund</option>
           <option value="Security">Security / privacy / data request</option>
@@ -148,17 +155,20 @@
         </select>
 
         <label for="ct-message">Message</label>
-        <textarea id="ct-message" name="MESSAGE" rows="5" placeholder="What's going on? Include any error messages if relevant." required></textarea>
+        <textarea id="ct-message" name="Message" rows="5" placeholder="What's going on? Include any error messages if relevant." required></textarea>
 
         <button type="submit" class="cta-btn">Send Message</button>
       </form>
       <div class="response-note">⏱️ We aim to respond within 1-2 business days</div>
+      <div class="setup-note">
+        ⚠️ <strong>Site owner setup note:</strong> the first submission through this form triggers a one-time confirmation email to workitlikeapr01@gmail.com from FormSubmit.co — open it and click "Confirm" once, and every future submission arrives directly in the inbox automatically. No account or API key needed. If preferred, this can be swapped for the Brevo-based form used elsewhere in this repo instead — just ask.
+      </div>
     </div>
   </div>
 </section>
 
 <footer class="wrap">
-  💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../security/">Security</a> · <a href="../support/">Support</a> · <a href="../">All Tools</a>
+  💎 Oli Tools by WorkItLikeAPro · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../security/">Security</a> · <a href="../support/">Support</a> · <a href="../">All Tools</a>
 </footer>
 
 <script src="../shared/cookie-consent.js"></script>

@@ -1,0 +1,138 @@
+OLI-LOCATOR — START TO FINISH LAUNCH CHECKLIST
+Company: WorkItLikeAPro
+Contact email: workitlikeapr01@gmail.com
+Product: Oli-Locator (hosted real estate CRM — leads, property search, inbox, call center)
+Price: $49/month subscription, hosted SaaS, no device cap (login-based)
+Repo: lead-gen
+
+NOTE: Oli-Locator is the ONE product on this list that is hosted, not self-hosted/downloaded.
+That changes a few steps below compared to the other 4 tools — read carefully.
+
+Work through this top to bottom. Check off each line as you finish it.
+Anything marked (EXTERNAL SITE) happens outside this repo — on that site's own dashboard.
+
+============================================================
+STEP 1 — GET THE CODE READY
+============================================================
+[ ] 1.1 Confirm lead-gen runs locally without errors (npm install, npm test if a test
+        script exists)
+[ ] 1.2 IMPORTANT: this repo previously had a hardcoded owner-account password in
+        client-side JavaScript plus a matching hash server-side (disclosed on the
+        Trust & Security page). Before deploying to production:
+        - Confirm that hardcoded credential is fully removed from the current codebase
+        - Confirm account seeding now uses environment variables, never committed to source
+        - If you haven't already, treat the old exposed password as permanently compromised —
+          do not reuse it anywhere
+[ ] 1.3 Confirm the free demo login mode works correctly (the landing page advertises
+        "try the demo, no signup required" — test that flow yourself before launch)
+[ ] 1.4 Confirm the tap-to-call links correctly open the device's default phone/dialer app
+        on both a real Android and iOS device (this is a specific selling point on the
+        landing page — "bring your own calling app" — so it needs to actually work)
+
+============================================================
+STEP 2 — HOSTING (this one needs an actual live server, not just static pages)
+============================================================
+[ ] 2.1 Deploy lead-gen's backend + frontend to a real host — Render.com, Railway.app, or
+        Fly.io free/starter tiers all work for a small SaaS starting out
+[ ] 2.2 Set up a production database if lead-gen doesn't already have one configured
+        (check its README/setup docs for the specific database it expects)
+[ ] 2.3 Set a strong, unique signing/session secret in that host's environment variables —
+        never leave it as a default/example value in production
+[ ] 2.4 Set up HTTPS — most hosts (Render, Railway) provide this automatically for you
+[ ] 2.5 Set up a backup schedule for the production database (daily is reasonable for a
+        small SaaS to start)
+[ ] 2.6 Note the live URL — you'll link to it from the marketing site's login/demo buttons
+
+============================================================
+STEP 3 — DOMAIN & HOSTING FOR THE LANDING PAGE (separate from Step 2)
+============================================================
+[ ] 3.1 Decide: GitHub Pages (repo must be public) or Vercel (works with private repo)
+[ ] 3.2 If GitHub Pages: Settings -> Danger Zone -> make the `marketing` repo public,
+        then Settings -> Pages -> Source -> GitHub Actions (workflow already exists)
+[ ] 3.3 If Vercel: (EXTERNAL SITE) vercel.com -> sign in with GitHub -> Add New Project ->
+        select `marketing` repo -> Root Directory = repo root -> Deploy
+[ ] 3.4 Confirm the live URL works: yoursite.com/oli-locator/
+[ ] 3.5 Confirm the subscribe page works: yoursite.com/oli-locator/buy/
+[ ] 3.6 (Optional) Buy a domain, point it at the hosting above
+
+============================================================
+STEP 4 — PAYMENTS (Stripe + PayPal — RECURRING billing, different from the other 4 tools)
+============================================================
+[ ] 4.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
+[ ] 4.2 Payments -> Payment Links -> Create a new product:
+        Name: "Oli-Locator — Agency Plan", Price: $49 USD, Billing: RECURRING, Monthly
+        (this is different from the other 4 tools — do not select "One time")
+[ ] 4.3 Copy the generated buy.stripe.com link
+[ ] 4.4 Open oli-locator/buy/index.html, find
+        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLILOCATOR_PAYMENT_LINK"
+        and paste your real link
+[ ] 4.5 (EXTERNAL SITE) paypal.com -> Business account -> Products & Services -> Subscriptions
+        (NOT the Buy Now button builder used for the other 4 tools)
+[ ] 4.6 Create a subscription plan: "Oli-Locator — Agency Plan", Monthly, $49
+[ ] 4.7 PayPal generates a Subscribe button with its own hosted_button_id — copy it
+[ ] 4.8 In oli-locator/buy/index.html, replace value="REPLACE_WITH_YOUR_SUBSCRIBE_BUTTON_ID"
+[ ] 4.9 Test both in Stripe test mode and PayPal Sandbox before going live
+[ ] 4.10 Commit + push the updated oli-locator/buy/index.html
+
+============================================================
+STEP 5 — ACCOUNT ACCESS (no serial-code licensing for this one)
+============================================================
+[ ] 5.1 Oli-Locator is intentionally excluded from the shared serial-code license server
+        (see marketing/licensing/README.md — it's a hosted login product, nothing to
+        activate on a device)
+[ ] 5.2 Instead, enforce access via a simple login system tied to subscription status:
+        after Stripe/PayPal confirms payment, create the customer's account (manually at
+        first, or automate via webhook later) and set their subscription status to active
+[ ] 5.3 If you want a device/session cap for Oli-Locator (optional, unlike the other 4
+        tools which require it), implement it as a simple concurrent-session count in your
+        own login system — this is a different, simpler mechanism than the license server,
+        per the README's note
+[ ] 5.4 Decide your process for cancellations: when a subscription lapses, set the account
+        to inactive after the grace period described in terms/index.html section 8
+
+============================================================
+STEP 6 — EMAIL (demo requests + delivery)
+============================================================
+[ ] 6.1 (EXTERNAL SITE) brevo.com -> Contacts -> Lists -> Create "Oli-Locator Waitlist" list
+[ ] 6.2 Contacts -> Forms -> Create a form -> link to that list -> Embed -> copy HTML
+[ ] 6.3 Open oli-locator/index.html, find the <!-- BREVO_FORM --> comment block ("Want a
+        personal walkthrough first?"), swap in your real embed code
+[ ] 6.4 This form is for demo requests, not a drip sequence — set up a simple notification
+        so you see new demo requests promptly (Brevo can email you on new list signups)
+[ ] 6.5 Confirm workitlikeapr01@gmail.com is the inbox you check for demo requests and
+        contact-page submissions (first submission triggers a one-time FormSubmit.co
+        confirmation email — click "Confirm" once)
+
+============================================================
+STEP 7 — TRUST PAGES (already built, just verify)
+============================================================
+[ ] 7.1 Read through security/index.html, privacy/index.html, terms/index.html once —
+        pay attention to section 1 of privacy/index.html, which correctly notes Oli-Locator
+        is the one product where WorkItLikeAPro (not the customer) is the data holder
+[ ] 7.2 Fill in remaining placeholders: terms/index.html jurisdiction (section 10), and the
+        "Last updated" dates
+[ ] 7.3 Test contact/index.html's form end to end
+
+============================================================
+STEP 8 — MARKETING / LAUNCH
+============================================================
+[ ] 8.1 Read outreach-oli-locator.md -> build a list of 20-50 independent real estate
+        agents using the free sources listed (Zillow, LinkedIn, association directories)
+[ ] 8.2 Send the cold outreach email templates from that file, personalizing each one
+[ ] 8.3 Log every contact + reply status in a spreadsheet, follow up once after 5-7 days
+        for non-responders
+[ ] 8.4 Note: there is no Product Hunt launch planned for Oli-Locator in this repo's
+        calendar — outreach is the primary channel for this one
+[ ] 8.5 Go through directory-submission-list.md's Tier 1 + 2 + Oli-Locator-specific entries
+        (real-estate-tool directories specifically)
+
+============================================================
+STEP 9 — GO LIVE
+============================================================
+[ ] 9.1 Final click-through test on both subscribe buttons, including that recurring
+        billing actually recurs (check Stripe/PayPal dashboard after the first test cycle)
+[ ] 9.2 Remove "noindex" from oli-locator/buy/index.html's robots meta tag once payments
+        are fully live and tested
+[ ] 9.3 Announce it — you're live.
+
+Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.

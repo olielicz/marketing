@@ -1,0 +1,129 @@
+OLIOPS SUITE — START TO FINISH LAUNCH CHECKLIST
+Company: WorkItLikeAPro
+Contact email: workitlikeapr01@gmail.com
+Product: OliOps Suite (CRM + Invoicing/Payroll + Accounting + AI Support)
+Price: $299 one-time, lifetime license, up to 5 devices
+Repos bundled: OliCRM, OliCompute, automate-CSR
+
+Work through this top to bottom. Check off each line as you finish it.
+Anything marked (EXTERNAL SITE) happens outside this repo — on that site's own dashboard.
+
+============================================================
+STEP 1 — GET THE CODE READY
+============================================================
+[ ] 1.1 Confirm OliCRM, OliCompute, and automate-CSR all run locally without errors
+        (cd into each repo, npm install, npm test — all should pass)
+[ ] 1.2 Confirm each repo has a LICENSE file (MIT) — already done, verify it's still there
+[ ] 1.3 Confirm OliCompute/SECURITY.md exists and reads correctly — already written,
+        just double check the responsible-disclosure email now says workitlikeapr01@gmail.com
+        (if it still says a placeholder domain, update it before publishing)
+[ ] 1.4 Decide where OliOps Suite itself will run for customers: self-hosted only, or also
+        offer the optional $19/mo managed-hosting tier mentioned on the landing page.
+        If offering managed hosting, set that up on Render/Railway now (see 1.5).
+[ ] 1.5 (EXTERNAL SITE — only if offering managed hosting) Deploy OliCRM + OliCompute +
+        automate-CSR to Render.com or Railway.app free/starter tier. Note the live URL(s).
+
+============================================================
+STEP 2 — DOMAIN & HOSTING FOR THE LANDING PAGE
+============================================================
+[ ] 2.1 Decide: GitHub Pages (repo must be public) or Vercel (works with private repo)
+[ ] 2.2 If GitHub Pages: Settings -> Danger Zone -> make the `marketing` repo public,
+        then Settings -> Pages -> Source -> GitHub Actions (workflow already exists)
+[ ] 2.3 If Vercel: (EXTERNAL SITE) vercel.com -> sign in with GitHub -> Add New Project ->
+        select `marketing` repo -> Root Directory = repo root -> Deploy
+[ ] 2.4 Confirm the live URL for OliOps Suite works: yoursite.com/oliops/
+[ ] 2.5 Confirm the Buy Now page works: yoursite.com/oliops/buy/
+[ ] 2.6 (Optional) Buy a domain from Namecheap/Porkbun ($10-15/yr) once you have traction,
+        point it at the hosting above
+
+============================================================
+STEP 3 — PAYMENTS (Stripe + PayPal)
+============================================================
+[ ] 3.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
+[ ] 3.2 Payments -> Payment Links -> Create a new product:
+        Name: "OliOps Suite — Lifetime License", Price: $299 USD, Billing: One time
+[ ] 3.3 Copy the generated buy.stripe.com link
+[ ] 3.4 Open oliops/buy/index.html in this repo, find the line with
+        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLIOPS_PAYMENT_LINK"
+        and paste your real link in its place
+[ ] 3.5 (EXTERNAL SITE) paypal.com -> log in with a Business account (create one if needed)
+[ ] 3.6 developer.paypal.com/payment-links-buttons/create-buy-button -> Buy Now button
+        Item name: "OliOps Suite — Lifetime License", Price: $299 USD
+[ ] 3.7 Copy the hosted_button_id value PayPal gives you
+[ ] 3.8 In oliops/buy/index.html, replace value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID"
+        with your real hosted_button_id
+[ ] 3.9 Test both buttons in Stripe test mode (card 4242 4242 4242 4242) and PayPal Sandbox
+        before switching either to live/production
+[ ] 3.10 Commit + push the updated oliops/buy/index.html
+
+============================================================
+STEP 4 — LICENSING (serial codes / 5-device limit)
+============================================================
+[ ] 4.1 cd into marketing/licensing, run: npm install
+[ ] 4.2 cp .env.example .env
+[ ] 4.3 Run: node scripts/generate-keys.js  (do this ONCE ever — generates your signing keypair)
+[ ] 4.4 Set a long random ADMIN_TOKEN value in .env
+[ ] 4.5 Deploy licensing/server/index.js somewhere (Render free tier works — zero dependencies)
+[ ] 4.6 Keep data/keys/private.pem secret — never commit it, never share it
+[ ] 4.7 Copy licensing/client/oli-license-client.js into OliCRM (or wherever the login/startup
+        flow lives) as lib/oliLicenseClient.js, wire it in per licensing/README.md's example
+[ ] 4.8 Test generating one license by hand:
+        node scripts/generate-license.js --product oliops --email test@example.com
+        Confirm it activates correctly against your deployed license server
+[ ] 4.9 Decide how you'll generate + email a real serial code after a real purchase —
+        manually at first is fine (check Stripe/PayPal dashboard for new payments daily,
+        run the generate-license.js command, paste the code into a reply email to the buyer).
+        Automating this via webhook + OliFlow is described in PAYMENTS-SETUP.md if you want
+        to remove the manual step later.
+
+============================================================
+STEP 5 — EMAIL (waitlist + delivery)
+============================================================
+[ ] 5.1 (EXTERNAL SITE) brevo.com -> sign up free (300 emails/day)
+[ ] 5.2 Contacts -> Lists -> Create "OliOps Waitlist" list
+[ ] 5.3 Contacts -> Forms -> Create a form (email field only) -> link to OliOps Waitlist list
+[ ] 5.4 Click Embed, copy the HTML Brevo gives you
+[ ] 5.5 Open oliops/index.html, find the <!-- BREVO_FORM --> comment block, replace the
+        form code inside with your real embed code (or ask for help wiring it in)
+[ ] 5.6 Automation -> Create a workflow -> Trigger: "contact added to OliOps Waitlist" ->
+        load the 5 emails from email-sequence-oliops-suite.md with the delays noted in that file
+[ ] 5.7 Turn the workflow ON
+[ ] 5.8 Confirm workitlikeapr01@gmail.com is the email you check for buyer replies and
+        contact-page submissions (see contact/index.html — first submission through that
+        form triggers a one-time FormSubmit.co confirmation email; click "Confirm" once)
+
+============================================================
+STEP 6 — TRUST PAGES (already built, just verify)
+============================================================
+[ ] 6.1 Read through security/index.html, privacy/index.html, terms/index.html once —
+        confirm they read correctly for your business
+[ ] 6.2 Fill in the remaining placeholders:
+        - terms/index.html: [Insert your jurisdiction here before publishing] (section 10)
+        - privacy/index.html and terms/index.html: [insert date before publishing] (top of page)
+[ ] 6.3 Confirm contact/index.html's FormSubmit form works end to end (submit a real test
+        message, confirm it lands in workitlikeapr01@gmail.com)
+
+============================================================
+STEP 7 — MARKETING / LAUNCH
+============================================================
+[ ] 7.1 Read product-hunt-oliops-suite.md, prepare screenshots/GIF (OBS Studio, free)
+[ ] 7.2 (EXTERNAL SITE) producthunt.com -> Submit -> paste copy from the file above ->
+        schedule for the date noted in 00-master-calendar.md (Day 9)
+[ ] 7.3 On launch day: post the "first comment" text immediately, reply to every comment
+[ ] 7.4 Read appsumo-pitch-oliops-suite.md -> sell.appsumo.com -> submit for review
+[ ] 7.5 Go through directory-submission-list.md, submit to Tier 1 + Tier 2 + OliOps-specific
+        Tier 3 entries
+[ ] 7.6 Post to relevant subreddits/communities per the guidance in STEP-BY-STEP-INSTRUCTIONS.md
+        section 8 (read each community's self-promo rules first)
+
+============================================================
+STEP 8 — GO LIVE
+============================================================
+[ ] 8.1 Final click-through test: land on oliops/index.html -> click Buy Now -> pay with a
+        real card for $1 test if your processor allows, or fully trust the sandbox tests above
+[ ] 8.2 Remove "noindex" from oliops/buy/index.html's <meta name="robots"> tag ONLY once
+        payments are fully live and tested (it's there to stop search engines indexing an
+        unfinished checkout page)
+[ ] 8.3 Announce it — you're live.
+
+Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.
