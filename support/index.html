@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support & Troubleshooting — Oli Tools</title>
+<meta name="description" content="Troubleshooting guides for OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliConnect, and Oli-Locator. Fix common issues yourself, or contact us if you're still stuck.">
+<style>
+  :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --good:#16a34a; --warn:#d97706; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.65; -webkit-font-smoothing:antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; position: sticky; top: 0; background: rgba(250,250,250,0.9); backdrop-filter: blur(8px); z-index: 50; }
+  .logo { font-weight:800; font-size:20px; }
+  nav a { margin-left:20px; color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .hero { padding: 48px 0 24px; text-align:center; }
+  h1 { font-size: 40px; margin: 0 0 12px; letter-spacing:-0.02em; }
+  .sub { color: var(--sub); font-size: 17px; max-width: 640px; margin: 0 auto; }
+  .jump-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 28px 0 0; }
+  @media (max-width: 800px) { .jump-grid { grid-template-columns: repeat(2, 1fr); } }
+  .jump-btn { display: block; text-align: center; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 8px; font-size: 13px; font-weight: 700; }
+  .jump-btn:hover { border-color: var(--accent); }
+  section.tool-section { padding: 44px 0; border-top: 1px solid var(--line); }
+  section.tool-section:first-of-type { border-top: none; }
+  .tool-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .tool-header h2 { margin: 0; font-size: 26px; }
+  .tool-badge { background: #eef2ff; color: #3730a3; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+  .faq-item { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 12px 0; overflow: hidden; }
+  .faq-q { padding: 16px 20px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .faq-q .arrow { transition: transform .2s; color: var(--sub); }
+  .faq-item[open] .faq-q .arrow { transform: rotate(180deg); }
+  .faq-a { padding: 0 20px 18px; color: #33363c; font-size: 14.5px; }
+  .faq-a code { background: #f4f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .faq-a ol, .faq-a ul { margin: 8px 0; padding-left: 22px; }
+  .general-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin: 14px 0; }
+  .general-card h3 { margin: 0 0 8px; font-size: 16px; }
+  .status-strip { display: flex; align-items: center; justify-content: center; gap: 10px; background: #ecfdf5; color: #047857; font-weight: 700; font-size: 14px; padding: 12px 18px; border-radius: 10px; margin: 20px 0; }
+  .cta-box { background: linear-gradient(135deg, #14161a, #2a1f4d); color: #fff; border-radius: 18px; padding: 32px; text-align: center; margin: 40px 0; }
+  .cta-box h3 { margin: 0 0 10px; font-size: 22px; }
+  .cta-box p { color: #cfcbe6; margin: 0 0 18px; }
+  .cta-btn { display: inline-block; background: #fff; color: #14161a !important; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 14.5px; }
+  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+  footer a { color: var(--sub); margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">💎 Oli Tools</div>
+  <nav>
+    <a href="../">All Tools</a>
+    <a href="../security/">Security</a>
+    <a href="../contact/">Contact</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <h1>Support &amp; Troubleshooting</h1>
+  <p class="sub">Most issues are fixable in under 5 minutes with the steps below. Pick your tool, or check the general section that applies to everyone first.</p>
+  <div class="status-strip">🟢 All 5 tools operational — no known issues right now</div>
+  <div class="jump-grid">
+    <a class="jump-btn" href="#general">🌐 General / Licensing</a>
+    <a class="jump-btn" href="#oliops">💼 OliOps Suite</a>
+    <a class="jump-btn" href="#olicommerce">🛒 OliCommerce</a>
+    <a class="jump-btn" href="#oliflow">⚙️ OliFlow</a>
+    <a class="jump-btn" href="#oliconnect">📱 OliConnect</a>
+    <a class="jump-btn" href="#oli-locator">🏡 Oli-Locator</a>
+  </div>
+</section>
+
+<section class="wrap tool-section" id="general">
+  <div class="tool-header"><h2>🌐 General &amp; Licensing</h2><span class="tool-badge">Applies to all tools</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">My serial code says "invalid" or won't activate <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <ol>
+        <li>Double-check you copied the whole code, including all dashes — the format is <code>OLI-XXX-YYYY-ZZZZ-C</code>. A common issue is a trailing space accidentally copied along with it.</li>
+        <li>Confirm you're entering it into the matching product — a serial code starting <code>OLI-OPS-</code> only works for OliOps Suite, <code>OLI-COM-</code> only for OliCommerce, and so on. Codes aren't interchangeable between products.</li>
+        <li>Check your internet connection — activation requires one successful check-in with the license server (after that, it works offline for up to 14 days between check-ins).</li>
+        <li>Still stuck? <a href="../contact/">Contact us</a> with your order confirmation email and we'll verify the code on our end.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">"Device limit reached" — I haven't used 5 devices</summary>
+    <div class="faq-a">
+      <p>This usually means an old device is still counted as active — for example, if you reinstalled on the same machine, it may register as a "new" device since the local device ID resets on a clean install.</p>
+      <ol>
+        <li>If you still have access to an old/unused device, open the product there and use the "Deactivate this device" option before decommissioning it.</li>
+        <li>If you no longer have access to that device (lost laptop, old server already wiped), <a href="../contact/">contact us</a> with your serial code and we'll manually free up a slot — this is a normal, expected request and doesn't require justification.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">I didn't receive my serial code after payment</summary>
+    <div class="faq-a">
+      <ol>
+        <li>Check your spam/junk folder — automated delivery emails sometimes land there on first send.</li>
+        <li>Confirm the payment actually completed — check your bank/card statement or PayPal activity for the charge.</li>
+        <li>Search your inbox for "Oli" or the specific product name.</li>
+        <li>Still nothing after 30 minutes? <a href="../contact/">Contact billing</a> with your payment confirmation/receipt and we'll resend it immediately.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">I want a refund</summary>
+    <div class="faq-a">
+      <p>Lifetime purchases (OliOps, OliCommerce, OliFlow, OliConnect) are covered by a 30-day, no-questions-asked money-back guarantee. Oli-Locator subscriptions can be cancelled anytime with no further charges. See the full <a href="../terms/">Refund Policy</a> for specifics, then <a href="../contact/">email billing</a> with your order details.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Is a specific tool down right now?</summary>
+    <div class="faq-a">
+      <p>Self-hosted tools (OliOps, OliCommerce, OliFlow, OliConnect) run on your own infrastructure, so "down" almost always means your own server/hosting needs a look — check your hosting provider's status page first. Oli-Locator is hosted by us; if you suspect an outage there, <a href="../contact/">contact support</a> and we'll confirm and update you.</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap tool-section" id="oliops">
+  <div class="tool-header"><h2>💼 OliOps Suite</h2><span class="tool-badge">CRM + Invoicing + AI Support</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">The server won't start / crashes on launch <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <ol>
+        <li>Check the terminal output for the actual error message — most startup failures print a clear reason (missing environment variable, port already in use, etc.).</li>
+        <li>Confirm you're running a supported Node.js version (18+). Check with <code>node --version</code>.</li>
+        <li>If the error mentions a port conflict, another process may already be using the same port — either stop it or change OliOps's <code>PORT</code> environment variable.</li>
+        <li>If you just pulled an update, make sure you re-ran <code>npm install</code> (if applicable) before restarting.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">I can't log in / forgot my password</summary>
+    <div class="faq-a">
+      <p>Use the "Forgot password" link on the sign-in screen. This works for self-hosted instances too, as long as your instance has outbound email configured (check your setup guide). If you're the very first user on a fresh install and never set a password, check your server console log from the first boot — the initial admin credentials are printed there once.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Invoices/payroll numbers look wrong</summary>
+    <div class="faq-a">
+      <p>Double-check your tax rate settings under Settings → Tax — a new invoice inherits whatever the default tax rate is set to at creation time, so past invoices won't retroactively update if you change the rate later. For payroll, confirm logged hours are entered correctly per pay period; the payroll report calculates strictly from logged-hours × rate.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">The AI support chatbot gives a generic or wrong answer</summary>
+    <div class="faq-a">
+      <p>The built-in chatbot resolves common questions from a knowledge base and escalates anything it's not confident about to a real support ticket automatically — so if it can't answer, it should still get a human answer to your customer via the ticket queue. If it's confidently giving wrong information, <a href="../contact/">let us know</a> which question triggered it so we can review the knowledge base.</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap tool-section" id="olicommerce">
+  <div class="tool-header"><h2>🛒 OliCommerce Stack</h2><span class="tool-badge">Shopify Automation + AI Assistant</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">Abandoned cart emails aren't sending <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <ol>
+        <li>Confirm your Shopify webhook is correctly registered — check your setup guide's webhook configuration step. A missing or misconfigured webhook is the most common cause.</li>
+        <li>Check your outbound email configuration (SMTP credentials or email provider API key) — cart recovery emails fail silently if the sending credentials are wrong or expired.</li>
+        <li>Check your server logs for webhook delivery errors around the time a cart should have triggered a recovery email.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">The AI shopping assistant isn't showing on my storefront</summary>
+    <div class="faq-a">
+      <p>Confirm the embed script/widget snippet is correctly placed in your theme (usually in the theme's footer or a dedicated app-embed block, depending on your Shopify theme). If you recently changed themes, the embed may need to be re-added since Shopify doesn't always carry app embeds across theme switches automatically.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Supplier CSV forwarding isn't working</summary>
+    <div class="faq-a">
+      <p>Check the destination email/endpoint configured for CSV forwarding — a typo in the supplier's email address is the most common cause. Also confirm new orders are actually triggering the order-paid webhook (see the abandoned-cart troubleshooting above; it's the same underlying webhook dependency).</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap tool-section" id="oliflow">
+  <div class="tool-header"><h2>⚙️ OliFlow Automation Engine</h2><span class="tool-badge">Workflow Automation</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">A workflow isn't triggering <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <ol>
+        <li>Confirm the workflow is actually turned on/published — a saved-but-inactive workflow won't trigger. Check the workflow's status toggle.</li>
+        <li>If it's webhook-triggered: confirm the sending service is hitting the correct webhook URL (check for typos, and confirm you copied the URL for the right workflow — each one has a unique endpoint).</li>
+        <li>Check the workflow's run history/logs for failed attempts — a failed run usually shows the specific error (e.g. a downstream API returned an error, or a required field was missing from the incoming payload).</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">A prebuilt template isn't importing correctly</summary>
+    <div class="faq-a">
+      <p>Confirm you're importing the correct file for your OliFlow version — templates are versioned to match specific engine releases. If you recently updated OliFlow, re-download the matching template pack version. If it still fails, <a href="../contact/">send us</a> the exact error message and which template.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">REST API calls return 401/403</summary>
+    <div class="faq-a">
+      <p>Confirm your API key is included in the <code>Authorization</code> header and hasn't been regenerated/revoked since you last saved it. API keys can be viewed and regenerated from Settings → API Access — regenerating invalidates the old key immediately, so update any scripts using the old one.</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap tool-section" id="oliconnect">
+  <div class="tool-header"><h2>📱 OliConnect</h2><span class="tool-badge">Browser Extension</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">The extension isn't detecting my top posts <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <ol>
+        <li>Confirm you're logged into the social platform in the same browser where the extension is installed — OliConnect reads through your existing session, so it needs an active login in that browser.</li>
+        <li>Give it a moment after connecting a new account — initial post-history detection can take a short scan before results populate.</li>
+        <li>Try refreshing the platform's page after connecting, then reopening the extension popup.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">The extension isn't installed / won't load</summary>
+    <div class="faq-a">
+      <p>Confirm your browser is up to date (OliConnect targets current Chrome/Edge/Firefox versions). If you installed it manually (not via a store listing), confirm Developer Mode / "load unpacked extensions" is enabled in your browser's extension settings.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Is it safe that this reads my social accounts?</summary>
+    <div class="faq-a">
+      <p>Yes — see the full explanation on our <a href="../security/">Security page</a>. Short version: your login credentials never leave your browser session and are never sent to our servers.</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap tool-section" id="oli-locator">
+  <div class="tool-header"><h2>🏡 Oli-Locator</h2><span class="tool-badge">Real Estate CRM (Hosted)</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">I can't log in <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <p>Use "Forgot password" on the login screen — a reset link is sent to your account email. If you want to try the product without your own account first, use the free demo login shown on the <a href="../oli-locator/">Oli-Locator page</a>.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Tapping a lead's number doesn't open my calling app</summary>
+    <div class="faq-a">
+      <p>Oli-Locator opens your device's <em>default</em> calling app via a standard tap-to-call link — if nothing happens, check which app is set as your device's default dialer/calling app in your phone or browser settings. See the "Use any calling app you want" section on the <a href="../oli-locator/">Oli-Locator page</a> for how this works and how to set a default.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Property search results look outdated or missing</summary>
+    <div class="faq-a">
+      <p>Property data refreshes on a regular schedule from the connected listing source — if a specific listing looks stale, it may not have synced yet. If an entire region/city consistently shows no results, <a href="../contact/">let us know</a> which area so we can check the data source coverage there.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">I want to cancel my subscription</summary>
+    <div class="faq-a">
+      <p>Cancel anytime from Account Settings → Subscription — no phone call or retention flow required. You'll retain access through the end of your current billing period. See the <a href="../terms/">Refund Policy</a> for billing specifics.</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap">
+  <div class="cta-box">
+    <h3>Still stuck?</h3>
+    <p>If none of the above solved it, we genuinely want to hear about it — every message gets a real reply, not a bot.</p>
+    <a href="../contact/" class="cta-btn">Contact Support →</a>
+  </div>
+</section>
+
+<footer class="wrap">
+  💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../security/">Security</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
+</footer>
+
+<script src="../shared/cookie-consent.js"></script>
+
+</body>
+</html>

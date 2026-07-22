@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Oli Tools</title>
+<meta name="description" content="GDPR-aligned privacy policy for Oli Tools: what data we collect, why, how long we keep it, and how to exercise your rights (access, deletion, portability).">
+<style>
+  :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --good:#16a34a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.65; -webkit-font-smoothing:antialiased; }
+  a { color: var(--accent); }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
+  .logo { font-weight:800; font-size:20px; }
+  nav a { margin-left:20px; color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .hero { padding: 48px 0 16px; }
+  h1 { font-size: 36px; margin: 0 0 8px; letter-spacing:-0.02em; }
+  .updated { color: var(--sub); font-size: 14px; }
+  section { padding: 28px 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: none; }
+  h2 { font-size: 21px; margin: 0 0 12px; }
+  h3 { font-size: 16px; margin: 20px 0 8px; }
+  p, li { color: #33363c; font-size: 15.5px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f4f4f6; font-weight: 700; }
+  .toc { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 24px; margin: 20px 0; }
+  .toc a { display: block; padding: 4px 0; font-size: 14.5px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin: 14px 0; }
+  .card.action { border-left: 4px solid var(--accent); }
+  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+  footer a { color: var(--sub); margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <div class="logo">💎 Oli Tools</div>
+  <nav>
+    <a href="../">All Tools</a>
+    <a href="../security/">Security</a>
+    <a href="../support/">Support</a>
+    <a href="../contact/">Contact</a>
+  </nav>
+</header>
+
+<section class="hero wrap">
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: [insert date before publishing] · Applies to OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliConnect, and Oli-Locator (together, "Oli Tools," "we," "us")</p>
+
+  <div class="toc">
+    <strong>Jump to:</strong>
+    <a href="#what-we-collect">1. What data we collect</a>
+    <a href="#why">2. Why we collect it (legal basis)</a>
+    <a href="#self-hosted">3. Self-hosted tools — a different model</a>
+    <a href="#sharing">4. Who we share data with</a>
+    <a href="#retention">5. How long we keep data</a>
+    <a href="#rights">6. Your rights (GDPR &amp; beyond)</a>
+    <a href="#cookies">7. Cookies</a>
+    <a href="#international">8. International data transfers</a>
+    <a href="#children">9. Children's privacy</a>
+    <a href="#changes">10. Changes to this policy</a>
+    <a href="#contact">11. Contact</a>
+  </div>
+</section>
+
+<section class="wrap" id="what-we-collect">
+  <h2>1. What data we collect</h2>
+  <p>What we collect depends on which tool you use and how you use it. Here's the breakdown by product:</p>
+  <table>
+    <tr><th>Tool</th><th>Data collected</th><th>Who controls it</th></tr>
+    <tr><td>OliOps Suite (self-hosted)</td><td>Account email/password (hashed), your CRM client records, invoices, payroll data you enter</td><td><strong>You</strong> — stored on your own server, we never see it</td></tr>
+    <tr><td>OliCommerce Stack (self-hosted)</td><td>Shopify order/customer data your store already has, processed to send recovery emails</td><td><strong>You</strong> — stored on your own infrastructure</td></tr>
+    <tr><td>OliFlow Engine (self-hosted)</td><td>Workflow definitions, webhook payloads passing through your automations</td><td><strong>You</strong> — stored on your own server</td></tr>
+    <tr><td>OliConnect (browser extension)</td><td>Reads your social post history via your existing logged-in sessions</td><td><strong>You</strong> — nothing sent to our servers; processing happens in your browser</td></tr>
+    <tr><td>Oli-Locator (hosted SaaS)</td><td>Account email/password (hashed), leads you enter, property search activity</td><td><strong>Us</strong> — stored on our hosting provider's infrastructure, since this is a hosted product</td></tr>
+    <tr><td>Website / waitlist forms (this marketing site)</td><td>Email address if you join a waitlist; nothing if you just browse</td><td><strong>Us</strong> (via Brevo, our email provider) — see section 4</td></tr>
+    <tr><td>Purchases</td><td>Name, email, and payment details — handled entirely by Stripe/PayPal, not stored by us</td><td>Stripe/PayPal — see section 4</td></tr>
+  </table>
+</section>
+
+<section class="wrap" id="why">
+  <h2>2. Why we collect it (legal basis under GDPR)</h2>
+  <ul>
+    <li><strong>Contract performance</strong> — we need your email and payment confirmation to deliver a license/serial code you purchased.</li>
+    <li><strong>Legitimate interest</strong> — waitlist signups, so we can tell you when a product you're interested in launches or changes price.</li>
+    <li><strong>Consent</strong> — for Oli-Locator's optional data your account may hold beyond what's strictly needed to run the product, and for any future marketing emails beyond transactional/waitlist ones (you can withdraw consent anytime).</li>
+  </ul>
+</section>
+
+<section class="wrap" id="self-hosted">
+  <h2>3. Self-hosted tools — a fundamentally different privacy model</h2>
+  <div class="card action">
+    <p style="margin:0;">For OliOps Suite, OliCommerce Stack, OliFlow Engine, and OliConnect: <strong>the data your business processes through the tool never reaches us.</strong> You run the software on infrastructure you choose. We are not a data processor for that content in the GDPR sense — you are the data controller for whatever your CRM records, invoices, or automations contain, and your own hosting provider is your data processor. This is genuinely different from most SaaS privacy policies, and it's worth understanding: it means stronger data control for you, but it also means <em>we cannot help recover data you lose</em> if you don't back it up yourself (see the Security page).</p>
+  </div>
+</section>
+
+<section class="wrap" id="sharing">
+  <h2>4. Who we share data with</h2>
+  <p>We do not sell your data to anyone, ever. The following third parties process limited data on our behalf, only for the specific purpose listed:</p>
+  <table>
+    <tr><th>Provider</th><th>What they see</th><th>Why</th></tr>
+    <tr><td>Brevo (email)</td><td>Your email address, if you join a waitlist</td><td>Sending you the emails you signed up for</td></tr>
+    <tr><td>Stripe</td><td>Name, email, payment card details</td><td>Processing your purchase — we never see or store your full card number</td></tr>
+    <tr><td>PayPal</td><td>Name, email, PayPal account details</td><td>Processing your purchase</td></tr>
+    <tr><td>Hosting provider (for Oli-Locator and any managed-hosting add-ons)</td><td>Whatever data your account holds</td><td>Running the servers the hosted product runs on</td></tr>
+  </table>
+  <p>We may disclose data if legally required to (e.g. a valid court order), but we will tell you first unless legally prohibited from doing so.</p>
+</section>
+
+<section class="wrap" id="retention">
+  <h2>5. How long we keep data</h2>
+  <ul>
+    <li><strong>Self-hosted tool data:</strong> entirely up to you — it's on your infrastructure, retained as long as you keep it there.</li>
+    <li><strong>Waitlist emails:</strong> kept until you unsubscribe or request deletion, or up to 24 months of inactivity, whichever comes first.</li>
+    <li><strong>Purchase records:</strong> kept as long as required for tax/accounting law (typically 6-7 years depending on jurisdiction), then deleted.</li>
+    <li><strong>Oli-Locator account data:</strong> kept while your subscription is active, plus 30 days after cancellation (in case you want to reactivate), then deleted upon request or after 90 days of cancellation.</li>
+  </ul>
+</section>
+
+<section class="wrap" id="rights">
+  <h2>6. Your rights (GDPR, UK GDPR, CCPA/CPRA, and similar laws)</h2>
+  <p>Regardless of where you're located, we honor these rights for everyone:</p>
+  <table>
+    <tr><th>Right</th><th>What it means</th><th>How to exercise it</th></tr>
+    <tr><td>Access</td><td>Ask what data we hold about you</td><td>Email us — see Contact section</td></tr>
+    <tr><td>Rectification</td><td>Correct inaccurate data</td><td>Email us, or edit directly if you have account access (Oli-Locator)</td></tr>
+    <tr><td>Erasure ("right to be forgotten")</td><td>Request deletion of your data</td><td>Email us; for self-hosted tools, simply delete your own data directory — we hold nothing to erase</td></tr>
+    <tr><td>Portability</td><td>Get your data in a portable format</td><td>Self-hosted tools: your data is already in a plain JSON format on your own server. Oli-Locator: email us for an export</td></tr>
+    <tr><td>Object / restrict processing</td><td>Object to how we use your data</td><td>Email us — we'll respond within 30 days as required by GDPR</td></tr>
+    <tr><td>Withdraw consent</td><td>Unsubscribe from any non-essential communication</td><td>Every email has an unsubscribe link; or email us directly</td></tr>
+  </table>
+  <p>We aim to respond to any rights request within 30 days, as required under GDPR Article 12.</p>
+</section>
+
+<section class="wrap" id="cookies">
+  <h2>7. Cookies</h2>
+  <p>This marketing website does not set its own tracking cookies. Third-party widgets embedded on specific pages (Brevo's signup form, Stripe/PayPal checkout buttons) may set their own cookies only when you interact with them — see our <a href="../security/">cookie banner</a> for the current, up-to-date list. If we add analytics in the future, this section and the cookie banner will be updated to name the specific tool and what it tracks before it goes live.</p>
+</section>
+
+<section class="wrap" id="international">
+  <h2>8. International data transfers</h2>
+  <p>If you're located outside the country where our hosting providers or payment processors operate, your data may be transferred internationally to process your request or payment. Stripe and PayPal are both certified under recognized international data transfer frameworks (e.g. EU-U.S. Data Privacy Framework where applicable) — see their respective privacy policies for specifics, as they are independent data controllers for payment processing.</p>
+</section>
+
+<section class="wrap" id="children">
+  <h2>9. Children's privacy</h2>
+  <p>Oli Tools are business tools intended for business owners, freelancers, and professionals. We do not knowingly collect data from anyone under 16. If you believe a child has provided us data, contact us and we'll delete it promptly.</p>
+</section>
+
+<section class="wrap" id="changes">
+  <h2>10. Changes to this policy</h2>
+  <p>If we materially change how we collect or use data, we'll update the "Last updated" date above and, where required, notify active account holders directly.</p>
+</section>
+
+<section class="wrap" id="contact">
+  <h2>11. Contact</h2>
+  <p>Questions about this policy or a rights request? <a href="../contact/">Contact us</a> and select "Privacy / Data Request" as the topic, or email <strong>privacy@[your-domain-here]</strong> (replace with your real address before publishing this page).</p>
+</section>
+
+<footer class="wrap">
+  💎 Oli Tools · <a href="../security/">Security</a> · <a href="../terms/">Terms</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
+</footer>
+
+<script src="../shared/cookie-consent.js"></script>
+
+</body>
+</html>
