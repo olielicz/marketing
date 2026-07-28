@@ -89,19 +89,13 @@
         💳 Pay with Stripe (Card)
       </a>
 
-      <!--
-        PAYPAL BUY NOW BUTTON
-        Create this once at https://www.paypal.com/paypalme or the PayPal Button Builder
-        (developer.paypal.com/payment-links-buttons/create-buy-button). Set item name
-        "OliOps Suite — Lifetime License", price $299 USD. PayPal gives you a hosted_button_id —
-        drop it into the form below in place of REPLACE_WITH_YOUR_HOSTED_BUTTON_ID.
-      -->
-      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="hosted_button_id" value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID">
-        <input type="hidden" name="currency_code" value="USD">
-        <button type="submit" class="pay-btn paypal">🅿️ Pay with PayPal</button>
-      </form>
+      <!-- PayPal JS SDK button — renders automatically once you set your Client ID in shared/paypal-sdk.js -->
+      <div id="paypal-button-container" style="margin-bottom:12px"></div>
+      <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">
+        🎉 <strong>Payment received!</strong> Your serial code is on its way. Reference: <strong id="paypal-ref-id"></strong>
+      </div>
+      <div id="paypal-cancel-note" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px">Payment cancelled. No charge was made.</div>
+      <div id="paypal-error-note" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;color:#dc2626;margin-top:8px">⚠️ Payment error. Please try again or contact support.</div>
 
       <div class="pay-note">Both options accept major cards, digital wallets, and local payment methods in 100+ countries. You'll receive your serial code by email within minutes of payment.</div>
       <div class="trust-row">
@@ -111,10 +105,6 @@
       </div>
     </div>
   </div>
-
-  <div class="setup-note">
-    ⚠️ <strong>Site owner setup note:</strong> the two buttons above are placeholders. Replace the Stripe href and the PayPal <code>hosted_button_id</code> with your own live payment link/button before this page goes live. Full step-by-step instructions are in <code>PAYMENTS-SETUP.md</code> at the root of this repo.
-  </div>
 </main>
 
 <footer class="wrap">
@@ -123,6 +113,7 @@
 </footer>
 
 <script src="../../shared/cookie-consent.js"></script>
+<script src="../../shared/paypal-sdk.js"></script>
 
 </body>
 </html>

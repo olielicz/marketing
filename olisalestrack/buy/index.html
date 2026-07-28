@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Get OliSalesTrack — Pro $19/mo or $149 Lifetime</title>
+<meta name="description" content="Start tracking sales, refunds and expenses with OliSalesTrack. $19/month or $149 lifetime. Secure PayPal checkout.">
+<meta name="robots" content="noindex">
+<style>
+  :root{--ink:#14161a;--sub:#55606e;--accent:#7c3aed;--accent2:#6C47FF;--bg:#fafafa;--card:#fff;--line:#e7e9ee;--good:#16a34a;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+  header.nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;}
+  .logo{font-weight:800;font-size:20px;} .logo span{color:var(--accent);}
+  nav a{color:var(--sub);text-decoration:none;font-size:14px;font-weight:600;}
+  main{padding:40px 0 80px;}
+  .toggle-wrap{display:flex;align-items:center;gap:12px;margin-bottom:24px;background:#f4f2ff;border-radius:12px;padding:6px 8px;width:fit-content;}
+  .toggle-btn{padding:8px 20px;border-radius:8px;background:transparent;border:none;font-size:14px;font-weight:700;cursor:pointer;color:var(--sub);transition:all .2s;}
+  .toggle-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+  .plan-section{display:none;} .plan-section.visible{display:block;}
+  .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:start;}
+  @media(max-width:800px){.grid{grid-template-columns:1fr;}}
+  h1{font-size:32px;margin:0 0 10px;letter-spacing:-0.02em;}
+  .sub-p{color:var(--sub);font-size:16px;margin:0 0 28px;}
+  .summary-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;}
+  .line{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line);font-size:15px;}
+  .line:last-child{border-bottom:none;}
+  .total{display:flex;justify-content:space-between;padding-top:16px;margin-top:6px;border-top:2px solid var(--ink);font-weight:800;font-size:20px;}
+  .included{list-style:none;padding:0;margin:20px 0 0;font-size:14.5px;}
+  .included li{padding:6px 0;}
+  .included li:before{content:"✓ ";color:var(--good);font-weight:800;}
+  .pay-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;position:sticky;top:24px;}
+  .pay-card h2{font-size:18px;margin:0 0 6px;}
+  .pay-card .price{font-size:40px;font-weight:800;margin:4px 0 20px;}
+  .pay-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px;border-radius:10px;font-weight:700;font-size:15.5px;text-decoration:none;margin-bottom:12px;border:none;cursor:pointer;}
+  .pay-btn.stripe{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+  .pay-btn.stripe:hover{opacity:.92;}
+  .pay-note{font-size:12.5px;color:var(--sub);text-align:center;margin-top:16px;line-height:1.5;}
+  .trust-row{display:flex;justify-content:center;gap:16px;margin-top:18px;flex-wrap:wrap;font-size:12px;color:var(--sub);}
+  footer{text-align:center;padding:40px 0;color:var(--sub);font-size:13px;}
+</style>
+</head>
+<body>
+<header class="wrap nav">
+  <div class="logo">📊 Oli<span>SalesTrack</span></div>
+  <nav><a href="../">← Back to OliSalesTrack</a></nav>
+</header>
+<main class="wrap">
+  <div style="margin-bottom:32px">
+    <h1>Choose your plan</h1>
+    <p class="sub-p">Start with Pro or lock in the best value with a one-time lifetime purchase.</p>
+    <div class="toggle-wrap">
+      <button class="toggle-btn active" onclick="showPlan('monthly',this)">📅 Monthly — $19/mo</button>
+      <button class="toggle-btn" onclick="showPlan('yearly',this)">📆 Yearly — $148/yr</button>
+      <button class="toggle-btn" id="lifetime-toggle-btn" onclick="showPlan('lifetime',this)">♾️ Lifetime — $149</button>
+    </div>
+  </div>
+
+  <!-- Monthly Plan -->
+  <div class="plan-section visible" id="plan-monthly">
+    <div class="grid">
+      <div>
+        <div class="summary-card">
+          <div class="line"><span>OliSalesTrack Pro — Monthly</span><span>$19.00/mo</span></div>
+          <div class="line"><span>Billing</span><span>Monthly, cancel anytime</span></div>
+          <div class="total"><span>Due today</span><span>$19.00 USD</span></div>
+          <ul class="included">
+            <li>All correlation analysis features</li>
+            <li>Daily / weekly / monthly / yearly views</li>
+            <li>AI business insights</li>
+            <li>PDF reports + CSV export</li>
+            <li>Multiple business profiles</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pay-card">
+        <h2>Pay securely</h2>
+        <div class="price">$19<span style="font-size:16px;font-weight:600;color:var(--sub)">/mo</span></div>
+        <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_OLISALESTRACK_MONTHLY_STRIPE_LINK" target="_blank" rel="noopener">💳 Subscribe with Stripe</a>
+        <div id="paypal-button-container" style="margin-bottom:12px"></div>
+        <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">🎉 <strong>Subscription active!</strong> Ref: <strong id="paypal-ref-id"></strong></div>
+        <div id="paypal-cancel-note" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px">Cancelled. No charge made.</div>
+        <div class="pay-note">Cards, PayPal balance, and PayPal Pay Later accepted. Cancel anytime from your PayPal account.</div>
+        <div class="trust-row"><span>🔒 256-bit SSL</span><span>🛡️ 30-day refund</span><span>❌ No contract</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yearly Plan -->
+  <div class="plan-section" id="plan-yearly">
+    <div class="grid">
+      <div>
+        <div class="summary-card">
+          <div class="line"><span>OliSalesTrack Pro — Annual</span><span>$148.00/yr</span></div>
+          <div class="line"><span>Effective rate</span><span>$12.33/month (save 35%)</span></div>
+          <div class="total"><span>Due today</span><span>$148.00 USD</span></div>
+          <ul class="included">
+            <li>Everything in Monthly, billed yearly</li>
+            <li>Save $80/year vs monthly</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pay-card">
+        <h2>Pay securely</h2>
+        <div class="price">$148<span style="font-size:16px;font-weight:600;color:var(--sub)">/yr</span></div>
+        <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_OLISALESTRACK_YEARLY_STRIPE_LINK" target="_blank" rel="noopener">💳 Subscribe with Stripe (Yearly)</a>
+        <div id="paypal-button-container-yearly" style="margin-bottom:12px"></div>
+        <div class="pay-note">Billed once per year. Cancel 30 days before renewal for a full refund.</div>
+        <div class="trust-row"><span>🔒 256-bit SSL</span><span>🛡️ 30-day refund</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lifetime Deal -->
+  <div class="plan-section" id="plan-lifetime">
+    <div class="grid">
+      <div>
+        <div class="summary-card" style="border-color:var(--accent)">
+          <div class="line"><span>OliSalesTrack Pro — Lifetime License</span><span>$149.00</span></div>
+          <div class="line"><span>Access</span><span>Permanent — never expires</span></div>
+          <div class="line"><span>Future updates</span><span>All included, forever</span></div>
+          <div class="total"><span>One-time total</span><span>$149.00 USD</span></div>
+          <ul class="included">
+            <li>All Pro features — forever</li>
+            <li>All future feature updates included</li>
+            <li>3 business profiles</li>
+            <li>Priority email support</li>
+            <li>Early access to new features</li>
+            <li>30-day money-back guarantee</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pay-card" style="border-color:var(--accent)">
+        <h2>Pay once. Own forever.</h2>
+        <div class="price">$149<span style="font-size:16px;font-weight:600;color:var(--sub)"> once</span></div>
+        <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_OLISALESTRACK_LIFETIME_STRIPE_LINK" target="_blank" rel="noopener">💳 Buy Lifetime with Stripe</a>
+        <div id="paypal-button-container-lifetime" style="margin-bottom:12px"></div>
+        <div id="paypal-success-box-lifetime" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">🎉 <strong>Lifetime access activated!</strong> Ref: <strong id="paypal-ref-id-lifetime"></strong></div>
+        <div class="pay-note">One-time charge. No renewals. 30-day refund if not satisfied.</div>
+        <div class="trust-row"><span>🔒 256-bit SSL</span><span>🛡️ 30-day refund</span><span>♾️ Lifetime</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap">
+  📊 OliSalesTrack — a product by WorkItLikeAPro. ·
+  <a href="../">Back to OliSalesTrack</a> · <a href="../../">All Oli Tools</a>
+  <div style="margin-top:8px;"><a href="../../privacy/">Privacy</a> · <a href="../../terms/">Terms</a> · <a href="../../support/">Support</a></div>
+</footer>
+
+<script src="../../shared/cookie-consent.js"></script>
+<script src="../../shared/paypal-sdk.js"></script>
+<script>
+function showPlan(plan, btn) {
+  document.querySelectorAll('.plan-section').forEach(s=>s.classList.remove('visible'));
+  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('plan-'+plan).classList.add('visible');
+  btn.classList.add('active');
+}
+// Hash-based deep linking (#lifetime from the landing page)
+if(window.location.hash === '#lifetime') {
+  document.getElementById('lifetime-toggle-btn').click();
+}
+</script>
+</body>
+</html>
