@@ -24,7 +24,7 @@
   'use strict';
 
   // ── REPLACE THIS WITH YOUR REAL PAYPAL CLIENT ID ──────────────────────
-  var PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID_HERE';
+  var PAYPAL_CLIENT_ID = 'AaxvWnckcTcHyyebnOMDedI01UddJPiVwl9f4i0Jc1D-KBSAGUensZE540ABNDe8BHjwC_rsCZLR6ZPe';
 
   // ── REPLACE FOR OLI-LOCATOR SUBSCRIPTION PLAN ─────────────────────────
   var LOCATOR_PLAN_ID = 'YOUR_LOCATOR_PLAN_ID_HERE'; // starts with P-
