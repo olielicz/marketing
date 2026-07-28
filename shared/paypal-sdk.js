@@ -24,7 +24,7 @@
   'use strict';
 
   // ── REPLACE THIS WITH YOUR REAL PAYPAL CLIENT ID ──────────────────────
-  var PAYPAL_CLIENT_ID = 'AaxvWnckcTcHyyebnOMDedI01UddJPiVwl9f4i0Jc1D-KBSAGUensZE540ABNDe8BHjwC_rsCZLR6ZPe';
+  var PAYPAL_CLIENT_ID = 'AReeYev_eodCOTJ1KDm-9q3I2YKEd7QyNecK3MgS2JUm92oIAIJGyCLrF_uSA4yWVwBYd32qdWvHd1R5';
 
   // ── REPLACE FOR OLI-LOCATOR SUBSCRIPTION PLAN ─────────────────────────
   var LOCATOR_PLAN_ID = 'YOUR_LOCATOR_PLAN_ID_HERE'; // starts with P-
