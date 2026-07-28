@@ -52,10 +52,14 @@
 
     var text = document.createElement("span");
     text.style.cssText = "max-width:640px;";
+    // Build a relative path back to /privacy/ from wherever we are
+    var depth = (window.location.pathname.match(/\//g) || []).length - 1;
+    var privacyPath = depth <= 1 ? './privacy/' : Array(depth).fill('..').join('/') + '/privacy/';
+
     text.innerHTML =
       "🍪 This site doesn't set cookies or load trackers on its own. If you use a signup form or checkout button, " +
       "that specific provider (Brevo, Stripe, or PayPal) may set its own cookies once you interact with it. " +
-      '<a href="/privacy/" style="color:#93c5fd;text-decoration:underline;">Read the full Privacy Policy</a>.';
+      '<a href="' + privacyPath + '" style="color:#93c5fd;text-decoration:underline;">Read the full Privacy Policy</a>.';
 
     var btnRow = document.createElement("span");
     btnRow.style.cssText = "display:flex; gap:10px; flex-shrink:0;";

@@ -126,7 +126,7 @@
              actual live domain once deployed (e.g. https://yourdomain.com/contact/?sent=1) —
              it's currently a relative path, which works but skips FormSubmit's nicer default
              thank-you page in favor of just reloading this page with a query string. -->
-        <input type="hidden" name="_next" value="./?sent=1">
+        <input type="hidden" name="_next" value="https://olielicz.github.io/marketing/contact/?sent=1">
 
         <label for="ct-name">Your name</label>
         <input type="text" id="ct-name" name="Name" placeholder="Jane Smith" required>
@@ -141,6 +141,7 @@
           <option value="OliFlow Automation Engine">OliFlow Automation Engine</option>
           <option value="OliConnect">OliConnect</option>
           <option value="Oli-Locator">Oli-Locator</option>
+          <option value="OliSalesTrack">OliSalesTrack</option>
           <option value="Not sure / general question">Not sure / general question</option>
         </select>
 
@@ -160,9 +161,6 @@
         <button type="submit" class="cta-btn">Send Message</button>
       </form>
       <div class="response-note">⏱️ We aim to respond within 1-2 business days</div>
-      <div class="setup-note">
-        ⚠️ <strong>Site owner setup note:</strong> the first submission through this form triggers a one-time confirmation email to workitlikeapr01@gmail.com from FormSubmit.co — open it and click "Confirm" once, and every future submission arrives directly in the inbox automatically. No account or API key needed. If preferred, this can be swapped for the Brevo-based form used elsewhere in this repo instead — just ask.
-      </div>
     </div>
   </div>
 </section>
