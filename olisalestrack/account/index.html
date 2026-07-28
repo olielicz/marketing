@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Account — OliSalesTrack</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#f4f4f8;min-height:100vh;color:#14161a;-webkit-font-smoothing:antialiased;}
+a{color:#7c3aed;text-decoration:none;}
+
+/* ── Topbar ── */
+.topbar{background:#fff;border-bottom:1px solid #e7e9ee;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:sticky;top:0;z-index:50;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
+.topbar-icon{width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-email{font-size:13px;color:#55606e;max-width:190px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-logout{background:transparent;border:1.5px solid #e7e9ee;
+  border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;
+  cursor:pointer;color:#55606e;transition:all .2s;}
+.btn-logout:hover{border-color:#dc2626;color:#dc2626;}
+
+/* ── Layout ── */
+.page{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
+.page-heading{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
+.page-sub{color:#55606e;font-size:14.5px;margin-bottom:24px;}
+
+/* ── Status banner ── */
+.status-banner{background:linear-gradient(135deg,#f5f3ff,#7c3aed12);
+  border:1px solid #ddd6fe;border-radius:14px;padding:18px 22px;
+  margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.status-icon{font-size:32px;}
+.status-title{font-weight:800;font-size:15px;margin-bottom:2px;}
+.status-meta{font-size:13px;color:#55606e;}
+.status-badge{display:inline-flex;align-items:center;gap:5px;
+  background:#7c3aed18;color:#7c3aed;border-radius:100px;
+  padding:4px 12px;font-size:12px;font-weight:700;margin-top:6px;}
+
+/* ── Cards ── */
+.card{background:#fff;border:1px solid #e7e9ee;border-radius:16px;
+  padding:22px;margin-bottom:18px;}
+.card-title{font-size:14px;font-weight:700;color:#14161a;
+  margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.card-title-icon{font-size:17px;}
+
+/* ── Two-col grid ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+/* ── Features list ── */
+.feature-list{list-style:none;}
+.feature-list li{padding:8px 0;border-bottom:1px solid #f4f4f8;
+  font-size:14px;color:#55606e;display:flex;align-items:center;gap:8px;}
+.feature-list li:last-child{border:none;}
+.feature-list li::before{content:"✓";color:#7c3aed;font-weight:800;}
+
+/* ── Form fields ── */
+.form-label{display:block;font-size:12px;font-weight:700;color:#55606e;
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
+.form-input{width:100%;padding:10px 13px;border:1.5px solid #e7e9ee;
+  border-radius:9px;font-size:14px;font-family:inherit;color:#14161a;
+  background:#fff;margin-bottom:13px;transition:border .2s;}
+.form-input:focus{border-color:#7c3aed;outline:none;
+  box-shadow:0 0 0 3px #f5f3ff;}
+.form-input[readonly]{background:#f9f9fc;cursor:default;color:#55606e;}
+.pwd-wrap{position:relative;margin-bottom:13px;}
+.pwd-wrap .form-input{margin-bottom:0;padding-right:42px;}
+.pwd-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:#55606e;font-size:15px;}
+.pwd-reqs{font-size:12px;color:#55606e;margin-top:3px;margin-bottom:11px;
+  display:flex;gap:10px;flex-wrap:wrap;}
+.pwd-reqs span.met{color:#16a34a;}
+
+/* ── Buttons ── */
+.btn{padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:700;
+  cursor:pointer;border:none;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-secondary{background:transparent;border:1.5px solid #e7e9ee;color:#55606e;}
+.btn-secondary:hover{border-color:#7c3aed;color:#7c3aed;}
+.btn-danger{background:transparent;border:1.5px solid #fecaca;color:#dc2626;}
+.btn-danger:hover{background:#fef2f2;}
+.btn-sm{padding:7px 14px;font-size:13px;}
+
+/* ── Alerts ── */
+.alert{padding:10px 13px;border-radius:9px;font-size:13px;
+  margin-bottom:12px;display:none;}
+.alert.show{display:block;}
+.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+
+/* ── Orders table ── */
+.orders-table{width:100%;border-collapse:collapse;font-size:13px;}
+.orders-table th{text-align:left;padding:8px 10px;font-size:11px;
+  text-transform:uppercase;letter-spacing:.05em;color:#55606e;
+  border-bottom:1px solid #e7e9ee;}
+.orders-table td{padding:10px;border-bottom:1px solid #f4f4f8;}
+.orders-table tr:last-child td{border:none;}
+.badge{display:inline-flex;align-items:center;border-radius:100px;
+  padding:2px 8px;font-size:11px;font-weight:700;}
+.badge-active{background:#ecfdf5;color:#16a34a;}
+.badge-sub{background:#f5f3ff;color:#7c3aed;}
+
+/* ── Subscription info ── */
+.sub-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid #f4f4f8;flex-wrap:wrap;gap:10px;}
+.sub-row:last-child{border:none;}
+.sub-name{font-weight:600;font-size:14px;}
+.sub-detail{font-size:12px;color:#55606e;margin-top:2px;}
+
+/* ── Spinner ── */
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;
+  display:inline-block;vertical-align:middle;margin-right:5px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Support box ── */
+.support-box{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:12px;
+  padding:16px 18px;display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;}
+.support-text{font-size:13.5px;color:#55606e;}
+.support-text strong{color:#14161a;}
+</style>
+
+<meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<meta name="author" content="WorkItLikeAPro"/>
+</head>
+<body>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-icon">📊</div>
+    <span>OliSalesTrack</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-email" id="navEmail"></span>
+    <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+  </div>
+</header>
+
+<!-- ── Page ── -->
+<div class="page">
+
+  <div class="page-heading">👋 My Account</div>
+  <p class="page-sub" id="welcomeLine">Manage your OliSalesTrack account</p>
+
+  <!-- ── Status banner ── -->
+  <div class="status-banner">
+    <div class="status-icon">📊</div>
+    <div style="flex:1">
+      <div class="status-title">OliSalesTrack</div>
+      <div class="status-meta">Sales · Refunds · Expenses Tracker</div>
+      <div class="status-badge">✅ Active — $19/mo or $148/yr</div>
+    </div>
+    <a href="../" class="btn btn-primary">Open OliSalesTrack →</a>
+  </div>
+
+  <!-- ── What's included ── -->
+  <div class="card">
+    <div class="card-title"><span class="card-title-icon">🧰</span> What's Included</div>
+    <ul class="feature-list" id="featureList">
+      <li>Sales + refund + expense tracking</li>
+      <li>Daily/weekly/monthly/yearly views</li>
+      <li>Correlation analysis (Pearson r)</li>
+      <li>AI business insights & PDF reports</li>
+    </ul>
+  </div>
+
+  <!-- ── Profile + Password grid ── -->
+  <div class="two-col">
+
+    <!-- Profile -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">👤</span> Your Details</div>
+      <div class="alert" id="profileAlert"></div>
+      <label class="form-label" for="profileName">Display Name</label>
+      <input class="form-input" type="text" id="profileName" placeholder="Your name"/>
+      <label class="form-label" for="profileEmail">Email Address</label>
+      <input class="form-input" type="email" id="profileEmail" readonly
+             title="Email is your login — contact support to change it."/>
+      <small style="display:block;color:#55606e;font-size:12px;
+             margin-top:-9px;margin-bottom:13px;">
+        Email is your login ID — contact support to change it.
+      </small>
+      <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveProfile()">
+        Save Changes
+      </button>
+    </div>
+
+    <!-- Password -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🔐</span> Change Password</div>
+      <div class="alert" id="pwdAlert"></div>
+      <label class="form-label" for="curPwd">Current Password</label>
+      <div class="pwd-wrap">
+        <input class="form-input" type="password" id="curPwd"
+               placeholder="Current password" autocomplete="current-password"/>
+        <button class="pwd-eye" onclick="eye('curPwd',this)" type="button">👁</button>
+      </div>
+      <label class="form-label" for="newPwd">New Password</label>
+      <div class="pwd-wrap">
+        <input class="form-input" type="password" id="newPwd"
+               placeholder="At least 8 characters" autocomplete="new-password"
+               oninput="chkReqs()"/>
+        <button class="pwd-eye" onclick="eye('newPwd',this)" type="button">👁</button>
+      </div>
+      <div class="pwd-reqs">
+        <span id="r8">✗ 8+ chars</span>
+        <span id="rN">✗ number</span>
+        <span id="rS">✗ symbol</span>
+      </div>
+      <label class="form-label" for="conPwd">Confirm New Password</label>
+      <div class="pwd-wrap">
+        <input class="form-input" type="password" id="conPwd"
+               placeholder="Repeat new password" autocomplete="new-password"/>
+        <button class="pwd-eye" onclick="eye('conPwd',this)" type="button">👁</button>
+      </div>
+      <button class="btn btn-primary btn-sm" id="changePwdBtn" onclick="changePwd()">
+        Update Password
+      </button>
+    </div>
+
+  </div><!-- /two-col -->
+
+  <!-- ── Orders ── -->
+  <div class="card">
+    <div class="card-title"><span class="card-title-icon">🧾</span> Order History</div>
+    <div style="overflow-x:auto;">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Date</th>
+            <th>Reference</th>
+            <th>Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="5" style="text-align:center;padding:20px;color:#55606e;">
+            No orders yet.
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Subscription (shown only for monthly tools) ── -->
+  <div class="card" id="subsCard" style="display:none;">
+    <div class="card-title"><span class="card-title-icon">🔄</span> Subscription</div>
+    <p style="font-size:13px;color:#55606e;margin-bottom:14px;">
+      Your subscription renews automatically.
+      You'll receive a reminder email 2–3 days before each renewal.
+    </p>
+    <div class="sub-row">
+      <div>
+        <div class="sub-name">OliSalesTrack</div>
+        <div class="sub-detail" id="subDetail">$19/mo or $148/yr · Monthly auto-renewal</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="https://www.paypal.com/myaccount/autopay/" target="_blank"
+           class="btn btn-secondary btn-sm">Manage in PayPal</a>
+        <a href="../buy/" class="btn btn-sm"
+           style="background:#f5f3ff;color:#7c3aed;border:1.5px solid #ddd6fe;">
+          View Plans
+        </a>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#55606e;margin-top:12px;">
+      To cancel: click <strong>Manage in PayPal</strong> above, or
+      <a href="../../contact/">contact support</a>.
+      No penalty, cancel before next renewal date.
+    </p>
+  </div>
+
+  <!-- ── Support ── -->
+  <div class="support-box">
+    <div class="support-text">
+      <strong>Need help with OliSalesTrack?</strong><br/>
+      We respond to every message within 1–2 business days.
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="../../contact/" class="btn btn-primary btn-sm">📧 Contact Support</a>
+      <a href="../../support/" class="btn btn-secondary btn-sm">📚 Help Docs</a>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script src="../../shared/auth.js"></script>
+<script>
+var TOOL_KEY = 'olisalestrack';
+var TOOL_TYPE = 'monthly';
+
+/* ── Guard: must be logged in to this specific tool ── */
+var session = OliAuth.requireLogin(TOOL_KEY);
+if (!session) throw 0; // requireLogin already redirected
+
+var user = OliAuth.getUser(session.email, TOOL_KEY);
+
+/* ── Populate on load ── */
+document.addEventListener('DOMContentLoaded', function() {
+  if (!user) { OliAuth.logout(TOOL_KEY); return; }
+
+  document.getElementById('navEmail').textContent   = user.email;
+  document.getElementById('welcomeLine').textContent = '👋 Welcome back, ' +
+    (user.name || user.email.split('@')[0]) + ' — ' + 'OliSalesTrack';
+  document.getElementById('profileName').value  = user.name || '';
+  document.getElementById('profileEmail').value = user.email;
+
+  renderOrders();
+  if (TOOL_TYPE === 'monthly') renderSubs();
+});
+
+/* ── Orders ── */
+function renderOrders() {
+  var orders = user.orders || [];
+  if (!orders.length) return;
+  var tbody = document.getElementById('ordersBody');
+  tbody.innerHTML = orders.slice().reverse().map(function(o) {
+    var date = o.date
+      ? new Date(o.date).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'})
+      : '—';
+    var ref = o.ref
+      ? '<code style="font-size:11px;background:#f4f4f8;padding:2px 6px;border-radius:4px;">' + o.ref + '</code>'
+      : '—';
+    var typeLabel = TOOL_TYPE === 'lifetime'
+      ? '<span class="badge badge-sub">♾️ Lifetime</span>'
+      : '<span class="badge badge-sub">🔄 Subscription</span>';
+    return '<tr>'
+      + '<td style="font-weight:600;">OliSalesTrack</td>'
+      + '<td style="color:#55606e;">' + date + '</td>'
+      + '<td>' + ref + '</td>'
+      + '<td>' + typeLabel + '</td>'
+      + '<td><span class="badge badge-active">● Active</span></td>'
+      + '</tr>';
+  }).join('');
+}
+
+/* ── Subscriptions ── */
+function renderSubs() {
+  document.getElementById('subsCard').style.display = 'block';
+}
+
+/* ── Save profile ── */
+function saveProfile() {
+  var name = document.getElementById('profileName').value.trim();
+  if (!name) { showAlert('profileAlert', 'Please enter a display name.', 'error'); return; }
+  setBusy('saveBtn', true);
+  setTimeout(function() {
+    OliAuth.updateUser(user.email, TOOL_KEY, { name: name });
+    user.name = name;
+    document.getElementById('welcomeLine').textContent =
+      '👋 Welcome back, ' + name + ' — OliSalesTrack';
+    setBusy('saveBtn', false);
+    showAlert('profileAlert', '✅ Profile saved!', 'success');
+  }, 280);
+}
+
+/* ── Change password ── */
+function changePwd() {
+  clearAlert('pwdAlert');
+  var cur  = document.getElementById('curPwd').value;
+  var nw   = document.getElementById('newPwd').value;
+  var conf = document.getElementById('conPwd').value;
+  if (!cur || !nw || !conf) { showAlert('pwdAlert', 'Please fill in all fields.', 'error'); return; }
+  if (nw !== conf) { showAlert('pwdAlert', 'New passwords do not match.', 'error'); return; }
+  if (nw.length < 8) { showAlert('pwdAlert', 'Password must be at least 8 characters.', 'error'); return; }
+  setBusy('changePwdBtn', true);
+  setTimeout(function() {
+    var r = OliAuth.changePassword(user.email, TOOL_KEY, cur, nw);
+    setBusy('changePwdBtn', false);
+    if (!r.ok) { showAlert('pwdAlert', r.error, 'error'); return; }
+    document.getElementById('curPwd').value = '';
+    document.getElementById('newPwd').value = '';
+    document.getElementById('conPwd').value = '';
+    showAlert('pwdAlert', '✅ Password updated!', 'success');
+  }, 380);
+}
+
+/* ── Logout ── */
+function doLogout() {
+  OliAuth.logout(TOOL_KEY, '../login/');
+}
+
+/* ── Helpers ── */
+function showAlert(id, msg, type) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'alert show alert-' + type;
+}
+function clearAlert(id) {
+  var el = document.getElementById(id);
+  if (el) el.className = 'alert';
+}
+function eye(id, btn) {
+  var inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+function chkReqs() {
+  var v = document.getElementById('newPwd').value;
+  function sr(id, ok) {
+    var el = document.getElementById(id);
+    el.textContent = (ok ? '✓' : '✗') + el.textContent.slice(1);
+    el.classList.toggle('met', ok);
+  }
+  sr('r8', v.length >= 8);
+  sr('rN', /\d/.test(v));
+  sr('rS', /[^a-zA-Z0-9]/.test(v));
+}
+function setBusy(id, busy) {
+  var btn = document.getElementById(id);
+  btn.disabled = busy;
+  if (busy) btn.innerHTML = '<span class="spinner"></span>Saving…';
+  else btn.textContent = (id === 'saveBtn') ? 'Save Changes' : 'Update Password';
+}
+</script>
+
+<script src="../../shared/security.js"></script>
+</body>
+</html>

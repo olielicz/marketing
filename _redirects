@@ -1,0 +1,32 @@
+# Oli Tools — Netlify Redirects
+# Handles clean URLs and enforces HTTPS
+
+# Force HTTPS
+http://olielicz.github.io/marketing/* https://olielicz.github.io/marketing/:splat 301!
+
+# Short tool redirects (if using a custom domain like olitools.com)
+# /oliops           /oliops/           301
+# /olicommerce      /olicommerce/       301
+# /oliflow          /oliflow/           301
+# /oliconnect       /oliconnect/        301
+# /locator          /oli-locator/       301
+# /salestrack       /olisalestrack/     301
+
+# Login shorthand (each tool has its own)
+/login/oliops          /oliops/login/           301
+/login/olicommerce     /olicommerce/login/       301
+/login/oliflow         /oliflow/login/           301
+/login/oliconnect      /oliconnect/login/        301
+/login/oli-locator     /oli-locator/login/       301
+/login/olisalestrack   /olisalestrack/login/     301
+
+# Account shorthand
+/account/oliops        /oliops/account/          301
+/account/olicommerce   /olicommerce/account/     301
+/account/oliflow       /oliflow/account/         301
+/account/oliconnect    /oliconnect/account/      301
+/account/oli-locator   /oli-locator/account/     301
+/account/olisalestrack /olisalestrack/account/   301
+
+# 404 fallback
+/* /index.html 200

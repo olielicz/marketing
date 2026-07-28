@@ -1,0 +1,49 @@
+/*
+  # ── HTTP Security Headers (Netlify / Cloudflare Pages / GitHub Pages via proxy) ──
+  # These headers add server-level protection on top of the JS security layer.
+  # GitHub Pages does NOT honour _headers natively — use Cloudflare as a free proxy
+  # in front of GitHub Pages to activate them (see HOSTING-GUIDE.md).
+  # Netlify and Cloudflare Pages honour _headers automatically.
+
+  # Block clickjacking — page cannot be embedded in iframes on other domains
+  X-Frame-Options: SAMEORIGIN
+
+  # Prevent browsers from MIME-sniffing the content type
+  X-Content-Type-Options: nosniff
+
+  # Force HTTPS for 1 year, include subdomains
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Referrer policy — don't leak your URL to third parties
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Content Security Policy
+  # - Allows scripts from same origin + specific trusted CDNs only
+  # - Blocks inline script injection (XSS protection)
+  # - Blocks loading resources from unknown origins
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.paypal.com https://www.paypalobjects.com https://sibforms.com https://formsubmit.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://sibforms.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.emailjs.com https://formsubmit.co https://www.paypal.com; frame-src https://www.paypal.com https://www.sandbox.paypal.com; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co https://1aab3e8b.sibforms.com;
+
+  # Disable browser features we don't use
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self "https://www.paypal.com"), usb=()
+
+  # Prevent browsers from caching sensitive pages
+  Cache-Control: public, max-age=3600
+
+# ── Extra: noindex/nofollow for login and account pages ──────────────────
+/*/login/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/*/account/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store, no-cache, must-revalidate
+  X-Frame-Options: DENY
+
+/login/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/account/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store, no-cache, must-revalidate
+  X-Frame-Options: DENY

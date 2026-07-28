@@ -47,6 +47,16 @@
 
   // ── Load SDK and render button ─────────────────────────────────────────
   function init() {
+    // Load auth.js if not already present (needed for createAccount on success)
+    if (!window.OliAuth) {
+      var authScript = document.createElement('script');
+      var authDepth  = (window.location.pathname.replace(/\/$/, '').split('/').filter(Boolean).length - 1);
+      authScript.src = authDepth > 0
+        ? Array(authDepth).fill('..').join('/') + '/shared/auth.js'
+        : './shared/auth.js';
+      document.head.appendChild(authScript);
+    }
+
     var container = document.getElementById('paypal-button-container');
     if (!container) return; // no container on this page
 
@@ -135,23 +145,67 @@
   }
 
   function showSuccess(type, id, product) {
+    // ── 1. Create account + send welcome email ────────────────────────
+    var buyerEmail = getBuyerEmail();
+    if (buyerEmail && window.OliAuth) {
+      var toolKey = detectToolKey();
+      OliAuth.createAccount(buyerEmail, toolKey, id);
+    }
+
+    // ── 2. Show success UI ─────────────────────────────────────────────
     var box = document.getElementById('paypal-success-box');
     if (box) {
       box.style.display = 'block';
       var idEl = document.getElementById('paypal-ref-id');
       if (idEl) idEl.textContent = id;
     } else {
-      // Fallback modal
+      var loginPath = getLoginPath();
       var modal = document.createElement('div');
-      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
-      modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:2.5rem 2rem;max-width:400px;width:100%;text-align:center;font-family:inherit">'
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+      modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:2.5rem 2rem;max-width:440px;width:100%;text-align:center;font-family:inherit">'
         + '<div style="font-size:3rem;margin-bottom:1rem">🎉</div>'
-        + '<h2 style="margin:0 0 0.75rem;font-size:1.5rem;color:#14161a">Payment successful!</h2>'
-        + '<p style="color:#55606e;margin:0 0 1.25rem;font-size:15px">Your serial code will be emailed to you within minutes. Reference: <strong>' + id + '</strong></p>'
-        + '<button onclick="this.closest(\'div[style]\').remove()" style="background:#4f46e5;color:#fff;border:none;padding:12px 24px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer">Got it →</button>'
+        + '<h2 style="margin:0 0 .75rem;font-size:1.5rem;color:#14161a">Payment successful!</h2>'
+        + '<p style="color:#55606e;margin:0 0 .5rem;font-size:15px">An email is on its way to <strong>' + (buyerEmail || 'your inbox') + '</strong> with your login details.</p>'
+        + '<p style="color:#55606e;margin:0 0 1.5rem;font-size:13.5px">Reference: <code style="background:#f4f4f8;padding:2px 6px;border-radius:4px">' + id + '</code></p>'
+        + '<a href="' + loginPath + '" style="display:block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:700;font-size:15px;margin-bottom:10px">Sign In to Your Account →</a>'
+        + '<button onclick="this.closest(\'div[style*=fixed]\').remove()" style="background:transparent;border:none;color:#55606e;font-size:13px;cursor:pointer;padding:4px">I\'ll check email first</button>'
         + '</div>';
       document.body.appendChild(modal);
     }
+  }
+
+  // ── Detect which tool key this buy page belongs to ──────────────────
+  function detectToolKey() {
+    var path = window.location.pathname.toLowerCase();
+    if (path.includes('oliops'))      return 'oliops';
+    if (path.includes('olicommerce')) return 'olicommerce';
+    if (path.includes('oliflow'))     return 'oliflow';
+    if (path.includes('oliconnect'))  return 'oliconnect';
+    if (path.includes('oli-locator')) return 'oli-locator';
+    if (path.includes('olisalestrack')) return 'olisalestrack';
+    return 'unknown';
+  }
+
+  // ── Get buyer email from a hidden field populated by buy pages ──────
+  // Each buy page has: <input type="hidden" id="buyerEmailCapture" value="">
+  // The email input in the buy form populates it. If absent, returns null.
+  function getBuyerEmail() {
+    // 1. Try a dedicated hidden capture field
+    var cap = document.getElementById('buyerEmailCapture');
+    if (cap && cap.value) return cap.value.trim();
+    // 2. Try any email input on the page
+    var inputs = document.querySelectorAll('input[type="email"]');
+    for (var i = 0; i < inputs.length; i++) {
+      if (inputs[i].value) return inputs[i].value.trim();
+    }
+    return null;
+  }
+
+  // ── Build relative path back to /login/ ────────────────────────────
+  function getLoginPath() {
+    var parts = window.location.pathname.replace(/\/$/, '').split('/').filter(Boolean);
+    var depth = Math.max(0, parts.length - 1);
+    return depth > 0 ? Array(depth).fill('..').join('/') + '/login/' : './login/';
   }
 
   function showError() {

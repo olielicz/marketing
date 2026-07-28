@@ -1,124 +1,237 @@
-# Marketing — 30-Day Go-to-Market Sprint
+# Oli Tools — Marketing & Product Suite
 
-Everything needed to launch and sell 5 product lines bundled from olielicz's tool portfolio, executed in a 30-day sprint using entirely free tools.
+A portfolio of **6 business tools** built by **WorkItLikeAPro**.
+Each tool solves one expensive business problem at a fraction of the cost.
+Each product is sold, hosted, and logged into **completely separately**.
 
-**Start here:** [`00-master-calendar.md`](./00-master-calendar.md) — the day-by-day plan.
-**Then:** [`STEP-BY-STEP-INSTRUCTIONS.md`](./STEP-BY-STEP-INSTRUCTIONS.md) — exact click-by-click steps for every external tool (Brevo, Product Hunt, AppSumo, GitHub Pages, directories, outreach).
-**For payments:** [`PAYMENTS-SETUP.md`](./PAYMENTS-SETUP.md) — exact steps to wire up real Stripe + PayPal checkout on every Buy Now page.
-**For AppSumo research:** [`appsumo-alternatives-research.md`](./appsumo-alternatives-research.md) — why lifetime pricing was chosen and what alternatives exist.
+**Live site:** `https://olielicz.github.io/marketing/` (after merging PR #2 + enabling Pages)
+**Contact:** workitlikeapr01@gmail.com
 
-## The 5 product lines
+---
 
-| Line | Clean URL (once Pages is live) | Repos bundled | Pricing |
+## The 6 Products
+
+| Tool | Price | Type | Login | Account |
+|---|---|---|---|---|
+| 💼 **OliOps Suite** | $299 lifetime | Self-hosted | `/oliops/login/` | `/oliops/account/` |
+| 🛒 **OliCommerce Stack** | $199 lifetime | Self-hosted | `/olicommerce/login/` | `/olicommerce/account/` |
+| ⚙️ **OliFlow Automation Engine** | $249 lifetime | Self-hosted | `/oliflow/login/` | `/oliflow/account/` |
+| ♻️ **OliConnect** | $89 lifetime | Self-hosted | `/oliconnect/login/` | `/oliconnect/account/` |
+| 🏡 **Oli-Locator** | $49/month | Hosted SaaS | `/oli-locator/login/` | `/oli-locator/account/` |
+| 📊 **OliSalesTrack** | $19/mo or $148/yr | Hosted SaaS | `/olisalestrack/login/` | `/olisalestrack/account/` |
+
+---
+
+
+## Architecture — Separate Login Per Product
+
+Each product has its own fully independent login system:
+
+```
+Each tool folder contains:
+├── index.html          ← Landing page (public)
+├── buy/
+│   └── index.html      ← Checkout page (email capture + PayPal/Stripe)
+├── login/
+│   └── index.html      ← Tool-specific login page (branded per tool)
+└── account/
+    └── index.html      ← Tool-specific account dashboard (requires login)
+```
+
+**Why separate?** A customer who buys OliOps and OliSalesTrack has two completely independent accounts — separate passwords, separate sessions, separate dashboards. There is no single "Oli Tools account."
+
+### Shared hub pages (redirectors)
+- `/login/` — shows a grid of all 6 tools, links to each tool's login
+- `/account/` — shows a grid of all 6 tools, links to each tool's account
+
+---
+
+## File Map
+
+```
+index.html                      ← Hub homepage
+sitemap.xml                     ← SEO: 19+ page sitemap
+robots.txt                      ← Points to sitemap
+_headers                        ← Security headers (Netlify/Cloudflare Pages)
+_redirects                      ← Netlify URL shorthand routes
+.htaccess                       ← Apache security (InfinityFree/Hostinger)
+.nojekyll                       ← GitHub Pages: disables Jekyll processing
+HOSTING-GUIDE.md                ← Free & cheap hosting options (see below)
+PAYMENTS-SETUP.md               ← Stripe + PayPal wiring guide
+GO-LIVE-CHECKLIST.md            ← Pre-launch checklist
+00-master-calendar.md           ← 30-day GTM sprint with OliSalesTrack
+
+── Shared code ─────────────────────────────────────────────────────────────
+shared/
+  auth.js                       ← Auth engine (per-tool namespaced)
+  paypal-sdk.js                 ← PayPal JS SDK (auto-detects tool, creates account)
+  security.js                   ← Security layer (right-click, DevTools, watermark)
+  security-check.js             ← Runtime self-test (run in browser console)
+  cookie-consent.js             ← GDPR cookie banner
+
+── 6 Tool folders (identical structure) ────────────────────────────────────
+{tool}/
+  index.html                    ← Landing page
+  buy/index.html                ← Checkout (email capture + PayPal + Stripe)
+  login/index.html              ← Per-tool login page (branded)
+  account/index.html            ← Per-tool account dashboard
+
+── Hub redirectors ─────────────────────────────────────────────────────────
+login/index.html                ← Tool selector → links to all 6 logins
+account/index.html              ← Tool selector → links to all 6 accounts
+
+── Legal & support ─────────────────────────────────────────────────────────
+privacy/index.html              ← GDPR Privacy Policy (covers all 6 tools)
+terms/index.html                ← Terms of Service (Queensland, Australia)
+security/index.html             ← Trust & Security Center
+support/index.html              ← Troubleshooting (per-tool FAQs)
+contact/index.html              ← Contact form → workitlikeapr01@gmail.com
+assets/README.md                ← Product image URLs for PayPal dashboard
+```
+
+---
+
+## Login System
+
+### How it works end-to-end
+
+```
+1. Customer enters email on buy page → pays via PayPal or Stripe
+2. PayPal: paypal-sdk.js fires → OliAuth.createAccount(email, toolKey, orderId)
+   - Creates account in localStorage (scoped to that tool only)
+   - Generates temporary password
+   - Sends welcome email via EmailJS with:
+       • Tool-specific login link (/TOOL/login/)
+       • Temporary password
+       • Order reference
+3. Stripe: customer redirected to tool account page (set up Zapier/webhook for email)
+4. Customer clicks link in email → lands on /TOOL/login/
+5. Signs in with temp password → forced to set own permanent password
+6. Lands on /TOOL/account/ dashboard:
+   • Change password (any time)
+   • View order history
+   • Manage subscriptions (Oli-Locator + OliSalesTrack)
+   • Contact support
+```
+
+### Per-tool storage namespacing
+
+| Storage key | Contains |
+|---|---|
+| `oli_users_oliops` | OliOps Suite user accounts |
+| `oli_users_olicommerce` | OliCommerce Stack user accounts |
+| `oli_users_oliflow` | OliFlow user accounts |
+| `oli_users_oliconnect` | OliConnect user accounts |
+| `oli_users_oli-locator` | Oli-Locator user accounts |
+| `oli_users_olisalestrack` | OliSalesTrack user accounts |
+| `oli_session_oliops` | OliOps active session |
+| `oli_session_olisalestrack` | OliSalesTrack active session |
+| *(etc.)* | All sessions are independent |
+
+### EmailJS Setup (required for automatic login emails)
+
+1. Sign up free at **[emailjs.com](https://emailjs.com)** (200 emails/mo free)
+2. Add service: Gmail → connect `workitlikeapr01@gmail.com`
+3. Create 3 templates: `oli_welcome`, `oli_renewal`, `oli_reset` (see `PAYMENTS-SETUP.md`)
+4. Open `shared/auth.js` lines 7–13 → paste your Public Key + Service ID
+
+---
+
+## Security
+
+The repo is public but the content is protected at multiple layers:
+
+| Layer | What it does |
+|---|---|
+| `shared/security.js` | Right-click disable, Ctrl+U/S/A/P block, DevTools detection, text-select CSS, print blocking, image drag prevention, console copyright watermark |
+| `_headers` | CSP, X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy (Netlify/CF Pages) |
+| `.htaccess` | All of the above + bot blocking, hotlink protection, no directory listing (Apache hosts) |
+| Login gates | account/ pages require `OliAuth.requireLogin(toolKey)` — unauthorized users are redirected |
+| `meta[name=robots]` | `noindex,nofollow` on all login/ and account/ pages |
+| HTTP no-cache | Login and account pages have `Cache-Control: no-store` |
+| Copyright meta | `<meta name="copyright" content="© 2025 WorkItLikeAPro">` on every page |
+
+**Important:** No client-side JS protection is unbreakable. Real protection = Terms of Service (✅ done) + copyright registration + actual tool functionality behind auth gates (✅ done for login/account pages).
+
+### Running the security self-test
+
+Open any page in a browser → open DevTools console → run:
+```js
+// Either include the script tag, or paste security-check.js contents directly
+```
+Or load it on a page during development:
+```html
+<script src="../../shared/security-check.js"></script>
+```
+Expected output: 6/6 checks passed (green).
+
+---
+
+## Hosting Options
+
+See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
+
+### Quick summary
+
+| Platform | Cost | Best for | `_headers` | `.htaccess` |
+|---|---|---|---|---|
+| **GitHub Pages** | Free | Current setup | ❌ (use Cloudflare proxy) | ❌ |
+| **Netlify** | Free | Recommended upgrade | ✅ native | ❌ |
+| **Cloudflare Pages** | Free | Best performance | ✅ native | ❌ |
+| **Vercel** | Free | Future dynamic features | ✅ vercel.json | ❌ |
+| **InfinityFree** | Free | Apache/.htaccess | ❌ | ✅ |
+| **Hostinger** | ~$2–3/mo | Most professional | ❌ | ✅ |
+
+**Recommended path:**
+1. **Today:** GitHub Pages (already live, merge PR #2)
+2. **First sale:** Migrate to Netlify (5 minutes, `_headers` activates automatically)
+3. **First $100:** Buy domain + Hostinger for real email address
+
+---
+
+## OliSalesTrack — Quick Reference
+
+| Item | Value |
+|---|---|
+| Repo | `github.com/olielicz/SalesTrack` |
+| App folder | `refund-tracker/` (PWA, single-file React) |
+| Login page | `/olisalestrack/login/` |
+| Account page | `/olisalestrack/account/` |
+| Buy page | `/olisalestrack/buy/` |
+| Landing page | `/olisalestrack/` |
+| Monthly price | $19/month |
+| Yearly price | $148/year (save 35%) |
+| Payment | PayPal subscription + Stripe recurring |
+| Competitors | Baremetrics ($58+/mo), Profitwell, Google Sheets |
+| Key differentiator | Pearson correlation analysis: Sales ↔ Refunds ↔ Expenses |
+| Target buyer | Shopify/WooCommerce/Amazon sellers, SaaS founders, freelancers |
+| Marketing angle | "Your real profit after refunds and expenses — not the number you think" |
+
+---
+
+## Pre-Launch Checklist
+
+### Must-do before launch
+- [ ] Merge PR #2 on `github.com/olielicz/marketing`
+- [ ] Enable GitHub Pages: Settings → Pages → Branch: `main` → `/` (root)
+- [ ] Activate FormSubmit: submit contact form once → click confirmation email
+- [ ] PayPal Client ID → paste in `shared/paypal-sdk.js` line 23
+- [ ] Stripe Payment Links → paste into each `buy/index.html`
+- [ ] Oli-Locator PayPal Plan ID → `shared/paypal-sdk.js` line 26
+- [ ] OliSalesTrack PayPal subscription script → `olisalestrack/buy/index.html`
+- [ ] EmailJS setup → `shared/auth.js` lines 7–13 (Public Key + Service ID)
+- [ ] Submit sitemap → Google Search Console
+- [ ] Add Cloudflare in front of GitHub Pages (for `_headers` + DDoS protection)
+
+### Payments reference
+
+| Tool | Stripe file | Price | PayPal |
 |---|---|---|---|
-| Hub / all tools | `/` | — | — |
-| OliOps Suite | `/oliops/` | OliCRM, OliCompute, automate-CSR | **$299 lifetime**, up to 5 devices |
-| OliCommerce Stack | `/olicommerce/` | ecomm-automation, project-2 | **$199 lifetime**, up to 5 devices |
-| OliFlow Automation Engine | `/oliflow/` | project-3, auto-tools | **$249 lifetime**, up to 5 devices |
-| OliConnect | `/oliconnect/` | oliconnect | **$89 lifetime**, up to 5 devices |
-| Oli-Locator | `/oli-locator/` | lead-gen | **$49/month** (hosted SaaS, no device cap — log in from anywhere) |
+| OliOps | `oliops/buy/index.html` | $299 one-time | Auto via paypal-sdk.js |
+| OliCommerce | `olicommerce/buy/index.html` | $199 one-time | Auto via paypal-sdk.js |
+| OliFlow | `oliflow/buy/index.html` | $249 one-time | Auto via paypal-sdk.js |
+| OliConnect | `oliconnect/buy/index.html` | $89 one-time | Auto via paypal-sdk.js |
+| Oli-Locator | `oli-locator/buy/index.html` | $49/mo recurring | Plan ID in paypal-sdk.js |
+| OliSalesTrack | `olisalestrack/buy/index.html` | $19/mo or $148/yr | Custom script (see PAYMENTS-SETUP.md) |
 
-Each product folder has its own `index.html` plus a `buy/index.html` checkout page, so once GitHub Pages is live the URLs are clean — e.g. `olielicz.github.io/marketing/oliops/` and `olielicz.github.io/marketing/oliops/buy/` — no `.html` extension, no `landing-pages/` prefix.
-
-**Pricing model:** the 4 self-hosted products (OliOps, OliCommerce, OliFlow, OliConnect) are **one-time lifetime purchases** — pay once, own it forever, each license comes with one serial code activatable on up to 5 devices. See [`licensing/README.md`](./licensing/README.md) for the license server that enforces this. Oli-Locator is hosted SaaS with its own login and a monthly subscription, so it has no device cap or serial code.
-
-**Why lifetime instead of annual:** AppSumo and every comparable marketplace (Dealify, PitchGround, DealMirror, StackSocial) only supports lifetime-deal listings — there's no annual-subscription equivalent in that category. Full research in `appsumo-alternatives-research.md`.
-
-**Payments:** every product's `buy/index.html` page has Stripe and PayPal buttons already built — see `PAYMENTS-SETUP.md` for the exact steps to swap in your real payment links.
-
-## File map
-
-```
-00-master-calendar.md                    ← the 30-day plan
-STEP-BY-STEP-INSTRUCTIONS.md             ← exactly what to click, per tool
-PAYMENTS-SETUP.md                        ← wire up real Stripe + PayPal checkout
-appsumo-alternatives-research.md         ← AppSumo alternative research + lifetime pricing rationale
-
-index.html                                ← hub homepage linking to all 5 tools
-oliops/index.html                         ← OliOps Suite landing page
-oliops/buy/index.html                     ← OliOps Suite checkout page
-olicommerce/index.html                    ← OliCommerce Stack landing page
-olicommerce/buy/index.html                ← OliCommerce Stack checkout page
-oliflow/index.html                        ← OliFlow Automation Engine landing page
-oliflow/buy/index.html                    ← OliFlow Automation Engine checkout page
-oliconnect/index.html                     ← OliConnect landing page
-oliconnect/buy/index.html                 ← OliConnect checkout page
-oli-locator/index.html                    ← Oli-Locator landing page
-oli-locator/buy/index.html                ← Oli-Locator subscription checkout page
-
-launch-checklists/                        ← one plain-text, start-to-finish launch checklist per tool
-  oliops-suite-launch-checklist.txt
-  olicommerce-stack-launch-checklist.txt
-  oliflow-engine-launch-checklist.txt
-  oliconnect-launch-checklist.txt
-  oli-locator-launch-checklist.txt
-
-security/index.html                       ← Trust & Security Center (honest disclosure, no SOC2/ISO overclaiming)
-privacy/index.html                        ← GDPR-compliant Privacy Policy
-terms/index.html                          ← Terms of Service (license terms, refund policy, liability limits)
-contact/index.html                        ← Contact Us page, routed by category (support/billing/security/partnerships/pre-sale)
-support/index.html                        ← Troubleshooting & Support hub, general + per-tool FAQs
-shared/cookie-consent.js                  ← GDPR/ePrivacy cookie notice banner, included on every page
-
-product-hunt-oliops-suite.md             ← PH launch copy per line
-product-hunt-olicommerce-stack.md
-product-hunt-oliflow-engine.md
-product-hunt-oliconnect.md
-
-email-sequence-oliops-suite.md           ← 5-email Brevo nurture sequence per line
-email-sequence-olicommerce-stack.md
-email-sequence-oliflow-engine.md
-email-sequence-oliconnect.md
-
-appsumo-pitch-oliops-suite.md            ← AppSumo LTD submission pitch per line
-appsumo-pitch-oliflow-engine.md
-appsumo-pitch-oliconnect.md
-
-outreach-oli-locator.md                  ← cold outreach playbooks (no PH launch for these)
-outreach-oliconnect.md
-
-directory-submission-list.md             ← 40+ free directory/backlink submissions, tracked
-competitor-comparison.md                 ← pros/cons table: all 5 tools vs. named competitors
-
-licensing/                                ← shared serial-code / 5-device activation server
-  README.md                               ← full docs: how it works, deployment, honest DRM caveat
-  server/                                 ← zero-dependency Node activation API
-  client/                                 ← drop-in client library for each product to embed
-  scripts/                                ← CLI: generate-keys.js, generate-license.js
-  test/                                   ← unit tests (node --test), all passing
-```
-
-## Trust & Compliance
-
-- `security/`, `privacy/`, `terms/`, `contact/`, and `support/` are linked from the nav and footer of the hub page, all 5 product pages, and all 5 buy pages.
-- `shared/cookie-consent.js` is a lightweight, no-tracking-by-default cookie notice (informational, not a hard consent gate — the site itself sets no cookies; only third-party widgets like Brevo/Stripe/PayPal do on interaction).
-- Each self-hosted product repo (`OliCompute`, `OliCRM`, `project-3`, `oliconnect`) has its own `SECURITY.md` disclosing what's actually implemented (password hashing, timing-safe comparison) vs. not implemented (no encryption at rest, no built-in TLS/rate-limiting, no SOC2/pen-testing) — no unverifiable claims.
-- Contact email across the whole site is `workitlikeapr01@gmail.com` (company: **WorkItLikeAPro**). The `/contact/` page form posts directly to that address via [FormSubmit.co](https://formsubmit.co/) — no third-party marketing platform, no account/API key needed. **The first submission triggers a one-time confirmation email from FormSubmit.co to that inbox — open it and click "Confirm" once**, and every submission after that arrives automatically.
-- **Before going live**, still need to fill in:
-  - `terms/index.html`: `[Insert your jurisdiction here before publishing]` (governing law, section 10)
-  - `privacy/index.html` and `terms/index.html`: `[insert date before publishing]` (Last updated)
-  - `contact/index.html`: the `_next` redirect URL currently points to a relative path — update it to your real live domain once deployed
-  - Each product page's Brevo waitlist form (`<!-- BREVO_FORM -->` comment blocks) currently all point at the same OliOps list/form — create a dedicated Brevo list+form per product and swap in the real embed code (see `STEP-BY-STEP-INSTRUCTIONS.md` section 3, or each tool's file in `launch-checklists/`)
-  - All 5 `buy/index.html` pages' Stripe/PayPal placeholder links (see `PAYMENTS-SETUP.md` and `launch-checklists/`)
-- **Testimonials on each product page are illustrative placeholders, not real customer quotes** — each testimonials section has a visible disclaimer saying so. Replace them with real customer feedback once you have paying customers willing to share it. Publishing fabricated reviews as if real can violate consumer-protection rules (e.g. FTC guidance in the US).
-
-## Status
-
-- [ ] Repo made public (required for free GitHub Pages — see STEP-BY-STEP-INSTRUCTIONS.md #1)
-- [ ] Landing pages deployed (GitHub Pages / Vercel)
-- [ ] Stripe payment links created for all 5 products (4 one-time + 1 recurring) — see PAYMENTS-SETUP.md
-- [ ] PayPal buttons created for all 5 products (4 Buy Now + 1 Subscribe) — see PAYMENTS-SETUP.md
-- [ ] Buy Now pages' placeholder links replaced with real Stripe/PayPal links
-- [ ] Serial-code delivery automation wired up (webhook -> license server, see PAYMENTS-SETUP.md)
-- [ ] Brevo account + 5 waitlist lists + 5 automation sequences live
-- [ ] Analytics installed on all 5 pages
-- [ ] Directory submissions complete
-- [ ] Licensing server deployed + Ed25519 keys generated (see `licensing/README.md`)
-- [ ] AppSumo submissions filed (OliOps, OliCommerce, OliFlow, OliConnect) — now lifetime-deal compatible
-- [ ] Product Hunt launch — OliOps Suite
-- [ ] Product Hunt launch — OliFlow Automation Engine
-- [ ] Product Hunt launch — OliCommerce Stack
-- [ ] Oli-Locator outreach (Week 3 + Week 4 batches)
-- [ ] OliConnect outreach + community posts (Week 3 + Week 4 batches)
-
-Update this checklist as you complete each phase — it's your fastest way to see progress at a glance.
+See `PAYMENTS-SETUP.md` for the full step-by-step.
