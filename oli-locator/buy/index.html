@@ -90,18 +90,13 @@
         💳 Subscribe with Stripe (Card)
       </a>
 
-      <!--
-        PAYPAL SUBSCRIBE BUTTON (RECURRING)
-        PayPal recurring billing uses a Subscribe button, not a Buy Now button — set this up
-        at paypal.com/business under Products & Services > Subscriptions. Create a "$49/month"
-        plan, then drop your hosted_button_id below (from a Subscribe button, not Buy Now).
-      -->
-      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="hosted_button_id" value="REPLACE_WITH_YOUR_SUBSCRIBE_BUTTON_ID">
-        <input type="hidden" name="currency_code" value="USD">
-        <button type="submit" class="pay-btn paypal">🅿️ Subscribe with PayPal</button>
-      </form>
+      <!-- PayPal JS SDK subscription button — set LOCATOR_PLAN_ID in shared/paypal-sdk.js -->
+      <div id="paypal-button-container" style="margin-bottom:12px"></div>
+      <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">
+        🎉 <strong>Subscription active!</strong> Welcome aboard. Reference: <strong id="paypal-ref-id"></strong>
+      </div>
+      <div id="paypal-cancel-note" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px">Subscription cancelled. No charge was made.</div>
+      <div id="paypal-error-note" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;color:#dc2626;margin-top:8px">⚠️ Payment error. Please try again or contact support.</div>
 
       <div class="pay-note">Both options accept major cards, digital wallets, and local payment methods in 100+ countries. Cancel anytime from your account settings — no lock-in.</div>
       <div class="trust-row">
@@ -111,10 +106,6 @@
       </div>
     </div>
   </div>
-
-  <div class="setup-note">
-    ⚠️ <strong>Site owner setup note:</strong> the two buttons above are placeholders, and unlike the other 4 tools, this one needs <strong>recurring</strong> billing set up (Stripe Payment Link with "recurring" pricing, PayPal Subscribe button not Buy Now). Replace the Stripe href and PayPal <code>hosted_button_id</code> before going live. Full instructions are in <code>PAYMENTS-SETUP.md</code> at the root of this repo.
-  </div>
 </main>
 
 <footer class="wrap">
@@ -123,6 +114,7 @@
 </footer>
 
 <script src="../../shared/cookie-consent.js"></script>
+<script src="../../shared/paypal-sdk.js"></script>
 
 </body>
 </html>
