@@ -86,6 +86,16 @@
         Create at https://dashboard.stripe.com/payment-links. Product: "Oli-Locator — Agency
         Plan", $49 USD, RECURRING monthly. Paste the generated URL below.
       -->
+      <!-- EMAIL CAPTURE — pre-fills buyer email for account creation after payment -->
+      <div style="margin-bottom:14px">
+        <label for="buyerEmail" style="display:block;font-size:12px;font-weight:700;color:#55606e;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em">Your Email Address</label>
+        <input type="email" id="buyerEmail" placeholder="you@realty.com" required
+          style="width:100%;padding:10px 13px;border:1.5px solid #e7e9ee;border-radius:9px;font-size:14.5px;font-family:inherit;margin-bottom:4px;"
+          oninput="document.getElementById('buyerEmailCapture').value=this.value"/>
+        <input type="hidden" id="buyerEmailCapture" value=""/>
+        <small style="color:#55606e;font-size:12px">Your login details will be sent to this address immediately after payment.</small>
+      </div>
+
       <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLILOCATOR_PAYMENT_LINK" target="_blank" rel="noopener">
         💳 Subscribe with Stripe (Card)
       </a>
@@ -93,12 +103,15 @@
       <!-- PayPal JS SDK subscription button — set LOCATOR_PLAN_ID in shared/paypal-sdk.js -->
       <div id="paypal-button-container" style="margin-bottom:12px"></div>
       <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">
-        🎉 <strong>Subscription active!</strong> Welcome aboard. Reference: <strong id="paypal-ref-id"></strong>
+        🎉 <strong>Subscription active!</strong> Your login details are being sent to your email. Reference: <strong id="paypal-ref-id"></strong>
+        <div style="margin-top:10px">
+          <a href="../../login/?tool=oli-locator" style="display:inline-block;background:linear-gradient(135deg,#2563eb,#0891b2);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px">Sign In to Your Account →</a>
+        </div>
       </div>
       <div id="paypal-cancel-note" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px">Subscription cancelled. No charge was made.</div>
       <div id="paypal-error-note" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;color:#dc2626;margin-top:8px">⚠️ Payment error. Please try again or contact support.</div>
 
-      <div class="pay-note">Both options accept major cards, digital wallets, and local payment methods in 100+ countries. Cancel anytime from your account settings — no lock-in.</div>
+      <div class="pay-note">Both options accept all major cards, digital wallets, and local payment methods in 100+ countries. Your login details will be emailed immediately. Cancel your subscription anytime from your account.</div>
       <div class="trust-row">
         <span>🔒 256-bit SSL</span>
         <span>🛡️ Cancel anytime</span>
@@ -114,6 +127,7 @@
 </footer>
 
 <script src="../../shared/cookie-consent.js"></script>
+<script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 
 </body>

@@ -78,9 +78,24 @@
       <div class="pay-card">
         <h2>Pay securely</h2>
         <div class="price">$19<span style="font-size:16px;font-weight:600;color:var(--sub)">/mo</span></div>
+      <!-- EMAIL CAPTURE -->
+      <div style="margin-bottom:14px">
+        <label for="buyerEmail" style="display:block;font-size:12px;font-weight:700;color:#55606e;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em">Your Email Address</label>
+        <input type="email" id="buyerEmail" placeholder="you@company.com" required
+          style="width:100%;padding:10px 13px;border:1.5px solid #e7e9ee;border-radius:9px;font-size:14.5px;font-family:inherit;margin-bottom:4px;"
+          oninput="document.getElementById('buyerEmailCapture').value=this.value"/>
+        <input type="hidden" id="buyerEmailCapture" value=""/>
+        <small style="color:#55606e;font-size:12px">Your login details will be sent to this address immediately after payment.</small>
+      </div>
+
         <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_OLISALESTRACK_MONTHLY_STRIPE_LINK" target="_blank" rel="noopener">💳 Subscribe with Stripe</a>
         <div id="paypal-button-container" style="margin-bottom:12px"></div>
-        <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">🎉 <strong>Subscription active!</strong> Ref: <strong id="paypal-ref-id"></strong></div>
+        <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">
+          🎉 <strong>Subscription active!</strong> Your login details are being sent to your email. Ref: <strong id="paypal-ref-id"></strong>
+          <div style="margin-top:10px">
+            <a href="../login/?tool=olisalestrack" style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px">Sign In to Your Account →</a>
+          </div>
+        </div>
         <div id="paypal-cancel-note" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px">Cancelled. No charge made.</div>
         <div class="pay-note">Cards, PayPal balance, and PayPal Pay Later accepted. Cancel anytime from your PayPal account.</div>
         <div class="trust-row"><span>🔒 256-bit SSL</span><span>🛡️ 30-day refund</span><span>❌ No contract</span></div>
@@ -122,6 +137,7 @@
   <div style="margin-top:8px;"><a href="../../privacy/">Privacy</a> · <a href="../../terms/">Terms</a> · <a href="../../support/">Support</a></div>
 </footer>
 
+<script src="../../shared/auth.js"></script>
 <script src="../../shared/cookie-consent.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 <script>
