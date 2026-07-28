@@ -1,0 +1,81 @@
+# Oli Tools — Apache .htaccess
+# Used when hosting on Apache-based shared hosting (cPanel, InfinityFree, etc.)
+
+Options -Indexes -MultiViews
+ServerSignature Off
+
+# ── Force HTTPS ─────────────────────────────────────────────────────────
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── Security Headers ─────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always unset X-Powered-By
+  Header always unset Server
+</IfModule>
+
+# ── Block access to sensitive files ─────────────────────────────────────
+<FilesMatch "\.(md|json|txt|log|env|yml|yaml|sh|sql|bak|config)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# ── Block dotfiles (.git, .env, etc.) ────────────────────────────────────
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+
+# ── Disable directory listing ─────────────────────────────────────────────
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
+# ── Cache static assets ───────────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# ── No-cache for login/account pages ────────────────────────────────────
+<FilesMatch "login|account">
+  <IfModule mod_headers.c>
+    Header always set Cache-Control "no-store, no-cache, must-revalidate"
+    Header always set Pragma "no-cache"
+    Header always set X-Robots-Tag "noindex, nofollow"
+  </IfModule>
+</FilesMatch>
+
+# ── Hotlink protection (prevent other sites using your images) ────────────
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?olielicz\.github\.io [NC]
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?workitlikeapro\.com [NC]
+RewriteRule \.(jpg|jpeg|png|gif|svg|webp)$ - [F,L]
+
+# ── Block common bad bots & scrapers ─────────────────────────────────────
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTP_USER_AGENT} (HTTrack|WebCopier|wget|curl|scrapy|SiteSnagger) [NC,OR]
+  RewriteCond %{HTTP_USER_AGENT} (libwww|lwp-trivial|masscan|nikto|sqlmap) [NC]
+  RewriteRule .* - [F,L]
+</IfModule>
+
+# ── Custom error pages ────────────────────────────────────────────────────
+ErrorDocument 403 /index.html
+ErrorDocument 404 /index.html

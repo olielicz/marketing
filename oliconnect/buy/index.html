@@ -45,6 +45,9 @@
   .setup-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 18px 20px; font-size: 13.5px; color: #92400e; margin-top: 28px; }
   footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
 </style>
+
+<meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<meta name="author" content="WorkItLikeAPro"/>
 </head>
 <body>
 
@@ -103,7 +106,7 @@
       <div id="paypal-success-box" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">
         🎉 <strong>Payment received!</strong> Your login details are being sent to your email. Reference: <strong id="paypal-ref-id"></strong>
         <div style="margin-top:10px">
-          <a href="../../login/?tool=oliconnect" style="display:inline-block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px">Sign In to Your Account →</a>
+          <a href="../login/" style="display:inline-block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px">Sign In to Your Account →</a>
         </div>
       </div>
       <div id="paypal-cancel-note" style="display:none;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#c2410c;margin-top:8px">Payment cancelled. No charge was made.</div>
@@ -128,5 +131,7 @@
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 
+
+<script src="../../shared/security.js"></script>
 </body>
 </html>

@@ -3,338 +3,67 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sign In — Oli Tools</title>
-<meta name="description" content="Sign in to your Oli Tools account to access your purchased tools."/>
-<meta name="robots" content="noindex"/>
+<title>Select Your Tool — Oli Tools</title>
+<meta name="robots" content="noindex,nofollow"/>
 <style>
-:root{--ink:#14161a;--sub:#55606e;--bg:#f4f2ff;--card:#fff;--line:#e7e9ee;--accent:#4f46e5;--accent2:#7c3aed;--good:#16a34a;--bad:#dc2626;--warn:#d97706;}
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
-a{color:var(--accent);}
-.page{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 8px 40px -12px rgba(79,70,229,0.18);}
-.logo{text-align:center;margin-bottom:28px;}
-.logo-icon{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 12px;}
-.logo h1{font-size:22px;font-weight:800;letter-spacing:-0.02em;}
-.logo p{color:var(--sub);font-size:14px;margin-top:4px;}
-.tab-row{display:flex;background:#f4f4f8;border-radius:10px;padding:3px;margin-bottom:24px;gap:2px;}
-.tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--sub);transition:all .2s;}
-.tab.active{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,0.1);}
-.panel{display:none;} .panel.active{display:block;}
-label{display:block;font-size:13px;font-weight:700;color:var(--sub);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
-input[type=email],input[type=password],input[type=text],select{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;margin-bottom:16px;transition:border .2s;}
-input:focus,select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
-.pwd-wrap{position:relative;}
-.pwd-wrap input{padding-right:42px;margin-bottom:0;}
-.pwd-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--sub);font-size:16px;padding:0;}
-.pwd-group{margin-bottom:16px;}
-.btn{display:block;width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 14px -4px rgba(79,70,229,.5);}
-.btn-primary:hover{opacity:.92;transform:translateY(-1px);}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.tool-badge{display:flex;align-items:center;gap:10px;background:#f4f2ff;border:1px solid #ddd6fe;border-radius:10px;padding:12px 14px;margin-bottom:20px;}
-.tool-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.tool-badge-name{font-weight:700;font-size:14px;}
-.tool-badge-sub{font-size:12px;color:var(--sub);}
-.alert{padding:11px 14px;border-radius:10px;font-size:14px;margin-bottom:16px;display:none;}
-.alert.error{background:#fef2f2;border:1px solid #fecaca;color:var(--bad);}
-.alert.success{background:#f0fdf4;border:1px solid #bbf7d0;color:var(--good);}
-.alert.warn{background:#fffbeb;border:1px solid #fde68a;color:var(--warn);}
-.alert.show{display:block;}
-.divider{display:flex;align-items:center;gap:12px;color:var(--sub);font-size:13px;margin:18px 0;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line);}
-.footer-links{text-align:center;margin-top:20px;font-size:13px;color:var(--sub);}
-.footer-links a{color:var(--accent);}
-.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.pwd-req{font-size:12px;color:var(--sub);margin-top:5px;margin-bottom:12px;}
-.pwd-req span{display:inline-block;margin-right:10px;}
-.pwd-req span.met{color:var(--good);}
-select{cursor:pointer;}
-footer{text-align:center;padding:20px;font-size:12px;color:var(--sub);}
-footer a{color:var(--sub);}
-.change-pwd-banner{background:linear-gradient(135deg,#fffbeb,#fff7ed);border:1px solid #fde68a;border-radius:10px;padding:13px 14px;font-size:13.5px;color:var(--warn);margin-bottom:18px;display:flex;align-items:flex-start;gap:8px;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#f4f2ff;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px;color:#14161a;}
+h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+p{color:#55606e;font-size:14px;margin-bottom:28px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px;width:100%;max-width:700px;}
+.tile{background:#fff;border:1px solid #e7e9ee;border-radius:14px;
+  padding:18px 16px;text-align:center;text-decoration:none;color:#14161a;
+  transition:all .2s;}
+.tile:hover{transform:translateY(-3px);box-shadow:0 8px 24px -8px rgba(0,0,0,.14);}
+.tile-icon{font-size:28px;margin-bottom:8px;}
+.tile-name{font-size:13px;font-weight:700;}
+.tile-sub{font-size:11.5px;color:#55606e;margin-top:3px;}
 </style>
+
+<meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<meta name="author" content="WorkItLikeAPro"/>
 </head>
 <body>
-
-<div class="page">
-  <div class="card">
-    <div class="logo">
-      <div class="logo-icon">💎</div>
-      <h1>Oli Tools</h1>
-      <p id="logoSub">Sign in to access your tool</p>
-    </div>
-
-    <!-- Tool badge (shown when ?tool= param present) -->
-    <div class="tool-badge" id="toolBadge" style="display:none">
-      <div class="tool-dot" id="toolDot"></div>
-      <div>
-        <div class="tool-badge-name" id="toolBadgeName"></div>
-        <div class="tool-badge-sub">Sign in to access your account</div>
-      </div>
-    </div>
-
-    <!-- Change-password required banner -->
-    <div class="change-pwd-banner" id="changePwdBanner" style="display:none">
-      ⚠️ <span>Your account uses a temporary password. Please set a new password to continue.</span>
-    </div>
-
-    <!-- Tab row (only shown when not forced to reset) -->
-    <div class="tab-row" id="tabRow">
-      <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-      <button class="tab" id="tabReset" onclick="switchTab('reset')">Forgot Password</button>
-    </div>
-
-    <!-- Alert -->
-    <div class="alert" id="alertBox"></div>
-
-    <!-- ── SIGN IN PANEL ── -->
-    <div class="panel active" id="panelLogin">
-      <div>
-        <label for="loginEmail">Email address</label>
-        <input type="email" id="loginEmail" placeholder="you@company.com" autocomplete="email"/>
-      </div>
-      <div class="pwd-group">
-        <label for="loginPwd">Password</label>
-        <div class="pwd-wrap">
-          <input type="password" id="loginPwd" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-          <button class="pwd-toggle" type="button" onclick="togglePwd('loginPwd',this)" title="Show/hide password">👁</button>
-        </div>
-      </div>
-      <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">Sign In</button>
-    </div>
-
-    <!-- ── FORGOT PASSWORD PANEL ── -->
-    <div class="panel" id="panelReset">
-      <p style="color:var(--sub);font-size:14px;margin-bottom:16px;">Enter your email and we'll send you a link to reset your password.</p>
-      <div>
-        <label for="resetEmail">Email address</label>
-        <input type="email" id="resetEmail" placeholder="you@company.com" autocomplete="email"/>
-      </div>
-      <button class="btn btn-primary" id="resetBtn" onclick="doReset()">Send Reset Link</button>
-    </div>
-
-    <!-- ── SET NEW PASSWORD PANEL (shown after reset link or first-time login) ── -->
-    <div class="panel" id="panelNewPwd">
-      <p style="color:var(--sub);font-size:14px;margin-bottom:16px;">Choose a strong password for your account.</p>
-      <div class="pwd-group">
-        <label for="newPwd1">New password</label>
-        <div class="pwd-wrap">
-          <input type="password" id="newPwd1" placeholder="At least 8 characters" oninput="checkPwdReqs()" autocomplete="new-password"/>
-          <button class="pwd-toggle" type="button" onclick="togglePwd('newPwd1',this)" title="Show/hide">👁</button>
-        </div>
-      </div>
-      <div class="pwd-req" id="pwdReqs">
-        <span id="req8">✗ 8+ characters</span>
-        <span id="reqNum">✗ number</span>
-        <span id="reqSym">✗ symbol</span>
-      </div>
-      <div class="pwd-group">
-        <label for="newPwd2">Confirm new password</label>
-        <div class="pwd-wrap">
-          <input type="password" id="newPwd2" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSetNewPwd()"/>
-          <button class="pwd-toggle" type="button" onclick="togglePwd('newPwd2',this)" title="Show/hide">👁</button>
-        </div>
-      </div>
-      <button class="btn btn-primary" id="newPwdBtn" onclick="doSetNewPwd()">Set New Password</button>
-    </div>
-
-    <div class="footer-links">
-      <a href="../contact/">Need help?</a> ·
-      <a href="../support/">Support</a> ·
-      <a href="../">All Tools</a>
-    </div>
-  </div>
+<h1>💎 Oli Tools — Sign In</h1>
+<p>Each product has its own separate account. Select the tool you purchased:</p>
+<div class="grid">
+  <a class="tile" href="../oliops/login/" style="border-top:3px solid #4f46e5">
+    <div class="tile-icon">💼</div>
+    <div class="tile-name">OliOps Suite</div>
+    <div class="tile-sub">CRM · Invoicing · AI</div>
+  </a>
+  <a class="tile" href="../olicommerce/login/" style="border-top:3px solid #059669">
+    <div class="tile-icon">🛒</div>
+    <div class="tile-name">OliCommerce Stack</div>
+    <div class="tile-sub">Shopify · Cart Recovery</div>
+  </a>
+  <a class="tile" href="../oliflow/login/" style="border-top:3px solid #ea580c">
+    <div class="tile-icon">⚙️</div>
+    <div class="tile-name">OliFlow Engine</div>
+    <div class="tile-sub">Automation · Zapier Alt</div>
+  </a>
+  <a class="tile" href="../oliconnect/login/" style="border-top:3px solid #db2777">
+    <div class="tile-icon">♻️</div>
+    <div class="tile-name">OliConnect</div>
+    <div class="tile-sub">Social Post Recycler</div>
+  </a>
+  <a class="tile" href="../oli-locator/login/" style="border-top:3px solid #2563eb">
+    <div class="tile-icon">🏡</div>
+    <div class="tile-name">Oli-Locator</div>
+    <div class="tile-sub">Real Estate CRM</div>
+  </a>
+  <a class="tile" href="../olisalestrack/login/" style="border-top:3px solid #7c3aed">
+    <div class="tile-icon">📊</div>
+    <div class="tile-name">OliSalesTrack</div>
+    <div class="tile-sub">Sales · Refunds · Expenses</div>
+  </a>
 </div>
-
-<footer>
-  💎 Oli Tools by WorkItLikeAPro ·
-  <a href="../privacy/">Privacy</a> ·
-  <a href="../terms/">Terms</a>
-</footer>
-
+<p style="margin-top:24px;font-size:12.5px;"><a href="../" style="color:#4f46e5;">← Back to All Tools</a></p>
 <script src="../shared/auth.js"></script>
-<script>
-/* ── URL params ── */
-var params   = new URLSearchParams(window.location.search);
-var toolKey  = params.get('tool')     || '';
-var redirect = params.get('redirect') || '';
-var resetTok = params.get('reset')    || '';
-var resetEml = params.get('email')    || '';
-var errorMsg = params.get('error')    || '';
 
-/* ── Init ── */
-document.addEventListener('DOMContentLoaded', function() {
-  /* If already logged in, bounce to redirect or account */
-  if (OliAuth.isLoggedIn() && !resetTok) {
-    var dest = redirect || OliAuth.getAccountUrl();
-    window.location.href = dest;
-    return;
-  }
-
-  /* Show tool badge */
-  if (toolKey) {
-    var info = OliAuth.getToolInfo(toolKey);
-    if (info) {
-      document.getElementById('toolBadge').style.display = 'flex';
-      document.getElementById('toolDot').style.background = info.color;
-      document.getElementById('toolBadgeName').textContent = info.name;
-      document.getElementById('logoSub').textContent = 'Sign in to access ' + info.name;
-    }
-  }
-
-  /* If reset token present, jump straight to set-new-password panel */
-  if (resetTok && resetEml) {
-    document.getElementById('tabRow').style.display = 'none';
-    switchPanel('panelNewPwd');
-    showAlert('Enter your new password below.', 'warn');
-  }
-
-  /* Error from redirect (e.g. not_purchased) */
-  if (errorMsg === 'not_purchased') {
-    var toolName = toolKey && OliAuth.getToolInfo(toolKey) ? OliAuth.getToolInfo(toolKey).name : 'this tool';
-    showAlert('Your account hasn\'t purchased ' + toolName + '. <a href="../' + (toolKey||'') + '/buy/" style="color:var(--bad);font-weight:700">Buy now →</a>', 'error');
-  }
-
-  /* Pre-fill email if coming from reset link */
-  if (resetEml) document.getElementById('loginEmail').value = resetEml;
-});
-
-/* ── Tab switching ── */
-function switchTab(tab) {
-  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
-  document.getElementById('tabReset').classList.toggle('active', tab==='reset');
-  switchPanel(tab==='login' ? 'panelLogin' : 'panelReset');
-  clearAlert();
-}
-function switchPanel(id) {
-  ['panelLogin','panelReset','panelNewPwd'].forEach(function(p){
-    document.getElementById(p).classList.toggle('active', p===id);
-  });
-}
-
-/* ── Alert ── */
-function showAlert(msg, type) {
-  var el = document.getElementById('alertBox');
-  el.innerHTML = msg;
-  el.className = 'alert ' + (type||'error') + ' show';
-}
-function clearAlert() {
-  var el = document.getElementById('alertBox');
-  el.className = 'alert';
-}
-
-/* ── Toggle password visibility ── */
-function togglePwd(id, btn) {
-  var inp = document.getElementById(id);
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-}
-
-/* ── Sign In ── */
-function doLogin() {
-  clearAlert();
-  var email = document.getElementById('loginEmail').value.trim();
-  var pwd   = document.getElementById('loginPwd').value;
-  if (!email || !pwd) { showAlert('Please enter your email and password.'); return; }
-
-  setLoading('loginBtn', true, 'Signing in…');
-  setTimeout(function() { /* small delay feels more real */
-    var result = OliAuth.login(email, pwd, toolKey || null);
-    setLoading('loginBtn', false, 'Sign In');
-
-    if (!result.ok) {
-      showAlert(result.error);
-      return;
-    }
-
-    /* Must change password (first login) */
-    if (result.mustChangePassword) {
-      document.getElementById('tabRow').style.display = 'none';
-      document.getElementById('changePwdBanner').style.display = 'flex';
-      switchPanel('panelNewPwd');
-      clearAlert();
-      return;
-    }
-
-    /* Success — redirect */
-    var dest = redirect || OliAuth.getAccountUrl();
-    window.location.href = dest;
-  }, 400);
-}
-
-/* ── Forgot password ── */
-function doReset() {
-  clearAlert();
-  var email = document.getElementById('resetEmail').value.trim();
-  if (!email) { showAlert('Please enter your email address.'); return; }
-  setLoading('resetBtn', true, 'Sending…');
-  setTimeout(function() {
-    OliAuth.requestPasswordReset(email);
-    setLoading('resetBtn', false, 'Send Reset Link');
-    showAlert('If that email has an account, a reset link has been sent. Check your inbox (and spam folder).', 'success');
-  }, 600);
-}
-
-/* ── Set new password ── */
-function doSetNewPwd() {
-  clearAlert();
-  var p1 = document.getElementById('newPwd1').value;
-  var p2 = document.getElementById('newPwd2').value;
-  if (!p1 || !p2) { showAlert('Please fill in both password fields.'); return; }
-  if (p1 !== p2)  { showAlert('Passwords do not match.'); return; }
-  if (p1.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
-
-  setLoading('newPwdBtn', true, 'Saving…');
-
-  setTimeout(function() {
-    var result;
-    if (resetTok && resetEml) {
-      /* Coming from a reset link in email */
-      result = OliAuth.resetPasswordWithToken(resetEml, resetTok, p1);
-    } else {
-      /* First-time login — need current session email */
-      var session = OliAuth.getSession();
-      if (!session) { showAlert('Session expired. Please sign in again.'); setLoading('newPwdBtn',false,'Set New Password'); return; }
-      /* We use a special temp-password bypass for first login */
-      var user = OliAuth.getUser(session.email);
-      if (!user) { showAlert('Account not found.'); setLoading('newPwdBtn',false,'Set New Password'); return; }
-      result = OliAuth.changePassword(session.email, document.getElementById('loginPwd').value, p1);
-    }
-
-    setLoading('newPwdBtn', false, 'Set New Password');
-
-    if (!result.ok) { showAlert(result.error); return; }
-
-    showAlert('Password set successfully! Redirecting…', 'success');
-    setTimeout(function() {
-      var dest = redirect || OliAuth.getAccountUrl();
-      window.location.href = dest;
-    }, 1200);
-  }, 500);
-}
-
-/* ── Password requirements ── */
-function checkPwdReqs() {
-  var v = document.getElementById('newPwd1').value;
-  setReq('req8',   v.length >= 8);
-  setReq('reqNum', /\d/.test(v));
-  setReq('reqSym', /[^a-zA-Z0-9]/.test(v));
-}
-function setReq(id, met) {
-  var el = document.getElementById(id);
-  el.textContent = (met?'✓':'✗') + el.textContent.slice(1);
-  el.classList.toggle('met', met);
-}
-
-/* ── Loading state ── */
-function setLoading(btnId, loading, label) {
-  var btn = document.getElementById(btnId);
-  btn.disabled = loading;
-  btn.innerHTML = loading ? '<span class="spinner"></span>' + label : label;
-}
-</script>
+<script src="../shared/security.js"></script>
 </body>
 </html>

@@ -3,352 +3,67 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My Account — Oli Tools</title>
-<meta name="robots" content="noindex"/>
+<title>Select Your Tool — Oli Tools</title>
+<meta name="robots" content="noindex,nofollow"/>
 <style>
-:root{--ink:#14161a;--sub:#55606e;--bg:#f4f2ff;--card:#fff;--line:#e7e9ee;--accent:#4f46e5;--accent2:#7c3aed;--good:#16a34a;--bad:#dc2626;--warn:#d97706;}
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased;}
-a{color:var(--accent);text-decoration:none;}
-/* ── NAV ── */
-.nav{background:#fff;border-bottom:1px solid var(--line);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:50;}
-.nav-brand{font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;}
-.nav-brand .icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:14px;}
-.nav-right{display:flex;align-items:center;gap:12px;}
-.nav-email{font-size:13px;color:var(--sub);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-logout{background:transparent;border:1.5px solid var(--line);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--sub);transition:all .2s;}
-.btn-logout:hover{border-color:var(--bad);color:var(--bad);}
-/* ── LAYOUT ── */
-.page{max-width:900px;margin:0 auto;padding:32px 24px 60px;}
-.page-title{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
-.page-sub{color:var(--sub);font-size:15px;margin-bottom:28px;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media(max-width:700px){.grid{grid-template-columns:1fr;}}
-/* ── CARD ── */
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;}
-.card-title{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
-.card-title .icon{font-size:18px;}
-/* ── TOOLS GRID ── */
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px;}
-.tool-tile{border:1px solid var(--line);border-radius:12px;padding:16px 18px;transition:all .2s;position:relative;overflow:hidden;}
-.tool-tile:hover{transform:translateY(-2px);box-shadow:0 6px 20px -8px rgba(0,0,0,.12);}
-.tool-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.tool-tile-name{font-size:14px;font-weight:700;margin-bottom:3px;}
-.tool-tile-type{font-size:12px;color:var(--sub);margin-bottom:12px;}
-.tool-tile-badge{display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:var(--good);border-radius:100px;padding:2px 8px;font-size:11px;font-weight:700;margin-bottom:10px;}
-.tool-tile .btn-access{display:block;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .2s;}
-.tool-tile .btn-access:hover{opacity:.88;}
-.no-tools{text-align:center;padding:32px;color:var(--sub);}
-.no-tools .icon{font-size:2.5rem;margin-bottom:10px;}
-/* ── FORM FIELDS ── */
-label{display:block;font-size:12px;font-weight:700;color:var(--sub);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
-input[type=text],input[type=email],input[type=password]{width:100%;padding:10px 13px;border:1.5px solid var(--line);border-radius:9px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff;margin-bottom:14px;transition:border .2s;}
-input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(79,70,229,.08);}
-.pwd-wrap{position:relative;margin-bottom:14px;}
-.pwd-wrap input{margin-bottom:0;padding-right:40px;}
-.pwd-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--sub);font-size:15px;}
-.btn{padding:10px 18px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
-.btn-primary:hover{opacity:.9;transform:translateY(-1px);}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.btn-danger{background:transparent;border:1.5px solid #fecaca;color:var(--bad);}
-.btn-danger:hover{background:#fef2f2;}
-.btn-sm{padding:7px 14px;font-size:13px;}
-/* ── ALERTS ── */
-.alert{padding:10px 13px;border-radius:9px;font-size:13.5px;margin-bottom:14px;display:none;}
-.alert.show{display:block;}
-.alert.success{background:#f0fdf4;border:1px solid #bbf7d0;color:var(--good);}
-.alert.error{background:#fef2f2;border:1px solid #fecaca;color:var(--bad);}
-/* ── ORDER TABLE ── */
-.order-table{width:100%;border-collapse:collapse;font-size:13.5px;}
-.order-table th{text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);border-bottom:1px solid var(--line);}
-.order-table td{padding:10px 10px;border-bottom:1px solid #f4f4f8;vertical-align:middle;}
-.order-table tr:last-child td{border:none;}
-.badge{display:inline-flex;align-items:center;border-radius:100px;padding:2px 8px;font-size:11px;font-weight:700;}
-.badge-green{background:#ecfdf5;color:var(--good);}
-.badge-blue{background:#eff6ff;color:#1d4ed8;}
-/* ── SUBSCRIPTION PANEL ── */
-.sub-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);}
-.sub-item:last-child{border:none;}
-.sub-name{font-weight:600;font-size:14px;}
-.sub-meta{font-size:12px;color:var(--sub);margin-top:2px;}
-.sub-actions{display:flex;gap:8px;}
-/* ── PWD REQS ── */
-.pwd-req{font-size:12px;color:var(--sub);margin-top:-10px;margin-bottom:12px;}
-.pwd-req span{display:inline-block;margin-right:8px;}
-.pwd-req span.met{color:var(--good);}
-/* ── SPINNER ── */
-.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle;margin-right:5px;}
-@keyframes spin{to{transform:rotate(360deg);}}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#f4f2ff;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px;color:#14161a;}
+h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+p{color:#55606e;font-size:14px;margin-bottom:28px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px;width:100%;max-width:700px;}
+.tile{background:#fff;border:1px solid #e7e9ee;border-radius:14px;
+  padding:18px 16px;text-align:center;text-decoration:none;color:#14161a;
+  transition:all .2s;}
+.tile:hover{transform:translateY(-3px);box-shadow:0 8px 24px -8px rgba(0,0,0,.14);}
+.tile-icon{font-size:28px;margin-bottom:8px;}
+.tile-name{font-size:13px;font-weight:700;}
+.tile-sub{font-size:11.5px;color:#55606e;margin-top:3px;}
 </style>
+
+<meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<meta name="author" content="WorkItLikeAPro"/>
 </head>
 <body>
-
-<!-- ── NAV ── -->
-<nav class="nav">
-  <div class="nav-brand">
-    <div class="icon">💎</div>
-    <span>My Account</span>
-  </div>
-  <div class="nav-right">
-    <span class="nav-email" id="navEmail"></span>
-    <button class="btn-logout" onclick="doLogout()">Sign Out</button>
-  </div>
-</nav>
-
-<!-- ── PAGE ── -->
-<div class="page">
-  <div class="page-title">👋 Welcome back, <span id="greeting">there</span></div>
-  <p class="page-sub">Manage your Oli Tools account, access your purchased tools, and update your password.</p>
-
-  <!-- ── MY TOOLS ── -->
-  <div class="card" style="margin-bottom:20px;">
-    <div class="card-title"><span class="icon">🧰</span> Your Tools</div>
-    <div class="tools-grid" id="toolsGrid">
-      <div class="no-tools"><div class="icon">📦</div><p>No tools yet. <a href="../">Browse tools →</a></p></div>
-    </div>
-  </div>
-
-  <div class="grid">
-
-    <!-- ── ACCOUNT DETAILS ── -->
-    <div class="card">
-      <div class="card-title"><span class="icon">👤</span> Account Details</div>
-      <div class="alert" id="profileAlert"></div>
-      <div>
-        <label for="profileName">Display Name</label>
-        <input type="text" id="profileName" placeholder="Your name"/>
-        <label for="profileEmail">Email Address</label>
-        <input type="email" id="profileEmail" readonly style="background:#f9f9fc;cursor:default;" title="Email cannot be changed"/>
-        <small style="display:block;color:var(--sub);font-size:12px;margin-top:-10px;margin-bottom:14px;">Email is your login — contact support to change it.</small>
-        <button class="btn btn-primary btn-sm" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>
-      </div>
-    </div>
-
-    <!-- ── CHANGE PASSWORD ── -->
-    <div class="card">
-      <div class="card-title"><span class="icon">🔐</span> Change Password</div>
-      <div class="alert" id="pwdAlert"></div>
-      <div>
-        <label for="curPwd">Current Password</label>
-        <div class="pwd-wrap">
-          <input type="password" id="curPwd" placeholder="Your current password" autocomplete="current-password"/>
-          <button class="pwd-toggle" onclick="togglePwd('curPwd',this)" type="button">👁</button>
-        </div>
-        <label for="newPwd">New Password</label>
-        <div class="pwd-wrap">
-          <input type="password" id="newPwd" placeholder="At least 8 characters" autocomplete="new-password" oninput="checkReqs()"/>
-          <button class="pwd-toggle" onclick="togglePwd('newPwd',this)" type="button">👁</button>
-        </div>
-        <div class="pwd-req" id="pwdReqs">
-          <span id="req8">✗ 8+ chars</span>
-          <span id="reqNum">✗ number</span>
-          <span id="reqSym">✗ symbol</span>
-        </div>
-        <label for="confPwd">Confirm New Password</label>
-        <div class="pwd-wrap">
-          <input type="password" id="confPwd" placeholder="Repeat new password" autocomplete="new-password"/>
-          <button class="pwd-toggle" onclick="togglePwd('confPwd',this)" type="button">👁</button>
-        </div>
-        <button class="btn btn-primary btn-sm" id="changePwdBtn" onclick="doChangePwd()">Update Password</button>
-      </div>
-    </div>
-
-  </div><!-- /grid -->
-
-  <!-- ── ORDER HISTORY ── -->
-  <div class="card" style="margin-top:20px;">
-    <div class="card-title"><span class="icon">🧾</span> Order History</div>
-    <table class="order-table">
-      <thead>
-        <tr>
-          <th>Tool</th>
-          <th>Date</th>
-          <th>Reference</th>
-          <th>Type</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="orderTable">
-        <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--sub)">No orders found.</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- ── SUBSCRIPTIONS ── -->
-  <div class="card" id="subsCard" style="margin-top:20px;display:none;">
-    <div class="card-title"><span class="icon">🔄</span> Active Subscriptions</div>
-    <p style="font-size:13px;color:var(--sub);margin-bottom:14px;">Your subscriptions renew automatically. You'll receive a reminder email 2-3 days before each renewal.</p>
-    <div id="subsList"></div>
-    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line);">
-      <p style="font-size:12.5px;color:var(--sub);">To cancel, click <strong>Manage in PayPal</strong> above, or <a href="../contact/">contact support</a>.</p>
-    </div>
-  </div>
-
-  <!-- ── DANGER ZONE ── -->
-  <div class="card" style="margin-top:20px;border-color:#fecaca;">
-    <div class="card-title" style="color:var(--bad);"><span class="icon">⚠️</span> Account</div>
-    <p style="font-size:13.5px;color:var(--sub);margin-bottom:14px;">Need help with your account or have a billing question? We respond to every message.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a href="../contact/" class="btn btn-sm" style="background:#eff6ff;color:#1d4ed8;border:1.5px solid #bfdbfe;">📧 Contact Support</a>
-      <a href="../support/" class="btn btn-sm" style="background:#f4f4f8;color:var(--sub);border:1.5px solid var(--line);">📚 Support Docs</a>
-    </div>
-  </div>
-
-</div><!-- /page -->
-
+<h1>💎 Oli Tools — My Account</h1>
+<p>Each product has its own separate account. Select the tool you purchased:</p>
+<div class="grid">
+  <a class="tile" href="../oliops/account/" style="border-top:3px solid #4f46e5">
+    <div class="tile-icon">💼</div>
+    <div class="tile-name">OliOps Suite</div>
+    <div class="tile-sub">CRM · Invoicing · AI</div>
+  </a>
+  <a class="tile" href="../olicommerce/account/" style="border-top:3px solid #059669">
+    <div class="tile-icon">🛒</div>
+    <div class="tile-name">OliCommerce Stack</div>
+    <div class="tile-sub">Shopify · Cart Recovery</div>
+  </a>
+  <a class="tile" href="../oliflow/account/" style="border-top:3px solid #ea580c">
+    <div class="tile-icon">⚙️</div>
+    <div class="tile-name">OliFlow Engine</div>
+    <div class="tile-sub">Automation · Zapier Alt</div>
+  </a>
+  <a class="tile" href="../oliconnect/account/" style="border-top:3px solid #db2777">
+    <div class="tile-icon">♻️</div>
+    <div class="tile-name">OliConnect</div>
+    <div class="tile-sub">Social Post Recycler</div>
+  </a>
+  <a class="tile" href="../oli-locator/account/" style="border-top:3px solid #2563eb">
+    <div class="tile-icon">🏡</div>
+    <div class="tile-name">Oli-Locator</div>
+    <div class="tile-sub">Real Estate CRM</div>
+  </a>
+  <a class="tile" href="../olisalestrack/account/" style="border-top:3px solid #7c3aed">
+    <div class="tile-icon">📊</div>
+    <div class="tile-name">OliSalesTrack</div>
+    <div class="tile-sub">Sales · Refunds · Expenses</div>
+  </a>
+</div>
+<p style="margin-top:24px;font-size:12.5px;"><a href="../" style="color:#4f46e5;">← Back to All Tools</a></p>
 <script src="../shared/auth.js"></script>
-<script>
-/* ── Guard ── */
-var session = OliAuth.requireLogin();
-if (!session) { /* requireLogin redirects, so we stop here */ throw new Error('redirect'); }
 
-var currentUser = OliAuth.getUser(session.email);
-
-/* ── Populate page ── */
-document.addEventListener('DOMContentLoaded', function() {
-  if (!currentUser) { OliAuth.logout(); return; }
-
-  document.getElementById('navEmail').textContent    = currentUser.email;
-  document.getElementById('greeting').textContent    = currentUser.name || currentUser.email.split('@')[0];
-  document.getElementById('profileName').value       = currentUser.name || '';
-  document.getElementById('profileEmail').value      = currentUser.email;
-
-  renderTools();
-  renderOrders();
-  renderSubscriptions();
-});
-
-/* ── Render purchased tools ── */
-function renderTools() {
-  var grid   = document.getElementById('toolsGrid');
-  var tools  = currentUser.tools || [];
-  if (!tools.length) return;
-
-  var allTools = OliAuth.getAllTools();
-  grid.innerHTML = tools.map(function(key) {
-    var t = allTools[key];
-    if (!t) return '';
-    return '<div class="tool-tile" style="border-top:3px solid '+t.color+'">'
-      + '<div class="tool-tile-badge">✅ Active</div>'
-      + '<div class="tool-tile-name">'+t.name+'</div>'
-      + '<div class="tool-tile-type">'+(t.type==='lifetime'?'♾️ Lifetime License':'🔄 '+t.price+' subscription')+'</div>'
-      + '<a href="'+t.url+'" class="btn-access" style="background:linear-gradient(135deg,'+t.color+','+t.color+'cc)">Open Tool →</a>'
-      + '</div>';
-  }).join('');
-}
-
-/* ── Render orders ── */
-function renderOrders() {
-  var orders  = currentUser.orders || [];
-  var tbody   = document.getElementById('orderTable');
-  var allTools = OliAuth.getAllTools();
-  if (!orders.length) return;
-
-  tbody.innerHTML = orders.slice().reverse().map(function(o) {
-    var t    = allTools[o.toolKey] || { name: o.toolKey, type: 'unknown', price: '—' };
-    var date = o.date ? new Date(o.date).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—';
-    var ref  = o.ref  ? '<code style="font-size:11px;background:#f4f4f8;padding:2px 5px;border-radius:4px;">'+o.ref+'</code>' : '—';
-    var type = t.type === 'lifetime'
-      ? '<span class="badge badge-blue">♾️ Lifetime</span>'
-      : '<span class="badge badge-green">🔄 Subscription</span>';
-    var status = '<span class="badge badge-green">● Active</span>';
-    return '<tr><td><strong>'+t.name+'</strong></td><td>'+date+'</td><td>'+ref+'</td><td>'+type+'</td><td>'+status+'</td></tr>';
-  }).join('');
-}
-
-/* ── Render subscriptions ── */
-function renderSubscriptions() {
-  var orders   = currentUser.orders || [];
-  var allTools = OliAuth.getAllTools();
-  var subs     = orders.filter(function(o){ return allTools[o.toolKey] && allTools[o.toolKey].type==='monthly'; });
-  if (!subs.length) return;
-
-  document.getElementById('subsCard').style.display = 'block';
-  document.getElementById('subsList').innerHTML = subs.map(function(o) {
-    var t = allTools[o.toolKey];
-    return '<div class="sub-item">'
-      + '<div><div class="sub-name">'+t.name+'</div>'
-      + '<div class="sub-meta">'+t.price+' · Auto-renews monthly · Reminder sent 2-3 days before renewal</div></div>'
-      + '<div class="sub-actions">'
-      + '<a href="https://www.paypal.com/myaccount/autopay/" target="_blank" class="btn btn-sm" style="background:#f4f4f8;border:1.5px solid var(--line);color:var(--sub);">Manage in PayPal</a>'
-      + '</div></div>';
-  }).join('');
-}
-
-/* ── Save profile ── */
-function saveProfile() {
-  var name = document.getElementById('profileName').value.trim();
-  if (!name) { showAlert('profileAlert','Please enter a display name.','error'); return; }
-  setLoading('saveProfileBtn', true);
-  setTimeout(function() {
-    OliAuth.updateUser(currentUser.email, { name: name });
-    currentUser.name = name;
-    document.getElementById('greeting').textContent = name;
-    setLoading('saveProfileBtn', false);
-    showAlert('profileAlert','Profile saved!','success');
-  }, 300);
-}
-
-/* ── Change password ── */
-function doChangePwd() {
-  clearAlert('pwdAlert');
-  var cur  = document.getElementById('curPwd').value;
-  var nw   = document.getElementById('newPwd').value;
-  var conf = document.getElementById('confPwd').value;
-  if (!cur || !nw || !conf) { showAlert('pwdAlert','Please fill in all password fields.','error'); return; }
-  if (nw !== conf)  { showAlert('pwdAlert','New passwords do not match.','error'); return; }
-  if (nw.length < 8) { showAlert('pwdAlert','New password must be at least 8 characters.','error'); return; }
-
-  setLoading('changePwdBtn', true);
-  setTimeout(function() {
-    var result = OliAuth.changePassword(currentUser.email, cur, nw);
-    setLoading('changePwdBtn', false);
-    if (!result.ok) { showAlert('pwdAlert', result.error, 'error'); return; }
-    document.getElementById('curPwd').value  = '';
-    document.getElementById('newPwd').value  = '';
-    document.getElementById('confPwd').value = '';
-    showAlert('pwdAlert','Password updated successfully! ✅','success');
-  }, 400);
-}
-
-/* ── Logout ── */
-function doLogout() {
-  OliAuth.logout('../');
-}
-
-/* ── Helpers ── */
-function showAlert(id, msg, type) {
-  var el = document.getElementById(id);
-  el.textContent = msg; el.className = 'alert '+type+' show';
-}
-function clearAlert(id) {
-  var el = document.getElementById(id);
-  if(el) el.className = 'alert';
-}
-function togglePwd(id, btn) {
-  var inp = document.getElementById(id);
-  inp.type = inp.type==='password'?'text':'password';
-  btn.textContent = inp.type==='password'?'👁':'🙈';
-}
-function checkReqs() {
-  var v = document.getElementById('newPwd').value;
-  function set(id, met) {
-    var el=document.getElementById(id);
-    el.textContent=(met?'✓':'✗')+el.textContent.slice(1);
-    el.classList.toggle('met',met);
-  }
-  set('req8',  v.length>=8);
-  set('reqNum',/\d/.test(v));
-  set('reqSym',/[^a-zA-Z0-9]/.test(v));
-}
-function setLoading(id, loading) {
-  var btn=document.getElementById(id);
-  btn.disabled=loading;
-  if(loading) btn.innerHTML='<span class="spinner"></span>Saving…';
-  else btn.textContent = id==='saveProfileBtn'?'Save Changes':'Update Password';
-}
-</script>
+<script src="../shared/security.js"></script>
 </body>
 </html>

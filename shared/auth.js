@@ -1,96 +1,150 @@
 /**
- * Oli Tools — Shared Authentication & Session Manager
+ * Oli Tools — Shared Authentication Engine  v2.0
  *
- * How it works (pure frontend, no backend required):
- * ─────────────────────────────────────────────────
- * 1. When a customer buys a tool, PayPal/Stripe fires a webhook.
- *    The paypal-sdk.js success handler calls createAccount() which:
- *      - Generates a random temporary password
- *      - Stores the account in localStorage (demo) OR posts to your backend
- *      - Sends the welcome email via EmailJS (free tier: 200 emails/month)
- *
- * 2. Customer clicks the login link in their email → lands on /login/
- *    They enter email + password → session stored → redirected to their tool.
- *
- * 3. From /account/ they can change their password at any time.
+ * KEY CHANGE v2: Each tool is completely separate.
+ *   - Users are stored under tool-scoped localStorage keys.
+ *   - A user buying OliOps has a completely different account from the same
+ *     email buying OliFlow — separate password, separate session, separate
+ *     account dashboard.
+ *   - This matches the business model: each product is sold separately.
  *
  * ── EMAILJS SETUP (free, 5 minutes) ──────────────────────────────────────
- * 1. Go to https://www.emailjs.com → Sign up free
- * 2. Add a service: Gmail → connect workitlikeapr01@gmail.com
- * 3. Create a template called "oli_welcome" with these variables:
- *      {{to_email}}  {{to_name}}  {{tool_name}}  {{temp_password}}  {{login_url}}
- * 4. Create a template called "oli_renewal" with these variables:
- *      {{to_email}}  {{to_name}}  {{tool_name}}  {{renewal_date}}  {{amount}}  {{cancel_url}}
- * 5. Copy your Public Key, Service ID, and both Template IDs into the
- *    EMAILJS_CONFIG object below.
- * ─────────────────────────────────────────────────────────────────────────
- *
- * ── BACKEND UPGRADE PATH ─────────────────────────────────────────────────
- * This file uses localStorage as the user store so it works on GitHub Pages
- * with zero backend. When you're ready to upgrade:
- *   - Replace saveUser() / getUser() / updateUser() with fetch() calls to
- *     your own API (Node/Express, Supabase, Firebase, etc.)
- *   - Replace the EmailJS calls with your own email service (Brevo API,
- *     SendGrid, Postmark, etc.)
- *   - Move password hashing server-side (bcrypt/scrypt)
+ * 1. https://www.emailjs.com → Sign up free (200 emails/month free)
+ * 2. Add service: Gmail → connect workitlikeapr01@gmail.com
+ * 3. Create templates: oli_welcome, oli_renewal, oli_reset
+ *    (full template copy in README.md)
+ * 4. Copy Public Key + Service ID → paste in EMAILJS_CONFIG below
  * ─────────────────────────────────────────────────────────────────────────
  */
 
 (function () {
   'use strict';
 
-  /* ── EmailJS Configuration ── replace with your real values ───────── */
+  /* ── EmailJS Config ── fill in after EmailJS signup ─────────────────── */
   var EMAILJS_CONFIG = {
-    publicKey:        'YOUR_EMAILJS_PUBLIC_KEY',      // from EmailJS → Account → Public Key
-    serviceId:        'YOUR_EMAILJS_SERVICE_ID',      // from EmailJS → Email Services
-    welcomeTemplate:  'oli_welcome',                  // template ID for purchase welcome email
-    renewalTemplate:  'oli_renewal',                  // template ID for renewal reminder email
+    publicKey:       'YOUR_EMAILJS_PUBLIC_KEY',
+    serviceId:       'YOUR_EMAILJS_SERVICE_ID',
+    welcomeTemplate: 'oli_welcome',
+    renewalTemplate: 'oli_renewal',
+    resetTemplate:   'oli_reset',
   };
 
-  /* ── Session key ───────────────────────────────────────────────────── */
-  var SESSION_KEY = 'oli_session';
-  var USERS_KEY   = 'oli_users';
-
-  /* ── Tool definitions ──────────────────────────────────────────────── */
+  /* ── Tool definitions ────────────────────────────────────────────────── */
   var TOOLS = {
-    'oliops':       { name: 'OliOps Suite',              url: '../oliops/',       color: '#4f46e5', type: 'lifetime',  price: '$299' },
-    'olicommerce':  { name: 'OliCommerce Stack',          url: '../olicommerce/',  color: '#059669', type: 'lifetime',  price: '$199' },
-    'oliflow':      { name: 'OliFlow Automation Engine',  url: '../oliflow/',      color: '#ea580c', type: 'lifetime',  price: '$249' },
-    'oliconnect':   { name: 'OliConnect',                 url: '../oliconnect/',   color: '#db2777', type: 'lifetime',  price: '$89'  },
-    'oli-locator':  { name: 'Oli-Locator',                url: '../oli-locator/',  color: '#2563eb', type: 'monthly',   price: '$49/mo' },
-    'olisalestrack':{ name: 'OliSalesTrack',              url: '../olisalestrack/',color: '#7c3aed', type: 'monthly',   price: '$19/mo' },
+    'oliops': {
+      name:      'OliOps Suite',
+      icon:      '💼',
+      color:     '#4f46e5',
+      bg:        '#eef2ff',
+      loginUrl:  '/oliops/login/',
+      accountUrl:'/oliops/account/',
+      toolUrl:   '/oliops/',
+      price:     '$299 lifetime',
+      type:      'lifetime',
+      tagline:   'CRM + Invoicing + AI Support',
+    },
+    'olicommerce': {
+      name:      'OliCommerce Stack',
+      icon:      '🛒',
+      color:     '#059669',
+      bg:        '#ecfdf5',
+      loginUrl:  '/olicommerce/login/',
+      accountUrl:'/olicommerce/account/',
+      toolUrl:   '/olicommerce/',
+      price:     '$199 lifetime',
+      type:      'lifetime',
+      tagline:   'Shopify Cart Recovery + AI Assistant',
+    },
+    'oliflow': {
+      name:      'OliFlow Automation Engine',
+      icon:      '⚙️',
+      color:     '#ea580c',
+      bg:        '#fff7ed',
+      loginUrl:  '/oliflow/login/',
+      accountUrl:'/oliflow/account/',
+      toolUrl:   '/oliflow/',
+      price:     '$249 lifetime',
+      type:      'lifetime',
+      tagline:   'Self-Hosted Zapier Alternative',
+    },
+    'oliconnect': {
+      name:      'OliConnect',
+      icon:      '♻️',
+      color:     '#db2777',
+      bg:        '#fdf2f8',
+      loginUrl:  '/oliconnect/login/',
+      accountUrl:'/oliconnect/account/',
+      toolUrl:   '/oliconnect/',
+      price:     '$89 lifetime',
+      type:      'lifetime',
+      tagline:   'Social Post Recycler',
+    },
+    'oli-locator': {
+      name:      'Oli-Locator',
+      icon:      '🏡',
+      color:     '#2563eb',
+      bg:        '#eff6ff',
+      loginUrl:  '/oli-locator/login/',
+      accountUrl:'/oli-locator/account/',
+      toolUrl:   '/oli-locator/',
+      price:     '$49/month',
+      type:      'monthly',
+      tagline:   'Real Estate CRM — USA, UK & Australia',
+    },
+    'olisalestrack': {
+      name:      'OliSalesTrack',
+      icon:      '📊',
+      color:     '#7c3aed',
+      bg:        '#f5f3ff',
+      loginUrl:  '/olisalestrack/login/',
+      accountUrl:'/olisalestrack/account/',
+      toolUrl:   '/olisalestrack/',
+      price:     '$19/mo or $148/yr',
+      type:      'monthly',
+      tagline:   'Sales + Refunds + Expenses Tracker',
+    },
   };
 
-  /* ══════════════════════════════════════════════════════════════════════
-     USER STORE  (localStorage wrapper — swap for real API when ready)
-     ══════════════════════════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════════════════
+     PER-TOOL USER STORE
+     Each tool has its own localStorage namespace: "oli_users_TOOLKEY"
+     A customer's email can exist in multiple tool stores independently.
+     ═══════════════════════════════════════════════════════════════════════ */
 
-  function getAllUsers() {
-    try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); }
+  function usersKey(toolKey) {
+    return 'oli_users_' + (toolKey || 'global');
+  }
+  function sessionKey(toolKey) {
+    return 'oli_session_' + (toolKey || 'global');
+  }
+
+  function getAllUsers(toolKey) {
+    try { return JSON.parse(localStorage.getItem(usersKey(toolKey)) || '{}'); }
     catch (e) { return {}; }
   }
-  function saveAllUsers(users) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  function saveAllUsers(toolKey, users) {
+    localStorage.setItem(usersKey(toolKey), JSON.stringify(users));
   }
-  function getUser(email) {
-    return getAllUsers()[email.toLowerCase()] || null;
+  function getUser(email, toolKey) {
+    if (!email) return null;
+    return getAllUsers(toolKey)[email.toLowerCase()] || null;
   }
-  function saveUser(email, data) {
-    var users = getAllUsers();
+  function saveUser(email, toolKey, data) {
+    var users = getAllUsers(toolKey);
     users[email.toLowerCase()] = data;
-    saveAllUsers(users);
+    saveAllUsers(toolKey, users);
   }
-  function updateUser(email, patch) {
-    var user = getUser(email);
+  function updateUser(email, toolKey, patch) {
+    var user = getUser(email, toolKey);
     if (!user) return false;
     Object.assign(user, patch);
-    saveUser(email, user);
+    saveUser(email, toolKey, user);
     return true;
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════════════════════
      PASSWORD UTILITIES
-     ══════════════════════════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════════════════════ */
 
   function generateTempPassword() {
     var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$';
@@ -101,124 +155,120 @@
     return pwd;
   }
 
-  /* Simple hash (client-side only — upgrade to bcrypt when you add a backend) */
-  function hashPassword(password) {
+  function hashPassword(password, toolKey) {
+    /* Simple hash with per-tool salt. Replace with bcrypt when adding backend. */
+    var salt = 'oli_' + (toolKey || 'tools') + '_2025_salt_x9k2';
+    var str = password + salt;
     var hash = 0, chr;
-    var str = password + 'oli_salt_8x2k9p';
     for (var i = 0; i < str.length; i++) {
       chr  = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + chr;
       hash |= 0;
     }
-    return 'h_' + Math.abs(hash).toString(36) + '_' + str.length;
+    return 'h2_' + (toolKey || 'g') + '_' + Math.abs(hash).toString(36) + '_' + str.length;
   }
 
-  function checkPassword(password, storedHash) {
-    return hashPassword(password) === storedHash;
+  function checkPassword(password, storedHash, toolKey) {
+    return hashPassword(password, toolKey) === storedHash;
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     ACCOUNT CREATION  (called from paypal-sdk.js after successful payment)
-     ══════════════════════════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════════════════
+     ACCOUNT CREATION  (called from paypal-sdk.js after payment)
+     ═══════════════════════════════════════════════════════════════════════ */
 
   /**
    * createAccount(email, toolKey, orderRef)
-   * Called automatically after a successful PayPal or Stripe payment.
-   * Creates the user account (if new) and sends the welcome email.
+   * Creates a user account scoped to the specific tool.
+   * Sends welcome email with login link for THAT tool's login page.
    */
   function createAccount(email, toolKey, orderRef) {
-    if (!email || !toolKey) return;
+    if (!email || !toolKey) return { success: false, error: 'Missing email or toolKey' };
     var tool = TOOLS[toolKey];
-    if (!tool) return;
+    if (!tool) return { success: false, error: 'Unknown tool: ' + toolKey };
 
-    var existing = getUser(email);
-    var tempPassword = existing ? null : generateTempPassword();
-    var isNewUser    = !existing;
+    var existing    = getUser(email, toolKey);
+    var isNewUser   = !existing;
+    var tempPassword = isNewUser ? generateTempPassword() : null;
 
     if (isNewUser) {
-      saveUser(email, {
-        email:        email,
-        passwordHash: hashPassword(tempPassword),
-        name:         email.split('@')[0],
-        tools:        [toolKey],
-        orders:       [{ toolKey: toolKey, ref: orderRef, date: new Date().toISOString(), status: 'active' }],
-        createdAt:    new Date().toISOString(),
-        mustChangePassword: true,
+      saveUser(email, toolKey, {
+        email:               email,
+        toolKey:             toolKey,
+        passwordHash:        hashPassword(tempPassword, toolKey),
+        name:                email.split('@')[0],
+        orders:              [{ ref: orderRef, date: new Date().toISOString(), status: 'active' }],
+        createdAt:           new Date().toISOString(),
+        mustChangePassword:  true,
       });
     } else {
-      /* Existing user — add new tool to their account */
-      var tools  = existing.tools || [];
+      /* Existing user for this tool — add new order */
       var orders = existing.orders || [];
-      if (tools.indexOf(toolKey) === -1) tools.push(toolKey);
-      orders.push({ toolKey: toolKey, ref: orderRef, date: new Date().toISOString(), status: 'active' });
-      updateUser(email, { tools: tools, orders: orders });
+      orders.push({ ref: orderRef, date: new Date().toISOString(), status: 'active' });
+      updateUser(email, toolKey, { orders: orders });
     }
 
-    /* Send welcome email */
     sendWelcomeEmail({
-      toEmail:     email,
-      toName:      email.split('@')[0],
-      toolName:    tool.name,
-      tempPwd:     isNewUser ? tempPassword : '(use your existing password)',
-      loginUrl:    getLoginUrl(toolKey),
-      isNewUser:   isNewUser,
-      orderRef:    orderRef,
+      toEmail:   email,
+      toName:    email.split('@')[0],
+      toolName:  tool.name,
+      toolIcon:  tool.icon,
+      tempPwd:   isNewUser ? tempPassword : '(use your existing password for this product)',
+      loginUrl:  getAbsoluteUrl(tool.loginUrl),
+      orderRef:  orderRef || '',
+      isNewUser: isNewUser,
     });
 
     return { success: true, isNewUser: isNewUser };
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════════════════════
      EMAIL SENDING  (EmailJS)
-     ══════════════════════════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════════════════════ */
 
   function loadEmailJS(cb) {
     if (window.emailjs) { cb(); return; }
     var s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
     s.onload = function () {
-      window.emailjs.init(EMAILJS_CONFIG.publicKey);
+      try { window.emailjs.init(EMAILJS_CONFIG.publicKey); } catch(e) {}
       cb();
     };
     s.onerror = function () {
-      console.warn('[OliAuth] EmailJS failed to load — email not sent. Check network / public key.');
+      console.warn('[OliAuth] EmailJS load failed. Set up EmailJS to enable automatic emails.');
     };
     document.head.appendChild(s);
   }
 
   function sendWelcomeEmail(params) {
     if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      /* Not configured yet — log to console so you can see it worked */
-      console.log('[OliAuth] Welcome email would send to:', params.toEmail,
-        '\nTool:', params.toolName,
-        '\nTemp password:', params.tempPwd,
-        '\nLogin URL:', params.loginUrl);
+      console.log('[OliAuth] DEMO — welcome email would send:', params);
       return;
     }
     loadEmailJS(function () {
       window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.welcomeTemplate, {
-        to_email:      params.toEmail,
-        to_name:       params.toName,
-        tool_name:     params.toolName,
-        temp_password: params.tempPwd,
-        login_url:     params.loginUrl,
-        order_ref:     params.orderRef || '',
-        is_new_user:   params.isNewUser ? 'yes' : 'no',
-        support_email: 'workitlikeapr01@gmail.com',
+        to_email:       params.toEmail,
+        to_name:        params.toName,
+        tool_name:      params.toolName,
+        tool_icon:      params.toolIcon || '💎',
+        temp_password:  params.tempPwd,
+        login_url:      params.loginUrl,
+        order_ref:      params.orderRef,
+        is_new_user:    params.isNewUser ? 'yes' : 'no',
+        support_email:  'workitlikeapr01@gmail.com',
       }).then(function () {
         console.log('[OliAuth] Welcome email sent to', params.toEmail);
       }).catch(function (err) {
-        console.error('[OliAuth] Welcome email failed:', err);
+        console.error('[OliAuth] Welcome email error:', err);
       });
     });
   }
 
   function sendRenewalReminderEmail(email, toolKey, renewalDate, amount) {
-    var tool = TOOLS[toolKey] || { name: toolKey };
-    var user = getUser(email);
+    var tool = TOOLS[toolKey] || { name: toolKey, icon: '💎' };
+    var user = getUser(email, toolKey);
     if (!user) return;
     if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      console.log('[OliAuth] Renewal reminder would send to:', email, 'for', tool.name, 'on', renewalDate);
+      console.log('[OliAuth] DEMO — renewal reminder would send to', email, 'for', tool.name);
       return;
     }
     loadEmailJS(function () {
@@ -226,199 +276,229 @@
         to_email:     email,
         to_name:      user.name || email.split('@')[0],
         tool_name:    tool.name,
+        tool_icon:    tool.icon || '💎',
         renewal_date: renewalDate,
         amount:       amount,
         cancel_url:   'https://www.paypal.com/myaccount/autopay/',
-        login_url:    getLoginUrl(toolKey),
+        login_url:    getAbsoluteUrl(tool.loginUrl),
         support_email:'workitlikeapr01@gmail.com',
-      }).catch(function (err) {
-        console.error('[OliAuth] Renewal reminder failed:', err);
       });
     });
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     SESSION MANAGEMENT
-     ══════════════════════════════════════════════════════════════════════ */
+  function sendPasswordResetEmail(email, toolKey, resetUrl) {
+    var tool = TOOLS[toolKey] || { name: 'Oli Tools', icon: '💎' };
+    var user = getUser(email, toolKey);
+    if (!user) return;
+    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
+      console.log('[OliAuth] DEMO — password reset link:', resetUrl);
+      return;
+    }
+    loadEmailJS(function () {
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.resetTemplate, {
+        to_email:      email,
+        to_name:       user.name || email.split('@')[0],
+        tool_name:     tool.name,
+        reset_url:     resetUrl,
+        support_email: 'workitlikeapr01@gmail.com',
+      });
+    });
+  }
 
-  function getSession() {
-    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); }
+  /* ═══════════════════════════════════════════════════════════════════════
+     SESSION MANAGEMENT  (per-tool scoped session)
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  function getSession(toolKey) {
+    try { return JSON.parse(sessionStorage.getItem(sessionKey(toolKey)) || 'null'); }
     catch (e) { return null; }
   }
 
   function setSession(email, toolKey) {
-    var user = getUser(email);
+    var user = getUser(email, toolKey);
     if (!user) return false;
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      email:    email,
-      toolKey:  toolKey || (user.tools && user.tools[0]) || null,
-      name:     user.name,
-      loginAt:  Date.now(),
+    sessionStorage.setItem(sessionKey(toolKey), JSON.stringify({
+      email:   email,
+      toolKey: toolKey,
+      name:    user.name,
+      loginAt: Date.now(),
     }));
     return true;
   }
 
-  function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
+  function clearSession(toolKey) {
+    sessionStorage.removeItem(sessionKey(toolKey));
   }
 
-  function isLoggedIn() {
-    var s = getSession();
+  function isLoggedIn(toolKey) {
+    var s = getSession(toolKey);
     if (!s) return false;
-    /* Session expires after 8 hours */
-    if (Date.now() - s.loginAt > 8 * 60 * 60 * 1000) { clearSession(); return false; }
+    if (Date.now() - s.loginAt > 8 * 60 * 60 * 1000) { clearSession(toolKey); return false; }
     return true;
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════════════════════════════
      LOGIN / LOGOUT
-     ══════════════════════════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════════════════════ */
 
   function login(email, password, toolKey) {
-    var user = getUser(email);
-    if (!user) return { ok: false, error: 'No account found for that email address.' };
-    if (!checkPassword(password, user.passwordHash)) return { ok: false, error: 'Incorrect password.' };
-    if (toolKey && user.tools && user.tools.indexOf(toolKey) === -1) {
-      return { ok: false, error: 'This email has not purchased ' + (TOOLS[toolKey] ? TOOLS[toolKey].name : toolKey) + '.' };
-    }
+    var user = getUser(email, toolKey);
+    if (!user) return { ok: false, error: 'No ' + (TOOLS[toolKey]||{name:'tool'}).name + ' account found for that email.' };
+    if (!checkPassword(password, user.passwordHash, toolKey)) return { ok: false, error: 'Incorrect password.' };
     setSession(email, toolKey);
     return { ok: true, user: user, mustChangePassword: !!user.mustChangePassword };
   }
 
-  function logout(redirectUrl) {
-    clearSession();
-    window.location.href = redirectUrl || '../login/';
+  function logout(toolKey, redirectUrl) {
+    clearSession(toolKey);
+    var tool = TOOLS[toolKey];
+    window.location.href = redirectUrl || (tool ? tool.loginUrl : '/');
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     PASSWORD CHANGE
-     ══════════════════════════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════════════════
+     PAGE GUARD
+     Call at top of any page that requires login for a specific tool.
+     OliAuth.requireLogin('oliops') — redirects to /oliops/login/ if not authed.
+     ═══════════════════════════════════════════════════════════════════════ */
 
-  function changePassword(email, currentPassword, newPassword) {
-    var user = getUser(email);
+  function requireLogin(toolKey) {
+    if (!isLoggedIn(toolKey)) {
+      var tool = TOOLS[toolKey];
+      var loginPath = tool ? tool.loginUrl : '/login/';
+      /* Build relative path from current location */
+      loginPath = toRelative(loginPath);
+      var redirect = encodeURIComponent(window.location.href);
+      window.location.href = loginPath + '?redirect=' + redirect;
+      return false;
+    }
+    return getSession(toolKey);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     PASSWORD CHANGE / RESET
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  function changePassword(email, toolKey, currentPassword, newPassword) {
+    var user = getUser(email, toolKey);
     if (!user) return { ok: false, error: 'Account not found.' };
-    if (!checkPassword(currentPassword, user.passwordHash)) return { ok: false, error: 'Current password is incorrect.' };
+    if (!checkPassword(currentPassword, user.passwordHash, toolKey)) return { ok: false, error: 'Current password is incorrect.' };
     if (newPassword.length < 8) return { ok: false, error: 'New password must be at least 8 characters.' };
-    updateUser(email, { passwordHash: hashPassword(newPassword), mustChangePassword: false });
+    updateUser(email, toolKey, { passwordHash: hashPassword(newPassword, toolKey), mustChangePassword: false });
     return { ok: true };
   }
 
-  function requestPasswordReset(email) {
-    var user = getUser(email);
-    if (!user) {
-      /* Don't reveal whether account exists — always show success */
-      return { ok: true };
-    }
-    var resetToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    updateUser(email, { resetToken: resetToken, resetTokenExp: Date.now() + 60 * 60 * 1000 });
-    /* In production: send an email with a link containing the token.
-       For now, log it (replace with EmailJS/backend send) */
-    var resetUrl = window.location.origin + '/login/?reset=' + resetToken + '&email=' + encodeURIComponent(email);
-    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      console.log('[OliAuth] Password reset link:', resetUrl);
-    } else {
-      loadEmailJS(function () {
-        window.emailjs.send(EMAILJS_CONFIG.serviceId, 'oli_reset', {
-          to_email:  email,
-          to_name:   user.name || email.split('@')[0],
-          reset_url: resetUrl,
-          support_email: 'workitlikeapr01@gmail.com',
-        });
-      });
-    }
+  function requestPasswordReset(email, toolKey) {
+    var user = getUser(email, toolKey);
+    /* Always return ok=true — don't reveal whether email exists */
+    if (!user) return { ok: true };
+    var token    = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    var expiry   = Date.now() + 60 * 60 * 1000; /* 1 hour */
+    updateUser(email, toolKey, { resetToken: token, resetTokenExp: expiry });
+    var tool     = TOOLS[toolKey] || {};
+    var loginPath = tool.loginUrl || '/login/';
+    var resetUrl  = window.location.origin
+      + (loginPath.replace(/\/$/, ''))
+      + '/?reset=' + token + '&email=' + encodeURIComponent(email);
+    sendPasswordResetEmail(email, toolKey, resetUrl);
     return { ok: true };
   }
 
-  function resetPasswordWithToken(email, token, newPassword) {
-    var user = getUser(email);
+  function resetPasswordWithToken(email, toolKey, token, newPassword) {
+    var user = getUser(email, toolKey);
     if (!user || user.resetToken !== token) return { ok: false, error: 'Invalid or expired reset link.' };
     if (Date.now() > user.resetTokenExp) return { ok: false, error: 'Reset link has expired. Please request a new one.' };
     if (newPassword.length < 8) return { ok: false, error: 'Password must be at least 8 characters.' };
-    updateUser(email, { passwordHash: hashPassword(newPassword), resetToken: null, resetTokenExp: null, mustChangePassword: false });
+    updateUser(email, toolKey, {
+      passwordHash:       hashPassword(newPassword, toolKey),
+      resetToken:         null,
+      resetTokenExp:      null,
+      mustChangePassword: false,
+    });
     return { ok: true };
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     GUARD — call at the top of any protected tool page
-     ══════════════════════════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════════════════
+     FORCE PASSWORD CHANGE (for first-time logins with temp password)
+     ═══════════════════════════════════════════════════════════════════════ */
 
-  /**
-   * requireLogin(toolKey)
-   * Call at the top of any page that should require authentication.
-   * Redirects to /login/ if not authenticated.
-   * Usage: OliAuth.requireLogin('oliops');
-   */
-  function requireLogin(toolKey) {
-    if (!isLoggedIn()) {
-      var redirect = encodeURIComponent(window.location.href);
-      var tool     = toolKey ? '&tool=' + toolKey : '';
-      window.location.href = getLoginUrl(toolKey) + '?redirect=' + redirect + tool;
-      return false;
-    }
-    var session = getSession();
-    if (toolKey && session.toolKey !== toolKey) {
-      var user = getUser(session.email);
-      if (!user || !user.tools || user.tools.indexOf(toolKey) === -1) {
-        window.location.href = getLoginUrl(toolKey) + '?error=not_purchased&tool=' + toolKey;
-        return false;
-      }
-    }
-    return session;
+  function setFirstPassword(email, toolKey, tempPassword, newPassword) {
+    var user = getUser(email, toolKey);
+    if (!user) return { ok: false, error: 'Account not found.' };
+    /* For first-time, we verify temp password normally */
+    if (!checkPassword(tempPassword, user.passwordHash, toolKey)) return { ok: false, error: 'Temporary password is incorrect.' };
+    if (newPassword.length < 8) return { ok: false, error: 'Password must be at least 8 characters.' };
+    updateUser(email, toolKey, {
+      passwordHash:       hashPassword(newPassword, toolKey),
+      mustChangePassword: false,
+    });
+    return { ok: true };
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     UTILITIES
-     ══════════════════════════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════════════════════════════
+     URL HELPERS
+     ═══════════════════════════════════════════════════════════════════════ */
 
-  function getLoginUrl(toolKey) {
-    var base = window.location.origin;
-    var path = window.location.pathname;
-    /* Find depth to compute relative path back to /login/ */
-    var parts = path.replace(/\/$/, '').split('/').filter(Boolean);
-    /* Remove github pages project prefix (e.g. /marketing) */
-    var depth = Math.max(0, parts.length - 1);
-    var rel   = depth > 0 ? Array(depth).fill('..').join('/') + '/login/' : './login/';
-    return rel + (toolKey ? '?tool=' + toolKey : '');
+  function getAbsoluteUrl(path) {
+    if (!path) return window.location.origin;
+    if (path.startsWith('http')) return path;
+    return window.location.origin + path;
   }
 
-  function getAccountUrl() {
-    var path   = window.location.pathname;
-    var parts  = path.replace(/\/$/, '').split('/').filter(Boolean);
-    var depth  = Math.max(0, parts.length - 1);
-    return depth > 0 ? Array(depth).fill('..').join('/') + '/account/' : './account/';
+  function toRelative(absolutePath) {
+    /* Convert /oliops/login/ to ../../oliops/login/ from current page depth */
+    if (!absolutePath || absolutePath.startsWith('http')) return absolutePath;
+    var currentParts = window.location.pathname.replace(/\/$/, '').split('/').filter(Boolean);
+    var depth        = Math.max(0, currentParts.length - 1);
+    if (depth === 0) return '.' + absolutePath;
+    return Array(depth).fill('..').join('/') + absolutePath;
   }
 
-  function getToolInfo(key) { return TOOLS[key] || null; }
-  function getAllTools()     { return TOOLS; }
+  /* ═══════════════════════════════════════════════════════════════════════
+     PayPal SDK helpers
+     ═══════════════════════════════════════════════════════════════════════ */
 
-  /* ══════════════════════════════════════════════════════════════════════
+  function detectToolKey() {
+    var path = window.location.pathname.toLowerCase();
+    if (path.includes('olisalestrack')) return 'olisalestrack';
+    if (path.includes('olicommerce'))   return 'olicommerce';
+    if (path.includes('oliconnect'))    return 'oliconnect';
+    if (path.includes('oliflow'))       return 'oliflow';
+    if (path.includes('oliops'))        return 'oliops';
+    if (path.includes('oli-locator'))   return 'oli-locator';
+    return null;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
      PUBLIC API
-     ══════════════════════════════════════════════════════════════════════ */
+     ═══════════════════════════════════════════════════════════════════════ */
 
   window.OliAuth = {
-    /* Account */
-    createAccount:             createAccount,
-    login:                     login,
-    logout:                    logout,
-    requireLogin:              requireLogin,
-    isLoggedIn:                isLoggedIn,
-    getSession:                getSession,
-    /* Password */
-    changePassword:            changePassword,
-    requestPasswordReset:      requestPasswordReset,
-    resetPasswordWithToken:    resetPasswordWithToken,
+    /* Account lifecycle */
+    createAccount:            createAccount,
+    login:                    login,
+    logout:                   logout,
+    requireLogin:             requireLogin,
+    isLoggedIn:               isLoggedIn,
+    getSession:               getSession,
+    /* Password management */
+    changePassword:           changePassword,
+    setFirstPassword:         setFirstPassword,
+    requestPasswordReset:     requestPasswordReset,
+    resetPasswordWithToken:   resetPasswordWithToken,
     /* Email */
-    sendRenewalReminderEmail:  sendRenewalReminderEmail,
-    /* User data */
-    getUser:                   getUser,
-    updateUser:                updateUser,
+    sendRenewalReminderEmail: sendRenewalReminderEmail,
+    /* Data access */
+    getUser:                  function(email, toolKey) { return getUser(email, toolKey); },
+    updateUser:               function(email, toolKey, patch) { return updateUser(email, toolKey, patch); },
     /* Tool info */
-    getToolInfo:               getToolInfo,
-    getAllTools:                getAllTools,
-    getLoginUrl:               getLoginUrl,
-    getAccountUrl:             getAccountUrl,
-    /* Config (for testing) */
-    _config: EMAILJS_CONFIG,
+    getToolInfo:              function(key) { return TOOLS[key] || null; },
+    getAllTools:               function() { return TOOLS; },
+    detectToolKey:            detectToolKey,
+    /* URL helpers */
+    toRelative:               toRelative,
+    getAbsoluteUrl:           getAbsoluteUrl,
+    /* Config */
+    _emailjsConfig: EMAILJS_CONFIG,
   };
 
 })();

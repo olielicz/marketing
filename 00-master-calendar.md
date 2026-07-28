@@ -2,52 +2,74 @@
 
 **Sprint window:** Day 1 = Wed, Jul 22, 2026 → Day 30 = Thu, Aug 20, 2026
 **Owner:** olielicz (solo execution, $0 ad budget, free tools only)
-**Goal:** Visible, measurable commercial traction on all 5 product lines by Day 30 — not just "launched," but *selling*.
+**Goal:** Visible, measurable commercial traction on all **6 product lines** by Day 30 — not just "launched," but *selling*.
 
 ---
 
-## The 5 product lines (final)
+## The 6 Product Lines
 
-| # | Line | Repos bundled | Who buys it | Price |
-|---|---|---|---|---|
-| 1 | **OliOps Suite** | OliCRM, OliCompute, automate-CSR | Solo founders / small service businesses who want CRM + invoicing/payroll/accounting + AI customer support in one place instead of 4 subscriptions | $79 LTD or $19/mo |
-| 2 | **OliCommerce Stack** | ecomm-automation, project-2 (OliMind AI) | Shopify store owners who want order automation (abandoned cart, thank-you emails) + an AI shopping assistant | $59 LTD or $15/mo |
-| 3 | **OliFlow Automation Engine** | project-3 (OliFlow), auto-tools | Agencies/ops teams who want a self-hosted Zapier alternative with prebuilt n8n/Make/Zapier templates | $99 LTD or $0 self-hosted |
-| 4 | **OliConnect** | oliconnect | Social media managers, agencies, solo creators who want to recycle top-performing posts across all their accounts from one login | $29 LTD or $9/mo |
-| 5 | **Oli-Locator** | lead-gen | Solo real estate agents / small teams who want leads + property search + call center + inbox in one app | $39/mo (recurring — niche vertical tools retain better as subscriptions, not LTDs) |
+| # | Product | Repos | Target Buyer | Price | Login |
+|---|---|---|---|---|---|
+| 1 | **OliOps Suite** | OliCRM, OliCompute, automate-CSR | Solo founders / small service businesses — CRM + invoicing/payroll + AI support in one | $299 lifetime | `/oliops/login/` |
+| 2 | **OliCommerce Stack** | ecomm-automation, project-2 (OliMind AI) | Shopify store owners — cart recovery + AI shopping assistant | $199 lifetime | `/olicommerce/login/` |
+| 3 | **OliFlow Automation Engine** | project-3 (OliFlow), auto-tools | Agencies / ops teams — self-hosted Zapier with prebuilt templates | $249 lifetime | `/oliflow/login/` |
+| 4 | **OliConnect** | oliconnect | Social media managers / agencies — recycle top posts across all accounts | $89 lifetime | `/oliconnect/login/` |
+| 5 | **Oli-Locator** | lead-gen | Solo real estate agents / small teams — leads + property search + call center + inbox | $49/month | `/oli-locator/login/` |
+| 6 | **OliSalesTrack** | SalesTrack (refund-tracker) | Small business owners / e-commerce sellers — track sales, refunds & expenses with correlation analysis | $19/mo or $148/yr | `/olisalestrack/login/` |
 
-*(oliexplore excluded per instruction — not part of this campaign.)*
-
-**Why 5 lines instead of 10 tools:** every hour spent writing copy, running outreach, or answering PH comments covers 2 repos at once. This doubles output for the same time cost, which is the entire point of a 30-day sprint with no ad budget.
+> **Note:** Each product has its **own separate login page, account dashboard, and user store**. A customer who buys both OliOps and OliSalesTrack has two completely separate accounts — one per product. This is by design.
 
 ---
 
 ## What "visible results by Day 30" concretely means
 
-- [ ] 5 live landing pages with working email capture
-- [ ] 3 completed Product Hunt launches (OliOps, OliFlow, OliCommerce)
-- [ ] 40+ live directory/backlink listings across the 5 lines
-- [ ] 3 AppSumo submissions filed (OliOps, OliCommerce, OliFlow)
-- [ ] 100+ real estate agents and 50+ social media managers/agencies directly emailed (Oli-Locator, OliConnect)
+- [ ] **6 live landing pages** with working email capture
+- [ ] **6 working login pages** — one per product (already built ✅)
+- [ ] **6 working account dashboards** — one per product (already built ✅)
+- [ ] **3 completed Product Hunt launches** (OliOps, OliFlow, OliCommerce)
+- [ ] **40+ live directory/backlink listings** across the 6 lines
+- [ ] **3 AppSumo submissions** filed (OliOps, OliCommerce, OliFlow)
+- [ ] **100+ real estate agents** directly emailed (Oli-Locator)
+- [ ] **50+ social media managers** directly emailed (OliConnect)
+- [ ] **OliSalesTrack listed** on SaaS comparison sites (AlternativeTo, SaaSHub vs Baremetrics)
 - [ ] A tracked email list (Brevo) with subscriber count and open/click rates
-- [ ] At least the first dollar of real revenue (LTD sale, subscription, or AppSumo pre-order)
-- [ ] A reusable playbook you can repeat every 30 days without needing this rebuilt
+- [ ] At least the **first dollar of real revenue**
+- [ ] A reusable playbook you can repeat every 30 days
+
+---
+
+## Pre-Sprint Checklist (Do Before Day 1)
+
+These are technical prerequisites. **None of these block marketing work** — do them in parallel.
+
+| Task | Where | Status |
+|---|---|---|
+| Merge PR #2 on marketing repo | github.com/olielicz/marketing | ☐ |
+| Enable GitHub Pages (main branch, root) | Repo Settings → Pages | ☐ |
+| Activate FormSubmit contact form (first submit confirms email) | Live contact page | ☐ |
+| Paste PayPal Client ID into `shared/paypal-sdk.js` | GitHub editor or local | ☐ |
+| Create Stripe Payment Links (all 6 tools) | dashboard.stripe.com/payment-links | ☐ |
+| Set up EmailJS (welcome + renewal + reset templates) | emailjs.com | ☐ |
+| Submit sitemap to Google Search Console | search.google.com/search-console | ☐ |
+| Set up Cloudflare (free) in front of GitHub Pages | cloudflare.com | ☐ |
+| (Optional) Migrate to Netlify for native `_headers` support | app.netlify.com | ☐ |
 
 ---
 
 ## Week 1 (Days 1–7) — Foundation
 
-| Day | Task | Tool |
-|---|---|---|
-| 1 | Deploy all 5 landing pages to GitHub Pages or Vercel free tier | GitHub Pages / Vercel (free) |
-| 1 | Create Brevo account, verify sending domain | Brevo (free, 300 emails/day) |
-| 2 | Build 5 Brevo signup forms, embed into each landing page (swap `<!-- BREVO_FORM -->` block) | Brevo |
-| 2 | Install Plausible (14-day free trial) or GA4 (free forever) on all 5 pages | Plausible / GA4 |
-| 3 | Load the OliOps 5-email nurture sequence into Brevo Automation; duplicate the pattern for the other 4 lines | Brevo |
-| 4 | Submit all 5 lines to the directory list in `directory-submission-list.md` | AlternativeTo, SaaSHub, etc. |
-| 5 | File AppSumo submissions for OliOps Suite, OliCommerce Stack, OliFlow Engine — review takes 1–3 weeks | sell.appsumo.com |
-| 6 | Write and schedule Week 2–4 social posts in Buffer free plan | Buffer |
-| 7 | **Checkpoint:** all 5 pages live, forms capturing emails, directories submitted, 3 AppSumo pitches filed. |
+| Day | Task | Tool | Notes |
+|---|---|---|---|
+| 1 | Confirm all 6 landing pages live, all 6 login pages working | Browser test | Run `security-check.js` in console on each |
+| 1 | Create Brevo account, verify sending domain | Brevo (free) | 300 emails/day free forever |
+| 2 | Build 6 Brevo signup forms (one per product) — embed in each landing page | Brevo | Separate list per product for segmentation |
+| 2 | Install Plausible (14-day free trial) or GA4 (free) on all 6 pages | Plausible / GA4 | |
+| 3 | Load 5-email nurture sequences into Brevo Automation (one per product) | Brevo | Templates in `email-sequence-*.md` |
+| 3 | **OliSalesTrack — Brevo sequence:** Write 5-email sequence targeting e-commerce sellers and SaaS founders who track revenue | Brevo | Use "refund rate is eating your profit" angle |
+| 4 | Submit all 6 products to the directory list in `directory-submission-list.md` | AlternativeTo, SaaSHub, etc. | Add OliSalesTrack as alternative to Baremetrics, Profitwell |
+| 5 | File AppSumo submissions for OliOps Suite, OliCommerce Stack, OliFlow Engine | sell.appsumo.com | Review takes 1–3 weeks |
+| 6 | Write and schedule Week 2–4 social posts for all 6 products in Buffer | Buffer free plan | OliSalesTrack angle: "finally know if refunds are killing you" |
+| 7 | **Checkpoint:** 6 pages live + logins working + forms capturing + directories submitted |  | |
 
 ---
 
@@ -55,60 +77,100 @@
 
 | Day | Task |
 |---|---|
-| 8–9 | Recruit 15–20 launch-day supporters, send them the PH link privately the morning of launch. |
-| 9 | **PRODUCT HUNT LAUNCH — OliOps Suite.** Launch at 12:01am PST. Reply to every comment within 5 minutes for 6 hours. |
-| 9 | Cross-post to r/SaaS, r/Entrepreneur, r/smallbusiness, Indie Hackers. |
-| 10 | Send Email #1 of nurture sequence to the OliOps waitlist. |
-| 11–12 | Respond to every comment/reply/DM — treat as a part-time job for 48 hours. |
-| 13 | Publish a "we launched" recap post, tag supporters. |
-| 14 | **Checkpoint:** log actual numbers (visitors, signups, sales) in a spreadsheet. |
+| 8–9 | Recruit 15–20 launch supporters, send them the PH link privately the morning of launch |
+| 9 | **PRODUCT HUNT LAUNCH — OliOps Suite.** 12:01am PST. Reply to every comment within 5 minutes for 6 hours |
+| 9 | Cross-post to r/SaaS, r/Entrepreneur, r/smallbusiness, Indie Hackers |
+| 10 | Send Email #1 of OliOps nurture sequence to waitlist |
+| 11–12 | Reply to every comment/DM — treat as a part-time job for 48 hours |
+| 12 | **OliSalesTrack — submit to:** AlternativeTo (vs Baremetrics), SaaSHub, GetApp, Capterra (free listing) |
+| 13 | Publish a "we launched" recap post, tag supporters |
+| 14 | **Checkpoint:** log actual numbers — visitors, signups, sales |
 
 ---
 
-## Week 3 (Days 15–21) — OliFlow launches, niche outreach begins
+## Week 3 (Days 15–21) — OliFlow launches + niche outreach begins
 
 | Day | Task |
 |---|---|
-| 15 | Recruit launch-day supporters for OliFlow. |
-| 16 | **PRODUCT HUNT LAUNCH — OliFlow Automation Engine.** Cross-post to r/nocode, r/automation, r/SaaS, Indie Hackers. |
-| 16–17 | Reply to every comment for 48 hours. |
-| 17 | **Begin Oli-Locator direct outreach** using `outreach-oli-locator.md` — 20 emails/day to real estate agents, 100 by end of week. |
-| 18 | **Begin OliConnect direct outreach** using `outreach-oliconnect.md` — 50 social media managers/agencies + Reddit posts. |
-| 19–20 | Continue outreach cadence for both niche tools. |
-| 21 | **Checkpoint:** OliFlow PH badge earned, 100 real estate emails sent, 50 social-media outreach sent. Log reply rates. |
+| 15 | Recruit launch supporters for OliFlow |
+| 16 | **PRODUCT HUNT LAUNCH — OliFlow Automation Engine.** Cross-post to r/nocode, r/automation, r/SaaS, Indie Hackers |
+| 16–17 | Reply to every comment for 48 hours |
+| 17 | **Begin Oli-Locator outreach** — 20 emails/day to real estate agents using `outreach-oli-locator.md`, 100 by end of week |
+| 18 | **Begin OliConnect outreach** — 50 social media managers/agencies + Reddit posts using `outreach-oliconnect.md` |
+| 18 | **OliSalesTrack Reddit launch post:** r/ecommerce, r/shopify, r/Entrepreneur — "Show Reddit: OliSalesTrack — see how refunds correlate with your sales for free" |
+| 19 | **OliSalesTrack — submit to Product Hunt** as a separate product launch (stagger from OliOps/OliFlow to avoid cannibalising votes) |
+| 20 | Send OliSalesTrack waitlist Email #1 — subject: "Your refund rate is probably higher than you think" |
+| 21 | **Checkpoint:** OliFlow PH badge, 100 real estate emails sent, 50 OliConnect outreach done, OliSalesTrack PH submitted |
 
 ---
 
-## Week 4 (Days 22–30) — OliCommerce launches, conversion push, close the loop
+## Week 4 (Days 22–30) — OliCommerce launches + conversion push
 
 | Day | Task |
 |---|---|
-| 22 | Recruit launch-day supporters for OliCommerce Stack; post in Shopify community forums + r/shopify + r/ecommerce. |
-| 23 | **PRODUCT HUNT LAUNCH — OliCommerce Stack.** Reply to every comment for 48 hours. |
-| 24 | Send LTD urgency email to full OliOps + OliFlow waitlists. |
-| 25 | Follow up on all 3 AppSumo submissions — reply same-day to reviewer questions. |
-| 26 | Collect testimonials from anyone who's bought/signed up; add to all 5 landing pages. |
-| 27 | Second round of Oli-Locator + OliConnect outreach (fresh batch of 50 + 25 contacts). |
-| 28 | Re-share best-performing PH launch on LinkedIn/X with "1 month later" framing. |
-| 29 | Audit every directory listing from Week 1 — confirm live, fix broken links. |
-| 30 | **Final scoreboard day.** Fill in every checkbox above with real numbers. Identify best-performing channel for Month 2. |
+| 22 | Recruit OliCommerce launch supporters; post in Shopify community + r/shopify + r/ecommerce |
+| 23 | **PRODUCT HUNT LAUNCH — OliCommerce Stack.** Reply to every comment for 48 hours |
+| 24 | Send LTD urgency email to OliOps + OliFlow + OliSalesTrack waitlists |
+| 25 | Follow up on all 3 AppSumo submissions — reply same-day to any reviewer questions |
+| 26 | **OliSalesTrack — write 1 SEO blog post** on Medium/Substack: "How to find your true profit margin (refunds + expenses)" — link back to landing page |
+| 26 | Collect testimonials from early users; add to all 6 landing pages |
+| 27 | Second round: Oli-Locator (50 new contacts) + OliConnect (25 new contacts) outreach |
+| 27 | **OliSalesTrack — AppSumo submission:** pitch "the only tracker that shows how refunds eat your profit" |
+| 28 | Re-share best PH launches on LinkedIn/X with "1 month later" framing |
+| 29 | Audit all 6 directory listings from Week 1 — confirm live, fix broken links |
+| 30 | **Final scoreboard day.** Fill in every checkbox. Identify best-performing channel per product for Month 2 |
+
+---
+
+## OliSalesTrack — Specific Marketing Plan
+
+OliSalesTrack targets a different buyer than the other 5 tools — focus the messaging accordingly.
+
+### Target audiences (in priority order)
+1. **Shopify / WooCommerce store owners** — feel the pain of refunds appearing after profitable weeks
+2. **Amazon / eBay sellers** — expense tracking is a constant headache
+3. **SaaS founders** — churn-adjusted revenue visibility
+4. **Freelancers & agencies** — need simple P&L without full accounting software
+
+### Key message
+> "You think you made $8,000 last month. After refunds and ad spend — you actually made $4,800. OliSalesTrack shows you the real number in 30 seconds."
+
+### Positioning vs competitors
+
+| Competitor | Their price | OliSalesTrack advantage |
+|---|---|---|
+| Baremetrics | $58+/mo | 3× cheaper + includes expense tracking + correlation analysis |
+| Profitwell | Free–$499/mo | Much simpler, no complexity, browser-based |
+| Google Sheets | Free but manual | Automatic, visual, no formula maintenance |
+| QuickBooks | $25+/mo | Not a P&L tool — complementary, not competing |
+
+### Best channels for OliSalesTrack
+1. **r/ecommerce, r/shopify** — post case study: "I finally tracked refunds vs sales for 90 days — here's what I found"
+2. **AlternativeTo** (list as alternative to Baremetrics)
+3. **IndieHackers** — "Show IH" post with correlation chart screenshot
+4. **Twitter/X thread** — before/after P&L numbers
+5. **YouTube Shorts** — 60-second demo: add a sale, add a refund, see the correlation chart update
 
 ---
 
 ## The free tools doing all the heavy lifting
 
-| Tool | Free tier | What it's doing in this plan |
+| Tool | Free tier | What it does |
 |---|---|---|
-| **Brevo** | 300 emails/day, unlimited contacts, forever free | Waitlist capture + all 5 nurture sequences |
-| **Product Hunt** | 100% free | 3 launches = biggest traffic spikes of the month |
-| **AppSumo** | Free to submit | Fastest path to real one-time-payment revenue if accepted |
-| **Reddit / Indie Hackers / niche communities** | 100% free | Where actual buyers already hang out |
-| **GitHub Pages / Vercel** | 100% free | Hosting for all 5 landing pages |
+| **Brevo** | 300 emails/day, unlimited contacts, forever | Waitlist capture + all 6 nurture sequences |
+| **Product Hunt** | 100% free | 3–4 launches = biggest traffic spikes |
+| **AppSumo** | Free to submit | Fastest path to lifetime deal revenue |
+| **Reddit / Indie Hackers** | Free | Where actual buyers already hang out |
+| **GitHub Pages + Cloudflare** | Free | Hosting + CDN + security headers |
+| **Netlify** | Free (100GB/mo) | Recommended upgrade — `_headers` native |
+| **EmailJS** | 200 emails/mo free | Automatic purchase welcome + password reset emails |
+| **FormSubmit.co** | Free | Contact form → Gmail, no backend needed |
 
 ---
 
 ## Honest expectations
 
-- Product Hunt, AppSumo, and cold outreach are proven channels — not guaranteed to produce sales in 30 days, but correct free channels to maximize odds.
-- "Nearly 100% profit" is true on **margin** (self-hosted/free-tier infra = almost no cost per sale after ~3% payment processing). It is not guaranteed on **volume**.
-- If Week 2's OliOps launch underperforms, diagnose before Week 3 launch — don't repeat the same mistake twice.
+- Product Hunt, AppSumo, and direct outreach are proven channels — not guaranteed 30-day results, but the correct free channels to maximise odds.
+- OliSalesTrack has the clearest before/after story of all 6 products — lean into the "real profit vs perceived profit" angle hard.
+- If Week 2's OliOps launch underperforms, diagnose before Week 3 — don't repeat the same mistake twice.
+- The login system is live for all 6 tools. **First priority after launch: get the EmailJS welcome email working** so every buyer automatically receives their login details.
