@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Get OliSalesTrack — Pro $19/mo or $149 Lifetime</title>
-<meta name="description" content="Start tracking sales, refunds and expenses with OliSalesTrack. $19/month or $149 lifetime. Secure PayPal checkout.">
+<title>Get OliSalesTrack — Pro $19/mo or $148/yr</title>
+<meta name="description" content="Start tracking sales, refunds and expenses with OliSalesTrack. $19/month or $148/year. Secure checkout via Stripe and PayPal.">
 <meta name="robots" content="noindex">
 <style>
   :root{--ink:#14161a;--sub:#55606e;--accent:#7c3aed;--accent2:#6C47FF;--bg:#fafafa;--card:#fff;--line:#e7e9ee;--good:#16a34a;}
@@ -50,11 +50,10 @@
 <main class="wrap">
   <div style="margin-bottom:32px">
     <h1>Choose your plan</h1>
-    <p class="sub-p">Start with Pro or lock in the best value with a one-time lifetime purchase.</p>
+    <p class="sub-p">Monthly or yearly — both include every Pro feature. Save 35% by paying annually.</p>
     <div class="toggle-wrap">
       <button class="toggle-btn active" onclick="showPlan('monthly',this)">📅 Monthly — $19/mo</button>
       <button class="toggle-btn" onclick="showPlan('yearly',this)">📆 Yearly — $148/yr</button>
-      <button class="toggle-btn" id="lifetime-toggle-btn" onclick="showPlan('lifetime',this)">♾️ Lifetime — $149</button>
     </div>
   </div>
 
@@ -115,36 +114,6 @@
     </div>
   </div>
 
-  <!-- Lifetime Deal -->
-  <div class="plan-section" id="plan-lifetime">
-    <div class="grid">
-      <div>
-        <div class="summary-card" style="border-color:var(--accent)">
-          <div class="line"><span>OliSalesTrack Pro — Lifetime License</span><span>$149.00</span></div>
-          <div class="line"><span>Access</span><span>Permanent — never expires</span></div>
-          <div class="line"><span>Future updates</span><span>All included, forever</span></div>
-          <div class="total"><span>One-time total</span><span>$149.00 USD</span></div>
-          <ul class="included">
-            <li>All Pro features — forever</li>
-            <li>All future feature updates included</li>
-            <li>3 business profiles</li>
-            <li>Priority email support</li>
-            <li>Early access to new features</li>
-            <li>30-day money-back guarantee</li>
-          </ul>
-        </div>
-      </div>
-      <div class="pay-card" style="border-color:var(--accent)">
-        <h2>Pay once. Own forever.</h2>
-        <div class="price">$149<span style="font-size:16px;font-weight:600;color:var(--sub)"> once</span></div>
-        <a class="pay-btn stripe" href="https://buy.stripe.com/REPLACE_WITH_OLISALESTRACK_LIFETIME_STRIPE_LINK" target="_blank" rel="noopener">💳 Buy Lifetime with Stripe</a>
-        <div id="paypal-button-container-lifetime" style="margin-bottom:12px"></div>
-        <div id="paypal-success-box-lifetime" style="display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:16px;text-align:center;font-size:14px;color:#047857">🎉 <strong>Lifetime access activated!</strong> Ref: <strong id="paypal-ref-id-lifetime"></strong></div>
-        <div class="pay-note">One-time charge. No renewals. 30-day refund if not satisfied.</div>
-        <div class="trust-row"><span>🔒 256-bit SSL</span><span>🛡️ 30-day refund</span><span>♾️ Lifetime</span></div>
-      </div>
-    </div>
-  </div>
 </main>
 
 <footer class="wrap">
@@ -161,10 +130,6 @@ function showPlan(plan, btn) {
   document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('plan-'+plan).classList.add('visible');
   btn.classList.add('active');
-}
-// Hash-based deep linking (#lifetime from the landing page)
-if(window.location.hash === '#lifetime') {
-  document.getElementById('lifetime-toggle-btn').click();
 }
 </script>
 </body>

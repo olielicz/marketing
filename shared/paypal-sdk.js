@@ -35,12 +35,13 @@
   // ── Internal: detect which product this buy page is for ───────────────
   function detectProduct() {
     var path = window.location.pathname.toLowerCase();
-    if (path.includes('oliops'))     return { name: 'OliOps Suite — Lifetime License',          amount: '299.00', recurring: false };
-    if (path.includes('olicommerce'))return { name: 'OliCommerce Stack — Lifetime License',     amount: '199.00', recurring: false };
-    if (path.includes('oliflow'))    return { name: 'OliFlow Engine — Lifetime License',         amount: '249.00', recurring: false };
-    if (path.includes('oliconnect')) return { name: 'OliConnect — Lifetime License',             amount: '89.00',  recurring: false };
-    if (path.includes('oli-locator'))return { name: 'Oli-Locator — Agency Plan',                 amount: '49.00',  recurring: true  };
-    if (path.includes('olisalestrack'))return { name: 'OliSalesTrack Pro — Lifetime License',   amount: '149.00', recurring: false };
+    if (path.includes('oliops'))     return { name: 'OliOps Suite — Lifetime License',       amount: '299.00', recurring: false };
+    if (path.includes('olicommerce'))return { name: 'OliCommerce Stack — Lifetime License',   amount: '199.00', recurring: false };
+    if (path.includes('oliflow'))    return { name: 'OliFlow Engine — Lifetime License',       amount: '249.00', recurring: false };
+    if (path.includes('oliconnect')) return { name: 'OliConnect — Lifetime License',           amount: '89.00',  recurring: false };
+    if (path.includes('oli-locator'))return { name: 'Oli-Locator — Agency Plan',               amount: '49.00',  recurring: true  };
+    // OliSalesTrack uses its own separate PayPal subscription script (see olisalestrack/buy/index.html)
+    // This file only handles the 5 tools above. OliSalesTrack one-time payments do NOT route here.
     return null;
   }
 
