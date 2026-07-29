@@ -13,12 +13,12 @@ Each product is sold, hosted, and logged into **completely separately**.
 
 | Tool | Price | Type | Login | Account |
 |---|---|---|---|---|
-| 💼 **OliOps Suite** | $299 lifetime | Self-hosted | `/oliops/login/` | `/oliops/account/` |
-| 🛒 **OliCommerce Stack** | $199 lifetime | Self-hosted | `/olicommerce/login/` | `/olicommerce/account/` |
-| ⚙️ **OliFlow Automation Engine** | $249 lifetime | Self-hosted | `/oliflow/login/` | `/oliflow/account/` |
-| ♻️ **OliConnect** | $89 lifetime | Self-hosted | `/oliconnect/login/` | `/oliconnect/account/` |
-| 🏡 **Oli-Locator** | $49/month | Hosted SaaS | `/oli-locator/login/` | `/oli-locator/account/` |
-| 📊 **OliSalesTrack** | $19/mo or $148/yr | Hosted SaaS | `/olisalestrack/login/` | `/olisalestrack/account/` |
+| 💼 **OliOps Suite** | $39/mo or $348/yr | Self-hosted | `/oliops/login/` | `/oliops/account/` |
+| 🛒 **OliCommerce Stack** | $29/mo or $264/yr | Self-hosted | `/olicommerce/login/` | `/olicommerce/account/` |
+| ⚙️ **OliFlow Automation Engine** | $35/mo or $312/yr | Self-hosted | `/oliflow/login/` | `/oliflow/account/` |
+| ♻️ **OliConnect** | $19/mo or $168/yr | Self-hosted | `/oliconnect/login/` | `/oliconnect/account/` |
+| 🏡 **Oli-Locator** | $59/mo or $516/yr | Hosted SaaS | `/oli-locator/login/` | `/oli-locator/account/` |
+| 📊 **OliSalesTrack** | $24/mo or $204/yr | Hosted SaaS | `/olisalestrack/login/` | `/olisalestrack/account/` |
 
 ---
 
@@ -199,8 +199,8 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 | Account page | `/olisalestrack/account/` |
 | Buy page | `/olisalestrack/buy/` |
 | Landing page | `/olisalestrack/` |
-| Monthly price | $19/month |
-| Yearly price | $148/year (save 35%) |
+| Monthly price | $24/month |
+| Yearly price | $204/year (save 29%) |
 | Payment | PayPal subscription + Stripe recurring |
 | Competitors | Baremetrics ($58+/mo), Profitwell, Google Sheets |
 | Key differentiator | Pearson correlation analysis: Sales ↔ Refunds ↔ Expenses |
@@ -227,11 +227,11 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 
 | Tool | Stripe file | Price | PayPal |
 |---|---|---|---|
-| OliOps | `oliops/buy/index.html` | $299 one-time | Auto via paypal-sdk.js |
-| OliCommerce | `olicommerce/buy/index.html` | $199 one-time | Auto via paypal-sdk.js |
-| OliFlow | `oliflow/buy/index.html` | $249 one-time | Auto via paypal-sdk.js |
-| OliConnect | `oliconnect/buy/index.html` | $89 one-time | Auto via paypal-sdk.js |
-| Oli-Locator | `oli-locator/buy/index.html` | $49/mo recurring | Plan ID in paypal-sdk.js |
-| OliSalesTrack | `olisalestrack/buy/index.html` | $19/mo or $148/yr | Custom script (see PAYMENTS-SETUP.md) |
+| OliOps | `oliops/buy/index.html` | $39/mo or $348/yr | PayPal subscription |
+| OliCommerce | `olicommerce/buy/index.html` | $29/mo or $264/yr | PayPal subscription |
+| OliFlow | `oliflow/buy/index.html` | $35/mo or $312/yr | PayPal subscription |
+| OliConnect | `oliconnect/buy/index.html` | $19/mo or $168/yr | PayPal subscription |
+| Oli-Locator | `oli-locator/buy/index.html` | $59/mo or $516/yr | PayPal subscription plan |
+| OliSalesTrack | `olisalestrack/buy/index.html` | $24/mo or $204/yr | PayPal subscription plan |
 
 See `PAYMENTS-SETUP.md` for the full step-by-step.

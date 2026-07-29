@@ -53,7 +53,7 @@ Customer enters email on buy page → pays via Stripe or PayPal
    - Image URL: `https://olielicz.github.io/marketing/assets/oli-locator-product.png`
 2. Click **Create Plan** under that product:
    - Plan Name: `Oli-Locator Monthly`
-   - Billing: **Monthly** · Price: **$49.00 USD**
+   - Billing: **Monthly** · Price: **$59.00 USD**
    - Status: **Active** → Save
 3. Copy the **Plan ID** (starts with `P-`)
 4. Open `shared/paypal-sdk.js` and replace line 26:
@@ -80,7 +80,7 @@ OliSalesTrack uses its own subscription script (separate from paypal-sdk.js beca
 <script>
 (function() {
   var clientId  = 'YOUR_PAYPAL_CLIENT_ID_HERE'; // same ID from Step 1a
-  var monthlyId = 'P-YOUR_MONTHLY_PLAN_ID';
+  var monthlyId = 'P-YOUR_MONTHLY_PLAN_ID'; // $24/month
   var yearlyId  = 'P-YOUR_YEARLY_PLAN_ID';
 
   function renderSalestrackBtn(containerId, planId, toolKey) {
@@ -275,12 +275,12 @@ PayPal Subscriptions and Stripe Recurring billing charge the customer's card aut
 
 | Tool | Price | Billing | Stripe file | PayPal |
 |---|---|---|---|---|
-| OliOps Suite | $299 | One-time | `oliops/buy/index.html` | Auto (paypal-sdk.js) |
-| OliCommerce Stack | $199 | One-time | `olicommerce/buy/index.html` | Auto (paypal-sdk.js) |
-| OliFlow Engine | $249 | One-time | `oliflow/buy/index.html` | Auto (paypal-sdk.js) |
-| OliConnect | $89 | One-time | `oliconnect/buy/index.html` | Auto (paypal-sdk.js) |
-| Oli-Locator | $49/month | Monthly recurring | `oli-locator/buy/index.html` | Plan ID in paypal-sdk.js |
-| OliSalesTrack | $19/month | Monthly recurring | `olisalestrack/buy/index.html` | Custom script (see Part 1c) |
-| OliSalesTrack | $148/year | Yearly recurring | `olisalestrack/buy/index.html` | Custom script (see Part 1c) |
+| OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription |
+| OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription |
+| OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription |
+| OliConnect | $19/mo or $168/yr | Monthly/Annual | `oliconnect/buy/index.html` | PayPal subscription |
+| Oli-Locator | $59/mo or $516/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan |
+| OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan |
+
 
 > **Important:** if you change a price anywhere, update it in THREE places: the landing page, the buy page, and the actual Stripe Payment Link / PayPal plan (which has the price baked in — changing the HTML does NOT change what is charged).
