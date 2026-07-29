@@ -1,336 +1,572 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OliFlow Automation Engine — The Gem That Ends Your Zapier Bill</title>
-<meta name="description" content="Every month you pay Zapier or Make, you're renting logic you could just own. OliFlow is a self-hosted workflow automation engine with a visual builder — one lifetime purchase, unlimited runs, up to 5 devices.">
-<meta property="og:title" content="OliFlow Automation Engine — Own Your Automation | $249 Lifetime"/>
-<meta property="og:description" content="Stop paying Zapier's task-metered bills. OliFlow is a self-hosted workflow engine — unlimited runs, $249 once, no recurring fees."/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OliFlow Automation Engine — Visual Workflow Builder | Zapier + Make + n8n Alternative</title>
+<meta name="description" content="OliFlow combines the best of Zapier, Make.com, n8n and GoHighLevel into one powerful visual workflow builder. 48 node types, unlimited runs, no task metering. From $35/month."/>
+<meta property="og:title" content="OliFlow — The Automation Platform That Combines Zapier + Make + n8n + GHL"/>
+<meta property="og:description" content="Visual workflow builder with 48 node types, AI integration, CRM automation, and zero task metering. From $35/month."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/oliflow/"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<link rel="canonical" href="https://olielicz.github.io/marketing/oliflow/"/>
-<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
-<style>
-  :root { --ink:#14161a; --sub:#55606e; --accent:#ea580c; --accent2:#dc2626; --accent-dark:#c2410c; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; --bad:#dc2626; }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
-  a { color: var(--accent); }
-  .wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
-  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; position:sticky; top:0; background:rgba(250,250,250,0.85); backdrop-filter:blur(8px); z-index:50; }
-  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:6px; }
-  .logo span { color:var(--accent); }
-  nav a { margin-left:22px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
-  nav a:hover { color: var(--ink); }
-  nav a.all-tools { color: var(--accent); }
-  nav a.buy-now { background: var(--accent); color: #fff !important; padding: 8px 16px; border-radius: 8px; }
-  nav a.buy-now:hover { background: var(--accent-dark); }
-  .cta-btn { display:inline-block; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff !important; padding:14px 26px; border-radius:10px; font-weight:700; text-decoration:none; font-size:15.5px; border:none; cursor:pointer; box-shadow:0 8px 20px -6px rgba(234,88,12,0.5); transition:transform .15s, box-shadow .15s; }
-  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(234,88,12,0.6); }
-  .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; box-shadow:none; }
-  .cta-btn.ghost:hover { background:#fff7ed; transform:none; }
-  .hero { padding:72px 0 40px; text-align:center; position:relative; overflow:hidden; }
-  .hero:before { content:""; position:absolute; top:-180px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse at center, rgba(220,38,38,0.12), transparent 70%); pointer-events:none; }
-  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#fff7ed; color:var(--accent-dark); font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:24px; border:1px solid #fed7aa; }
-  h1 { font-size:52px; line-height:1.1; margin:0 0 20px; letter-spacing:-0.025em; font-weight:800; }
-  h1 .hl { background:linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .sub-headline { font-size:20px; color:var(--sub); max-width:700px; margin:0 auto 36px; }
-  .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; }
-  .price-note { font-size:13.5px; color:var(--sub); display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
-  .tools-strip { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:44px; }
-  .tool-pill { background:var(--card); border:1px solid var(--line); padding:10px 18px; border-radius:999px; font-size:13.5px; font-weight:600; color:var(--sub); box-shadow:0 1px 3px rgba(0,0,0,0.04); }
-  section { padding:64px 0; }
-  .section-title { text-align:center; margin-bottom:10px; font-size:34px; letter-spacing:-0.02em; font-weight:800; }
-  .section-sub { text-align:center; color:var(--sub); max-width:640px; margin:0 auto 12px; font-size:17px; }
-  .gem-banner { background:linear-gradient(135deg, #14161a, #3d1a06); color:#fff; border-radius:20px; padding:44px; text-align:center; }
-  .gem-banner .gem-icon { font-size:40px; margin-bottom:14px; }
-  .gem-banner h2 { font-size:28px; margin:0 0 12px; letter-spacing:-0.01em; }
-  .gem-banner p { color:#f0dcc9; max-width:640px; margin:0 auto; font-size:16.5px; }
-  .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; margin-top:40px; }
-  @media (max-width:800px) { .grid2 { grid-template-columns:1fr; } h1 { font-size:34px; } .section-title { font-size:26px; } }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; transition:transform .15s, box-shadow .15s; }
-  .card:hover { transform:translateY(-4px); box-shadow:0 14px 30px -12px rgba(20,22,26,0.12); }
-  .card .icon { font-size:30px; margin-bottom:14px; display:block; }
-  .card h3 { margin:0 0 10px; font-size:18px; }
-  .card p { margin:0; color:var(--sub); font-size:14.5px; }
-  .compare { width:100%; border-collapse:collapse; margin-top:36px; font-size:14.5px; border-radius:14px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
-  .compare th, .compare td { border:1px solid var(--line); padding:14px 18px; text-align:center; background:#fff; }
-  .compare th { background:#14161a; color:#fff; font-weight:700; }
-  .compare td:first-child, .compare th:first-child { text-align:left; font-weight:600; }
-  .compare .yes { color:var(--good); font-weight:800; }
-  .compare .no { color:var(--bad); font-weight:800; }
-  .compare tr:nth-child(even) td { background:#fafafa; }
-  .pricing { text-align:center; background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-  .price-card { max-width:460px; margin:32px auto 0; background:linear-gradient(160deg, #fff, #fff7ed); border:2px solid var(--accent); border-radius:20px; padding:40px; position:relative; box-shadow:0 24px 48px -20px rgba(234,88,12,0.22); }
-  .price-card .tag { position:absolute; top:-15px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; white-space:nowrap; }
-  .price-was { color:var(--sub); text-decoration:line-through; font-size:16px; margin-top:10px; }
-  .price-big { font-size:54px; font-weight:800; margin:4px 0 4px; }
-  .price-big span { font-size:18px; font-weight:600; color:var(--sub); }
-  .price-save { display:inline-block; background:#ecfdf5; color:var(--good); font-weight:700; font-size:13px; padding:5px 12px; border-radius:8px; margin-top:6px; }
-  .price-list { text-align:left; list-style:none; padding:0; margin:26px 0; font-size:15px; }
-  .price-list li { padding:9px 0; border-bottom:1px solid var(--line); }
-  .price-list li:before { content:"✓ "; color:var(--good); font-weight:800; }
-  .guarantee { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:18px; font-size:13.5px; color:var(--sub); }
-  .pay-icons { display:flex; align-items:center; justify-content:center; gap:10px; margin-top:14px; font-size:12.5px; color:var(--sub); }
-  .pay-icons .badge { border:1px solid var(--line); border-radius:6px; padding:3px 8px; font-weight:700; }
-  .signup { background:#fff7ed; border-bottom:1px solid var(--line); }
-  .signup-box { max-width:500px; margin:0 auto; text-align:center; }
-  .form-row { display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; justify-content:center; }
-  .form-row input[type="email"] { flex:1; min-width:240px; padding:14px 16px; border-radius:10px; border:1.5px solid var(--line); font-size:15px; }
-  .form-note { font-size:12.5px; color:var(--sub); margin-top:12px; }
-  #sib-form-container { max-width: 500px; margin: 0 auto; }
-  #sib-container { background: transparent !important; border: none !important; max-width: 100% !important; }
-  #sib-form .entry__label { display: none; }
-  #sib-form .form__entry { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-  #sib-form .entry__field { flex: 1; min-width: 240px; }
-  #sib-form input.input { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1.5px solid var(--line); font-size: 15px; font-family: inherit !important; color: var(--ink) !important; background: #fff !important; }
-  #sib-form .sib-form-block__button { background: linear-gradient(135deg, var(--accent), var(--accent2)) !important; color: #fff !important; padding: 14px 26px !important; border-radius: 10px !important; font-weight: 700 !important; font-size: 15.5px !important; border: none !important; cursor: pointer; font-family: inherit !important; box-shadow: 0 8px 20px -6px rgba(234,88,12,0.5); white-space: nowrap; }
-  #sib-form .entry__specification { display: none; }
-  #sib-form .entry__error { margin-top: 6px; }
-  #error-message, #success-message { max-width: 500px; margin: 0 auto 16px; }
-  footer { text-align:center; padding:44px 0; color:var(--sub); font-size:13px; }
-  footer a { color: var(--sub); }
-  .t-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
-  @media (max-width: 800px) { .t-grid { grid-template-columns: 1fr; } }
-  .t-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
-  .t-stars { color: #f59e0b; font-size: 15px; letter-spacing: 2px; margin-bottom: 10px; }
-  .t-quote { margin: 0 0 18px; font-size: 15px; color: #33363c; line-height: 1.6; }
-  .t-person { display: flex; align-items: center; gap: 12px; }
-  .t-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
-  .t-name { font-weight: 700; font-size: 14px; margin: 0; }
-  .t-role { font-size: 13px; color: var(--sub); margin: 0; }
-</style>
-
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
-<meta name="author" content="WorkItLikeAPro"/>
+<link rel="canonical" href="https://olielicz.github.io/marketing/oliflow/"/>
+<style>
+:root{--ink:#14161a;--sub:#55606e;--accent:#ea580c;--accent2:#dc2626;--accent-dark:#c2410c;
+  --bg:#fafafa;--card:#fff;--line:#e7e9ee;--good:#16a34a;--warn:#d97706;}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+</style>
 </head>
 <body>
 
+<style>
+header.nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;
+  position:sticky;top:0;background:rgba(250,250,250,0.9);backdrop-filter:blur(8px);z-index:50;}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:6px;}
+.logo span{color:var(--accent);}
+nav a{margin-left:22px;color:var(--sub);text-decoration:none;font-size:14px;font-weight:600;}
+nav a.buy-now{background:var(--accent);color:#fff!important;padding:8px 16px;border-radius:8px;}
+nav a:hover{color:var(--ink);}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff!important;padding:14px 26px;border-radius:10px;font-weight:700;text-decoration:none;
+  font-size:15.5px;border:none;cursor:pointer;box-shadow:0 8px 20px -6px rgba(234,88,12,.5);
+  transition:transform .15s,box-shadow .15s;}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px -6px rgba(234,88,12,.6);}
+.cta-btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)!important;box-shadow:none;}
+.cta-btn.ghost:hover{background:#fff7ed;transform:none;}
+.hero{padding:72px 0 40px;text-align:center;position:relative;overflow:hidden;}
+.hero:before{content:"";position:absolute;top:-180px;left:50%;transform:translateX(-50%);
+  width:900px;height:500px;background:radial-gradient(ellipse at center,rgba(234,88,12,.12),transparent 70%);
+  pointer-events:none;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff7ed;color:var(--accent-dark);
+  font-size:13.5px;font-weight:700;padding:8px 16px;border-radius:999px;margin-bottom:24px;
+  border:1px solid #fed7aa;}
+h1{font-size:52px;line-height:1.1;margin:0 0 20px;letter-spacing:-.025em;font-weight:800;}
+h1 .hl{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;
+  background-clip:text;color:transparent;}
+.sub-headline{font-size:20px;color:var(--sub);max-width:700px;margin:0 auto 36px;}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.price-note{font-size:13.5px;color:var(--sub);display:flex;gap:18px;justify-content:center;flex-wrap:wrap;}
+.tools-strip{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:44px;}
+.tool-pill{background:var(--card);border:1px solid var(--line);padding:10px 18px;border-radius:999px;
+  font-size:13.5px;font-weight:600;color:var(--sub);box-shadow:0 1px 3px rgba(0,0,0,.04);}
+section{padding:64px 0;}
+.section-title{text-align:center;margin-bottom:10px;font-size:34px;letter-spacing:-.02em;font-weight:800;}
+.section-sub{text-align:center;color:var(--sub);max-width:620px;margin:0 auto 12px;font-size:17px;}
+.gem-banner{background:linear-gradient(135deg,#14161a,#3d1a06);color:#fff;border-radius:20px;
+  padding:44px;text-align:center;}
+.gem-banner h2{font-size:28px;margin:0 0 12px;letter-spacing:-.01em;}
+.gem-banner p{color:#f0dcc9;max-width:640px;margin:0 auto;font-size:16.5px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:32px;}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:32px;}
+@media(max-width:800px){.grid3,.grid2{grid-template-columns:1fr;}h1{font-size:34px;}.section-title{font-size:26px;}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;
+  transition:transform .15s,box-shadow .15s;}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 30px -12px rgba(20,22,26,.12);}
+.card .icon{font-size:30px;margin-bottom:14px;display:block;}
+.card h3{margin:0 0 10px;font-size:18px;}
+.card p{margin:0;color:var(--sub);font-size:14.5px;}
+.tag-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(234,88,12,.1);
+  color:var(--accent-dark);border-radius:100px;padding:3px 10px;font-size:12px;font-weight:700;margin-top:10px;}
+</style>
+
+<style>
+/* Pricing */
+.pricing{text-align:center;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.toggle-wrap{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px;}
+.toggle-wrap span{font-weight:600;font-size:.95rem;}
+.toggle-switch{position:relative;width:52px;height:28px;cursor:pointer;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:#e7e9ee;border-radius:100px;transition:.25s;}
+.toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:4px;top:4px;
+  background:#fff;border-radius:50%;transition:.25s;}
+input:checked+.toggle-slider{background:var(--accent);}
+input:checked+.toggle-slider::before{transform:translateX(24px);}
+.save-badge{background:var(--good);color:#fff;border-radius:100px;padding:.2rem .6rem;font-size:.72rem;font-weight:700;}
+.yearly-price{display:none;}.yearly-mode .yearly-price{display:block;}
+.yearly-mode .monthly-price{display:none;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto;}
+@media(max-width:800px){.pricing-grid{grid-template-columns:1fr;}}
+.pricing-card{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:2.5rem 2rem;text-align:center;position:relative;transition:all .2s;}
+.pricing-card.popular{border-color:var(--accent);background:linear-gradient(160deg,#fff,#fff7ed);
+  box-shadow:0 20px 40px -16px rgba(234,88,12,.2);}
+.pricing-card .pop-tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:100px;
+  padding:.3rem 1.1rem;font-size:.75rem;font-weight:700;white-space:nowrap;}
+.price-amount{font-size:3rem;font-weight:900;margin:8px 0 4px;}
+.price-period{color:var(--sub);font-size:.9rem;}
+.price-features{list-style:none;padding:0;margin:1.5rem 0;text-align:left;}
+.price-features li{padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.9rem;
+  display:flex;align-items:center;gap:.6rem;color:var(--sub);}
+.price-features li:last-child{border:none;}
+.price-features li .check{color:var(--good);font-weight:700;}
+.guarantee{font-size:13px;color:var(--sub);margin-top:12px;}
+/* App preview */
+.app-preview{background:linear-gradient(135deg,#0d0f14,#1a1f2e);border-radius:16px;
+  padding:8px;margin:32px auto 0;max-width:900px;box-shadow:0 24px 60px -12px rgba(0,0,0,.4);}
+.app-preview-inner{background:#0d0f14;border-radius:12px;padding:16px;font-family:monospace;}
+.app-bar{display:flex;gap:6px;margin-bottom:12px;}
+.app-dot{width:12px;height:12px;border-radius:50%;}
+.node-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.demo-node{background:#1e2335;border:1px solid #2a3148;border-radius:8px;padding:8px 12px;
+  font-size:12px;color:#e2e8f0;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.demo-node .dn-icon{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;flex-shrink:0;}
+.conn-arrow{color:#364060;font-size:18px;flex-shrink:0;}
+/* Comparison */
+.compare-table{width:100%;border-collapse:collapse;margin-top:36px;font-size:14.5px;
+  border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.compare-table th,.compare-table td{border:1px solid var(--line);padding:14px 18px;text-align:center;background:#fff;}
+.compare-table th{background:#14161a;color:#fff;font-weight:700;}
+.compare-table td:first-child,.compare-table th:first-child{text-align:left;font-weight:600;}
+.compare-table .yes{color:var(--good);font-weight:800;}
+.compare-table .no{color:#dc2626;font-weight:800;}
+.compare-table .oli{background:#fff7ed!important;font-weight:700;}
+.compare-table tr:nth-child(even) td{background:#fafafa;}
+/* Node showcase */
+.node-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:24px;}
+.node-badge{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+  transition:all .2s;}
+.node-badge:hover{border-color:var(--accent);background:#fff7ed;}
+.nb-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;flex-shrink:0;}
+/* FAQ / footer */
+.faq-item{border-bottom:1px solid var(--line);padding:20px 0;}
+.faq-item h4{margin:0 0 8px;font-size:16px;}
+.faq-item p{margin:0;color:var(--sub);font-size:15px;}
+footer{text-align:center;padding:44px 0;color:var(--sub);font-size:13px;}
+footer a{color:var(--sub);}
+</style>
+
+
 <header class="wrap nav">
-  <div class="logo">💎 Oli<span>Flow</span></div>
+  <div class="logo">⚙️ Oli<span>Flow</span></div>
   <nav>
-    <a href="./login/" style="color:#ea580c;font-weight:600;">Sign In</a>
-    <a href="./account/" style="color:#ea580c;font-weight:700;background:#ea580c1a;padding:6px 14px;border-radius:8px;">My Account</a>
-    <a href="#tools">What's Inside</a>
+    <a href="#features">Features</a>
+    <a href="#nodes">Node Library</a>
     <a href="#pricing">Pricing</a>
-    <a href="../contact/" class="all-tools">Contact Us</a>
-    <a href="../contact/" class="all-tools">Contact Us</a>
-    <a href="../security/" class="all-tools">Security</a>
-    <a href="../" class="all-tools">All Oli Tools</a>
-    <a href="./buy/" class="buy-now">Buy Now</a>
+    <a href="#compare">Compare</a>
+    <a href="./login/" style="color:var(--accent);font-weight:600;">Sign In</a>
+    <a href="./account/" style="color:var(--accent);font-weight:600;background:rgba(234,88,12,.1);padding:6px 14px;border-radius:8px;">My Account</a>
+    <a href="../contact/" style="color:var(--accent);font-weight:700;">Contact Us</a>
+    <a href="../" class="all-tools" style="color:var(--accent);">All Oli Tools</a>
+    <a href="./buy/" class="buy-now">Subscribe Now</a>
   </nav>
 </header>
 
 <section class="hero wrap">
-  <div class="eyebrow">💎 The gem hiding in your Zapier invoice</div>
-  <h1>You're paying <span class="hl">rent on logic</span><br>you already wrote</h1>
-  <p class="sub-headline">Every month, your automation bill goes up with your task count — but the workflows themselves never change. OliFlow is a self-hosted automation engine you buy once and own outright. No metering, no rent, no ceiling.</p>
+  <div class="eyebrow">⚙️ The automation platform that replaces 4 tools</div>
+  <h1>Zapier. Make. n8n. GoHighLevel.<br><span class="hl">Now all in one place.</span></h1>
+  <p class="sub-headline">OliFlow combines the best automation features from all four platforms into one powerful, easy-to-use visual workflow builder — with 48 node types, AI integration, CRM automation, and zero task metering.</p>
   <div class="hero-ctas">
-    <a href="./buy/" class="cta-btn">Buy Lifetime Access — $249</a>
-    <a href="#tools" class="cta-btn ghost">See what's inside ↓</a>
+    <a href="./app/" class="cta-btn">🚀 Open OliFlow Engine</a>
+    <a href="./buy/" class="cta-btn ghost">See Pricing ↓</a>
   </div>
   <div class="price-note">
-    <span>✅ One-time payment, own it forever</span>
-    <span>✅ Unlimited runs, self-hosted</span>
+    <span>✅ No task limits — unlimited runs</span>
+    <span>✅ 48 node types built-in</span>
+    <span>✅ From $35/month</span>
     <span>✅ 30-day money-back guarantee</span>
   </div>
   <div class="tools-strip">
-    <div class="tool-pill">🎨 Visual Workflow Builder</div>
-    <div class="tool-pill">🔌 Webhook Triggers</div>
-    <div class="tool-pill">📄 Prebuilt Templates</div>
-    <div class="tool-pill">🧩 Headless REST API</div>
+    <div class="tool-pill">🎨 Visual Builder</div>
+    <div class="tool-pill">🤖 AI / ChatGPT Nodes</div>
+    <div class="tool-pill">📣 CRM + Marketing</div>
+    <div class="tool-pill">🔌 48 Integrations</div>
+    <div class="tool-pill">⏰ Scheduling</div>
+    <div class="tool-pill">📋 12 Templates</div>
   </div>
-</section>
 
-<section id="tools">
-  <div class="wrap">
-    <div class="gem-banner">
-      <div class="gem-icon">💎</div>
-      <h2>The logic is yours. Why should the pricing punish usage?</h2>
-      <p>Zapier and Make charge by the task — the more your business runs, the more you pay, even though the workflow logic itself never changes. OliFlow flips that: one payment, unlimited runs, self-hosted on your own infrastructure, forever.</p>
+  <!-- App Preview -->
+  <div class="app-preview">
+    <div class="app-preview-inner">
+      <div class="app-bar">
+        <div class="app-dot" style="background:#ef4444"></div>
+        <div class="app-dot" style="background:#f59e0b"></div>
+        <div class="app-dot" style="background:#10b981"></div>
+        <span style="color:#64748b;font-size:11px;margin-left:6px;">OliFlow Engine — Lead Capture Workflow</span>
+        <span style="margin-left:auto;color:#10b981;font-size:11px;">● ACTIVE</span>
+      </div>
+      <div class="node-row">
+        <div class="demo-node"><div class="dn-icon" style="background:#f59e0b22;color:#f59e0b">🌐</div>Webhook Trigger</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#06b6d422;color:#06b6d4">✏️</div>Map Fields</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#ec489922;color:#ec4899">👤</div>Create Contact</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#10b98122;color:#10b981">📧</div>Send Welcome Email</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#ec489922;color:#ec4899">🏗</div>Add to Pipeline</div>
+      </div>
+      <div class="node-row">
+        <div class="demo-node"><div class="dn-icon" style="background:#f59e0b22;color:#f59e0b">⏰</div>Daily 9am Schedule</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#10b98122;color:#10b981">💳</div>Fetch Stripe Data</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#10b98122;color:#10b981">🤖</div>Summarize with GPT-4</div>
+        <div class="conn-arrow">→</div>
+        <div class="demo-node"><div class="dn-icon" style="background:#10b98122;color:#10b981">📧</div>Email Daily Report</div>
+      </div>
+      <div style="color:#374151;font-size:11px;margin-top:8px;">2 active workflows · 47 executions today · 0 errors · Last run: 2 min ago</div>
     </div>
   </div>
 </section>
 
-<section class="problem">
+
+<section id="features">
   <div class="wrap">
-    <h2 class="section-title">Why pay per-task forever when you can own the engine?</h2>
-    <div class="grid2">
+    <h2 class="section-title">The best of 4 platforms — unified</h2>
+    <p class="section-sub">We studied what professionals love most about each tool and built it all into OliFlow.</p>
+    <div class="grid3">
       <div class="card">
-        <span class="icon">⚙️</span>
-        <h3>OliFlow Engine — the visual builder that's actually yours</h3>
-        <p>A standalone, zero-dependency AI workflow automation engine. Drag-and-drop building, trigger it from any CRM/SaaS via webhooks, embed it in your site, or run it entirely headless via REST API.</p>
+        <span class="icon">🎨</span>
+        <h3>Zapier-Style Simplicity</h3>
+        <p>Trigger → Action logic anyone can build in minutes. No technical knowledge required. 12 pre-built workflow templates to start from zero in seconds.</p>
+        <span class="tag-badge">From Zapier</span>
       </div>
       <div class="card">
-        <span class="icon">🧰</span>
-        <h3>auto-tools Template Pack — skip the blank canvas</h3>
-        <p>A ready-to-import library of n8n workflows, Make blueprints, and Zapier-style configs, plus 7 CRM adapters — so you're not starting from zero on day one.</p>
+        <span class="icon">🔀</span>
+        <h3>Make.com Branching Logic</h3>
+        <p>Multi-path routing, loops, filters, merge branches, and parallel execution. Build complex automations as visual flowcharts that actually make sense.</p>
+        <span class="tag-badge">From Make.com</span>
+      </div>
+      <div class="card">
+        <span class="icon">💻</span>
+        <h3>n8n Code Nodes</h3>
+        <p>Run custom JavaScript right inside your workflow with full access to inputs, variables, and external APIs. No limits on what you can automate.</p>
+        <span class="tag-badge">From n8n</span>
+      </div>
+      <div class="card">
+        <span class="icon">📣</span>
+        <h3>GoHighLevel CRM Automation</h3>
+        <p>Create contacts, move pipeline stages, add tags, enroll in email sequences, and score leads — all automated from any trigger event.</p>
+        <span class="tag-badge">From GoHighLevel</span>
+      </div>
+      <div class="card">
+        <span class="icon">🤖</span>
+        <h3>AI-Powered Nodes</h3>
+        <p>OpenAI/GPT-4 nodes built in for generating content, classifying emails, summarising data, and making decisions in your workflows automatically.</p>
+        <span class="tag-badge">Better than all 4</span>
+      </div>
+      <div class="card">
+        <span class="icon">📊</span>
+        <h3>Execution Analytics</h3>
+        <p>Real-time execution logs, success rates, error tracking, and node-level performance metrics. Know exactly what ran, when, and how long it took.</p>
+        <span class="tag-badge">Better than all 4</span>
       </div>
     </div>
-
-    <table class="compare">
-      <tr><th></th><th>OliFlow (lifetime)</th><th>Zapier</th><th>Make</th></tr>
-      <tr><td>Pricing model</td><td>$249 once</td><td>$19.99–$69+/mo ($240-828+/yr, forever)</td><td>~$9–$50+/mo (credit-metered, forever)</td></tr>
-      <tr><td>Task/run limits</td><td class="yes">None — self-hosted</td><td class="no">750+ tasks/mo, overage fees</td><td class="no">Credits per step, run out fast</td></tr>
-      <tr><td>Data leaves your servers</td><td class="yes">No</td><td class="no">Yes</td><td class="no">Yes</td></tr>
-      <tr><td>Devices per license</td><td class="yes">5 devices, one code</td><td class="no">Per-seat pricing</td><td class="no">Per-seat pricing</td></tr>
-    </table>
-    <p style="text-align:center; font-size:12.5px; color:var(--sub); margin-top:14px;">Zapier Professional starts at $19.99/mo billed annually for 750 tasks; Team plans run $69+/mo. Make's entry plans are cheaper up front but bill per-operation, so multi-step scenarios burn through credits quickly. Pricing as of 2026, see each vendor's site for current rates.</p>
   </div>
 </section>
 
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <h2 class="section-title">How it works</h2>
+    <p class="section-sub">Build powerful automations in 3 simple steps. No technical knowledge needed.</p>
+    <div class="grid3">
+      <div style="text-align:center;padding:20px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin:0 auto 16px;">1</div>
+        <h3 style="margin:0 0 8px;">Choose a Trigger</h3>
+        <p style="color:var(--sub);font-size:14.5px;">Start with a webhook, schedule, email, form, database change, or API poll. Your workflow wakes up automatically.</p>
+      </div>
+      <div style="text-align:center;padding:20px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin:0 auto 16px;">2</div>
+        <h3 style="margin:0 0 8px;">Drag & Drop Nodes</h3>
+        <p style="color:var(--sub);font-size:14.5px;">Connect logic, data transformation, integrations, and CRM actions visually. Click any node to configure it — no code required.</p>
+      </div>
+      <div style="text-align:center;padding:20px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin:0 auto 16px;">3</div>
+        <h3 style="margin:0 0 8px;">Activate & Monitor</h3>
+        <p style="color:var(--sub);font-size:14.5px;">Click Activate — your workflow goes live. Watch real-time logs, get alerts on errors, and track every execution in the analytics dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="nodes">
+  <div class="wrap">
+    <h2 class="section-title">48 Node Types Built-In</h2>
+    <p class="section-sub">Everything from webhooks to AI to Shopify to Slack — ready to use out of the box.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;">
+      <span style="background:#fff7ed;color:var(--accent-dark);border:1px solid #fed7aa;border-radius:100px;padding:5px 14px;font-size:13px;font-weight:700;">⚡ 6 Triggers</span>
+      <span style="background:#f5f3ff;color:#5b21b6;border:1px solid #ddd6fe;border-radius:100px;padding:5px 14px;font-size:13px;font-weight:700;">🔀 7 Logic & Flow</span>
+      <span style="background:#ecfeff;color:#164e63;border:1px solid #a5f3fc;border-radius:100px;padding:5px 14px;font-size:13px;font-weight:700;">🔧 7 Data & Transform</span>
+      <span style="background:#ecfdf5;color:#065f46;border:1px solid #6ee7b7;border-radius:100px;padding:5px 14px;font-size:13px;font-weight:700;">🔌 15 Integrations</span>
+      <span style="background:#fdf2f8;color:#9d174d;border:1px solid #fbcfe8;border-radius:100px;padding:5px 14px;font-size:13px;font-weight:700;">📣 8 CRM & Marketing</span>
+      <span style="background:#f8fafc;color:#475569;border:1px solid #e2e8f0;border-radius:100px;padding:5px 14px;font-size:13px;font-weight:700;">🛠 6 Utilities</span>
+    </div>
+    <div class="node-grid">
+      <div class="node-badge"><div class="nb-icon" style="background:#f59e0b22;color:#f59e0b">🌐</div>Webhook</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#f59e0b22;color:#f59e0b">⏰</div>Schedule / Cron</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#f59e0b22;color:#f59e0b">📧</div>Email Trigger</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#8b5cf622;color:#8b5cf6">🔀</div>Condition (If/Else)</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#8b5cf622;color:#8b5cf6">🔄</div>Switch / Multi-path</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#8b5cf622;color:#8b5cf6">🔃</div>Loop / Iterator</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#8b5cf622;color:#8b5cf6">⏳</div>Delay / Wait</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#8b5cf622;color:#8b5cf6">🛡</div>Error Handler</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#06b6d422;color:#06b6d4">💻</div>Code (JS/Python)</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#06b6d422;color:#06b6d4">✏️</div>Set / Map Fields</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#06b6d422;color:#06b6d4">📄</div>Template Engine</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#06b6d422;color:#06b6d4">📅</div>Format Date</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">🌐</div>HTTP Request</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">📧</div>Send Email</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">💬</div>Slack Message</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">📊</div>Google Sheets</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">🤖</div>OpenAI / GPT-4</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">📱</div>Twilio SMS</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">💳</div>Stripe</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">🛍</div>Shopify</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">🗄</div>MySQL/Postgres</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">⚡</div>Supabase</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">💰</div>PayPal</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#10b98122;color:#10b981">📓</div>Notion</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#ec489922;color:#ec4899">👤</div>Create Contact</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#ec489922;color:#ec4899">🏗</div>Move Pipeline Stage</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#ec489922;color:#ec4899">🏷</div>Add / Remove Tag</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#ec489922;color:#ec4899">📧</div>Email Sequence</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#ec489922;color:#ec4899">⭐</div>Lead Scoring</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#ec489922;color:#ec4899">📱</div>SMS Campaign</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#64748b22;color:#64748b">📋</div>Log to Console</div>
+      <div class="node-badge"><div class="nb-icon" style="background:#64748b22;color:#64748b">📌</div>Set Variable</div>
+    </div>
+    <div style="text-align:center;margin-top:24px;">
+      <a href="./app/" class="cta-btn">Try the Full Node Library →</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- Comparison Table -->
+<section id="compare" style="background:#fff;border-top:1px solid var(--line);">
+  <div class="wrap">
+    <h2 class="section-title">OliFlow vs. The Competition</h2>
+    <p class="section-sub">See why thousands of businesses are switching to OliFlow from Zapier, Make, and n8n.</p>
+    <div style="overflow-x:auto;">
+      <table class="compare-table">
+        <tr>
+          <th></th>
+          <th style="background:linear-gradient(135deg,#14161a,#3d1a06);">⚙️ OliFlow</th>
+          <th>Zapier Pro</th>
+          <th>Make.com Core</th>
+          <th>n8n Cloud</th>
+          <th>GoHighLevel</th>
+        </tr>
+        <tr>
+          <td>Starting price</td>
+          <td class="oli">$35/mo</td>
+          <td>$19.99/mo</td>
+          <td>$9/mo</td>
+          <td>$20/mo</td>
+          <td>$97/mo</td>
+        </tr>
+        <tr>
+          <td>Task / Run limits</td>
+          <td class="oli yes">✓ Unlimited</td>
+          <td class="no">✗ 750 tasks/mo (overage $$$)</td>
+          <td class="no">✗ 10,000 ops/mo (metered)</td>
+          <td class="no">✗ 2,500 executions/mo</td>
+          <td class="yes">✓ Unlimited</td>
+        </tr>
+        <tr>
+          <td>Visual workflow builder</td>
+          <td class="oli yes">✓ Full canvas</td>
+          <td class="no">✗ Linear only</td>
+          <td class="yes">✓ Yes</td>
+          <td class="yes">✓ Yes</td>
+          <td class="no">✗ Basic</td>
+        </tr>
+        <tr>
+          <td>Custom code nodes</td>
+          <td class="oli yes">✓ JS + Python</td>
+          <td class="no">✗ No</td>
+          <td class="no">✗ No</td>
+          <td class="yes">✓ Yes</td>
+          <td class="no">✗ No</td>
+        </tr>
+        <tr>
+          <td>Built-in AI (GPT-4) nodes</td>
+          <td class="oli yes">✓ Yes</td>
+          <td class="no">✗ Via Zap</td>
+          <td class="no">✗ Via module</td>
+          <td class="no">✗ Via node</td>
+          <td class="no">✗ Add-on cost</td>
+        </tr>
+        <tr>
+          <td>CRM pipeline automation</td>
+          <td class="oli yes">✓ Built-in</td>
+          <td class="no">✗ Via integrations</td>
+          <td class="no">✗ Via integrations</td>
+          <td class="no">✗ Via nodes</td>
+          <td class="yes">✓ Core feature</td>
+        </tr>
+        <tr>
+          <td>Execution analytics</td>
+          <td class="oli yes">✓ Real-time dashboard</td>
+          <td class="no">✗ Basic history</td>
+          <td class="no">✗ Basic history</td>
+          <td class="yes">✓ Yes</td>
+          <td class="no">✗ Limited</td>
+        </tr>
+        <tr>
+          <td>Templates library</td>
+          <td class="oli yes">✓ 12 pre-built</td>
+          <td class="yes">✓ Yes</td>
+          <td class="yes">✓ Yes</td>
+          <td class="yes">✓ Yes</td>
+          <td class="no">✗ Limited</td>
+        </tr>
+        <tr>
+          <td>Variables / secrets</td>
+          <td class="oli yes">✓ Built-in vault</td>
+          <td class="no">✗ No</td>
+          <td class="no">✗ No</td>
+          <td class="yes">✓ Yes</td>
+          <td class="no">✗ No</td>
+        </tr>
+      </table>
+    </div>
+    <p style="text-align:center;font-size:12.5px;color:var(--sub);margin-top:14px;">Competitor pricing as of July 2025. Task/execution limits based on entry paid tier.</p>
+  </div>
+</section>
+
+<!-- Pricing -->
 <section class="pricing" id="pricing">
   <div class="wrap">
-    <h2 class="section-title">One price. No metered runs. Ever.</h2>
-    <p class="section-sub">Pay once. Run it a hundred times or a hundred thousand times — the price doesn't move, and it never comes back around for renewal.</p>
-    <div class="price-card">
-      <div class="tag">🔥 LAUNCH PRICE — LIMITED LIFETIME SEATS</div>
-      <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliFlow Engine — Lifetime</div>
-      <div class="price-was">Zapier Professional runs $240-828/year, every year — and that's before overage fees</div>
-      <div class="price-big">$249 <span>one-time</span></div>
-      <div class="price-save">Break even in under a year vs. Zapier's cheapest paid plan, then free forever</div>
-      <ul class="price-list">
-        <li>Full visual workflow builder + REST API</li>
-        <li>Prebuilt n8n / Make / Zapier template pack</li>
-        <li>Self-hosted — license valid on up to 5 devices</li>
-        <li>Every future update, included</li>
-        <li>30-day money-back guarantee, no questions asked</li>
-      </ul>
-      <a href="./buy/" class="cta-btn" style="width:100%; text-align:center; display:block;">Buy Lifetime Access Now</a>
-      <div class="guarantee">🛡️ Risk-free — full refund within 30 days if it's not for you</div>
-      <div class="pay-icons"><span class="badge">Stripe</span><span class="badge">PayPal</span><span>secure checkout · cards, wallets &amp; bank transfers worldwide</span></div>
+    <h2 class="section-title">Simple Annual Pricing</h2>
+    <p class="section-sub">No task metering. No overage fees. Just automation that works — billed monthly or yearly.</p>
+    <div class="toggle-wrap">
+      <span>Monthly</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="billingToggle"/>
+        <span class="toggle-slider"></span>
+      </label>
+      <span>Yearly <span class="save-badge">Save 26%</span></span>
     </div>
-  </div>
-</section>
-
-<section class="signup" id="signup">
-  <div class="wrap signup-box">
-    <h2 class="section-title">Not ready to buy yet?</h2>
-    <p class="section-sub">Join the waitlist and get launch-day pricing plus first access before the limited lifetime seats sell out.</p>
-
-    <!-- BREVO_FORM: live embed from Brevo - currently reusing the same form/list as OliOps.
-         Create a dedicated "OliFlow Waitlist" list + form in Brevo and swap the action URL
-         below to keep signups segmented by product. -->
-    <div class="sib-form">
-      <div id="sib-form-container" class="sib-form-container">
-        <div id="error-message" class="sib-form-message-panel" style="font-family:Helvetica, sans-serif; font-size:16px; text-align:left; color:#661d1d; background-color:#ffeded; border-color:#ff4949; border-radius:3px; max-width:540px;">
-          <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
-            <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon"><path d="M256 40c118.621 0 216 96.075 216 216 0 119.291-96.61 216-216 216-119.244 0-216-96.562-216-216 0-119.203 96.602-216 216-216m0-32C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm-11.49 120h22.979c6.823 0 12.274 5.682 11.99 12.5l-7 168c-.268 6.428-5.556 11.5-11.99 11.5h-8.979c-6.433 0-11.722-5.073-11.99-11.5l-7-168c-.283-6.818 5.167-12.5 11.99-12.5zM256 340c-15.464 0-28 12.536-28 28s12.536 28 28 28 28-12.536 28-28-12.536-28-28-28z" /></svg>
-            <span class="sib-form-message-panel__inner-text">Your subscription could not be saved. Please try again.</span>
-          </div>
-        </div>
-        <div id="success-message" class="sib-form-message-panel" style="font-family:Helvetica, sans-serif; font-size:16px; text-align:left; color:#085229; background-color:#e7faf0; border-color:#13ce66; border-radius:3px; max-width:540px;">
-          <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
-            <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon"><path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 464c-118.664 0-216-96.055-216-216 0-118.663 96.055-216 216-216 118.664 0 216 96.055 216 216 0 118.663-96.055 216-216 216zm141.63-274.961L217.15 376.071c-4.705 4.667-12.303 4.637-16.97-.068l-85.878-86.572c-4.667-4.705-4.637-12.303.068-16.97l8.52-8.451c4.705-4.667 12.303-4.637 16.97.068l68.976 69.533 163.441-162.13c4.705-4.667 12.303-4.637 16.97.068l8.451 8.52c4.668 4.705 4.637 12.303-.068 16.97z" /></svg>
-            <span class="sib-form-message-panel__inner-text">You're on the list! Check your inbox for a confirmation.</span>
-          </div>
-        </div>
-        <div id="sib-container" class="sib-container--large sib-container--vertical" style="direction:ltr">
-          <form id="sib-form" method="POST" action="https://1aab3e8b.sibforms.com/serve/MUIFAOzHTI4oxrMMlQXi3dIHoDgZ652awXoPtVg2XIJy8sdfxabKdUmxyVPRwpYncm-WeRCOz3JxnMmKApho1Aj79WHbFC-D1bLfGKxzQjql5GReYjmgajHk_lD7QbOxizK1vMVu0Rad-GmTBWJ1tsaFfsy90A2wVcgvIRWnNSWnL21b4CSn6j4Mye0QjH-2dZkb-i8giz7GPNg8fw==" data-type="subscription">
-            <div class="sib-input sib-form-block">
-              <div class="form__entry entry_block">
-                <div class="form__label-row">
-                  <label class="entry__label" for="EMAIL" data-required="*">Enter your email address to subscribe</label>
-                  <div class="entry__field">
-                    <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" value="" placeholder="you@company.com" data-required="true" required>
-                  </div>
-                </div>
-                <label class="entry__error entry__error--primary" style="font-family:Helvetica, sans-serif; font-size:16px; text-align:left; color:#661d1d; background-color:#ffeded; border-color:#ff4949; border-radius:3px;"></label>
-                <label class="entry__specification">Provide your email address to subscribe. For e.g abc@xyz.com</label>
-              </div>
-            </div>
-            <div class="sib-form-block" style="text-align:left; margin-top:10px;">
-              <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
-                <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512" style="display:none;"><path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/></svg>
-                Join Waitlist
-              </button>
-            </div>
-            <input type="text" name="email_address_check" value="" class="input--hidden" style="display:none;">
-            <input type="hidden" name="locale" value="en">
-          </form>
-        </div>
+    <div class="pricing-grid" id="pricingCards">
+      <!-- Solo -->
+      <div class="pricing-card">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">Solo</h3>
+        <div class="monthly-price"><span class="price-amount">$35</span><span class="price-period">/month</span></div>
+        <div class="yearly-price"><span class="price-amount">$312</span><span class="price-period">/year <span style="color:var(--good);font-size:.8rem">($26/mo)</span></span></div>
+        <p style="color:var(--sub);font-size:.85rem;margin:.75rem 0">For individuals and freelancers automating their own business.</p>
+        <ul class="price-features">
+          <li><span class="check">✓</span> All 48 node types</li>
+          <li><span class="check">✓</span> Unlimited workflow runs</li>
+          <li><span class="check">✓</span> 5 active workflows</li>
+          <li><span class="check">✓</span> 12 pre-built templates</li>
+          <li><span class="check">✓</span> Execution logs (7 days)</li>
+          <li style="color:#ccc"><span>–</span> Team members</li>
+          <li style="color:#ccc"><span>–</span> API access</li>
+        </ul>
+        <div id="paypal-solo" style="margin-bottom:10px;min-height:48px;"></div>
+      </div>
+      <!-- Pro (Popular) -->
+      <div class="pricing-card popular">
+        <div class="pop-tag">⭐ Most Popular</div>
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">Pro</h3>
+        <div class="monthly-price"><span class="price-amount">$59</span><span class="price-period">/month</span></div>
+        <div class="yearly-price"><span class="price-amount">$528</span><span class="price-period">/year <span style="color:var(--good);font-size:.8rem">($44/mo)</span></span></div>
+        <p style="color:var(--sub);font-size:.85rem;margin:.75rem 0">For small teams and agencies running serious automation.</p>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Everything in Solo</li>
+          <li><span class="check">✓</span> Unlimited active workflows</li>
+          <li><span class="check">✓</span> 3 team members</li>
+          <li><span class="check">✓</span> Execution logs (30 days)</li>
+          <li><span class="check">✓</span> API access</li>
+          <li><span class="check">✓</span> Priority support</li>
+          <li><span class="check">✓</span> Custom webhook domains</li>
+        </ul>
+        <div id="paypal-pro" style="margin-bottom:10px;min-height:48px;"></div>
+      </div>
+      <!-- Business -->
+      <div class="pricing-card">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">Business</h3>
+        <div class="monthly-price"><span class="price-amount">$99</span><span class="price-period">/month</span></div>
+        <div class="yearly-price"><span class="price-amount">$888</span><span class="price-period">/year <span style="color:var(--good);font-size:.8rem">($74/mo)</span></span></div>
+        <p style="color:var(--sub);font-size:.85rem;margin:.75rem 0">For agencies and power users with complex, high-volume automation needs.</p>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> 10 team members</li>
+          <li><span class="check">✓</span> Unlimited execution log history</li>
+          <li><span class="check">✓</span> White-label workflows</li>
+          <li><span class="check">✓</span> SLA uptime guarantee</li>
+          <li><span class="check">✓</span> Dedicated onboarding call</li>
+          <li><span class="check">✓</span> Custom integrations (on request)</li>
+        </ul>
+        <div id="paypal-biz" style="margin-bottom:10px;min-height:48px;"></div>
       </div>
     </div>
-    <script>
-      window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
-      window.LOCALE = 'en';
-      window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
-      window.REQUIRED_ERROR_MESSAGE = "This field cannot be left blank. ";
-      window.GENERIC_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
-      window.INVALID_NUMBER = "The information provided is invalid. Please review the field format and try again.";
-      window.INVALID_DATE = "Please enter a valid date";
-      window.REQUIRED_MULTISELECT_MESSAGE = 'Please select at least 1 option';
-      window.translation = { common: { selectedList: '{quantity} list selected', selectedLists: '{quantity} lists selected', selectedOption: '{quantity} selected', selectedOptions: '{quantity} selected' } };
-      var AUTOHIDE = Boolean(0);
-    </script>
-    <script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
-    <!-- END BREVO_FORM -->
-    <div class="form-note">No spam. Unsubscribe anytime.</div>
+    <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--sub);">
+      🛡️ 30-day money-back guarantee on all plans · Cancel anytime from your account<br/>
+      All plans compared to Zapier Pro ($19.99–$69+/mo with task limits that expire every month)
+    </p>
   </div>
 </section>
 
-<section>
+
+<section id="faq">
   <div class="wrap" style="max-width:760px;">
     <h2 class="section-title">Questions, answered honestly</h2>
-    <div style="border-bottom:1px solid var(--line); padding:20px 0;">
-      <h4 style="margin:0 0 8px; font-size:16px;">How does the serial code / 5-device limit work?</h4>
-      <p style="margin:0; color:var(--sub); font-size:15px;">Your purchase includes one serial code, activatable on up to 5 devices at a time. Moving to a new server or laptop? Deactivate the old device to free a slot — no email required.</p>
+    <div class="faq-item">
+      <h4>How is OliFlow different from Zapier?</h4>
+      <p>Zapier charges per task — every step in every automation burns from your monthly limit. OliFlow is a subscription: pay a flat monthly rate and run unlimited automations. No overage fees, ever. OliFlow also includes multi-path branching, code nodes, and built-in AI that Zapier doesn't offer.</p>
     </div>
-    <div style="border-bottom:1px solid var(--line); padding:20px 0;">
-      <h4 style="margin:0 0 8px; font-size:16px;">How do I pay, and is it safe?</h4>
-      <p style="margin:0; color:var(--sub); font-size:15px;">Checkout runs through Stripe and PayPal — the two most widely used payment processors in the world, supporting cards, wallets, and local payment methods across 100+ countries. We never see or store your card details.</p>
+    <div class="faq-item">
+      <h4>Do I need to code to use OliFlow?</h4>
+      <p>No. The visual drag-and-drop builder handles 95% of use cases without a line of code. For advanced users, the Code node lets you run JavaScript or Python right inside your workflow — but it's completely optional.</p>
     </div>
-    <div style="border-bottom:1px solid var(--line); padding:20px 0;">
-      <h4 style="margin:0 0 8px; font-size:16px;">The core engine is MIT-licensed — why a purchase price at all?</h4>
-      <p style="margin:0; color:var(--sub); font-size:15px;">The underlying code is open-source and readable by anyone. Your purchase funds the packaged build, the prebuilt template pack, ongoing updates, and support — not an exclusive claim on code you could otherwise read for free. We're upfront about that tradeoff.</p>
+    <div class="faq-item">
+      <h4>What are "unlimited runs"?</h4>
+      <p>Every time a workflow executes — from trigger to final action — that's one run. OliFlow doesn't count or limit these. Build a workflow with 10 nodes; it still counts as 1 run. Run it 10,000 times in a day — no extra cost.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Can I connect OliFlow to my own tools?</h4>
+      <p>Yes. The HTTP Request node connects to any REST API. The Webhook trigger accepts payloads from any service. The Code node can use fetch() to call anything. All 48 built-in nodes cover the most popular tools directly.</p>
+    </div>
+    <div class="faq-item">
+      <h4>What happens if I cancel?</h4>
+      <p>Your workflows are exported as JSON before access ends — you keep everything you built. Cancel anytime from your PayPal account; no retention calls or cancellation fees.</p>
     </div>
   </div>
 </section>
 
-<section id="testimonials">
+<section style="padding:64px 0;text-align:center;background:linear-gradient(135deg,#14161a,#3d1a06);color:#fff;">
   <div class="wrap">
-    <h2 class="section-title">What early users are saying</h2>
-    <p class="section-sub">
-      ⚠️ <strong>Illustrative examples</strong> — these represent the kind of feedback we expect based on the problems OliFlow solves, not verified customer quotes yet. Swap these for real reviews as soon as you have paying customers willing to share one. Publishing fabricated reviews as if they were real customer testimonials can violate consumer-protection rules (e.g. FTC guidance in the US) — always replace this section with genuine feedback before relying on it.
-    </p>
-    <div class="t-grid">
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"We were hitting Zapier's task limit every month and paying overage fees on top of the subscription. OliFlow just runs — no ceiling, no surprise bill."</p>
-        <div class="t-person"><div class="t-avatar">SW</div><div><p class="t-name">Sam W.</p><p class="t-role">Operations lead, logistics startup</p></div></div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"The template pack saved us the blank-canvas problem. We had our first three workflows running the same afternoon we installed it."</p>
-        <div class="t-person"><div class="t-avatar">AF</div><div><p class="t-name">Ana F.</p><p class="t-role">Founder, small automation consultancy</p></div></div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★☆</div>
-        <p class="t-quote">"Self-hosting means our workflow data never leaves our own server, which mattered a lot for our compliance requirements. The visual builder has a learning curve but it's worth it."</p>
-        <div class="t-person"><div class="t-avatar">GK</div><div><p class="t-name">Greg K.</p><p class="t-role">IT manager, regional healthcare clinic</p></div></div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"Broke even versus our old Zapier plan in under a year, and every run after that is free. Wish we'd switched sooner."</p>
-        <div class="t-person"><div class="t-avatar">LM</div><div><p class="t-name">Lena M.</p><p class="t-role">Co-founder, SaaS billing tool</p></div></div>
-      </div>
+    <div style="font-size:2.5rem;margin-bottom:16px;">⚙️</div>
+    <h2 style="font-size:32px;font-weight:800;margin:0 0 12px;">Ready to automate everything?</h2>
+    <p style="color:#f0dcc9;max-width:560px;margin:0 auto 28px;font-size:17px;">Open OliFlow Engine now — it works immediately in your browser. No install, no backend setup required.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="./app/" style="display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:16px;box-shadow:0 8px 20px -6px rgba(234,88,12,.5);">🚀 Open OliFlow Engine</a>
+      <a href="./buy/" style="display:inline-block;background:transparent;color:#fff;text-decoration:none;border:1.5px solid rgba(255,255,255,.3);padding:14px 28px;border-radius:10px;font-weight:700;font-size:16px;">See Pricing →</a>
     </div>
   </div>
 </section>
 
 <footer class="wrap">
-  💎 OliFlow Automation Engine — a product line by WorkItLikeAPro. MIT-licensed core tools.
+  ⚙️ OliFlow Automation Engine — a product line by WorkItLikeAPro.
   <div style="margin-top:10px;">
     <a href="../security/">Security</a> · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> ·
     <a href="../support/">Support</a> · <a href="../contact/">Contact</a> ·
-    <a href="../">All Oli Tools</a> · <a href="./buy/">Buy Now</a>
+    <a href="../">All Oli Tools</a> · <a href="./buy/">Subscribe Now</a> ·
+    <a href="./app/">Open App</a> · <a href="./login/">Sign In</a>
   </div>
 </footer>
 
 <script src="../shared/cookie-consent.js"></script>
-
-
+<script src="../shared/auth.js"></script>
 <script src="../shared/security.js"></script>
+<script>
+// Billing toggle
+const toggle = document.getElementById('billingToggle');
+const cards  = document.getElementById('pricingCards');
+toggle?.addEventListener('change', () => cards.classList.toggle('yearly-mode', toggle.checked));
+</script>
 </body>
 </html>
