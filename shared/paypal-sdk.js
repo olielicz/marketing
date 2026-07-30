@@ -38,7 +38,6 @@
     if (path.includes('oliops'))     return { name: 'OliOps Suite — Lifetime License',       amount: '299.00', recurring: false };
     if (path.includes('olicommerce'))return { name: 'OliCommerce Stack — Lifetime License',   amount: '199.00', recurring: false };
     if (path.includes('oliflow'))    return { name: 'OliFlow Engine — Lifetime License',       amount: '249.00', recurring: false };
-    if (path.includes('oliconnect')) return { name: 'OliConnect — Lifetime License',           amount: '89.00',  recurring: false };
     if (path.includes('oli-locator'))return { name: 'Oli-Locator — Agency Plan',               amount: '49.00',  recurring: true  };
     // OliSalesTrack uses its own separate PayPal subscription script (see olisalestrack/buy/index.html)
     // This file only handles the 5 tools above. OliSalesTrack one-time payments do NOT route here.
@@ -180,7 +179,6 @@
     if (path.includes('oliops'))      return 'oliops';
     if (path.includes('olicommerce')) return 'olicommerce';
     if (path.includes('oliflow'))     return 'oliflow';
-    if (path.includes('oliconnect'))  return 'oliconnect';
     if (path.includes('oli-locator')) return 'oli-locator';
     if (path.includes('olisalestrack')) return 'olisalestrack';
     return 'unknown';

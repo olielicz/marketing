@@ -67,18 +67,6 @@
       type:      'lifetime',
       tagline:   'Self-Hosted Zapier Alternative',
     },
-    'oliconnect': {
-      name:      'OliConnect',
-      icon:      '♻️',
-      color:     '#db2777',
-      bg:        '#fdf2f8',
-      loginUrl:  '/oliconnect/login/',
-      accountUrl:'/oliconnect/account/',
-      toolUrl:   '/oliconnect/',
-      price:     '$89 lifetime',
-      type:      'lifetime',
-      tagline:   'Social Post Recycler',
-    },
     'oli-locator': {
       name:      'Oli-Locator',
       icon:      '🏡',
@@ -461,7 +449,6 @@
     var path = window.location.pathname.toLowerCase();
     if (path.includes('olisalestrack')) return 'olisalestrack';
     if (path.includes('olicommerce'))   return 'olicommerce';
-    if (path.includes('oliconnect'))    return 'oliconnect';
     if (path.includes('oliflow'))       return 'oliflow';
     if (path.includes('oliops'))        return 'oliops';
     if (path.includes('oli-locator'))   return 'oli-locator';

@@ -13,8 +13,7 @@
 | 1 | **OliOps Suite** | OliCRM, OliCompute, automate-CSR | Solo founders / small service businesses — CRM + invoicing/payroll + AI support in one | $299 lifetime | `/oliops/login/` |
 | 2 | **OliCommerce Stack** | ecomm-automation, project-2 (OliMind AI) | Shopify store owners — cart recovery + AI shopping assistant | $199 lifetime | `/olicommerce/login/` |
 | 3 | **OliFlow Automation Engine** | project-3 (OliFlow), auto-tools | Agencies / ops teams — self-hosted Zapier with prebuilt templates | $249 lifetime | `/oliflow/login/` |
-| 4 | **OliConnect** | oliconnect | Social media managers / agencies — recycle top posts across all accounts | $89 lifetime | `/oliconnect/login/` |
-| 5 | **Oli-Locator** | lead-gen | Solo real estate agents / small teams — leads + property search + call center + inbox | $49/month | `/oli-locator/login/` |
+ | 5 | **Oli-Locator** | lead-gen | Solo real estate agents / small teams — leads + property search + call center + inbox | $49/month | `/oli-locator/login/` |
 | 6 | **OliSalesTrack** | SalesTrack (refund-tracker) | Small business owners / e-commerce sellers — track sales, refunds & expenses with correlation analysis | $19/mo or $148/yr | `/olisalestrack/login/` |
 
 > **Note:** Each product has its **own separate login page, account dashboard, and user store**. A customer who buys both OliOps and OliSalesTrack has two completely separate accounts — one per product. This is by design.
@@ -23,14 +22,13 @@
 
 ## What "visible results by Day 30" concretely means
 
-- [ ] **6 live landing pages** with working email capture
-- [ ] **6 working login pages** — one per product (already built ✅)
-- [ ] **6 working account dashboards** — one per product (already built ✅)
+- [ ] **5 live landing pages** with working email capture
+- [ ] **5 working login pages** — one per product (already built ✅)
+- [ ] **5 working account dashboards** — one per product (already built ✅)
 - [ ] **3 completed Product Hunt launches** (OliOps, OliFlow, OliCommerce)
 - [ ] **40+ live directory/backlink listings** across the 6 lines
 - [ ] **3 AppSumo submissions** filed (OliOps, OliCommerce, OliFlow)
 - [ ] **100+ real estate agents** directly emailed (Oli-Locator)
-- [ ] **50+ social media managers** directly emailed (OliConnect)
 - [ ] **OliSalesTrack listed** on SaaS comparison sites (AlternativeTo, SaaSHub vs Baremetrics)
 - [ ] A tracked email list (Brevo) with subscriber count and open/click rates
 - [ ] At least the **first dollar of real revenue**
@@ -96,11 +94,10 @@ These are technical prerequisites. **None of these block marketing work** — do
 | 16 | **PRODUCT HUNT LAUNCH — OliFlow Automation Engine.** Cross-post to r/nocode, r/automation, r/SaaS, Indie Hackers |
 | 16–17 | Reply to every comment for 48 hours |
 | 17 | **Begin Oli-Locator outreach** — 20 emails/day to real estate agents using `outreach-oli-locator.md`, 100 by end of week |
-| 18 | **Begin OliConnect outreach** — 50 social media managers/agencies + Reddit posts using `outreach-oliconnect.md` |
 | 18 | **OliSalesTrack Reddit launch post:** r/ecommerce, r/shopify, r/Entrepreneur — "Show Reddit: OliSalesTrack — see how refunds correlate with your sales for free" |
 | 19 | **OliSalesTrack — submit to Product Hunt** as a separate product launch (stagger from OliOps/OliFlow to avoid cannibalising votes) |
 | 20 | Send OliSalesTrack waitlist Email #1 — subject: "Your refund rate is probably higher than you think" |
-| 21 | **Checkpoint:** OliFlow PH badge, 100 real estate emails sent, 50 OliConnect outreach done, OliSalesTrack PH submitted |
+| 21 | **Checkpoint:** OliFlow PH badge, 100 real estate emails sent, OliSalesTrack PH submitted |
 
 ---
 
@@ -114,7 +111,7 @@ These are technical prerequisites. **None of these block marketing work** — do
 | 25 | Follow up on all 3 AppSumo submissions — reply same-day to any reviewer questions |
 | 26 | **OliSalesTrack — write 1 SEO blog post** on Medium/Substack: "How to find your true profit margin (refunds + expenses)" — link back to landing page |
 | 26 | Collect testimonials from early users; add to all 6 landing pages |
-| 27 | Second round: Oli-Locator (50 new contacts) + OliConnect (25 new contacts) outreach |
+| 27 | Second round: Oli-Locator (50 new contacts) outreach |
 | 27 | **OliSalesTrack — AppSumo submission:** pitch "the only tracker that shows how refunds eat your profit" |
 | 28 | Re-share best PH launches on LinkedIn/X with "1 month later" framing |
 | 29 | Audit all 6 directory listings from Week 1 — confirm live, fix broken links |

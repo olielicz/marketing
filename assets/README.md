@@ -30,5 +30,4 @@ https://olielicz.github.io/marketing/assets/oli-locator-product.png
 | `oliops-product.png` | OliOps Suite | Product image URL |
 | `olicommerce-product.png` | OliCommerce Stack | Product image URL |
 | `oliflow-product.png` | OliFlow Engine | Product image URL |
-| `oliconnect-product.png` | OliConnect | Product image URL |
 | `olisalestrack-product.png` | OliSalesTrack | Product image URL |
