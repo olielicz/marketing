@@ -2,7 +2,7 @@
 
 Honest comparison table for all 6 products, based on the same 2026 competitor research used to set pricing (see chat history / `00-master-calendar.md` for sourcing). Use this internally for sales conversations, objection handling, and to keep future marketing copy accurate — don't overstate a "con" for a competitor you haven't personally verified recently, since pricing/features change.
 
-**Note:** OliSalesTrack ($24/mo or $204/yr vs. Baremetrics $58+/mo) is covered separately in `00-master-calendar.md`'s "Positioning vs competitors" table — add a full section here if you want it in this same format.
+**Note:** OliSalesTrack ($24/mo or $204/yr vs. Baremetrics $49+/mo) is covered separately in `00-master-calendar.md`'s "Positioning vs competitors" table — add a full section here if you want it in this same format.
 
 **Pricing model note:** All 6 Oli Tools are monthly/yearly subscriptions (licensed for up to 5 devices per serial code for the 4 self-hosted tools; hosted login for Oli-Locator and OliSalesTrack). All comparisons below use annualized cost (12x monthly, or the discounted yearly price) so competitor subscription costs are directly comparable.
 

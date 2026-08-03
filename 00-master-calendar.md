@@ -141,7 +141,7 @@ OliSalesTrack targets a different buyer than the other 5 tools — focus the mes
 
 | Competitor | Their price | OliSalesTrack advantage |
 |---|---|---|
-| Baremetrics | $58+/mo | 2× cheaper + includes expense tracking + correlation analysis + live Stripe/PayPal/Shopify sync |
+| Baremetrics | $49+/mo | 2× cheaper + includes expense tracking + correlation analysis + live Stripe/PayPal/Shopify sync |
 | Profitwell | Free–$499/mo | Much simpler, no complexity, browser-based |
 | Google Sheets | Free but manual | Automatic, visual, no formula maintenance |
 | QuickBooks | $25+/mo | Not a P&L tool — complementary, not competing |
