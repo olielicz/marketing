@@ -26,6 +26,12 @@
  * 2. Create a plan under that product (entry-tier monthly price, e.g. $39/month)
  * 3. Copy the Plan ID (starts with P-)
  * 4. Paste it into the matching PLAN_IDS entry below
+ *
+ * All 6 tools (including OliSalesTrack) are wired through this one file —
+ * there is no separate PayPal script for OliSalesTrack, despite an old
+ * comment elsewhere claiming otherwise. Fixed: OliSalesTrack's buy page
+ * previously rendered "⚠️ Could not detect product" because it was
+ * missing from detectProduct()/PLAN_IDS below.
  * ──────────────────────────────────────────────────────────────────────────
  */
 
@@ -38,11 +44,12 @@
   // ── REPLACE EACH WITH YOUR REAL PAYPAL SUBSCRIPTION PLAN ID (starts with P-) ──
   // These bind to the entry-tier MONTHLY plan for each tool (see comment above).
   var PLAN_IDS = {
-    'oliops':      'YOUR_OLIOPS_PLAN_ID_HERE',      // Starter, $39/month
-    'olicommerce': 'YOUR_OLICOMMERCE_PLAN_ID_HERE', // Basic, $29/month
-    'oliflow':     'YOUR_OLIFLOW_PLAN_ID_HERE',     // Solo, $35/month
-    'oliexplore':  'YOUR_OLIEXPLORE_PLAN_ID_HERE',  // Creator, $27/month
-    'oli-locator': 'YOUR_LOCATOR_PLAN_ID_HERE',     // Solo Agent, $59/month
+    'oliops':       'YOUR_OLIOPS_PLAN_ID_HERE',       // Starter, $39/month
+    'olicommerce':  'YOUR_OLICOMMERCE_PLAN_ID_HERE',  // Basic, $29/month
+    'oliflow':      'YOUR_OLIFLOW_PLAN_ID_HERE',      // Solo, $35/month
+    'oliexplore':   'YOUR_OLIEXPLORE_PLAN_ID_HERE',   // Creator, $27/month
+    'oli-locator':  'YOUR_LOCATOR_PLAN_ID_HERE',      // Solo Agent, $59/month
+    'olisalestrack':'YOUR_OLISALESTRACK_PLAN_ID_HERE',// Pro, $24/month
   };
 
   // ── THANK-YOU PAGE (edit once, applies everywhere) ─────────────────────
@@ -58,8 +65,7 @@
     if (path.includes('oliflow'))     return { key: 'oliflow',     name: 'OliFlow Engine — Solo Plan',        amount: '35.00', recurring: true };
     if (path.includes('oliexplore'))  return { key: 'oliexplore',  name: 'OliExplore — Creator Plan',         amount: '27.00', recurring: true };
     if (path.includes('oli-locator')) return { key: 'oli-locator', name: 'Oli-Locator — Solo Agent Plan',     amount: '59.00', recurring: true };
-    // OliSalesTrack uses its own separate PayPal subscription script (see olisalestrack/buy/index.html)
-    // This file only handles the 5 tools above.
+    if (path.includes('olisalestrack')) return { key: 'olisalestrack', name: 'OliSalesTrack — Pro Plan',     amount: '24.00', recurring: true };
     return null;
   }
 

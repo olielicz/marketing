@@ -447,12 +447,27 @@
   }
 
   function toRelative(absolutePath) {
-    /* Convert /oliops/login/ to ../../oliops/login/ from current page depth */
+    /* Convert '/oliops/login/' into a path relative to the CURRENT page,
+       e.g. '../../oliops/login/' when standing at '/oliops/account/'.
+       This must never emit a leading-slash absolute path, because this
+       site can be hosted under a sub-path (e.g. GitHub Pages serving at
+       https://user.github.io/marketing/ instead of domain root) — an
+       absolute '/oliops/login/' would silently drop that '/marketing/'
+       prefix and 404.
+
+       BUG FIX: depth was previously computed as
+       `currentParts.length - 1`, which under-counts by one directory
+       level. From a page at '/oliops/account/' (2 path segments), that
+       produced only one '../', resolving to '/oliops/oliops/login/'
+       (doubled segment) instead of the correct '/oliops/login/'. The
+       correct depth is one '../' per path segment in the CURRENT page's
+       directory — i.e. `currentParts.length`, not `currentParts.length - 1`. */
     if (!absolutePath || absolutePath.startsWith('http')) return absolutePath;
     var currentParts = window.location.pathname.replace(/\/$/, '').split('/').filter(Boolean);
-    var depth        = Math.max(0, currentParts.length - 1);
-    if (depth === 0) return '.' + absolutePath;
-    return Array(depth).fill('..').join('/') + absolutePath;
+    var depth        = currentParts.length;
+    var rel           = absolutePath.replace(/^\//, ''); // strip leading slash before prefixing '../'
+    if (depth === 0) return './' + rel;
+    return Array(depth).fill('..').join('/') + '/' + rel;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
