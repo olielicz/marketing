@@ -58,7 +58,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 **Goal:** every product's `buy/index.html` page actually charges real money instead of showing a placeholder link.
 
-**Full instructions:** see [`PAYMENTS-SETUP.md`](./PAYMENTS-SETUP.md) — it covers creating Stripe Payment Links, PayPal Buy Now buttons (for the 4 lifetime products), a PayPal Subscribe button (for Oli-Locator's recurring plan), and how to wire up automatic serial-code delivery after payment.
+**Full instructions:** see [`PAYMENTS-SETUP.md`](./PAYMENTS-SETUP.md) — it covers creating Stripe recurring Payment Links and PayPal subscription plans (with a 14-day free trial billing cycle) for all 6 products, and how to wire up automatic serial-code delivery after payment.
 
 **Do this before announcing any tool as "for sale"** — ideally Day 1-2, right after deployment, so the Buy Now buttons work the moment anyone clicks through from a Product Hunt launch or cold email.
 
@@ -130,9 +130,11 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 6. AppSumo — 3 lifetime deal submissions
+## 6. AppSumo — deprioritized (pricing model mismatch)
 
-**Goal:** file OliOps, OliCommerce, and OliFlow pitches by Day 5; OliConnect when you have bandwidth.
+**⚠️ Status update:** all 6 tools are now monthly/yearly subscriptions, not one-time lifetime purchases. AppSumo's core marketplace model is built around lifetime deals, so this channel is no longer a natural fit without carving out a separate one-time tier just for that submission — see `appsumo-alternatives-research.md` for the full reasoning. Treat this section as optional/on hold unless you decide to pursue that route.
+
+**Original goal (kept for reference):** file OliOps, OliCommerce, and OliFlow pitches by Day 5; OliConnect when you have bandwidth.
 
 1. Go to [sell.appsumo.com](https://sell.appsumo.com/)
 2. Click **Apply** / **Get Started** (button wording may vary)

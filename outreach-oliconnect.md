@@ -32,7 +32,7 @@ Hi [First Name],
 
 I noticed you manage social accounts for multiple clients — I built OliConnect specifically for that workflow: connect your accounts once, and it automatically finds your best-performing posts and recycles them across every platform, so you're not manually reformatting the same caption 4 times.
 
-It's a one-time purchase ($29), not another monthly tool subscription. Your login credentials stay in your own browser session — nothing gets stored on our end.
+It's a subscription starting at $19/mo (or $168/yr), not a bloated all-in-one social suite you're overpaying for. Your login credentials stay in your own browser session — nothing gets stored on our end.
 
 Worth a quick look? [landing page link]
 
@@ -47,7 +47,7 @@ Best,
 
 **Body:**
 
-Hey [First Name] — saw you manage social for a few clients. Built a tool that auto-recycles your best posts across platforms so you're not manually reposting the same thing 4 times. One-time payment, not a subscription. [link] — no worries if not useful, just thought it might save you time.
+Hey [First Name] — saw you manage social for a few clients. Built a tool that auto-recycles your best posts across platforms so you're not manually reposting the same thing 4 times. Starts at $19/mo. [link] — no worries if not useful, just thought it might save you time.
 
 ---
 
@@ -66,7 +66,7 @@ Post directly in relevant free communities, framed as "here's a tool I built, he
 
 > Built a tool for anyone managing social accounts across multiple platforms/clients — [OliConnect] connects all your accounts once, finds your best-performing posts automatically, and recycles them across every platform so you're not manually reformatting the same caption 4+ times.
 >
-> One-time payment ($29), not another subscription. Would love feedback from anyone who manages multiple accounts — what's your current process for reposting top content across platforms?
+> Starts at $19/mo (or $168/yr). Would love feedback from anyone who manages multiple accounts — what's your current process for reposting top content across platforms?
 
 Ending with a genuine question (not just a pitch) significantly increases reply/comment engagement in these communities.
 

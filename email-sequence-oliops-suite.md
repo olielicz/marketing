@@ -4,7 +4,7 @@
 
 **Reusing for other lines:** copy this file, swap tool names/specifics, keep the structure (welcome → problem/agitate → proof → objection-handling → urgency).
 
-**Pricing note:** OliOps Suite is a $299 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
+**Pricing note:** OliOps Suite is a monthly/yearly subscription — Starter $39/mo ($348/yr), Pro $69/mo ($612/yr), Agency $119/mo ($1068/yr) — licensed for up to 5 devices per serial code, cancel anytime. All copy below reflects that.
 
 ---
 
@@ -23,7 +23,7 @@ Thanks for joining the OliOps Suite waitlist.
 Quick recap: **one tool that replaces your CRM, invoicing/payroll, accounting, and customer-support chatbot** — for one payment instead of 4 separate monthly bills that never stop.
 
 What happens next:
-- You'll get launch pricing before anyone else ($299 one-time, limited lifetime seats)
+- You'll get launch pricing before anyone else — Starter plan from $39/mo (or $348/yr)
 - A couple of short emails over the next week showing exactly how it works
 - No spam, no daily emails
 
@@ -46,7 +46,7 @@ Quick question: how many separate tools are you paying for to run client relatio
 
 Probably: a CRM ($20–50/mo), an invoicing/accounting tool ($15–40/mo), a help-desk tool ($20–60/mo). That's $55–150/month, forever — and none share data.
 
-OliOps Suite is one connected tool: **$299 once**, not $660–1,800/year stacked across separate bills, every year, forever.
+OliOps Suite is one connected tool: **from $39/mo ($348/yr)**, not $660–1,800/year stacked across separate bills that never talk to each other.
 
 More on how the 3 pieces connect in the next email.
 
@@ -62,7 +62,7 @@ More on how the 3 pieces connect in the next email.
 
 **Body:**
 
-What's inside the $299 lifetime purchase:
+What's inside the Starter plan ($39/mo or $348/yr):
 
 **🗂 CRM** — every client, deal, conversation in one dashboard
 **💼 Back office** — invoicing (auto tax calc), payroll from logged hours, expenses, real P&L + tax report
@@ -70,7 +70,7 @@ What's inside the $299 lifetime purchase:
 
 [Watch the 60-second demo →]
 
-Self-hostable — your data stays on your own infrastructure. Your license activates on up to 5 devices with one serial code, forever, with no renewal. Or we host it for $19/mo if you'd rather not.
+Self-hostable — your data stays on your own infrastructure. Your license activates on up to 5 devices with one serial code. Higher tiers (Pro $69/mo, Agency $119/mo) add more capacity for growing teams — see the pricing page for the full breakdown.
 
 Questions? Reply — I read every response.
 
@@ -82,20 +82,21 @@ Questions? Reply — I read every response.
 
 **Subject options:**
 - A: "We're live on Product Hunt today 🚀"
-- B: "\"Is this really a one-time payment?\" + we're live today"
+- B: "\"Is this cheaper than what I'm already paying?\" + we're live today"
 
 **Body:**
 
 Two things:
 
 **1. We're live on Product Hunt right now** → [link]
-Today's launch pricing ($299 one-time) is the best it'll ever be — it goes up once the limited lifetime seats sell out.
+Today's launch pricing (Starter from $39/mo, or $348/yr) is the best it'll ever be.
 
-**2. "Is this really a one-time payment?"**
-Yes. $299 once, no renewal, ever. Your purchase includes one serial code that works on up to 5 devices — set up a laptop, a desktop, and a couple of team machines without extra fees. Only additional recurring cost is optional — $19/mo managed hosting for people who'd rather not self-host.
+**2. "Is this really cheaper than what I'm paying now?"**
+Yes — one subscription, cancel anytime, vs. 3-4 separate SaaS bills that don't share data. Your subscription includes one serial code that works on up to 5 devices — set up a laptop, a desktop, and a couple of team machines without extra fees.
 
 Other FAQs:
 - *"What if it doesn't fit?"* — 30-day money-back guarantee.
+- *"Can I switch between monthly and yearly?"* — Yes, anytime from your account dashboard.
 - *"Do I need to code?"* — No, if using managed hosting.
 
 An upvote/comment on Product Hunt today would genuinely help → [link]
@@ -107,16 +108,16 @@ An upvote/comment on Product Hunt today would genuinely help → [link]
 ## Email 5 — Urgency/close (Day 12, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Limited lifetime seats — here's where things stand"
-- B: "Last call on $299 lifetime pricing"
+- A: "Launch pricing ends soon — here's where things stand"
+- B: "Last call on launch pricing"
 
 **Body:**
 
 ⚠️ Only send this if the scarcity is real. Never fabricate a countdown — honest scarcity converts and protects trust for future launches.
 
-Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price moves up for good.
+Quick update: launch pricing has been live a few days. Once the launch window closes, standard pricing applies (still $39/mo Starter, $348/yr — no bait-and-switch).
 
-If you've been meaning to grab it: [Buy lifetime access — $299 →]
+If you've been meaning to start: [Subscribe now — from $39/mo →]
 
 If it's not the right fit right now, no worries — I'll keep you posted on updates without spamming your inbox.
 

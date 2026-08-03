@@ -161,7 +161,7 @@ a{color:#4f46e5;text-decoration:none;}
     <div style="flex:1">
       <div class="status-title">OliOps Suite</div>
       <div class="status-meta">CRM · Invoicing · AI Support</div>
-      <div class="status-badge">✅ Active — $299 lifetime</div>
+      <div class="status-badge">✅ Active — from $39/mo</div>
     </div>
     <a href="../" class="btn btn-primary">Open OliOps Suite →</a>
   </div>
@@ -266,7 +266,7 @@ a{color:#4f46e5;text-decoration:none;}
     <div class="sub-row">
       <div>
         <div class="sub-name">OliOps Suite</div>
-        <div class="sub-detail" id="subDetail">$299 lifetime · Monthly auto-renewal</div>
+        <div class="sub-detail" id="subDetail">From $39/mo ($348/yr) · auto-renewal</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <a href="https://www.paypal.com/myaccount/autopay/" target="_blank"
@@ -301,7 +301,7 @@ a{color:#4f46e5;text-decoration:none;}
 <script src="../../shared/auth.js"></script>
 <script>
 var TOOL_KEY = 'oliops';
-var TOOL_TYPE = 'lifetime';
+var TOOL_TYPE = 'monthly';
 
 /* ── Guard: must be logged in to this specific tool ── */
 var session = OliAuth.requireLogin(TOOL_KEY);
@@ -335,9 +335,7 @@ function renderOrders() {
     var ref = o.ref
       ? '<code style="font-size:11px;background:#f4f4f8;padding:2px 6px;border-radius:4px;">' + o.ref + '</code>'
       : '—';
-    var typeLabel = TOOL_TYPE === 'lifetime'
-      ? '<span class="badge badge-sub">♾️ Lifetime</span>'
-      : '<span class="badge badge-sub">🔄 Subscription</span>';
+    var typeLabel = '<span class="badge badge-sub">🔄 Subscription</span>';
     return '<tr>'
       + '<td style="font-weight:600;">OliOps Suite</td>'
       + '<td style="color:#55606e;">' + date + '</td>'

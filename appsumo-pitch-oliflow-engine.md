@@ -1,8 +1,8 @@
 # AppSumo Submission Pitch — OliFlow Automation Engine
 
-**Submit at:** sell.appsumo.com — free to submit. Review typically 1–3 weeks, so file on Day 5 alongside OliOps and OliCommerce.
+**⚠️ Pricing model mismatch — read before submitting:** OliFlow is now priced as a monthly/yearly subscription (Solo $35/mo or $312/yr, Pro $59/mo or $528/yr, Business $99/mo or $888/yr), not a one-time lifetime purchase. AppSumo's standard marketplace model is built around one-time deals, so confirm with AppSumo directly whether they'll accept a subscription submission before treating this as a priority channel — see `appsumo-alternatives-research.md` for the full reasoning.
 
-**Good news on structure:** OliFlow is now priced as a one-time lifetime purchase ($249), which matches AppSumo's native LTD model exactly — no annual-vs-lifetime tension to navigate during review.
+**Submit at:** sell.appsumo.com — free to submit. Review typically 1–3 weeks.
 
 **Note on mechanics:** AppSumo takes a revenue share on deals sold through their marketplace (confirm the current split during their review conversation).
 
@@ -12,7 +12,7 @@
 **OliFlow Automation Engine**
 
 ## One-line pitch
-> Own your workflow automation engine outright — no per-task fees, ever, licensed for up to 5 devices.
+> A flat monthly/yearly automation subscription with no per-task fees, ever — licensed for up to 5 devices.
 
 ## Category
 Automation / Productivity / Developer Tools
@@ -31,21 +31,21 @@ OliFlow is a self-hosted, zero-dependency workflow automation engine with a visu
 
 **Why AppSumo buyers specifically:**
 - AppSumo's audience skews toward agencies and solo operators managing multiple client automations — the exact profile hit hardest by per-task pricing
-- Self-hosted → the pitch of "own it forever" is exactly what the AppSumo LTD-native audience is shopping for
+- Self-hosted, flat-fee subscription → predictable cost regardless of usage is exactly what a per-task-metering-fatigued audience is shopping for
 - The template pack lowers the "blank canvas" barrier that usually slows self-hosted tool adoption
 
 **Differentiation:**
-Most AppSumo automation-category deals are either (a) another metered SaaS with a discounted LTD price that still caps usage, or (b) a narrow single-purpose integration. OliFlow is the rare "actually unlimited because you own the infrastructure" pitch.
+Most AppSumo automation-category deals are either (a) another metered SaaS with a discounted LTD price that still caps usage, or (b) a narrow single-purpose integration. OliFlow is the rare "actually unlimited runs, flat price" pitch.
 
-## Suggested deal tiers
+## Actual live pricing tiers (subscription, monthly or yearly)
 
-| Tier | Price | Included |
-|---|---|---|
-| Tier 1 | $149 | Core engine + visual builder, self-hosted, unlimited runs, up to 3 devices |
-| Tier 2 | $249 | + full template pack (n8n/Make/Zapier configs + 7 CRM adapters), up to 5 devices |
-| Tier 3 | $349 | + priority email support + priority template requests, up to 5 devices |
+| Tier | Monthly | Yearly | Included |
+|---|---|---|---|
+| Solo | $35/mo | $312/yr | Core engine + visual builder, self-hosted, unlimited runs, up to 5 devices |
+| Pro | $59/mo | $528/yr | + full template pack (n8n/Make/Zapier configs + 7 CRM adapters) |
+| Business | $99/mo | $888/yr | + priority email support + priority template requests |
 
-*(Adjust once AppSumo gives tier-pricing guidance during review.)*
+*(If AppSumo requires a one-time deal structure instead, you'd need to define a separate one-time tier just for that submission — see the pricing-model warning at the top of this doc.)*
 
 ## Assets to prepare
 

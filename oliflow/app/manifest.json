@@ -1,0 +1,20 @@
+{
+  "name": "OliFlow Automation Engine",
+  "short_name": "OliFlow",
+  "description": "Visual workflow automation — build and run workflows from your phone or tablet, installed like a native app.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d0f14",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

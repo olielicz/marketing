@@ -6,6 +6,17 @@
 <title>OliFlow Engine — Visual Workflow Automation</title>
 <meta name="robots" content="noindex"/>
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<!-- PWA: lets OliFlow be installed to a phone/tablet home screen like a native app,
+     mitigating the "no native mobile app" disadvantage vs. Zapier/Make's mobile apps.
+     See manifest.json + sw.js in this same folder. Generate real 192/512px PNG icons
+     from icon.svg before a production launch — see the note in manifest.json's icons
+     array for why an SVG-only icon is a placeholder, not a final asset. -->
+<link rel="manifest" href="./manifest.json"/>
+<meta name="theme-color" content="#6366f1"/>
+<link rel="apple-touch-icon" href="./icon.svg"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="OliFlow"/>
 <style>
 /* ── DESIGN TOKENS ── */
 :root{
@@ -593,6 +604,7 @@ const TEMPLATES = [
   { id:'payment-fail', icon:'💰', name:'Failed Payment Recovery', category:'Finance', desc:'Stripe webhook on payment fail → wait 24h → retry → notify customer + Slack', tags:['Stripe','Email','Slack'] },
   { id:'onboarding',   icon:'👋', name:'Customer Onboarding', category:'CRM', desc:'New customer → send welcome email → create Notion page → schedule check-in call', tags:['CRM','Email','Notion'] },
   { id:'scraper',      icon:'🕷', name:'Data Enrichment', category:'Data', desc:'New contact → lookup company data via API → enrich CRM fields → score lead', tags:['HTTP','CRM','Data'] },
+  { id:'zapier-bridge', icon:'🌉', name:'Zapier / Make Bridge', category:'Integrations', desc:'Use OliFlow\'s Webhook trigger as a Zapier/Make destination, or its HTTP Request node to trigger a Zap/Scenario — instantly reach any of their 9,000+ app integrations without OliFlow needing a native connector for each one', tags:['Webhook','HTTP','Zapier','Make'] },
 ];
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1743,6 +1755,16 @@ document.getElementById('wfNameInput')?.addEventListener('change', function() {
   saveCurrentWf();
   renderWorkflowList();
 });
+
+/* Register the PWA service worker so this app can be installed to a phone/
+   tablet home screen (see manifest.json + sw.js) — a partial mitigation for
+   not having a native mobile app. Fails silently on browsers without SW
+   support; the app works fine either way. */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
 </script>
 
 <script src="../../shared/security.js"></script>

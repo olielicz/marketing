@@ -30,6 +30,8 @@
   };
 
   /* ── Tool definitions ────────────────────────────────────────────────── */
+  /* All 6 tools are monthly/yearly subscriptions. "price" shows the entry
+     (lowest) tier; each tool's buy/ page has the full tier breakdown. */
   var TOOLS = {
     'oliops': {
       name:      'OliOps Suite',
@@ -39,8 +41,8 @@
       loginUrl:  '/oliops/login/',
       accountUrl:'/oliops/account/',
       toolUrl:   '/oliops/',
-      price:     '$299 lifetime',
-      type:      'lifetime',
+      price:     '$39/mo or $348/yr',
+      type:      'monthly',
       tagline:   'CRM + Invoicing + AI Support',
     },
     'olicommerce': {
@@ -51,8 +53,8 @@
       loginUrl:  '/olicommerce/login/',
       accountUrl:'/olicommerce/account/',
       toolUrl:   '/olicommerce/',
-      price:     '$199 lifetime',
-      type:      'lifetime',
+      price:     '$29/mo or $264/yr',
+      type:      'monthly',
       tagline:   'Shopify Cart Recovery + AI Assistant',
     },
     'oliflow': {
@@ -63,8 +65,8 @@
       loginUrl:  '/oliflow/login/',
       accountUrl:'/oliflow/account/',
       toolUrl:   '/oliflow/',
-      price:     '$249 lifetime',
-      type:      'lifetime',
+      price:     '$35/mo or $312/yr',
+      type:      'monthly',
       tagline:   'Self-Hosted Zapier Alternative',
     },
     'oliconnect': {
@@ -75,8 +77,8 @@
       loginUrl:  '/oliconnect/login/',
       accountUrl:'/oliconnect/account/',
       toolUrl:   '/oliconnect/',
-      price:     '$89 lifetime',
-      type:      'lifetime',
+      price:     '$19/mo or $168/yr',
+      type:      'monthly',
       tagline:   'Social Post Recycler',
     },
     'oli-locator': {
@@ -87,7 +89,7 @@
       loginUrl:  '/oli-locator/login/',
       accountUrl:'/oli-locator/account/',
       toolUrl:   '/oli-locator/',
-      price:     '$49/month',
+      price:     '$59/mo or $516/yr',
       type:      'monthly',
       tagline:   'Real Estate CRM — USA, UK & Australia',
     },
@@ -99,7 +101,7 @@
       loginUrl:  '/olisalestrack/login/',
       accountUrl:'/olisalestrack/account/',
       toolUrl:   '/olisalestrack/',
-      price:     '$19/mo or $148/yr',
+      price:     '$24/mo or $204/yr',
       type:      'monthly',
       tagline:   'Sales + Refunds + Expenses Tracker',
     },

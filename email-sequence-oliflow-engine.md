@@ -2,7 +2,7 @@
 
 **Setup in Brevo:** Contacts → Automation → new workflow triggered by "Contact added to list: OliFlow Waitlist."
 
-**Pricing note:** OliFlow Engine is a $249 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
+**Pricing note:** OliFlow Engine is a monthly/yearly subscription — Solo $35/mo ($312/yr), Pro $59/mo ($528/yr), Business $99/mo ($888/yr) — licensed for up to 5 devices per serial code, cancel anytime. All copy below reflects that.
 
 ---
 
@@ -21,7 +21,7 @@ Thanks for joining the OliFlow waitlist.
 Quick recap: **a self-hosted visual workflow automation engine** — trigger it via webhooks, embed it in your site, or run it headless via REST API. One payment, no per-task metering, ever, no renewal.
 
 What happens next:
-- Launch pricing before anyone else ($249 one-time, limited lifetime seats)
+- Launch pricing before anyone else — Solo plan from $35/mo (or $312/yr)
 - A couple of short emails showing exactly how it compares to Zapier/Make
 - No spam
 
@@ -41,7 +41,7 @@ Reply if you want a private demo before launch.
 
 If you're running enough automations to matter, you're probably paying $20–70/month on Zapier or Make — that's $240-828+/year, every year, forever — and that bill scales with usage, not value. The workflow logic is essentially the same every month; you're just paying more for running it more.
 
-OliFlow: **$249 once**, self-hosted, unlimited runs, no metering, licensed for up to 5 devices, no renewal.
+OliFlow: **from $35/mo ($312/yr)**, self-hosted, unlimited runs, no metering, licensed for up to 5 devices.
 
 More on what's actually included in the next email.
 
@@ -57,7 +57,7 @@ More on what's actually included in the next email.
 
 **Body:**
 
-What's inside the $249 lifetime purchase:
+What's inside the Solo plan ($35/mo or $312/yr):
 
 **🎨 Visual workflow builder** — drag-and-drop, no code required
 **🔌 Webhook triggers** — connect any CRM/SaaS that can send a webhook
@@ -66,7 +66,7 @@ What's inside the $249 lifetime purchase:
 
 [Watch the 2-minute build-a-workflow demo →]
 
-Self-hosted, zero external dependencies to run the core engine — your workflow data and credentials never leave your own infrastructure. One serial code activates up to 5 devices, forever.
+Self-hosted, zero external dependencies to run the core engine — your workflow data and credentials never leave your own infrastructure. One serial code activates up to 5 devices. Teams can upgrade to Pro ($59/mo) or Business ($99/mo) anytime.
 
 Questions? Reply — I read everything.
 
@@ -85,7 +85,7 @@ Questions? Reply — I read everything.
 Two things:
 
 **1. We're live on Product Hunt right now** → [link]
-Today's launch pricing ($249 one-time) is the best it'll ever be.
+Today's launch pricing (Solo from $35/mo, or $312/yr) is the best it'll ever be.
 
 **2. Most common question: "Can this replace my existing automations?"**
 For most standard trigger→action patterns, yes — the template pack covers common cases out of the box. Reply with what you're currently automating and I'll tell you honestly if OliFlow handles it today.
@@ -103,16 +103,16 @@ An upvote/comment on Product Hunt today genuinely helps → [link]
 ## Email 5 — Urgency/close (Day 19, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Limited lifetime seats"
-- B: "Last call on $249 lifetime pricing"
+- A: "Launch pricing ends soon"
+- B: "Last call on launch pricing"
 
 **Body:**
 
 ⚠️ Only send if scarcity is real — never fabricate a countdown.
 
-Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price goes up for good.
+Quick update: launch pricing has been live a few days. Once the launch window closes, standard pricing applies going forward (still $35/mo Solo, $312/yr).
 
-If you've been meaning to grab it: [Buy lifetime access — $249 →]
+If you've been meaning to start: [Subscribe now — from $35/mo →]
 
 If it's not the right fit right now, no worries — I'll keep you posted without spamming your inbox.
 

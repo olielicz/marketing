@@ -161,7 +161,7 @@ a{color:#ea580c;text-decoration:none;}
     <div style="flex:1">
       <div class="status-title">OliFlow Automation Engine</div>
       <div class="status-meta">Self-Hosted Zapier Alternative</div>
-      <div class="status-badge">✅ Active — $249 lifetime</div>
+      <div class="status-badge">✅ Active — from $35/mo</div>
     </div>
     <a href="../" class="btn btn-primary">Open OliFlow Automation Engine →</a>
   </div>
@@ -266,7 +266,7 @@ a{color:#ea580c;text-decoration:none;}
     <div class="sub-row">
       <div>
         <div class="sub-name">OliFlow Automation Engine</div>
-        <div class="sub-detail" id="subDetail">$249 lifetime · Monthly auto-renewal</div>
+        <div class="sub-detail" id="subDetail">From $35/mo ($312/yr) · auto-renewal</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <a href="https://www.paypal.com/myaccount/autopay/" target="_blank"
@@ -301,7 +301,7 @@ a{color:#ea580c;text-decoration:none;}
 <script src="../../shared/auth.js"></script>
 <script>
 var TOOL_KEY = 'oliflow';
-var TOOL_TYPE = 'lifetime';
+var TOOL_TYPE = 'monthly';
 
 /* ── Guard: must be logged in to this specific tool ── */
 var session = OliAuth.requireLogin(TOOL_KEY);
@@ -335,9 +335,7 @@ function renderOrders() {
     var ref = o.ref
       ? '<code style="font-size:11px;background:#f4f4f8;padding:2px 6px;border-radius:4px;">' + o.ref + '</code>'
       : '—';
-    var typeLabel = TOOL_TYPE === 'lifetime'
-      ? '<span class="badge badge-sub">♾️ Lifetime</span>'
-      : '<span class="badge badge-sub">🔄 Subscription</span>';
+    var typeLabel = '<span class="badge badge-sub">🔄 Subscription</span>';
     return '<tr>'
       + '<td style="font-weight:600;">OliFlow Automation Engine</td>'
       + '<td style="color:#55606e;">' + date + '</td>'

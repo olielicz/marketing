@@ -28,6 +28,24 @@ Customer enters email on buy page → pays via Stripe or PayPal
 
 ---
 
+## Part 0 — 14-Day Free Trial (applies to all 6 tools)
+
+Every buy page now advertises "$0 today, then $X/mo after a 14-day free trial." This is a copy-only promise until the trial is actually configured on the Stripe/PayPal side — the HTML has no ability to delay a charge by itself. Set this up once per plan:
+
+**Stripe:**
+1. When creating each Price under Payments → Payment Links (or Products), open **Advanced settings** → **Free trial** → set to **14 days**.
+2. This must be repeated for every tier × billing-cycle Price you create (see Part 2's table) — trial length isn't automatically shared between prices.
+
+**PayPal:**
+1. When creating a subscription Plan under **Products & Plans**, add a **trial billing cycle** before the regular cycle: Billing cycle 1 = Trial, Frequency: Day, `14`, Price: `$0.00`. Billing cycle 2 = Regular, your normal monthly/yearly price.
+2. Do this for every Plan ID you create (see Part 1b/1c below and PLAN_IDS in `shared/paypal-sdk.js`).
+
+**Cancellation during trial:** both Stripe and PayPal let a customer cancel during the trial with zero charge — this happens automatically via their standard subscription-cancel flow (the "Manage in PayPal" / Stripe customer portal links already on each `account/` page). No extra code needed.
+
+**Testing:** always test the full trial-to-first-charge flow in Stripe Test mode / PayPal Sandbox before going live — advance the test clock (Stripe has a "Test clock" feature for this) to confirm the trial actually converts to a real charge after 14 days instead of silently expiring.
+
+---
+
 ## Part 1 — PayPal Setup (handles 5 of 6 tools automatically)
 
 ### Step 1a — Get your Live Client ID
@@ -41,9 +59,9 @@ Customer enters email on buy page → pays via Stripe or PayPal
    var PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID_HERE';
    ```
 
-**This single change activates PayPal buttons on OliOps ($299), OliCommerce ($199), OliFlow ($249), and OliConnect ($89) automatically.** No other PayPal config needed for those four.
+**This single change activates PayPal buttons on all 6 tools' entry-tier plans automatically.** OliOps ($39/mo or $348/yr), OliCommerce ($29/mo or $264/yr), OliFlow ($35/mo or $312/yr), and OliConnect ($19/mo or $168/yr) all use `paypal-sdk.js` directly. Each also has higher Pro/Agency/Business tiers configurable the same way (see Part 2's table below for the full tier list per tool).
 
-### Step 1b — Oli-Locator Subscription Plan ($49/month)
+### Step 1b — Oli-Locator Subscription Plans ($59/mo Solo Agent, $119/mo Team)
 
 1. PayPal Dashboard → **Products & Plans** → **Create Product**
    - Name: `Oli-Locator — Agency Plan`
@@ -51,19 +69,21 @@ Customer enters email on buy page → pays via Stripe or PayPal
    - Type: `SERVICE` · Category: `SOFTWARE`
    - Home URL: `https://olielicz.github.io/marketing/oli-locator/`
    - Image URL: `https://olielicz.github.io/marketing/assets/oli-locator-product.png`
-2. Click **Create Plan** under that product:
-   - Plan Name: `Oli-Locator Monthly`
-   - Billing: **Monthly** · Price: **$59.00 USD**
-   - Status: **Active** → Save
-3. Copy the **Plan ID** (starts with `P-`)
-4. Open `shared/paypal-sdk.js` and replace line 26:
+2. Click **Create Plan** under that product (create one plan per tier × billing cycle — 4 plans total):
+   - `Oli-Locator Solo Agent Monthly` → **$59.00 USD/month**
+   - `Oli-Locator Solo Agent Yearly` → **$516.00 USD/year**
+   - `Oli-Locator Team Monthly` → **$119.00 USD/month**
+   - `Oli-Locator Team Yearly` → **$1068.00 USD/year**
+   - Status: **Active** → Save each
+3. Copy each **Plan ID** (starts with `P-`)
+4. Open `shared/paypal-sdk.js` and replace line 26 (and add the additional tier/yearly plan IDs the same way):
    ```js
    var LOCATOR_PLAN_ID = 'P-YOUR_ACTUAL_PLAN_ID';
    ```
 
-### Step 1c — OliSalesTrack Subscription ($19/mo + $148/yr)
+### Step 1c — OliSalesTrack Subscription ($24/mo or $204/yr)
 
-OliSalesTrack uses its own subscription script (separate from paypal-sdk.js because it has two plans).
+OliSalesTrack uses its own subscription script (separate from paypal-sdk.js because it has monthly + yearly plans).
 
 1. Create a PayPal product (same steps as above):
    - Name: `OliSalesTrack Pro`
@@ -71,8 +91,8 @@ OliSalesTrack uses its own subscription script (separate from paypal-sdk.js beca
    - Home URL: `https://olielicz.github.io/marketing/olisalestrack/`
 
 2. Create **two plans** under that product:
-   - Plan 1: `OliSalesTrack Monthly` → $19.00/month → copy Plan ID
-   - Plan 2: `OliSalesTrack Yearly` → $148.00/year → copy Plan ID
+   - Plan 1: `OliSalesTrack Monthly` → $24.00/month → copy Plan ID
+   - Plan 2: `OliSalesTrack Yearly` → $204.00/year → copy Plan ID
 
 3. Open `olisalestrack/buy/index.html` and add this script before `</body>`:
 
@@ -81,7 +101,7 @@ OliSalesTrack uses its own subscription script (separate from paypal-sdk.js beca
 (function() {
   var clientId  = 'YOUR_PAYPAL_CLIENT_ID_HERE'; // same ID from Step 1a
   var monthlyId = 'P-YOUR_MONTHLY_PLAN_ID'; // $24/month
-  var yearlyId  = 'P-YOUR_YEARLY_PLAN_ID';
+  var yearlyId  = 'P-YOUR_YEARLY_PLAN_ID'; // $204/year
 
   function renderSalestrackBtn(containerId, planId, toolKey) {
     var s = document.createElement('script');
@@ -129,15 +149,16 @@ Stripe Payment Links are fully hosted checkout pages — no code, just a URL.
 1. Go to **[dashboard.stripe.com/payment-links](https://dashboard.stripe.com/payment-links)**
 2. Click **+ New** → Add a product:
 
-| Tool | Product Name | Price | Billing |
+All 6 tools are recurring subscriptions. Each Stripe Payment Link only supports one fixed Price, so create a **separate Payment Link per tier × billing cycle** (e.g. OliOps needs 6 links: Starter/Pro/Agency × monthly/yearly). For the initial launch, it's fine to wire only the entry-tier monthly link into each buy page's `stripeBtn` — the on-page plan selector already lets buyers pick a tier, but actually charging a different tier/cycle via Stripe requires either the matching Payment Link swapped in via JS, or (better, once you have bandwidth) a small serverless function that creates a Stripe Checkout Session dynamically based on the selected plan.
+
+| Tool | Product Name | Tiers (monthly / yearly) | Billing |
 |---|---|---|---|
-| OliOps Suite | `OliOps Suite — Lifetime License` | $299 | One time |
-| OliCommerce Stack | `OliCommerce Stack — Lifetime License` | $199 | One time |
-| OliFlow Engine | `OliFlow Automation Engine — Lifetime` | $249 | One time |
-| OliConnect | `OliConnect — Lifetime License` | $89 | One time |
-| Oli-Locator | `Oli-Locator — Agency Plan` | $49 | Recurring / Monthly |
-| OliSalesTrack Monthly | `OliSalesTrack Pro — Monthly` | $19 | Recurring / Monthly |
-| OliSalesTrack Yearly | `OliSalesTrack Pro — Annual` | $148 | Recurring / Yearly |
+| OliOps Suite | `OliOps Suite` | Starter $39/mo·$348/yr, Pro $69/mo·$612/yr, Agency $119/mo·$1068/yr | Recurring |
+| OliCommerce Stack | `OliCommerce Stack` | Basic $29/mo·$264/yr, Growth $49/mo·$444/yr, Scale $89/mo·$804/yr | Recurring |
+| OliFlow Engine | `OliFlow Automation Engine` | Solo $35/mo·$312/yr, Pro $59/mo·$528/yr, Business $99/mo·$888/yr | Recurring |
+| OliConnect | `OliConnect` | Solo $19/mo·$168/yr, Agency $39/mo·$348/yr, Enterprise $79/mo·$708/yr | Recurring |
+| Oli-Locator | `Oli-Locator` | Solo Agent $59/mo·$516/yr, Team $119/mo·$1068/yr | Recurring |
+| OliSalesTrack | `OliSalesTrack Pro` | $24/mo·$204/yr (single tier) | Recurring |
 
 3. In **After payment** settings → choose **Redirect to URL** → enter:
    ```
