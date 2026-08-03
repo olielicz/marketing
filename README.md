@@ -206,7 +206,7 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 | Monthly price | $24/month |
 | Yearly price | $204/year (save 29%) |
 | Payment | PayPal subscription + Stripe recurring |
-| Competitors | Baremetrics ($58+/mo), Profitwell, Google Sheets |
+| Competitors | Baremetrics ($49+/mo), Profitwell, Google Sheets |
 | Key differentiator | Pearson correlation analysis: Sales ↔ Refunds ↔ Expenses |
 | Target buyer | Shopify/WooCommerce/Amazon sellers, SaaS founders, freelancers |
 | Marketing angle | "Your real profit after refunds and expenses — not the number you think" |

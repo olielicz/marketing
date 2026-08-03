@@ -1,4 +1,4 @@
-# Directory & Backlink Submission List — All 5 Product Lines
+# Directory & Backlink Submission List — All 6 Product Lines
 
 Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to submit.
 
@@ -6,7 +6,7 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 
 ---
 
-## Tier 1 — General SaaS directories (submit all 4 SaaS-style tools)
+## Tier 1 — General SaaS directories (submit all 6 tools)
 
 | Site | Submit URL | Notes |
 |---|---|---|
@@ -19,7 +19,7 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 | SourceForge | sourceforge.net | Especially relevant for OliFlow |
 | Crunchbase | crunchbase.com | Free company + product profile |
 
-## Tier 2 — Indie/bootstrapped directories (all 4)
+## Tier 2 — Indie/bootstrapped directories (all 6)
 
 | Site | Submit URL | Notes |
 |---|---|---|
@@ -46,25 +46,31 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 - r/realtors, r/realestateinvesting
 - Direct outreach matters more here than directories — see `outreach-oli-locator.md`
 
+**OliSalesTrack** — list specifically as an alternative to Baremetrics/Profitwell (Tier 1 sites use this framing well):
+- AlternativeTo, SaaSHub — "alternative to Baremetrics"
+- r/ecommerce, r/shopify, r/smallbusiness — "how refunds eat your real profit" angle
+- IndieHackers "Show IH" post with a before/after correlation chart screenshot
+
 ---
 
 ## Submission tracking checklist
 
-- [ ] AlternativeTo — OliOps, OliCommerce, OliFlow, OliConnect
-- [ ] SaaSHub — OliOps, OliCommerce, OliFlow, OliConnect
-- [ ] Product Hunt directory page (pre-launch) — all 4
-- [ ] BetaList — all 4
+- [ ] AlternativeTo — OliOps, OliCommerce, OliFlow, OliConnect, OliSalesTrack
+- [ ] SaaSHub — OliOps, OliCommerce, OliFlow, OliConnect, OliSalesTrack
+- [ ] Product Hunt directory page (pre-launch) — all 6
+- [ ] BetaList — all 6
 - [ ] G2 — OliOps, OliCommerce
-- [ ] Capterra — OliOps, OliCommerce
+- [ ] Capterra — OliOps, OliCommerce, OliSalesTrack
 - [ ] SourceForge — OliFlow
-- [ ] Crunchbase — all 4
-- [ ] Indie Hackers — all 4
+- [ ] Crunchbase — all 6
+- [ ] Indie Hackers — all 6
 - [ ] There's An AI For That — automate-CSR, OliMind AI, OliFlow angles
-- [ ] Uneed, Fazier, StartupStash, Launching Next — all 4
+- [ ] Uneed, Fazier, StartupStash, Launching Next — all 6
 - [ ] Shopify Community forum post — OliCommerce
-- [ ] r/shopify, r/ecommerce post — OliCommerce
+- [ ] r/shopify, r/ecommerce post — OliCommerce, OliSalesTrack
 - [ ] r/nocode, r/automation post — OliFlow
 - [ ] r/socialmedia, r/marketing post — OliConnect
 - [ ] Local Realtor association directory — Oli-Locator
 - [ ] BiggerPockets forum post — Oli-Locator
 - [ ] r/realtors post — Oli-Locator
+- [ ] r/smallbusiness post + IndieHackers Show IH — OliSalesTrack
