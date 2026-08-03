@@ -2,7 +2,7 @@
  * Serial-code format + checksum, e.g.  OLI-OPS-7F3K-9QZX-M
  *
  * Layout: OLI-<PRODUCT>-<GROUP1>-<GROUP2>-<CHECKSUM>
- *   PRODUCT   3-letter code: OPS | COM | FLW | CNT | ALL
+ *   PRODUCT   3-letter code: OPS | COM | FLW | EXP | ALL
  *   GROUP1/2  4 random base32 (Crockford-style, no I/L/O/U to avoid confusion) chars each
  *   CHECKSUM  1 character, a simple mod-37 checksum over the rest of the code
  *
@@ -14,7 +14,7 @@ import { randomInt } from "node:crypto";
 
 const ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"; // 32 chars, no I/L/O/U
 
-export const PRODUCT_CODES = ["OPS", "COM", "FLW", "CNT", "ALL"];
+export const PRODUCT_CODES = ["OPS", "COM", "FLW", "EXP", "ALL"];
 
 function randomGroup(length) {
   let out = "";

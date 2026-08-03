@@ -41,7 +41,7 @@
     'oliops':      'YOUR_OLIOPS_PLAN_ID_HERE',      // Starter, $39/month
     'olicommerce': 'YOUR_OLICOMMERCE_PLAN_ID_HERE', // Basic, $29/month
     'oliflow':     'YOUR_OLIFLOW_PLAN_ID_HERE',     // Solo, $35/month
-    'oliconnect':  'YOUR_OLICONNECT_PLAN_ID_HERE',  // Solo, $19/month
+    'oliexplore':  'YOUR_OLIEXPLORE_PLAN_ID_HERE',  // Creator, $27/month
     'oli-locator': 'YOUR_LOCATOR_PLAN_ID_HERE',     // Solo Agent, $59/month
   };
 
@@ -56,7 +56,7 @@
     if (path.includes('oliops'))      return { key: 'oliops',      name: 'OliOps Suite — Starter Plan',       amount: '39.00', recurring: true };
     if (path.includes('olicommerce')) return { key: 'olicommerce', name: 'OliCommerce Stack — Basic Plan',    amount: '29.00', recurring: true };
     if (path.includes('oliflow'))     return { key: 'oliflow',     name: 'OliFlow Engine — Solo Plan',        amount: '35.00', recurring: true };
-    if (path.includes('oliconnect'))  return { key: 'oliconnect',  name: 'OliConnect — Solo Plan',            amount: '19.00', recurring: true };
+    if (path.includes('oliexplore'))  return { key: 'oliexplore',  name: 'OliExplore — Creator Plan',         amount: '27.00', recurring: true };
     if (path.includes('oli-locator')) return { key: 'oli-locator', name: 'Oli-Locator — Solo Agent Plan',     amount: '59.00', recurring: true };
     // OliSalesTrack uses its own separate PayPal subscription script (see olisalestrack/buy/index.html)
     // This file only handles the 5 tools above.
@@ -175,7 +175,7 @@
     if (path.includes('oliops'))      return 'oliops';
     if (path.includes('olicommerce')) return 'olicommerce';
     if (path.includes('oliflow'))     return 'oliflow';
-    if (path.includes('oliconnect'))  return 'oliconnect';
+    if (path.includes('oliexplore'))  return 'oliexplore';
     if (path.includes('oli-locator')) return 'oli-locator';
     if (path.includes('olisalestrack')) return 'olisalestrack';
     return 'unknown';

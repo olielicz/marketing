@@ -1,6 +1,6 @@
 /**
  * Oli License Server — activation API for OliOps, OliCommerce, OliFlow, and
- * OliConnect. Zero external dependencies (uses only Node's built-in `http`
+ * OliExplore. Zero external dependencies (uses only Node's built-in `http`
  * and `crypto`), so it runs comfortably on any free Node hosting tier.
  *
  * Start with:  node server/index.js

@@ -59,7 +59,7 @@ Every buy page now advertises "$0 today, then $X/mo after a 14-day free trial." 
    var PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID_HERE';
    ```
 
-**This single change activates PayPal buttons on all 6 tools' entry-tier plans automatically.** OliOps ($39/mo or $348/yr), OliCommerce ($29/mo or $264/yr), OliFlow ($35/mo or $312/yr), and OliConnect ($19/mo or $168/yr) all use `paypal-sdk.js` directly. Each also has higher Pro/Agency/Business tiers configurable the same way (see Part 2's table below for the full tier list per tool).
+**This single change activates PayPal buttons on all 6 tools' entry-tier plans automatically.** OliOps ($39/mo or $348/yr), OliCommerce ($29/mo or $264/yr), OliFlow ($35/mo or $312/yr), and OliExplore ($27/mo or $252/yr) all use `paypal-sdk.js` directly. Each also has higher Pro/Agency/Business tiers configurable the same way (see Part 2's table below for the full tier list per tool).
 
 ### Step 1b — Oli-Locator Subscription Plans ($59/mo Solo Agent, $119/mo Team)
 
@@ -156,7 +156,7 @@ All 6 tools are recurring subscriptions. Each Stripe Payment Link only supports 
 | OliOps Suite | `OliOps Suite` | Starter $39/mo·$348/yr, Pro $69/mo·$612/yr, Agency $119/mo·$1068/yr | Recurring |
 | OliCommerce Stack | `OliCommerce Stack` | Basic $29/mo·$264/yr, Growth $49/mo·$444/yr, Scale $89/mo·$804/yr | Recurring |
 | OliFlow Engine | `OliFlow Automation Engine` | Solo $35/mo·$312/yr, Pro $59/mo·$528/yr, Business $99/mo·$888/yr | Recurring |
-| OliConnect | `OliConnect` | Solo $19/mo·$168/yr, Agency $39/mo·$348/yr, Enterprise $79/mo·$708/yr | Recurring |
+| OliExplore | `OliExplore` | Creator $27/mo·$252/yr, Team $49/mo·$468/yr, Agency $89/mo·$828/yr | Recurring |
 | Oli-Locator | `Oli-Locator` | Solo Agent $59/mo·$516/yr, Team $119/mo·$1068/yr | Recurring |
 | OliSalesTrack | `OliSalesTrack Pro` | $24/mo·$204/yr (single tier) | Recurring |
 
@@ -172,7 +172,7 @@ All 6 tools are recurring subscriptions. Each Stripe Payment Link only supports 
 | `oliops/buy/index.html` | `REPLACE_WITH_YOUR_OLIOPS_PAYMENT_LINK` |
 | `olicommerce/buy/index.html` | `REPLACE_WITH_YOUR_OLICOMMERCE_PAYMENT_LINK` |
 | `oliflow/buy/index.html` | `REPLACE_WITH_YOUR_OLIFLOW_PAYMENT_LINK` |
-| `oliconnect/buy/index.html` | `REPLACE_WITH_YOUR_OLICONNECT_PAYMENT_LINK` |
+| `oliexplore/buy/index.html` | `REPLACE_WITH_OLIEXPLORE_STRIPE_LINK` |
 | `oli-locator/buy/index.html` | `REPLACE_WITH_YOUR_OLILOCATOR_PAYMENT_LINK` |
 | `olisalestrack/buy/index.html` | `REPLACE_WITH_OLISALESTRACK_MONTHLY_STRIPE_LINK` |
 | `olisalestrack/buy/index.html` | `REPLACE_WITH_OLISALESTRACK_YEARLY_STRIPE_LINK` |
@@ -299,7 +299,7 @@ PayPal Subscriptions and Stripe Recurring billing charge the customer's card aut
 | OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription |
 | OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription |
 | OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription |
-| OliConnect | $19/mo or $168/yr | Monthly/Annual | `oliconnect/buy/index.html` | PayPal subscription |
+| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription |
 | Oli-Locator | $59/mo or $516/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan |
 | OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan |
 

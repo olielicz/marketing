@@ -1,6 +1,6 @@
 /**
  * Oli License Client — drop this file into any of the 4 self-hosted products
- * (OliOps, OliCommerce, OliFlow, OliConnect) to check a customer's serial
+ * (OliOps, OliCommerce, OliFlow, OliExplore) to check a customer's serial
  * code against the shared license server, and enforce the per-license
  * device limit (default 5) on their behalf.
  *
