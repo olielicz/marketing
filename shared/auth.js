@@ -69,17 +69,17 @@
       type:      'monthly',
       tagline:   'Self-Hosted Zapier Alternative',
     },
-    'oliconnect': {
-      name:      'OliConnect',
-      icon:      '♻️',
-      color:     '#db2777',
-      bg:        '#fdf2f8',
-      loginUrl:  '/oliconnect/login/',
-      accountUrl:'/oliconnect/account/',
-      toolUrl:   '/oliconnect/',
-      price:     '$19/mo or $168/yr',
+    'oliexplore': {
+      name:      'OliExplore',
+      icon:      '🧭',
+      color:     '#0d9488',
+      bg:        '#f0fdfa',
+      loginUrl:  '/oliexplore/login/',
+      accountUrl:'/oliexplore/account/',
+      toolUrl:   '/oliexplore/',
+      price:     '$27/mo or $252/yr',
       type:      'monthly',
-      tagline:   'Social Post Recycler',
+      tagline:   'Social Media Studio — Collect, Recycle & Publish',
     },
     'oli-locator': {
       name:      'Oli-Locator',
@@ -463,7 +463,7 @@
     var path = window.location.pathname.toLowerCase();
     if (path.includes('olisalestrack')) return 'olisalestrack';
     if (path.includes('olicommerce'))   return 'olicommerce';
-    if (path.includes('oliconnect'))    return 'oliconnect';
+    if (path.includes('oliexplore'))    return 'oliexplore';
     if (path.includes('oliflow'))       return 'oliflow';
     if (path.includes('oliops'))        return 'oliops';
     if (path.includes('oli-locator'))   return 'oli-locator';

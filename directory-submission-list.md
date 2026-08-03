@@ -38,7 +38,7 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 
 **OliFlow Engine** — r/nocode, r/automation; "open source Zapier alternative" roundup articles (email authors requesting inclusion)
 
-**OliConnect** — r/socialmedia, r/marketing, r/smallbusiness; Chrome Web Store / Firefox Add-ons listing itself functions as a discovery directory once published
+**OliExplore** — r/socialmedia, r/marketing, r/smallbusiness; social-media-tool roundup blogs; "Repurpose.io alternative" framing works well on Tier 1 sites
 
 **Oli-Locator** — different audience entirely, skip Tier 1/2:
 - Local Realtor association online directories/forums (free member resource listing)
@@ -55,8 +55,8 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 
 ## Submission tracking checklist
 
-- [ ] AlternativeTo — OliOps, OliCommerce, OliFlow, OliConnect, OliSalesTrack
-- [ ] SaaSHub — OliOps, OliCommerce, OliFlow, OliConnect, OliSalesTrack
+- [ ] AlternativeTo — OliOps, OliCommerce, OliFlow, OliExplore, OliSalesTrack
+- [ ] SaaSHub — OliOps, OliCommerce, OliFlow, OliExplore, OliSalesTrack
 - [ ] Product Hunt directory page (pre-launch) — all 6
 - [ ] BetaList — all 6
 - [ ] G2 — OliOps, OliCommerce
@@ -69,7 +69,7 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 - [ ] Shopify Community forum post — OliCommerce
 - [ ] r/shopify, r/ecommerce post — OliCommerce, OliSalesTrack
 - [ ] r/nocode, r/automation post — OliFlow
-- [ ] r/socialmedia, r/marketing post — OliConnect
+- [ ] r/socialmedia, r/marketing post — OliExplore
 - [ ] Local Realtor association directory — Oli-Locator
 - [ ] BiggerPockets forum post — Oli-Locator
 - [ ] r/realtors post — Oli-Locator

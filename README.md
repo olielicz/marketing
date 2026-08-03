@@ -16,7 +16,7 @@ Each product is sold, hosted, and logged into **completely separately**.
 | 💼 **OliOps Suite** | $39/mo or $348/yr | Self-hosted | `/oliops/login/` | `/oliops/account/` |
 | 🛒 **OliCommerce Stack** | $29/mo or $264/yr | Self-hosted | `/olicommerce/login/` | `/olicommerce/account/` |
 | ⚙️ **OliFlow Automation Engine** | $35/mo or $312/yr | Self-hosted | `/oliflow/login/` | `/oliflow/account/` |
-| ♻️ **OliConnect** | $19/mo or $168/yr | Self-hosted | `/oliconnect/login/` | `/oliconnect/account/` |
+| 🧭 **OliExplore** | $27/mo or $252/yr | Self-hosted | `/oliexplore/login/` | `/oliexplore/account/` |
 | 🏡 **Oli-Locator** | $59/mo or $516/yr | Hosted SaaS | `/oli-locator/login/` | `/oli-locator/account/` |
 | 📊 **OliSalesTrack** | $24/mo or $204/yr | Hosted SaaS | `/olisalestrack/login/` | `/olisalestrack/account/` |
 
@@ -70,7 +70,7 @@ shared/
   cookie-consent.js             ← GDPR cookie banner
 
 ── Backend services (Node, zero dependencies) ──────────────────────────────
-licensing/                      ← Serial-code activation server (OliOps/OliCommerce/OliFlow/OliConnect)
+licensing/                      ← Serial-code activation server (OliOps/OliCommerce/OliFlow/OliExplore)
 olisalestrack-sync/             ← Live Stripe/PayPal/Shopify webhook sync server for OliSalesTrack
 
 ── 6 Tool folders (identical structure) ────────────────────────────────────
@@ -125,7 +125,7 @@ assets/README.md                ← Product image URLs for PayPal dashboard
 | `oli_users_oliops` | OliOps Suite user accounts |
 | `oli_users_olicommerce` | OliCommerce Stack user accounts |
 | `oli_users_oliflow` | OliFlow user accounts |
-| `oli_users_oliconnect` | OliConnect user accounts |
+| `oli_users_oliexplore` | OliExplore user accounts |
 | `oli_users_oli-locator` | Oli-Locator user accounts |
 | `oli_users_olisalestrack` | OliSalesTrack user accounts |
 | `oli_session_oliops` | OliOps active session |
@@ -234,7 +234,7 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 | OliOps | `oliops/buy/index.html` | $39/mo or $348/yr | PayPal subscription |
 | OliCommerce | `olicommerce/buy/index.html` | $29/mo or $264/yr | PayPal subscription |
 | OliFlow | `oliflow/buy/index.html` | $35/mo or $312/yr | PayPal subscription |
-| OliConnect | `oliconnect/buy/index.html` | $19/mo or $168/yr | PayPal subscription |
+| OliExplore | `oliexplore/buy/index.html` | $27/mo or $252/yr | PayPal subscription |
 | Oli-Locator | `oli-locator/buy/index.html` | $59/mo or $516/yr | PayPal subscription plan |
 | OliSalesTrack | `olisalestrack/buy/index.html` | $24/mo or $204/yr | PayPal subscription plan |
 

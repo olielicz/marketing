@@ -33,7 +33,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
    - `https://olielicz.github.io/marketing/oliops/`
    - `https://olielicz.github.io/marketing/olicommerce/`
    - `https://olielicz.github.io/marketing/oliflow/`
-   - `https://olielicz.github.io/marketing/oliconnect/`
+   - `https://olielicz.github.io/marketing/oliexplore/`
    - `https://olielicz.github.io/marketing/oli-locator/`
    - `https://olielicz.github.io/marketing/olisalestrack/`
 6. **Optional but recommended:** buy a cheap domain later ($10-15/yr from Namecheap/Porkbun) and point subdomains at each page (e.g., `oliops.yourdomain.com`) once you have traction — not required to launch.
@@ -48,7 +48,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
    - `marketing-olielicz.vercel.app/oliops/`
    - `marketing-olielicz.vercel.app/olicommerce/`
    - `marketing-olielicz.vercel.app/oliflow/`
-   - `marketing-olielicz.vercel.app/oliconnect/`
+   - `marketing-olielicz.vercel.app/oliexplore/`
    - `marketing-olielicz.vercel.app/oli-locator/`
    - `marketing-olielicz.vercel.app/olisalestrack/`
 
@@ -77,7 +77,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
    - `OliOps Waitlist`
    - `OliCommerce Waitlist`
    - `OliFlow Waitlist`
-   - `OliConnect Waitlist`
+   - `OliExplore Waitlist`
    - `Oli-Locator Waitlist`
    - `OliSalesTrack Waitlist`
 
@@ -89,15 +89,15 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 8. Open the matching landing page HTML file (e.g., `oliops/index.html`) in a text editor
 9. Find the `<!-- BREVO_FORM -->` comment block and replace the placeholder `<form>...</form>` code between the comments with Brevo's embed code
 10. Save, commit, and push the updated file (or just ask me to do this step for you once your Brevo forms are created — I can wire in the real embed codes directly)
-11. Repeat for all 6 landing pages (`oliops/index.html`, `olicommerce/index.html`, `oliflow/index.html`, `oliconnect/index.html`, `oli-locator/index.html`, `olisalestrack/index.html`)
+11. Repeat for all 6 landing pages (`oliops/index.html`, `olicommerce/index.html`, `oliflow/index.html`, `oliexplore/index.html`, `oli-locator/index.html`, `olisalestrack/index.html`)
 
 ### Load the email sequences (Day 3)
 12. Go to **Automation** → **Create a workflow**
 13. Trigger: **"A contact is added to a list"** → select the matching waitlist (e.g., `OliOps Waitlist`)
 14. Add a **"Send an email"** step → write/paste in Email 1 from `email-sequence-oliops-suite.md` → set delay to **immediate**
 15. Add a **"Wait"** step → set to **2 days** → add another **"Send an email"** step with Email 2 → repeat for Emails 3, 4, 5 using the delays noted in each sequence file
-16. Repeat this whole process for the other 3 product lines that have a written sequence file (OliCommerce, OliFlow, OliConnect)
-17. **OliSalesTrack and Oli-Locator don't have a dedicated `email-sequence-*.md` file yet** — write one following the same welcome → problem/agitate → proof → objection-handling → urgency structure before building their workflow, or ask for one to be drafted
+16. Repeat this whole process for the other 2 product lines that have a written sequence file (OliCommerce, OliFlow)
+17. **OliExplore, OliSalesTrack, and Oli-Locator don't have a dedicated `email-sequence-*.md` file yet** — write one following the same welcome → problem/agitate → proof → objection-handling → urgency structure before building their workflow, or ask for one to be drafted
 18. Turn each workflow **ON** (top right toggle) once built
 
 ---
@@ -109,7 +109,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 1. Go to [plausible.io](https://plausible.io) (free 14-day trial, no credit card) OR [Google Analytics](https://analytics.google.com) (free forever, more setup)
 2. Create a new site/property for your domain (one property can track the hub + all 6 sub-pages if they're on the same domain, e.g. `olielicz.github.io`)
 3. Copy the tracking script snippet
-4. Paste it into the `<head>` section of `index.html` and all 6 product `index.html` files (`oliops/`, `olicommerce/`, `oliflow/`, `oliconnect/`, `oli-locator/`, `olisalestrack/`), right before `</head>`
+4. Paste it into the `<head>` section of `index.html` and all 6 product `index.html` files (`oliops/`, `olicommerce/`, `oliflow/`, `oliexplore/`, `oli-locator/`, `olisalestrack/`), right before `</head>`
 5. Push the updated files
 
 ---
@@ -138,7 +138,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 **⚠️ Status update:** all 6 tools are now monthly/yearly subscriptions, not one-time lifetime purchases. AppSumo's core marketplace model is built around lifetime deals, so this channel is no longer a natural fit without carving out a separate one-time tier just for that submission — see `appsumo-alternatives-research.md` for the full reasoning. Treat this section as optional/on hold unless you decide to pursue that route.
 
-**Original goal (kept for reference):** file OliOps, OliCommerce, and OliFlow pitches by Day 5; OliConnect when you have bandwidth.
+**Original goal (kept for reference):** file OliOps, OliCommerce, and OliFlow pitches by Day 5; OliExplore when you have bandwidth.
 
 1. Go to [sell.appsumo.com](https://sell.appsumo.com/)
 2. Click **Apply** / **Get Started** (button wording may vary)
@@ -176,9 +176,9 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 
 ---
 
-## 9. Cold outreach — Oli-Locator + OliConnect
+## 9. Cold outreach — Oli-Locator + OliExplore
 
-**Goal:** execute the outreach playbooks in `outreach-oli-locator.md` and `outreach-oliconnect.md`.
+**Goal:** execute the outreach playbooks in `outreach-oli-locator.md` and `outreach-oliexplore.md`.
 
 1. Open the matching outreach file
 2. Follow "Step 1 — Build your list" to compile 20-50 contacts using the free sources listed (Zillow, LinkedIn, association directories, etc.)
@@ -208,9 +208,9 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 | ✅ Hub page + 6 landing pages + 6 Buy Now pages, clean URLs | Make repo public (or use Vercel) + deploy |
 | ✅ Stripe/PayPal buttons built into every Buy Now page (all subscriptions, with a 14-day trial) | Create real Stripe Payment Links + PayPal Plan IDs, swap in the placeholders |
 | ✅ 3 Product Hunt launch posts + first comments (OliOps, OliCommerce, OliFlow) | Create PH account, submit, engage on launch day |
-| ✅ 4 email nurture sequences (OliOps, OliCommerce, OliFlow, OliConnect) | Create Brevo account, build forms, load sequences; still need to write sequences for Oli-Locator + OliSalesTrack |
+| ✅ 2 email nurture sequences (OliOps, OliCommerce, OliFlow) | Create Brevo account, build forms, load sequences; still need to write sequences for OliExplore, Oli-Locator + OliSalesTrack |
 | ⚠️ 3 AppSumo pitches with deal tiers — deprioritized, see section 6 | AppSumo's model no longer matches subscription pricing; optional |
 | ✅ Directory submission list, now covering all 6 tools | Actually submit to each site (no way around the manual form-filling) |
-| ✅ 2 cold outreach playbooks + templates (Oli-Locator, OliConnect) | Build contact lists, send emails, log replies |
+| ✅ 2 cold outreach playbooks + templates (Oli-Locator, OliExplore) | Build contact lists, send emails, log replies |
 
 If any of this feels like too much to execute solo, tell me which piece to prioritize first and I'll help you sequence it further or draft anything still missing.

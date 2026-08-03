@@ -44,15 +44,15 @@ Honest comparison table for all 6 products, based on the same 2026 competitor re
 
 ---
 
-## 4. OliConnect vs. MeetEdgar / SocialBee
+## 4. OliExplore vs. Repurpose.io / MeetEdgar
 
-| | **OliConnect** | **MeetEdgar** | **SocialBee** |
+| | **OliExplore** | **Repurpose.io** | **MeetEdgar** |
 |---|---|---|---|
-| **Price** | $19/mo or $168/yr (Solo), up to 5 devices | From $29.99/mo ($360+/yr, every year) | $29-99/mo ($348-1,188/yr, every year) |
-| **Pros** | ✅ Cheaper than either named competitor's entry tier, every month<br>✅ Session-based, doesn't store your passwords<br>✅ Simple, focused feature set (connect → detect → recycle) | ✅ Mature product with category-based content queues<br>✅ "Inky" AI captioning assistant<br>✅ Established reputation in the content-recycling niche | ✅ Broader feature set: scheduling, categories, AI post generation, analytics<br>✅ Higher tiers support more accounts/collaborators<br>✅ 14-day free trial |
-| **Cons** | ❌ Narrower feature set than SocialBee's full scheduling suite — OliConnect focuses specifically on detect-and-recycle, not full calendar scheduling<br>❌ Fewer platform integrations currently than established players<br>❌ Newer, less brand recognition | ❌ Limited to 5 accounts on entry tier | ❌ Cost scales up fast for agencies managing many client accounts/collaborators |
+| **Price** | $27/mo or $252/yr (Creator), up to 5 devices | $35/mo or $349/yr (Starter), 3 accounts/network, 5,000 videos/mo | $29.99/mo (Eddie) or $49.99/mo (Edgar, 25 accounts), every month |
+| **Pros** | ✅ Cheaper than either named competitor's entry tier<br>✅ Both collect-from and publish-to in one flow, not publish-only<br>✅ Real OAuth connections — never sees or stores your platform passwords<br>✅ 5 tone presets to rewrite/recycle captions, not just reformat | ✅ Mature, purpose-built for high-volume video distribution<br>✅ Deep per-platform formatting rules<br>✅ Strong for podcasters/video creators specifically | ✅ Established reputation in the content-recycling niche<br>✅ Category-based content queues<br>✅ "Inky" AI captioning assistant |
+| **Cons** | ❌ Newer product, less brand recognition<br>❌ LinkedIn is publish-only (no personal-post collection API available to third-party apps)<br>❌ X and TikTok posting are subject to those platforms' own third-party API restrictions, not something any tool in this category can bypass | ❌ Publish-focused — no AI rewrite/recycle engine, you supply the finished asset<br>❌ Higher entry price than OliExplore for a comparable account limit | ❌ Recycling queue is category-based, not a live collect-from-real-accounts flow<br>❌ Limited to 25 accounts even on the top tier |
 
-**Bottom line:** If you need a full scheduling/content-calendar suite with many collaborators, SocialBee's broader feature set may justify its higher price. If your specific need is "find my best posts and recycle them across platforms," OliConnect's $19/mo (or $168/yr) Solo plan is a sharper and cheaper fit than either named competitor's entry tier.
+**Bottom line:** If your workflow is finished long-form video you just need distributed everywhere, Repurpose.io's video-specific tooling may be worth its higher price. If you want one flow that collects your existing posts, rewrites them into a catchier variant, and publishes everywhere — including a real AI rewrite step neither named competitor offers — OliExplore's $27/mo (or $252/yr) Creator plan is the sharper and cheaper fit.
 
 ---
 
@@ -82,7 +82,7 @@ Honest tracking of which competitive disadvantages have been addressed vs. remai
 | No 14-day trial (pay-then-refund friction) | ✅ **Fixed** — all 6 tools now offer a 14-day free trial before first charge |
 | Fabricated "illustrative" testimonials | ✅ **Fixed** — replaced with honest, non-attributed product-benefit copy + a real-review request CTA |
 | OliFlow: no native mobile app | 🟡 **Partially mitigated** — the app is now an installable PWA (Add to Home Screen, works offline for the app shell); still not a native App Store/Play Store listing |
-| OliOps/OliCommerce/OliConnect/Oli-Locator/OliSalesTrack: no native mobile app | ❌ **Structural, unresolved** — these are marketing pages linking to apps that live in separate repos; a PWA manifest can't be added here without access to those repos' actual app code. Revisit once those repos are in scope. |
+| OliOps/OliCommerce/OliExplore/Oli-Locator/OliSalesTrack: no native mobile app | ❌ **Structural, unresolved** — these are marketing pages linking to apps that live in separate repos; a PWA manifest can't be added here without access to those repos' actual app code. Revisit once those repos are in scope. |
 | Smaller integration ecosystem generally (vs. Zoho, Follow Up Boss's 250+, etc.) | ❌ **Structural, unresolved** — building genuine integration depth takes real engineering time; not something a marketing-copy pass can close. Tracked honestly rather than overstated. |
 | No large-team/brand-name references yet | ❌ **Structural, unresolved** — this resolves naturally as real customers accumulate; see the testimonials-CTA fix above for the mechanism to start collecting them. |
 

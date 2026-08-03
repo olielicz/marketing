@@ -2,7 +2,7 @@
   "name": "oli-license-server",
   "version": "1.0.0",
   "private": true,
-  "description": "Self-hosted serial-code activation server shared by OliOps, OliCommerce, OliFlow, and OliConnect. Zero npm dependencies.",
+  "description": "Self-hosted serial-code activation server shared by OliOps, OliCommerce, OliFlow, and OliExplore. Zero npm dependencies.",
   "type": "module",
   "license": "MIT",
   "engines": {

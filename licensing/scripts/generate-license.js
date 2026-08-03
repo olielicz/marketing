@@ -7,7 +7,7 @@
  *   node scripts/generate-license.js --product oliops --email jane@example.com
  *   node scripts/generate-license.js --product all --max-devices 10 --note "AppSumo bundle buyer"
  *
- * --product accepts: oliops | olicommerce | oliflow | oliconnect | all
+ * --product accepts: oliops | olicommerce | oliflow | oliexplore | all
  */
 import { createLicense, getLicense } from "../server/store.js";
 import { generateSerialCode } from "../server/licenseKey.js";
@@ -16,7 +16,7 @@ const PRODUCT_MAP = {
   oliops: "OPS",
   olicommerce: "COM",
   oliflow: "FLW",
-  oliconnect: "CNT",
+  oliexplore: "EXP",
   all: "ALL",
 };
 
@@ -37,7 +37,7 @@ const productCode = PRODUCT_MAP[String(args.product || "").toLowerCase()];
 
 if (!productCode) {
   console.error(
-    `Usage: node scripts/generate-license.js --product <oliops|olicommerce|oliflow|oliconnect|all> [--email you@example.com] [--max-devices 5] [--note "..."]`
+    `Usage: node scripts/generate-license.js --product <oliops|olicommerce|oliflow|oliexplore|all> [--email you@example.com] [--max-devices 5] [--note "..."]`
   );
   process.exit(1);
 }

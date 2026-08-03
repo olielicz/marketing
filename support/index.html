@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Support & Troubleshooting — Oli Tools</title>
-<meta name="description" content="Troubleshooting guides for OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliConnect, Oli-Locator, and OliSalesTrack. Fix common issues yourself, or contact us if you're still stuck.">
+<meta name="description" content="Troubleshooting guides for OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliExplore, Oli-Locator, and OliSalesTrack. Fix common issues yourself, or contact us if you're still stuck.">
 <style>
   :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --good:#16a34a; --warn:#d97706; }
   * { box-sizing: border-box; }
@@ -70,7 +70,7 @@
     <a class="jump-btn" href="#oliops">💼 OliOps Suite</a>
     <a class="jump-btn" href="#olicommerce">🛒 OliCommerce</a>
     <a class="jump-btn" href="#oliflow">⚙️ OliFlow</a>
-    <a class="jump-btn" href="#oliconnect">📱 OliConnect</a>
+    <a class="jump-btn" href="#oliexplore">🧭 OliExplore</a>
     <a class="jump-btn" href="#oli-locator">🏡 Oli-Locator</a>
     <a class="jump-btn" href="#olisalestrack">📊 OliSalesTrack</a>
   </div>
@@ -117,14 +117,14 @@
   <details class="faq-item">
     <summary class="faq-q">I want a refund</summary>
     <div class="faq-a">
-      <p>All 6 subscriptions (OliOps, OliCommerce, OliFlow, OliConnect, Oli-Locator, OliSalesTrack) start with a 14-day free trial — cancel during the trial and you're never charged. After your first paid charge, we also offer a 30-day, no-questions-asked money-back guarantee. See the full <a href="../terms/">Refund Policy</a> for specifics, then <a href="../contact/">email billing</a> with your order details.</p>
+      <p>All 6 subscriptions (OliOps, OliCommerce, OliFlow, OliExplore, Oli-Locator, OliSalesTrack) start with a 14-day free trial — cancel during the trial and you're never charged. After your first paid charge, we also offer a 30-day, no-questions-asked money-back guarantee. See the full <a href="../terms/">Refund Policy</a> for specifics, then <a href="../contact/">email billing</a> with your order details.</p>
     </div>
   </details>
 
   <details class="faq-item">
     <summary class="faq-q">Is a specific tool down right now?</summary>
     <div class="faq-a">
-      <p>Self-hosted tools (OliOps, OliCommerce, OliFlow, OliConnect) run on your own infrastructure, so "down" almost always means your own server/hosting needs a look — check your hosting provider's status page first. Oli-Locator is hosted by us; if you suspect an outage there, <a href="../contact/">contact support</a> and we'll confirm and update you.</p>
+      <p>Self-hosted tools (OliOps, OliCommerce, OliFlow) run on your own infrastructure, so "down" almost always means your own server/hosting needs a look — check your hosting provider's status page first. OliExplore and Oli-Locator are hosted by us; if you suspect an outage there, <a href="../contact/">contact support</a> and we'll confirm and update you.</p>
     </div>
   </details>
 </section>
@@ -224,31 +224,31 @@
   </details>
 </section>
 
-<section class="wrap tool-section" id="oliconnect">
-  <div class="tool-header"><h2>📱 OliConnect</h2><span class="tool-badge">Browser Extension</span></div>
+<section class="wrap tool-section" id="oliexplore">
+  <div class="tool-header"><h2>🧭 OliExplore</h2><span class="tool-badge">Social Media Studio</span></div>
 
   <details class="faq-item">
-    <summary class="faq-q">The extension isn't detecting my top posts <span class="arrow">▾</span></summary>
+    <summary class="faq-q">A connected platform isn't showing my posts <span class="arrow">▾</span></summary>
     <div class="faq-a">
       <ol>
-        <li>Confirm you're logged into the social platform in the same browser where the extension is installed — OliConnect reads through your existing session, so it needs an active login in that browser.</li>
-        <li>Give it a moment after connecting a new account — initial post-history detection can take a short scan before results populate.</li>
-        <li>Try refreshing the platform's page after connecting, then reopening the extension popup.</li>
+        <li>Confirm the platform's connection is still active — OAuth tokens can expire or get revoked from the platform's own settings page. Reconnect it from OliExplore's connection screen if so.</li>
+        <li>Remember LinkedIn is publish-only — OliExplore can post there, but can't pull your existing LinkedIn posts into the library (LinkedIn doesn't offer that API to third-party apps).</li>
+        <li>Give it a moment after connecting a new account — initial post-history collection can take a short scan before results populate.</li>
       </ol>
     </div>
   </details>
 
   <details class="faq-item">
-    <summary class="faq-q">The extension isn't installed / won't load</summary>
+    <summary class="faq-q">Publishing to X or TikTok fails or only posts privately</summary>
     <div class="faq-a">
-      <p>Confirm your browser is up to date (OliConnect targets current Chrome/Edge/Firefox versions). If you installed it manually (not via a store listing), confirm Developer Mode / "load unpacked extensions" is enabled in your browser's extension settings.</p>
+      <p>These are platform-side restrictions, not an OliExplore bug: X currently requires a paid API tier on X's own side to allow posting via any third-party app, and TikTok restricts unaudited apps to private-only video visibility until that specific app passes TikTok's own review process. Facebook, Instagram, Threads, and LinkedIn don't have this restriction.</p>
     </div>
   </details>
 
   <details class="faq-item">
-    <summary class="faq-q">Is it safe that this reads my social accounts?</summary>
+    <summary class="faq-q">Is it safe that this connects to my social accounts?</summary>
     <div class="faq-a">
-      <p>Yes — see the full explanation on our <a href="../security/">Security page</a>. Short version: your login credentials never leave your browser session and are never sent to our servers.</p>
+      <p>Yes — see the full explanation on our <a href="../security/">Security page</a>. Short version: real connections use each platform's own official OAuth login screen. OliExplore never sees or stores your password, only a token you can revoke anytime from that platform's own settings.</p>
     </div>
   </details>
 </section>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Buy OliExplore — Choose Your Plan</title>
+<meta name="robots" content="noindex"/>
+<link rel="canonical" href="https://olielicz.github.io/marketing/oliexplore/buy/"/>
+<meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<style>
+  :root { --ink:#14161a; --sub:#55606e; --accent:#0d9488; --accent2:#7c3aed; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:920px; margin:0 auto; padding:40px 24px 80px; }
+  .back-link { display:inline-block; margin-bottom:24px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
+  .back-link:hover { color:var(--ink); }
+  h1 { font-size:30px; font-weight:800; letter-spacing:-0.02em; margin:0 0 6px; }
+  .sub { color:var(--sub); font-size:15.5px; margin-bottom:32px; }
+  .plan-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+  @media (max-width:760px) { .plan-grid { grid-template-columns:1fr; } }
+  .plan-card { background:var(--card); border:2px solid var(--line); border-radius:16px; padding:22px; cursor:pointer; position:relative; transition:border-color .15s, transform .15s; }
+  .plan-card:hover { transform:translateY(-2px); }
+  .plan-card.selected { border-color:var(--accent); box-shadow:0 12px 28px -12px rgba(13,148,136,0.35); }
+  .plan-card .pop-tag { position:absolute; top:-12px; left:16px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; }
+  .plan-name { font-weight:800; font-size:16px; margin-bottom:6px; }
+  .plan-price-monthly, .plan-price-yearly { font-size:26px; font-weight:800; }
+  .plan-period { font-size:12.5px; color:var(--sub); margin-top:4px; }
+  .plan-desc { font-size:13px; color:var(--sub); margin-top:10px; }
+  .toggle-row { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:32px; font-size:14.5px; font-weight:600; }
+  .toggle-switch { width:52px; height:28px; background:var(--line); border-radius:20px; position:relative; cursor:pointer; transition:background .15s; }
+  .toggle-switch.on { background:var(--accent); }
+  .toggle-switch .knob { width:22px; height:22px; background:#fff; border-radius:50%; position:absolute; top:3px; left:3px; transition:left .15s; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+  .toggle-switch.on .knob { left:27px; }
+  .save-badge { background:#dcfce7; color:#15803d; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .checkout-card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; }
+  .summary-row { display:flex; justify-content:space-between; font-size:14.5px; padding:8px 0; border-bottom:1px solid var(--line); }
+  .summary-row:last-of-type { border:none; }
+  .summary-total { display:flex; justify-content:space-between; font-size:19px; font-weight:800; padding-top:14px; margin-top:6px; border-top:2px solid var(--ink); }
+  .field-row { margin:20px 0; }
+  label { display:block; font-size:12.5px; font-weight:700; color:var(--sub); margin-bottom:6px; text-transform:uppercase; letter-spacing:.03em; }
+  input { width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:10px; font-size:15px; font-family:inherit; }
+  input:focus { outline:none; border-color:var(--accent); }
+  small.hint { color:var(--sub); font-size:11.5px; display:block; margin-top:4px; }
+  .pay-btn { display:block; width:100%; text-align:center; padding:15px; border-radius:10px; font-weight:700; font-size:15.5px; text-decoration:none; margin-top:10px; border:none; cursor:pointer; }
+  .pay-btn.stripe { background:linear-gradient(135deg,#635bff,#4338ca); color:#fff; }
+  .paypal-wrap { margin-top:14px; }
+  .success-box, .error-note { display:none; border-radius:10px; padding:14px 18px; font-size:13.5px; margin-top:14px; }
+  .success-box { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; }
+  .error-note { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; }
+  .pay-note { text-align:center; font-size:12.5px; color:var(--sub); margin-top:14px; }
+  .trust-row { display:flex; justify-content:center; gap:18px; margin-top:16px; font-size:12px; color:var(--sub); flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="../" class="back-link">← Back to OliExplore</a>
+  <h1>Choose your OliExplore plan</h1>
+  <p class="sub">14-day free trial on every plan. Cancel anytime, no questions asked.</p>
+
+  <div class="toggle-row">
+    <span>Monthly</span>
+    <div class="toggle-switch" id="billingToggle" onclick="toggleBilling()"><div class="knob"></div></div>
+    <span>Yearly <span class="save-badge">Save ~22%</span></span>
+  </div>
+
+  <div class="plan-grid" id="planGrid">
+    <div class="plan-card selected" data-plan="0" onclick="selectPlan(0)">
+      <div class="pop-tag">⭐ Most Popular</div>
+      <div class="plan-name">Creator</div>
+      <div class="plan-price-monthly">$27<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$252<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-0">$<span class="pm">27</span>/month · <span class="py" style="display:none">$252/yr = $<span>21</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">Solo creators &amp; single-brand accounts</div>
+    </div>
+    <div class="plan-card" data-plan="1" onclick="selectPlan(1)">
+      <div class="plan-name">Team</div>
+      <div class="plan-price-monthly">$49<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$468<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-1">$<span class="pm">49</span>/month · <span class="py" style="display:none">$468/yr = $<span>39</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">Small teams managing a few client accounts</div>
+    </div>
+    <div class="plan-card" data-plan="2" onclick="selectPlan(2)">
+      <div class="plan-name">Agency</div>
+      <div class="plan-price-monthly">$89<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$828<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-2">$<span class="pm">89</span>/month · <span class="py" style="display:none">$828/yr = $<span>69</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">Agencies managing many client accounts</div>
+    </div>
+  </div>
+
+  <div class="checkout-card">
+    <div class="summary-row"><span>Plan</span><span id="sumPlan">Creator Plan</span></div>
+    <div class="summary-row"><span>Billing</span><span id="sumBilling">$27/mo</span></div>
+    <div class="summary-row"><span>Cycle</span><span id="sumCycle">Monthly (billed every month)</span></div>
+    <div class="summary-total"><span id="sumLabel">Due today (14-day free trial)</span><span id="sumTotal">$0 today, then $27/mo</span></div>
+
+    <div class="field-row">
+      <label for="emailInput">Email address</label>
+      <input type="email" id="emailInput" placeholder="you@agency.com"/>
+      <small class="hint">Login details sent here after your trial converts to a paid plan.</small>
+    </div>
+
+    <div style="text-align:center;font-size:26px;font-weight:800;margin:18px 0 4px;">$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span></div>
+
+    <a class="pay-btn stripe" id="stripeBtn" href="https://buy.stripe.com/REPLACE_WITH_OLIEXPLORE_STRIPE_LINK" target="_blank" rel="noopener">
+      💳 Pay with Stripe
+    </a>
+    <div class="paypal-wrap">
+      <div id="paypal-button-container"></div>
+      <div id="paypal-success-box" class="success-box">
+        🎉 <strong>Trial started!</strong> Login details are being sent to your email.
+      </div>
+      <div id="paypal-error-note" class="error-note">⚠️ Payment error. Please try again or <a href="../../contact/">contact support</a>.</div>
+    </div>
+    <div class="pay-note">All major cards, digital wallets & PayPal accepted. First 14 days free — you won't be charged until the trial ends.</div>
+    <div class="trust-row">
+      <span>🔒 256-bit SSL</span>
+      <span>🎁 14-day free trial</span>
+      <span>❌ Cancel anytime</span>
+    </div>
+  </div>
+</div>
+
+<script src="../../shared/auth.js"></script>
+<script src="../../shared/paypal-sdk.js"></script>
+<script src="../../shared/security.js"></script>
+<script>
+const PLANS = [{"name":"Creator","mo":"27","yr":"252","yr_mo":"21"},{"name":"Team","mo":"49","yr":"468","yr_mo":"39"},{"name":"Agency","mo":"89","yr":"828","yr_mo":"69"}];
+let selectedPlan = 0;
+let isYearly = false;
+
+function selectPlan(i) {
+  selectedPlan = i;
+  document.querySelectorAll('.plan-card').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  updateSummary();
+}
+
+function toggleBilling() {
+  isYearly = !isYearly;
+  const toggle = document.getElementById('billingToggle');
+  toggle.classList.toggle('on', isYearly);
+  document.querySelectorAll('.plan-price-monthly').forEach(el => el.style.display = isYearly ? 'none' : 'block');
+  document.querySelectorAll('.plan-price-yearly').forEach(el => el.style.display = isYearly ? 'block' : 'none');
+  document.querySelectorAll('.plan-card').forEach((el, idx) => {
+    const period = document.getElementById('period-' + idx);
+    period.querySelectorAll('.py').forEach(el2 => el2.style.display = isYearly ? 'inline' : 'none');
+    period.lastChild.textContent = isYearly ? 'billed yearly' : 'billed monthly';
+  });
+  updateSummary();
+}
+
+function updateSummary() {
+  const plan = PLANS[selectedPlan];
+  const price = isYearly ? plan.yr : plan.mo;
+  const period = isYearly ? '/yr' : '/mo';
+  const cycleLabel = isYearly ? 'Annual (billed once/year)' : 'Monthly (billed every month)';
+  document.getElementById('sumPlan').textContent = plan.name + ' Plan';
+  document.getElementById('sumBilling').textContent = isYearly ? `${plan.yr}/yr (${plan.yr_mo}/mo)` : `${plan.mo}/mo`;
+  document.getElementById('sumCycle').textContent = cycleLabel;
+  document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
+  document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
+}
+</script>
+</body>
+</html>

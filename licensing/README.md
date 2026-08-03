@@ -1,13 +1,14 @@
 # Oli License Server
 
-A small, self-hosted licensing service shared by the 4 downloadable/self-hosted Oli tools:
+A small, self-hosted licensing service shared by the 4 downloadable/self-hosted Oli tools (OliOps,
+OliCommerce, OliFlow, OliExplore):
 
 | Product | Code |
 |---|---|
 | OliOps Suite | `OPS` |
 | OliCommerce Stack | `COM` |
 | OliFlow Automation Engine | `FLW` |
-| OliConnect | `CNT` |
+| OliExplore | `EXP` |
 
 **Oli-Locator is excluded on purpose.** It's a hosted, login-based SaaS (no download, no install) — there's
 nothing on a customer's machine to "activate." Device limits for Oli-Locator should instead be enforced as
@@ -100,7 +101,7 @@ node scripts/generate-license.js --product oliops --email customer@example.com -
 # → OLI-OPS-7F3K-9QZX-M
 ```
 
-Product codes: `oliops`, `olicommerce`, `oliflow`, `oliconnect`. Omit `--max-devices` to use the default (5).
+Product codes: `oliops`, `olicommerce`, `oliflow`, `oliexplore`. Omit `--max-devices` to use the default (5).
 
 Pass `--product all` to generate a single serial code that activates **any** of the 4 products — useful if
 you ever want to sell an "everything bundle."
