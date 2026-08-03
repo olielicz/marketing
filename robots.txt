@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /dev-test-login/
 
 Sitemap: https://olielicz.github.io/marketing/sitemap.xml
