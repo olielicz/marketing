@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Support & Troubleshooting — Oli Tools</title>
-<meta name="description" content="Troubleshooting guides for OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliConnect, and Oli-Locator. Fix common issues yourself, or contact us if you're still stuck.">
+<meta name="description" content="Troubleshooting guides for OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliConnect, Oli-Locator, and OliSalesTrack. Fix common issues yourself, or contact us if you're still stuck.">
 <style>
   :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --good:#16a34a; --warn:#d97706; }
   * { box-sizing: border-box; }
@@ -19,6 +19,7 @@
   h1 { font-size: 40px; margin: 0 0 12px; letter-spacing:-0.02em; }
   .sub { color: var(--sub); font-size: 17px; max-width: 640px; margin: 0 auto; }
   .jump-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 28px 0 0; }
+  @media (max-width: 900px) { .jump-grid { grid-template-columns: repeat(3, 1fr) !important; } }
   @media (max-width: 800px) { .jump-grid { grid-template-columns: repeat(2, 1fr); } }
   .jump-btn { display: block; text-align: center; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 8px; font-size: 13px; font-weight: 700; }
   .jump-btn:hover { border-color: var(--accent); }
@@ -63,14 +64,15 @@
 <section class="hero wrap">
   <h1>Support &amp; Troubleshooting</h1>
   <p class="sub">Most issues are fixable in under 5 minutes with the steps below. Pick your tool, or check the general section that applies to everyone first.</p>
-  <div class="status-strip">🟢 All 5 tools operational — no known issues right now</div>
-  <div class="jump-grid">
+  <div class="status-strip">🟢 All 6 tools operational — no known issues right now</div>
+  <div class="jump-grid" style="grid-template-columns:repeat(6,1fr);">
     <a class="jump-btn" href="#general">🌐 General / Licensing</a>
     <a class="jump-btn" href="#oliops">💼 OliOps Suite</a>
     <a class="jump-btn" href="#olicommerce">🛒 OliCommerce</a>
     <a class="jump-btn" href="#oliflow">⚙️ OliFlow</a>
     <a class="jump-btn" href="#oliconnect">📱 OliConnect</a>
     <a class="jump-btn" href="#oli-locator">🏡 Oli-Locator</a>
+    <a class="jump-btn" href="#olisalestrack">📊 OliSalesTrack</a>
   </div>
 </section>
 
@@ -115,7 +117,7 @@
   <details class="faq-item">
     <summary class="faq-q">I want a refund</summary>
     <div class="faq-a">
-      <p>Lifetime purchases (OliOps, OliCommerce, OliFlow, OliConnect) are covered by a 30-day, no-questions-asked money-back guarantee. Oli-Locator subscriptions can be cancelled anytime with no further charges. See the full <a href="../terms/">Refund Policy</a> for specifics, then <a href="../contact/">email billing</a> with your order details.</p>
+      <p>All 6 subscriptions (OliOps, OliCommerce, OliFlow, OliConnect, Oli-Locator, OliSalesTrack) start with a 14-day free trial — cancel during the trial and you're never charged. After your first paid charge, we also offer a 30-day, no-questions-asked money-back guarantee. See the full <a href="../terms/">Refund Policy</a> for specifics, then <a href="../contact/">email billing</a> with your order details.</p>
     </div>
   </details>
 
@@ -279,6 +281,35 @@
     <summary class="faq-q">I want to cancel my subscription</summary>
     <div class="faq-a">
       <p>Cancel anytime from Account Settings → Subscription — no phone call or retention flow required. You'll retain access through the end of your current billing period. See the <a href="../terms/">Refund Policy</a> for billing specifics.</p>
+    </div>
+  </details>
+</section>
+
+<section class="wrap tool-section" id="olisalestrack">
+  <div class="tool-header"><h2>📊 OliSalesTrack</h2><span class="tool-badge">Sales/Refund/Expense Tracker (Hosted)</span></div>
+
+  <details class="faq-item">
+    <summary class="faq-q">My sales/refund data isn't showing up <span class="arrow">▾</span></summary>
+    <div class="faq-a">
+      <ol>
+        <li>If you're using live sync (Stripe/PayPal/Shopify), confirm the webhook is registered and pointed at the correct sync endpoint — check your setup guide's webhook configuration step. New data only appears after the provider actually fires a webhook event.</li>
+        <li>If you're using CSV import instead, confirm the file matches the expected column format — the importer auto-detects common export formats (e.g. Shopify's), but a heavily customized export may need manual column mapping.</li>
+        <li>Remember data is stored locally in your browser by default — switching browsers or clearing site data will make it look like your history disappeared. Use the Pro plan's optional cloud backup if you need cross-device access.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">The correlation number looks wrong or doesn't update</summary>
+    <div class="faq-a">
+      <p>Correlation analysis needs enough data points to be meaningful — a handful of transactions can produce a misleadingly high or low Pearson coefficient. Give it a full billing cycle of real data before treating the number as reliable, and confirm you're looking at the same date range on both metrics being compared.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">I want to cancel my subscription</summary>
+    <div class="faq-a">
+      <p>Cancel anytime from your account settings or directly from PayPal (Account Settings → Subscription → Manage in PayPal) — no phone call or retention flow required. You'll retain access through the end of your current billing period.</p>
     </div>
   </details>
 </section>

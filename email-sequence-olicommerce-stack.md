@@ -2,7 +2,7 @@
 
 **Setup in Brevo:** Contacts → Automation → new workflow triggered by "Contact added to list: OliCommerce Waitlist."
 
-**Pricing note:** OliCommerce Stack is a $199 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
+**Pricing note:** OliCommerce Stack is a monthly/yearly subscription — Basic $29/mo ($264/yr), Growth $49/mo ($444/yr), Scale $89/mo ($804/yr) — licensed for up to 5 devices per serial code, cancel anytime. All copy below reflects that.
 
 ---
 
@@ -21,7 +21,7 @@ Thanks for joining the OliCommerce Stack waitlist.
 Quick recap: **automated abandoned-cart recovery, order emails, supplier CSV forwarding, and an AI shopping assistant** for your Shopify store — one payment, not another monthly app-store bill.
 
 What happens next:
-- Launch pricing before anyone else ($199 one-time, limited lifetime seats)
+- Launch pricing before anyone else — Basic plan from $29/mo (or $264/yr)
 - A couple of short emails showing exactly how the cart-recovery flow works
 - No spam
 
@@ -43,7 +43,7 @@ Cart abandonment rates across e-commerce sit around 70% industry-wide. If your s
 
 Most small stores don't have cart-recovery automation because the tools that do it well are yet another monthly app-store subscription stacked on top of Shopify's own fees — often $240-480/year, every year, for cart recovery alone.
 
-OliCommerce Stack: **$199 once**, covering both cart recovery and an AI shopping assistant, forever.
+OliCommerce Stack: **from $29/mo ($264/yr)**, covering both cart recovery and an AI shopping assistant in one subscription.
 
 More on exactly how the recovery flow works in the next email.
 
@@ -59,7 +59,7 @@ More on exactly how the recovery flow works in the next email.
 
 **Body:**
 
-What's inside the $199 lifetime purchase:
+What's inside the Basic plan ($29/mo or $264/yr):
 
 **🛍 Abandoned cart recovery** — automatic, timed follow-up when a checkout starts but isn't completed
 **📧 Order automation** — thank-you emails triggered directly off Shopify's order-paid webhook
@@ -68,7 +68,7 @@ What's inside the $199 lifetime purchase:
 
 [Watch the setup walkthrough →]
 
-Plugs into your existing Shopify store via standard webhooks — no theme changes, no migration. Self-hosted, license valid on up to 5 devices, no renewal ever.
+Plugs into your existing Shopify store via standard webhooks — no theme changes, no migration. Self-hosted, license valid on up to 5 devices. Higher-volume stores can upgrade to Growth ($49/mo) or Scale ($89/mo) anytime.
 
 Questions? Reply — I read everything.
 
@@ -87,7 +87,7 @@ Questions? Reply — I read everything.
 Two things:
 
 **1. We're live on Product Hunt right now** → [link]
-Today's launch pricing ($199 one-time) is the best it'll ever be.
+Today's launch pricing (Basic from $29/mo, or $264/yr) is the best it'll ever be.
 
 **2. Most common question: "Will this work with my store?"**
 Yes — it hooks into Shopify's standard webhooks, so no theme changes or migration needed. Works alongside whatever theme/apps you already have.
@@ -105,16 +105,16 @@ An upvote/comment on Product Hunt today genuinely helps → [link]
 ## Email 5 — Urgency/close (Day 12, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Limited lifetime seats"
-- B: "Last call on $199 lifetime pricing"
+- A: "Launch pricing ends soon"
+- B: "Last call on launch pricing"
 
 **Body:**
 
 ⚠️ Only send if scarcity is real — never fabricate a countdown.
 
-Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price goes up for good.
+Quick update: launch pricing has been live a few days. Once the launch window closes, standard pricing applies going forward (still $29/mo Basic, $264/yr).
 
-If you've been meaning to grab it: [Buy lifetime access — $199 →]
+If you've been meaning to start: [Subscribe now — from $29/mo →]
 
 If it's not the right fit right now, no worries — I'll keep you posted without spamming your inbox.
 

@@ -335,9 +335,7 @@ function renderOrders() {
     var ref = o.ref
       ? '<code style="font-size:11px;background:#f4f4f8;padding:2px 6px;border-radius:4px;">' + o.ref + '</code>'
       : '—';
-    var typeLabel = TOOL_TYPE === 'lifetime'
-      ? '<span class="badge badge-sub">♾️ Lifetime</span>'
-      : '<span class="badge badge-sub">🔄 Subscription</span>';
+    var typeLabel = '<span class="badge badge-sub">🔄 Subscription</span>';
     return '<tr>'
       + '<td style="font-weight:600;">OliSalesTrack</td>'
       + '<td style="color:#55606e;">' + date + '</td>'

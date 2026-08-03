@@ -1,10 +1,10 @@
 # AppSumo Submission Pitch — OliConnect
 
+**⚠️ Pricing model mismatch — read before submitting:** OliConnect is now priced as a monthly/yearly subscription (Solo $19/mo or $168/yr, Agency $39/mo or $348/yr, Enterprise $79/mo or $708/yr), not a one-time lifetime purchase. AppSumo's standard marketplace model is built around one-time deals, so confirm with AppSumo directly whether they'll accept a subscription submission before treating this as a priority channel — see `appsumo-alternatives-research.md` for the full reasoning.
+
 **Submit at:** sell.appsumo.com — free to submit. Review typically 1–3 weeks.
 
-**Note:** OliConnect is a lower-priority AppSumo submission than OliOps/OliCommerce/OliFlow in the master calendar (Week 1 files 3 pitches: OliOps, OliCommerce, OliFlow). File this one once those are submitted and you have bandwidth — ideally still within Week 1–2 so review time doesn't push it past the 30-day sprint window.
-
-**Good news on structure:** OliConnect is now priced as a one-time lifetime purchase ($89), matching AppSumo's native LTD model — no annual-vs-lifetime tension to navigate during review.
+**Note:** OliConnect is a lower-priority AppSumo submission than OliOps/OliCommerce/OliFlow in the master calendar.
 
 ---
 
@@ -12,7 +12,7 @@
 **OliConnect**
 
 ## One-line pitch
-> Connect all your social accounts once. Recycle your best posts everywhere — one lifetime purchase, up to 5 devices.
+> Connect all your social accounts once. Recycle your best posts everywhere — from $19/mo, up to 5 devices.
 
 ## Category
 Social Media Management / Marketing Tools
@@ -31,19 +31,20 @@ OliConnect is a browser extension that:
 **Why AppSumo buyers specifically:**
 - AppSumo's audience includes a large base of solo marketers, social media freelancers, and small agency operators managing exactly this workflow manually today
 - Session-based (not credential-storing) architecture is an easy trust story for a security-conscious buyer base
-- $89 lifetime is dramatically cheaper than named competitors' monthly pricing (MeetEdgar $360+/yr, SocialBee $348-1,188/yr, every year) — a strong "impulse buy" LTD story
+- Even at full subscription price, OliConnect's $19/mo ($168/yr) Solo tier is dramatically cheaper than named competitors (MeetEdgar $360+/yr, SocialBee $348-1,188/yr, every year)
 
 **Differentiation:**
 Most social scheduling tools on AppSumo are broad scheduling/calendar suites. OliConnect's specific angle — automatic best-post detection + cross-platform recycling — is a narrower, sharper pitch that's easy to explain in one sentence.
 
-## Suggested deal tiers
+## Actual live pricing tiers (subscription, monthly or yearly)
 
-| Tier | Price | Included |
-|---|---|---|
-| Tier 1 | $89 | Connect unlimited accounts, automatic best-post detection + recycling, up to 5 devices |
-| Tier 2 | $129 | + priority support + early access to new platform integrations, up to 5 devices |
+| Tier | Monthly | Yearly | Included |
+|---|---|---|---|
+| Solo | $19/mo | $168/yr | Connect unlimited accounts, automatic best-post detection + recycling, up to 5 devices |
+| Agency | $39/mo | $348/yr | + priority support, more connected accounts |
+| Enterprise | $79/mo | $708/yr | + early access to new platform integrations |
 
-*(Two tiers is often enough for a lower-price-point product; adjust based on AppSumo's guidance.)*
+*(If AppSumo requires a one-time deal structure instead, you'd need to define a separate one-time tier just for that submission — see the pricing-model warning at the top of this doc.)*
 
 ## Assets to prepare
 

@@ -1,8 +1,12 @@
 # AppSumo Alternatives — Research Findings
 
-**Direct answer to "find me an AppSumo alternative that hosts my tools for a yearly subscription":** there isn't a true one-to-one substitute. Every major AppSumo-style marketplace (AppSumo, Dealify, PitchGround, DealMirror, StackSocial) runs on the **same lifetime-deal (LTD) business model** — that's not a policy detail, it's the entire premise of the category. None of them host recurring/annual SaaS subscriptions as their core product. This isn't a gap I could route around with more searching; it's how the category is structured.
+**⚠️ Pricing model update (latest decision):** all 6 tools are now priced as monthly/yearly subscriptions, not lifetime deals — this reverses the earlier LTD pivot described below. The research below on AppSumo/LTD marketplaces is kept for reference, but note the direct consequence: **AppSumo's core marketplace product is lifetime deals**, so the 3 AppSumo pitch docs in this repo (OliOps, OliCommerce, OliFlow) no longer match AppSumo's native submission model. Two honest options going forward:
+1. **Don't submit to AppSumo for now** — treat it as a channel you might revisit later if you ever want to carve out a one-time "founding member" tier specifically for an AppSumo deal, separate from your standard subscription pricing.
+2. **Ask AppSumo directly during submission** whether they'll list a subscription-based SaaS deal (they do occasionally run "AppSumo Select" style programs outside pure LTDs) — but don't assume this without confirming, since their standard marketplace is built around one-time pricing.
 
-Because of that, per your own fallback instruction, **all 5 tools have been repriced as lifetime purchases** (see the landing pages and `PAYMENTS-SETUP.md`), which also means they're now AppSumo-submission-compatible again — the AppSumo pitch docs in this repo have been updated accordingly.
+The AppSumo pitch docs have been updated to describe subscription pricing accurately (so they're not misleading if you do submit), but the tier-pricing framing built for a "$X once" LTD submission is a weaker fit for AppSumo's classic audience now. Treat AppSumo as optional/lower-priority until you decide on option 1 or 2 above.
+
+**Original direct answer to "find me an AppSumo alternative that hosts my tools for a yearly subscription":** there isn't a true one-to-one substitute. Every major AppSumo-style marketplace (AppSumo, Dealify, PitchGround, DealMirror, StackSocial) runs on the **same lifetime-deal (LTD) business model** — that's not a policy detail, it's the entire premise of the category. None of them host recurring/annual SaaS subscriptions as their core product. This isn't a gap that can be routed around with more searching; it's how the category is structured.
 
 ---
 
@@ -28,9 +32,9 @@ These are the closest "alternatives" in spirit, but they still only do lifetime 
 
 ---
 
-## Bottom line recommendation
+## Bottom line recommendation (updated for subscription pricing)
 
-1. **Keep Stripe + PayPal** as the actual checkout mechanism (already wired into the `buy/` pages) — this is the right call regardless of marketplace strategy.
-2. **List on G2/Capterra/GetApp/Product Hunt/BetaList** for discovery — free or low-cost, no conflict with lifetime pricing, already covered in `directory-submission-list.md`.
-3. **Submit the 4 self-hosted tools to AppSumo (and optionally Dealify/PitchGround too)** now that they're priced as lifetime deals — this is your actual highest-leverage marketplace channel with a real existing buyer audience. Updated pitch docs are ready in this repo.
-4. **Oli-Locator stays a direct-to-website monthly subscription** — real estate CRM buyers aren't an AppSumo-native audience anyway; direct outreach and real-estate-specific channels (already documented in `outreach-oli-locator.md`) remain the better fit for that one.
+1. **Keep Stripe + PayPal** as the actual checkout mechanism (already wired into the `buy/` pages, now billing monthly/yearly recurring) — this is the right call regardless of marketplace strategy.
+2. **List on G2/Capterra/GetApp/Product Hunt/BetaList** for discovery — free or low-cost, no conflict with subscription pricing, already covered in `directory-submission-list.md`.
+3. **AppSumo is now a mismatch, not a natural fit** — since all 6 tools are subscriptions, not lifetime deals, AppSumo's core marketplace isn't the right channel anymore without a separate LTD tier carved out specifically for that submission. Deprioritize it unless you decide to build a one-time "founding member" tier just for that channel.
+4. **All 6 tools are direct-to-website monthly/yearly subscriptions** — Product Hunt, directories, and direct outreach (already documented per-tool in this repo) remain the right channels for driving traffic to your own subscription checkout.

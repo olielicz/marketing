@@ -2,7 +2,7 @@ OLI-LOCATOR — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
 Contact email: workitlikeapr01@gmail.com
 Product: Oli-Locator (hosted real estate CRM — leads, property search, inbox, call center)
-Price: $49/month subscription, hosted SaaS, no device cap (login-based)
+Price: Subscription — Solo Agent $59/mo or $516/yr, Team $119/mo or $1068/yr — hosted SaaS, no device cap (login-based)
 Repo: lead-gen
 
 NOTE: Oli-Locator is the ONE product on this list that is hosted, not self-hosted/downloaded.
@@ -59,18 +59,22 @@ STEP 3 — DOMAIN & HOSTING FOR THE LANDING PAGE (separate from Step 2)
 STEP 4 — PAYMENTS (Stripe + PayPal — RECURRING billing, different from the other 4 tools)
 ============================================================
 [ ] 4.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
-[ ] 4.2 Payments -> Payment Links -> Create a new product:
-        Name: "Oli-Locator — Agency Plan", Price: $49 USD, Billing: RECURRING, Monthly
-        (this is different from the other 4 tools — do not select "One time")
-[ ] 4.3 Copy the generated buy.stripe.com link
+[ ] 4.2 Payments -> Payment Links -> Create a new product per tier, Billing: RECURRING
+        (do NOT select "One time"). For EACH one, also open Advanced settings -> Free trial
+        -> set to 14 days (see PAYMENTS-SETUP.md Part 0):
+        - "Oli-Locator — Solo Agent", $59/month recurring (+ $516/year recurring)
+        - "Oli-Locator — Team", $119/month recurring (+ $1068/year recurring)
+[ ] 4.3 Copy the generated buy.stripe.com link for the Solo Agent monthly plan (entry tier)
 [ ] 4.4 Open oli-locator/buy/index.html, find
-        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLILOCATOR_PAYMENT_LINK"
-        and paste your real link
+        href="https://buy.stripe.com/REPLACE_WITH_OLI_LOCATOR_STRIPE_LINK"
+        and paste your real Solo Agent-monthly link
 [ ] 4.5 (EXTERNAL SITE) paypal.com -> Business account -> Products & Services -> Subscriptions
-        (NOT the Buy Now button builder used for the other 4 tools)
-[ ] 4.6 Create a subscription plan: "Oli-Locator — Agency Plan", Monthly, $49
-[ ] 4.7 PayPal generates a Subscribe button with its own hosted_button_id — copy it
-[ ] 4.8 In oli-locator/buy/index.html, replace value="REPLACE_WITH_YOUR_SUBSCRIBE_BUTTON_ID"
+[ ] 4.6 Create subscription plans: "Oli-Locator — Solo Agent" ($59/mo, $516/yr) and
+        "Oli-Locator — Team" ($119/mo, $1068/yr) — 4 plans total, each with a 14-day $0
+        trial billing cycle before the regular cycle (see PAYMENTS-SETUP.md Part 0)
+[ ] 4.7 Copy each Plan ID (starts with P-)
+[ ] 4.8 shared/paypal-sdk.js already renders subscription buttons for this tool once the
+        Client ID + Plan IDs are filled in — see PAYMENTS-SETUP.md Part 1b
 [ ] 4.9 Test both in Stripe test mode and PayPal Sandbox before going live
 [ ] 4.10 Commit + push the updated oli-locator/buy/index.html
 

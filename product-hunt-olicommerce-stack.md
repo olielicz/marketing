@@ -17,7 +17,7 @@ Alt options:
 
 ## Description (260 characters)
 
-> OliCommerce Stack automates abandoned-cart recovery, order emails, and supplier CSV forwarding — and adds an AI shopping assistant your customers can chat with. One-time payment, works with your existing Shopify store.
+> OliCommerce Stack automates abandoned-cart recovery, order emails, and supplier CSV forwarding — and adds an AI shopping assistant your customers can chat with. Simple monthly/yearly subscription, works with your existing Shopify store.
 
 ---
 
@@ -34,13 +34,13 @@ I'm olielicz. I built OliCommerce Stack after watching how much revenue small Sh
 - 🤖 **AI shopping assistant** — a chat widget that helps customers find products and answers questions, 24/7
 
 **Why it's different:**
-- **One-time payment.** $59 once, not a monthly SaaS fee stacked on top of your Shopify bill.
+- **One flat subscription.** From $29/mo ($264/yr) — cart recovery + AI assistant bundled, not two separate app-store subscriptions.
 - **Plugs into your existing store.** No migration — it hooks into Shopify's own webhooks.
 - **Self-hostable.** Your customer and order data can stay on infrastructure you control.
 
 **Who it's for:** Shopify store owners doing enough volume to feel cart abandonment as real lost revenue, but not enough to justify enterprise commerce tooling.
 
-Launch pricing for the first 50 PH buyers today. I'll be in the comments all day — ask me anything. 🙏
+Launch pricing for the first 50 PH subscribers today. I'll be in the comments all day — ask me anything. 🙏
 
 ---
 
@@ -51,7 +51,7 @@ Launch pricing for the first 50 PH buyers today. I'll be in the comments all day
 > Things people usually ask:
 > - **Does it work with my existing theme/checkout?** — Yes, it hooks into Shopify's standard webhooks, no theme changes required.
 > - **What does the AI assistant actually do?** — Product search, recommendations, and answering common questions in a chat widget on your storefront.
-> - **Pricing** — $59 lifetime for the first 50 PH buyers today, then standard launch pricing.
+> - **Pricing** — Basic plan from $29/mo ($264/yr) for the first 50 PH subscribers today, then standard pricing applies.
 >
 > Would love feedback from anyone running a Shopify store on what's missing.
 

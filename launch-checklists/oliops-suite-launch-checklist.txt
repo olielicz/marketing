@@ -2,7 +2,7 @@ OLIOPS SUITE — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
 Contact email: workitlikeapr01@gmail.com
 Product: OliOps Suite (CRM + Invoicing/Payroll + Accounting + AI Support)
-Price: $299 one-time, lifetime license, up to 5 devices
+Price: Subscription — Starter $39/mo or $348/yr, Pro $69/mo or $612/yr, Agency $119/mo or $1068/yr — up to 5 device activations per license
 Repos bundled: OliCRM, OliCompute, automate-CSR
 
 Work through this top to bottom. Check off each line as you finish it.
@@ -40,19 +40,26 @@ STEP 2 — DOMAIN & HOSTING FOR THE LANDING PAGE
 STEP 3 — PAYMENTS (Stripe + PayPal)
 ============================================================
 [ ] 3.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
-[ ] 3.2 Payments -> Payment Links -> Create a new product:
-        Name: "OliOps Suite — Lifetime License", Price: $299 USD, Billing: One time
-[ ] 3.3 Copy the generated buy.stripe.com link
+[ ] 3.2 Payments -> Payment Links -> Create a new product for each tier, Billing: RECURRING
+        (do NOT select "One time" — OliOps is a subscription). For EACH one, also open
+        Advanced settings -> Free trial -> set to 14 days (see PAYMENTS-SETUP.md Part 0):
+        - "OliOps Suite — Starter", $39/month recurring (+ a second link at $348/year recurring)
+        - "OliOps Suite — Pro", $69/month recurring (+ $612/year recurring)
+        - "OliOps Suite — Agency", $119/month recurring (+ $1068/year recurring)
+[ ] 3.3 Copy the generated buy.stripe.com link for the Starter monthly plan (the entry tier)
 [ ] 3.4 Open oliops/buy/index.html in this repo, find the line with
-        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLIOPS_PAYMENT_LINK"
-        and paste your real link in its place
+        href="https://buy.stripe.com/REPLACE_WITH_OLIOPS_STRIPE_LINK"
+        and paste your real Starter-monthly link in its place. If you want the other
+        tiers/cycles to charge correctly via Stripe too (not just PayPal), see
+        PAYMENTS-SETUP.md's note on swapping links per selected plan.
 [ ] 3.5 (EXTERNAL SITE) paypal.com -> log in with a Business account (create one if needed)
-[ ] 3.6 developer.paypal.com/payment-links-buttons/create-buy-button -> Buy Now button
-        Item name: "OliOps Suite — Lifetime License", Price: $299 USD
-[ ] 3.7 Copy the hosted_button_id value PayPal gives you
-[ ] 3.8 In oliops/buy/index.html, replace value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID"
-        with your real hosted_button_id
-[ ] 3.9 Test both buttons in Stripe test mode (card 4242 4242 4242 4242) and PayPal Sandbox
+[ ] 3.6 PayPal Dashboard -> Products & Plans -> create a subscription plan per tier/cycle
+        (6 plans total: Starter/Pro/Agency x monthly/yearly), each with a 14-day $0 trial
+        billing cycle before the regular cycle — see PAYMENTS-SETUP.md Part 0 and Part 1
+[ ] 3.7 Copy each Plan ID (starts with P-)
+[ ] 3.8 shared/paypal-sdk.js already renders subscription buttons for this tool once the
+        Client ID + Plan IDs are filled in — see PAYMENTS-SETUP.md for exact line numbers
+[ ] 3.9 Test both in Stripe test mode (card 4242 4242 4242 4242) and PayPal Sandbox
         before switching either to live/production
 [ ] 3.10 Commit + push the updated oliops/buy/index.html
 
@@ -75,6 +82,12 @@ STEP 4 — LICENSING (serial codes / 5-device limit)
         run the generate-license.js command, paste the code into a reply email to the buyer).
         Automating this via webhook + OliFlow is described in PAYMENTS-SETUP.md if you want
         to remove the manual step later.
+[ ] 4.10 Since this is now a subscription, plan how a license gets revoked/paused if a
+        renewal payment fails (PayPal/Stripe both fire a "payment failed" or "subscription
+        cancelled" webhook event) — call the license server's revoke endpoint from that
+        webhook once you wire it up, so a lapsed subscriber's serial code stops activating
+        new devices. Manual checking of the dashboard daily is an acceptable stopgap at
+        launch, same as license issuance above.
 
 ============================================================
 STEP 5 — EMAIL (waitlist + delivery)
@@ -119,8 +132,10 @@ STEP 7 — MARKETING / LAUNCH
 ============================================================
 STEP 8 — GO LIVE
 ============================================================
-[ ] 8.1 Final click-through test: land on oliops/index.html -> click Buy Now -> pay with a
-        real card for $1 test if your processor allows, or fully trust the sandbox tests above
+[ ] 8.1 Final click-through test: land on oliops/index.html -> click Subscribe Now -> pay with
+        a real card for one billing cycle if your processor allows, or fully trust the
+        sandbox tests above. Also confirm cancelling a test subscription actually stops
+        the next charge (check the dashboard after the cancellation).
 [ ] 8.2 Remove "noindex" from oliops/buy/index.html's <meta name="robots"> tag ONLY once
         payments are fully live and tested (it's there to stop search engines indexing an
         unfinished checkout page)

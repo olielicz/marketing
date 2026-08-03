@@ -161,7 +161,7 @@ a{color:#2563eb;text-decoration:none;}
     <div style="flex:1">
       <div class="status-title">Oli-Locator</div>
       <div class="status-meta">Real Estate CRM · USA · UK · Australia</div>
-      <div class="status-badge">✅ Active — $49/month</div>
+      <div class="status-badge">✅ Active — from $59/month</div>
     </div>
     <a href="../" class="btn btn-primary">Open Oli-Locator →</a>
   </div>
@@ -266,7 +266,7 @@ a{color:#2563eb;text-decoration:none;}
     <div class="sub-row">
       <div>
         <div class="sub-name">Oli-Locator</div>
-        <div class="sub-detail" id="subDetail">$49/month · Monthly auto-renewal</div>
+        <div class="sub-detail" id="subDetail">From $59/month (or $516/yr) · auto-renewal</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <a href="https://www.paypal.com/myaccount/autopay/" target="_blank"
@@ -335,9 +335,7 @@ function renderOrders() {
     var ref = o.ref
       ? '<code style="font-size:11px;background:#f4f4f8;padding:2px 6px;border-radius:4px;">' + o.ref + '</code>'
       : '—';
-    var typeLabel = TOOL_TYPE === 'lifetime'
-      ? '<span class="badge badge-sub">♾️ Lifetime</span>'
-      : '<span class="badge badge-sub">🔄 Subscription</span>';
+    var typeLabel = '<span class="badge badge-sub">🔄 Subscription</span>';
     return '<tr>'
       + '<td style="font-weight:600;">Oli-Locator</td>'
       + '<td style="color:#55606e;">' + date + '</td>'

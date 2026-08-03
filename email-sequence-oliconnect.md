@@ -4,7 +4,7 @@
 
 **Note:** OliConnect's primary acquisition channel is direct outreach + community posts (see `outreach-oliconnect.md`), not a Product Hunt launch. This sequence still applies to anyone who signs up via the landing page waitlist regardless of how they found it — swap Email 4's "we're live on PH" framing for whatever channel is actually driving signups (a Reddit post, a cold email reply, etc.) if you don't end up running the optional PH launch.
 
-**Pricing note:** OliConnect is an $89 one-time lifetime purchase (launch price for limited lifetime seats), licensed for up to 5 devices per serial code. All copy below reflects that.
+**Pricing note:** OliConnect is a monthly/yearly subscription — Solo $19/mo ($168/yr), Agency $39/mo ($348/yr), Enterprise $79/mo ($708/yr) — licensed for up to 5 devices per serial code, cancel anytime. All copy below reflects that.
 
 ---
 
@@ -23,7 +23,7 @@ Thanks for joining the OliConnect waitlist.
 Quick recap: **connect all your social accounts once, and OliConnect automatically finds your best-performing posts and recycles them across every platform.** One payment, not another social-media-tool bill.
 
 What happens next:
-- Launch pricing before anyone else ($89 one-time, limited lifetime seats)
+- Launch pricing before anyone else — Solo plan from $19/mo (or $168/yr)
 - A couple of short emails showing exactly how the recycling flow works
 - No spam
 
@@ -45,7 +45,7 @@ If you manage social accounts across multiple platforms, you know the drill: a p
 
 That's hours a week of manual work for content you already know performs. Tools like MeetEdgar and SocialBee that automate this run $348-1,188/year, every year, forever.
 
-OliConnect: connect once, and it handles the detection + recycling automatically. **$89 once**, licensed for up to 5 devices, no renewal.
+OliConnect: connect once, and it handles the detection + recycling automatically. **From $19/mo ($168/yr)**, licensed for up to 5 devices.
 
 More on exactly how it works in the next email.
 
@@ -61,7 +61,7 @@ More on exactly how it works in the next email.
 
 **Body:**
 
-What's inside the $89 lifetime purchase:
+What's inside the Solo plan ($19/mo or $168/yr):
 
 **🔗 Connect** — log into your social accounts once, inside the browser extension
 **📊 Collect** — OliConnect identifies your best-performing posts across every connected account automatically
@@ -69,7 +69,7 @@ What's inside the $89 lifetime purchase:
 
 [Watch the demo →]
 
-Your login credentials stay in your own browser session — OliConnect doesn't store your passwords server-side. One serial code activates up to 5 devices, forever.
+Your login credentials stay in your own browser session — OliConnect doesn't store your passwords server-side. One serial code activates up to 5 devices. Agencies managing more accounts can upgrade to the Agency ($39/mo) or Enterprise ($79/mo) plan anytime.
 
 Questions? Reply — I read everything.
 
@@ -92,9 +92,9 @@ Yes — OliConnect works through your own logged-in browser session. It doesn't 
 Other FAQs:
 - *"Which platforms are supported?"* — [fill in with actual supported platform list]
 - *"What if it's not for me?"* — 30-day money-back guarantee.
-- *"How many devices?"* — Up to 5 per license, one serial code, forever.
+- *"How many devices?"* — Up to 5 per license, one serial code.
 
-Launch pricing is $89 one-time for early signups — [Buy lifetime access →]
+Launch pricing is live for early signups, from $19/mo — [Subscribe now →]
 
 — olielicz
 
@@ -103,16 +103,16 @@ Launch pricing is $89 one-time for early signups — [Buy lifetime access →]
 ## Email 5 — Urgency/close (Day 12, or adjust to real scarcity)
 
 **Subject options:**
-- A: "Limited lifetime seats"
-- B: "Last call on $89 lifetime pricing"
+- A: "Launch pricing ends soon"
+- B: "Last call on launch pricing"
 
 **Body:**
 
 ⚠️ Only send if scarcity is real — never fabricate a countdown.
 
-Quick update: launch pricing has been live a few days. Once the limited lifetime seats are gone, the price goes up for good.
+Quick update: launch pricing has been live a few days. Once the launch window closes, standard pricing applies going forward (still $19/mo Solo, $168/yr).
 
-If you've been meaning to grab it: [Buy lifetime access — $89 →]
+If you've been meaning to start: [Subscribe now — from $19/mo →]
 
 If it's not the right fit right now, no worries — I'll keep you posted without spamming your inbox.
 

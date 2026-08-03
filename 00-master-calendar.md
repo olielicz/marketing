@@ -8,14 +8,16 @@
 
 ## The 6 Product Lines
 
-| # | Product | Repos | Target Buyer | Price | Login |
+**Pricing model (updated):** All 6 products are monthly/yearly subscriptions (no one-time/lifetime pricing) — billed via Stripe or PayPal, cancel anytime. Every plan includes a **14-day free trial** ($0 due at signup; first real charge happens automatically 14 days later unless cancelled — see `PAYMENTS-SETUP.md` Part 0 for how to configure this on the Stripe/PayPal side). Entry-tier price shown below; each product also has Pro/Agency/Team-level tiers on its `buy/` page.
+
+| # | Product | Repos | Target Buyer | Price (entry tier) | Login |
 |---|---|---|---|---|---|
-| 1 | **OliOps Suite** | OliCRM, OliCompute, automate-CSR | Solo founders / small service businesses — CRM + invoicing/payroll + AI support in one | $299 lifetime | `/oliops/login/` |
-| 2 | **OliCommerce Stack** | ecomm-automation, project-2 (OliMind AI) | Shopify store owners — cart recovery + AI shopping assistant | $199 lifetime | `/olicommerce/login/` |
-| 3 | **OliFlow Automation Engine** | project-3 (OliFlow), auto-tools | Agencies / ops teams — self-hosted Zapier with prebuilt templates | $249 lifetime | `/oliflow/login/` |
-| 4 | **OliConnect** | oliconnect | Social media managers / agencies — recycle top posts across all accounts | $89 lifetime | `/oliconnect/login/` |
-| 5 | **Oli-Locator** | lead-gen | Solo real estate agents / small teams — leads + property search + call center + inbox | $49/month | `/oli-locator/login/` |
-| 6 | **OliSalesTrack** | SalesTrack (refund-tracker) | Small business owners / e-commerce sellers — track sales, refunds & expenses with correlation analysis | $19/mo or $148/yr | `/olisalestrack/login/` |
+| 1 | **OliOps Suite** | OliCRM, OliCompute, automate-CSR | Solo founders / small service businesses — CRM + invoicing/payroll + AI support in one | $39/mo or $348/yr | `/oliops/login/` |
+| 2 | **OliCommerce Stack** | ecomm-automation, project-2 (OliMind AI) | Shopify store owners — cart recovery + AI shopping assistant | $29/mo or $264/yr | `/olicommerce/login/` |
+| 3 | **OliFlow Automation Engine** | project-3 (OliFlow), auto-tools | Agencies / ops teams — self-hosted Zapier with prebuilt templates | $35/mo or $312/yr | `/oliflow/login/` |
+| 4 | **OliConnect** | oliconnect | Social media managers / agencies — recycle top posts across all accounts | $19/mo or $168/yr | `/oliconnect/login/` |
+| 5 | **Oli-Locator** | lead-gen | Solo real estate agents / small teams — leads + property search + call center + inbox | $59/mo or $516/yr | `/oli-locator/login/` |
+| 6 | **OliSalesTrack** | SalesTrack (refund-tracker) | Small business owners / e-commerce sellers — track sales, refunds & expenses with correlation analysis | $24/mo or $204/yr | `/olisalestrack/login/` |
 
 > **Note:** Each product has its **own separate login page, account dashboard, and user store**. A customer who buys both OliOps and OliSalesTrack has two completely separate accounts — one per product. This is by design.
 
@@ -139,10 +141,12 @@ OliSalesTrack targets a different buyer than the other 5 tools — focus the mes
 
 | Competitor | Their price | OliSalesTrack advantage |
 |---|---|---|
-| Baremetrics | $58+/mo | 3× cheaper + includes expense tracking + correlation analysis |
+| Baremetrics | $58+/mo | 2× cheaper + includes expense tracking + correlation analysis + live Stripe/PayPal/Shopify sync |
 | Profitwell | Free–$499/mo | Much simpler, no complexity, browser-based |
 | Google Sheets | Free but manual | Automatic, visual, no formula maintenance |
 | QuickBooks | $25+/mo | Not a P&L tool — complementary, not competing |
+
+**Live sync (new):** the `olisalestrack-sync/` service in this repo receives Stripe/PayPal/Shopify webhooks directly — sales and refunds now sync in automatically, closing the "CSV-only, no live API" gap noted in earlier competitor research.
 
 ### Best channels for OliSalesTrack
 1. **r/ecommerce, r/shopify** — post case study: "I finally tracked refunds vs sales for 90 days — here's what I found"
@@ -159,7 +163,7 @@ OliSalesTrack targets a different buyer than the other 5 tools — focus the mes
 |---|---|---|
 | **Brevo** | 300 emails/day, unlimited contacts, forever | Waitlist capture + all 6 nurture sequences |
 | **Product Hunt** | 100% free | 3–4 launches = biggest traffic spikes |
-| **AppSumo** | Free to submit | Fastest path to lifetime deal revenue |
+| **AppSumo** | Free to submit | Deprioritized — AppSumo's native model is lifetime deals, which no longer matches our subscription pricing (see `appsumo-alternatives-research.md`) |
 | **Reddit / Indie Hackers** | Free | Where actual buyers already hang out |
 | **GitHub Pages + Cloudflare** | Free | Hosting + CDN + security headers |
 | **Netlify** | Free (100GB/mo) | Recommended upgrade — `_headers` native |

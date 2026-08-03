@@ -9,6 +9,8 @@
   <url><loc>https://olielicz.github.io/marketing/oliconnect/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/oli-locator/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/olisalestrack/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <!-- Comparison pages -->
+  <url><loc>https://olielicz.github.io/marketing/oli-locator/vs-follow-up-boss/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <!-- Buy pages -->
   <url><loc>https://olielicz.github.io/marketing/oliops/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/olicommerce/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>

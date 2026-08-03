@@ -18,7 +18,7 @@ Alt options:
 
 ## Description (260 characters)
 
-> OliConnect logs into your social media accounts from one place, finds your best-performing posts, and recycles them automatically across every platform — so great content works harder without you rewriting it each time.
+> OliConnect logs into your social media accounts from one place, finds your best-performing posts, and recycles them automatically across every platform — so great content works harder without you rewriting it each time. Simple subscription, from $19/mo.
 
 ---
 
@@ -34,7 +34,7 @@ I'm olielicz. I built OliConnect after realizing how much time social media mana
 - ♻️ **Recycle automatically** — top posts get reformatted and reposted across your other accounts
 
 **Why it's different:**
-- **One-time payment.** $29 once, not a recurring social-media-tool subscription.
+- **Simple flat subscription.** From $19/mo ($168/yr) — dramatically cheaper than bloated enterprise social suites.
 - **Your credentials stay yours.** Session-based, not stored server-side.
 - **Built for solo operators and small agencies**, not enterprise social suites with per-seat pricing.
 
@@ -51,7 +51,7 @@ Happy to answer anything in the comments today. 🙏
 > Common questions:
 > - **Is this safe for my accounts?** — OliConnect works through your own logged-in browser session; it doesn't store your passwords.
 > - **Which platforms are supported?** — [fill in with actual supported platform list before posting]
-> - **Pricing** — $29 lifetime, one-time.
+> - **Pricing** — Solo plan from $19/mo ($168/yr).
 >
 > Would love to hear which platforms people most want prioritized next.
 

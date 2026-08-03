@@ -11,13 +11,13 @@
 
 Alt options:
 - "CRM + payroll + AI support. One tool, one price."
-- "Ditch 4 SaaS bills. Get one lifetime tool."
+- "Ditch 4 SaaS bills. Get one flat monthly tool."
 
 ---
 
 ## Description (260 characters, shows under the tagline)
 
-> OliOps Suite bundles a CRM, invoicing & payroll, full accounting, and an AI customer-support chatbot into one self-hostable tool. Built for solo founders and small teams tired of stitching together 4 different subscriptions. One-time payment, lifetime access.
+> OliOps Suite bundles a CRM, invoicing & payroll, full accounting, and an AI customer-support chatbot into one self-hostable tool. Built for solo founders and small teams tired of stitching together 4 different subscriptions into one flat monthly/yearly plan instead.
 
 ---
 
@@ -33,13 +33,13 @@ I'm olielicz, and I built OliOps Suite because I got tired of paying for a CRM, 
 - 🤖 **AI support router** — auto-resolves common customer questions and escalates the rest to a ticket, 24/7
 
 **Why it's different:**
-- **One-time payment.** $79 once, not $79/month. No per-seat pricing.
-- **Self-hostable.** Run it on your own infrastructure for free, or let us host it for $19/mo if you'd rather not.
+- **One flat subscription.** From $39/mo ($348/yr) for the Starter plan — no per-seat pricing, no 4 separate bills.
+- **Self-hostable.** Run it on your own infrastructure for free.
 - **Actually connected.** A client in the CRM shows up in invoicing. An invoice ties to accounting. No CSV exports between tools.
 
 **Who it's for:** solo founders, freelancers, and small service businesses (agencies, consultants, contractors) who want the CRM + finance + support stack without the SaaS bill stack.
 
-We're offering launch pricing to the first 50 Product Hunt buyers — happy to answer anything in the comments today, I'll be here all day. 🙏
+We're offering launch pricing to the first 50 Product Hunt subscribers — happy to answer anything in the comments today, I'll be here all day. 🙏
 
 ---
 
@@ -50,7 +50,7 @@ We're offering launch pricing to the first 50 Product Hunt buyers — happy to a
 > A few specifics people usually ask about:
 > - **Data ownership** — since it's self-hostable, your client/financial data never has to leave your own server if you don't want it to.
 > - **Migration** — if you're coming from a spreadsheet or a single CRM, import is straightforward; happy to walk anyone through it in the comments.
-> - **Pricing** — $79 lifetime for the first 50 PH buyers today only, then it goes to standard launch pricing.
+> - **Pricing** — Starter plan from $39/mo ($348/yr) for the first 50 PH subscribers today, then standard pricing applies.
 >
 > Would genuinely love feedback on what's missing — this is still an early product and PH is exactly the audience I want shaping what we build next.
 

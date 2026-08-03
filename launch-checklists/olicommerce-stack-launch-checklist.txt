@@ -2,7 +2,7 @@ OLICOMMERCE STACK — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
 Contact email: workitlikeapr01@gmail.com
 Product: OliCommerce Stack (Shopify Cart Recovery + AI Shopping Assistant)
-Price: $199 one-time, lifetime license, up to 5 devices
+Price: Subscription — Basic $29/mo or $264/yr, Growth $49/mo or $444/yr, Scale $89/mo or $804/yr — up to 5 device activations per license
 Repos bundled: ecomm-automation, project-2 (OliMind)
 
 Work through this top to bottom. Check off each line as you finish it.
@@ -37,18 +37,23 @@ STEP 2 — DOMAIN & HOSTING FOR THE LANDING PAGE
 STEP 3 — PAYMENTS (Stripe + PayPal)
 ============================================================
 [ ] 3.1 (EXTERNAL SITE) dashboard.stripe.com -> sign up / log in
-[ ] 3.2 Payments -> Payment Links -> Create a new product:
-        Name: "OliCommerce Stack — Lifetime License", Price: $199 USD, Billing: One time
-[ ] 3.3 Copy the generated buy.stripe.com link
+[ ] 3.2 Payments -> Payment Links -> Create a new product per tier, Billing: RECURRING
+        (do NOT select "One time" — OliCommerce is a subscription). For EACH one, also open
+        Advanced settings -> Free trial -> set to 14 days (see PAYMENTS-SETUP.md Part 0):
+        - "OliCommerce Stack — Basic", $29/month recurring (+ $264/year recurring)
+        - "OliCommerce Stack — Growth", $49/month recurring (+ $444/year recurring)
+        - "OliCommerce Stack — Scale", $89/month recurring (+ $804/year recurring)
+[ ] 3.3 Copy the generated buy.stripe.com link for the Basic monthly plan (the entry tier)
 [ ] 3.4 Open olicommerce/buy/index.html, find
-        href="https://buy.stripe.com/REPLACE_WITH_YOUR_OLICOMMERCE_PAYMENT_LINK"
-        and paste your real link in its place
+        href="https://buy.stripe.com/REPLACE_WITH_OLICOMMERCE_STRIPE_LINK"
+        and paste your real Basic-monthly link in its place
 [ ] 3.5 (EXTERNAL SITE) paypal.com -> log in with a Business account
-[ ] 3.6 developer.paypal.com/payment-links-buttons/create-buy-button -> Buy Now button
-        Item name: "OliCommerce Stack — Lifetime License", Price: $199 USD
-[ ] 3.7 Copy the hosted_button_id value
-[ ] 3.8 In olicommerce/buy/index.html, replace value="REPLACE_WITH_YOUR_HOSTED_BUTTON_ID"
-        with your real hosted_button_id
+[ ] 3.6 PayPal Dashboard -> Products & Plans -> create a subscription plan per tier/cycle
+        (6 plans total: Basic/Growth/Scale x monthly/yearly), each with a 14-day $0 trial
+        billing cycle before the regular cycle — see PAYMENTS-SETUP.md Part 0 and Part 1
+[ ] 3.7 Copy each Plan ID (starts with P-)
+[ ] 3.8 shared/paypal-sdk.js already renders subscription buttons for this tool once the
+        Client ID + Plan IDs are filled in
 [ ] 3.9 Test both buttons in Stripe test mode and PayPal Sandbox before going live
 [ ] 3.10 Commit + push the updated olicommerce/buy/index.html
 
@@ -57,13 +62,16 @@ STEP 4 — LICENSING (serial codes / 5-device limit)
 ============================================================
 [ ] 4.1 If you haven't already deployed the shared license server for another Oli tool,
         follow marketing/licensing/README.md's Deployment section once (it's shared across
-        all 4 lifetime products — you only need to deploy it a single time)
+        all 4 self-hosted subscription products — you only need to deploy it a single time)
 [ ] 4.2 Copy licensing/client/oli-license-client.js into ecomm-automation, wire it in at
         startup per the README's example (product code: COM)
 [ ] 4.3 Test: node scripts/generate-license.js --product olicommerce --email test@example.com
         Confirm it activates correctly
 [ ] 4.4 Decide how you'll generate + email a real serial code after a real purchase —
         manual at first is fine; see PAYMENTS-SETUP.md for automating this later
+[ ] 4.5 Since this is a subscription, plan how a license gets revoked if a renewal fails
+        or a customer cancels — see PAYMENTS-SETUP.md's webhook notes; manual dashboard
+        checks are an acceptable stopgap at launch
 
 ============================================================
 STEP 5 — EMAIL (waitlist + delivery)

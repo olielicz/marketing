@@ -69,6 +69,10 @@ shared/
   security-check.js             ← Runtime self-test (run in browser console)
   cookie-consent.js             ← GDPR cookie banner
 
+── Backend services (Node, zero dependencies) ──────────────────────────────
+licensing/                      ← Serial-code activation server (OliOps/OliCommerce/OliFlow/OliConnect)
+olisalestrack-sync/             ← Live Stripe/PayPal/Shopify webhook sync server for OliSalesTrack
+
 ── 6 Tool folders (identical structure) ────────────────────────────────────
 {tool}/
   index.html                    ← Landing page

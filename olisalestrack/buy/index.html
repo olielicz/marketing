@@ -172,10 +172,10 @@ footer a{color:var(--sub);}
         <div id="paypal-cancel-note" class="cancel-note">Payment cancelled. No charge was made.</div>
         <div id="paypal-error-note" class="error-note">⚠️ Payment error. Please try again or <a href="../../contact/">contact support</a>.</div>
       </div>
-      <div class="pay-note">All major cards, digital wallets & PayPal accepted. 30-day money-back guarantee.</div>
+      <div class="pay-note">All major cards, digital wallets & PayPal accepted. First 14 days free — you won't be charged until the trial ends.</div>
       <div class="trust-row">
         <span>🔒 256-bit SSL</span>
-        <span>🛡️ 30-day money-back guarantee</span>
+        <span>🎁 14-day free trial</span>
         <span>❌ Cancel anytime</span>
       </div>
     </div>
@@ -224,9 +224,9 @@ function updateSummary() {
   document.getElementById('sumPlan').textContent = plan.name + ' Plan';
   document.getElementById('sumBilling').textContent = isYearly ? `${plan.yr}/yr (${plan.yr_mo}/mo)` : `${plan.mo}/mo`;
   document.getElementById('sumCycle').textContent = cycleLabel;
-  document.getElementById('sumTotal').textContent = `$${price}${period}`;
-  document.getElementById('sumLabel').textContent = 'Due today';
-  document.getElementById('dueNow').innerHTML = `$${price}<span style="font-size:1rem;font-weight:600;color:var(--sub)">${period}</span>`;
+  document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
+  document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
+  document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
 }
 
 // Init
