@@ -120,6 +120,7 @@
     <button class="filter-btn" data-cat="video" onclick="setCategory('video', this)">🎬 Trending Video</button>
   </div>
 
+  <div class="configured-note" id="trialNote"></div>
   <div class="configured-note" id="configuredNote"></div>
 </section>
 
@@ -145,6 +146,37 @@
 </footer>
 
 <script src="../../shared/cookie-consent.js"></script>
+<script src="../../shared/auth.js"></script>
+<script>
+/**
+ * Access control — Trend Radar is a paid OliExplore feature, not a public
+ * page. Non-customers get NO access (hard redirect to login, same as every
+ * other OliExplore account-only page). Customers still inside their 14-day
+ * free trial get LIMITED access (fewer items, no live auto-refresh — manual
+ * refresh only). Customers past the trial window get full access.
+ *
+ * Honest limitation: this site has no real backend billing/webhook
+ * integration yet (see PAYMENTS-SETUP.md) — there is no way for a static
+ * page to know for certain whether a trial actually converted to a paid
+ * subscription or was cancelled before that happens. Account age vs. the
+ * 14-day trial advertised on every buy page is the best signal available
+ * right now. Once Stripe/PayPal webhooks exist, replace isTrialUser below
+ * with a real subscriptionStatus field on the user record instead.
+ */
+var TOOL_KEY = 'oliexplore';
+var trendSession = OliAuth.requireLogin(TOOL_KEY);
+if (!trendSession) throw 0; // requireLogin() already redirected non-customers to ../login/
+
+var trendUser = OliAuth.getUser(trendSession.email, TOOL_KEY);
+if (!trendUser) { OliAuth.logout(TOOL_KEY); throw 0; }
+
+var TRIAL_DAYS = 14;
+var accountAgeDays = trendUser.createdAt
+  ? (Date.now() - new Date(trendUser.createdAt).getTime()) / 86400000
+  : Infinity;
+var isTrialUser = accountAgeDays <= TRIAL_DAYS;
+var TRIAL_ITEM_LIMIT = 6; // full customers get the normal 24 (see FULL_ITEM_LIMIT below)
+</script>
 <script>
 /**
  * Trend Radar frontend — genuine client-side auto-update.
@@ -165,9 +197,13 @@
 var TRENDS_API_BASE = 'http://localhost:4300'; // e.g. https://oliexplore-trends.onrender.com
 var POLL_INTERVAL_MS = 30000; // how often the BROWSER checks for updates (separate from
                                // the backend's own REFRESH_INTERVAL_MS background refresh)
+var FULL_ITEM_LIMIT = 24;
 var currentCategory = 'all';
 var lastVersion = -1;
-var autoUpdateEnabled = true;
+// Trial users get manual-refresh-only access (no live auto-polling) — see
+// the isTrialUser access-control block above. Full customers keep the
+// normal auto-updating behavior this page was originally built for.
+var autoUpdateEnabled = !isTrialUser;
 var pollTimer = null;
 var usingDemoData = false;
 
@@ -179,6 +215,7 @@ var DEMO_ITEMS = [
 ];
 
 document.addEventListener('DOMContentLoaded', function() {
+  applyTrialUI();
   fetchTrends(true);
   startPolling();
 
@@ -196,6 +233,22 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+function applyTrialUI() {
+  var note = document.getElementById('trialNote');
+  if (!isTrialUser) { note.classList.remove('show'); return; }
+  var daysLeft = Math.max(0, Math.ceil(TRIAL_DAYS - accountAgeDays));
+  note.innerHTML = '🎁 <strong>Trial access — ' + daysLeft + ' day' + (daysLeft === 1 ? '' : 's') +
+    ' left.</strong> You\'re seeing a limited preview (' + TRIAL_ITEM_LIMIT + ' items, manual refresh only). ' +
+    'Full access — the complete auto-updating feed — unlocks on <a href="../buy/">any paid OliExplore plan</a>.';
+  note.classList.add('show');
+  // Trial users don't get the live auto-update toggle at all — it's a paid feature.
+  var toggle = document.getElementById('autoToggle');
+  var toggleLabel = toggle ? toggle.closest('.toggle-auto') : null;
+  if (toggleLabel) { toggleLabel.style.display = 'none'; }
+  document.getElementById('statusText').textContent = 'Manual refresh (trial)';
+  setLiveDot(false);
+}
+
 function startPolling() {
   stopPolling();
   if (!autoUpdateEnabled) return;
@@ -210,6 +263,7 @@ function setLiveDot(live) {
 }
 
 function onAutoToggle() {
+  if (isTrialUser) { return; } // auto-update toggle is hidden and disabled during trial
   autoUpdateEnabled = document.getElementById('autoToggle').checked;
   if (autoUpdateEnabled) {
     startPolling();
@@ -245,7 +299,8 @@ function manualRefresh() {
 
 function fetchTrends(forceRender) {
   showSkeletonIfEmpty();
-  return fetch(TRENDS_API_BASE + '/api/trends?category=' + encodeURIComponent(currentCategory) + '&limit=24')
+  var limit = isTrialUser ? TRIAL_ITEM_LIMIT : FULL_ITEM_LIMIT;
+  return fetch(TRENDS_API_BASE + '/api/trends?category=' + encodeURIComponent(currentCategory) + '&limit=' + limit)
     .then(function(res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
@@ -269,6 +324,7 @@ function fetchTrends(forceRender) {
       usingDemoData = true;
       showError();
       var filtered = currentCategory === 'all' ? DEMO_ITEMS : DEMO_ITEMS.filter(function(i) { return i.type === currentCategory; });
+      filtered = filtered.slice(0, isTrialUser ? TRIAL_ITEM_LIMIT : FULL_ITEM_LIMIT);
       renderItems(filtered, { newSinceLastRender: false });
       setLastUpdated(new Date().toISOString(), true);
     });
