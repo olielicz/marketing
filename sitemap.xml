@@ -7,6 +7,7 @@
   <url><loc>https://olielicz.github.io/marketing/olicommerce/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/oliflow/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/oliexplore/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliexplore/trends/</loc><priority>0.8</priority><changefreq>hourly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/oli-locator/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://olielicz.github.io/marketing/olisalestrack/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <!-- Comparison pages -->

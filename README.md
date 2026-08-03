@@ -72,6 +72,7 @@ shared/
 ── Backend services (Node, zero dependencies) ──────────────────────────────
 licensing/                      ← Serial-code activation server (OliOps/OliCommerce/OliFlow/OliExplore)
 olisalestrack-sync/             ← Live Stripe/PayPal/Shopify webhook sync server for OliSalesTrack
+oliexplore-trends/              ← Trend Radar aggregator (GIPHY + YouTube) powering oliexplore/trends/
 
 ── 6 Tool folders (identical structure) ────────────────────────────────────
 {tool}/
