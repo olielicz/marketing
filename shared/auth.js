@@ -12,7 +12,8 @@
  * 1. https://www.emailjs.com → Sign up free (200 emails/month free)
  * 2. Add service: Gmail → connect workitlikeapr01@gmail.com
  * 3. Create templates: oli_welcome, oli_renewal, oli_reset
- *    (full template copy in README.md)
+ *    (full copy-paste template HTML for all 3 lives in
+ *    EMAILJS-TEMPLATES.md at the repo root — NOT README.md)
  * 4. Copy Public Key + Service ID → paste in EMAILJS_CONFIG below
  * ─────────────────────────────────────────────────────────────────────────
  */
