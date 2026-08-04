@@ -1,0 +1,14 @@
+{
+  "name": "olicommerce-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted OliCommerce backend: real abandoned-cart capture and recovery email sending, with an optional (honest) OpenAI rewrite integration. Zero npm dependencies.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server/index.js",
+    "create-owner": "node scripts/create-owner.js",
+    "test": "node --test"
+  }
+}

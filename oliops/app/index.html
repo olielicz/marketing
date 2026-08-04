@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OliOps — CRM & Invoicing</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--ink:#14161a;--sub:#55606e;--accent:#4f46e5;--accent2:#7c3aed;--bg:#f4f4f8;--card:#fff;--line:#e7e9ee;--good:#16a34a;--bad:#dc2626;--warn:#d97706;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);text-decoration:none;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+
+/* ---- Login gate ---- */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px;max-width:400px;width:100%;box-shadow:0 20px 40px -20px rgba(20,22,26,.15);}
+.login-card h1{font-size:22px;margin:0 0 6px;}
+.login-card p.sub{color:var(--sub);font-size:14px;margin:0 0 24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub);}
+.field input,.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--accent);border-color:var(--accent);}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);}
+.btn.danger{background:var(--bad);}
+.btn.block{width:100%;}
+.btn.sm{padding:6px 12px;font-size:12.5px;}
+#loginError{color:var(--bad);font-size:13.5px;margin-top:10px;display:none;}
+.settings-toggle{font-size:12.5px;color:var(--sub);text-align:center;margin-top:18px;cursor:pointer;text-decoration:underline;}
+#configFields{display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
+
+/* ---- App shell ---- */
+#app{display:none;}
+header.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line);background:#fff;}
+.logo{font-weight:800;font-size:18px;} .logo span{color:var(--accent);}
+.topbar-actions{display:flex;gap:10px;align-items:center;}
+.topbar-actions button{background:none;border:1px solid var(--line);padding:7px 13px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--sub);}
+.topbar-actions button:hover{background:#f4f4f8;}
+nav.tabs{display:flex;gap:4px;margin:18px 0;border-bottom:1px solid var(--line);}
+nav.tabs button{background:none;border:none;padding:10px 16px;font-size:14px;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;}
+nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent);}
+.view{display:none;padding-bottom:60px;}
+.view.active{display:block;}
+.view-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.view-head h2{font-size:18px;font-weight:800;}
+
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+th,td{padding:11px 14px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line);}
+th{background:#f8f8fb;color:var(--sub);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11.5px;font-weight:700;}
+.badge.paid{background:#dcfce7;color:#166534;} .badge.unpaid{background:#fef3c7;color:#92400e;}
+.badge.open{background:#e0e7ff;color:#3730a3;} .badge.done{background:#dcfce7;color:#166534;}
+.empty{text-align:center;padding:60px 20px;color:var(--sub);}
+.row-actions{display:flex;gap:6px;}
+.row-actions button{background:none;border:1px solid var(--line);border-radius:6px;padding:4px 9px;font-size:12px;cursor:pointer;}
+
+/* ---- Modal ---- */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:100;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:480px;width:92%;max-height:85vh;overflow-y:auto;}
+.modal h3{font-size:16px;margin-bottom:16px;}
+.item-row{display:grid;grid-template-columns:2fr 70px 100px 30px;gap:8px;margin-bottom:8px;align-items:center;}
+.item-row input{padding:7px 9px;font-size:13px;border:1px solid var(--line);border-radius:6px;}
+.err-banner{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>🧭 OliOps</h1>
+    <p class="sub">Sign in to manage contacts, tasks, and invoices.</p>
+    <form id="loginForm" autocomplete="off">
+      <div class="field"><label for="username">Username / email</label><input type="text" id="username" required autocomplete="username"/></div>
+      <div class="field"><label for="password">Password</label><input type="password" id="password" required autocomplete="current-password"/></div>
+      <button type="submit" class="btn block" id="loginBtn">Sign In</button>
+      <div id="loginError"></div>
+    </form>
+    <div class="settings-toggle" id="settingsToggle">⚙ Configure server URL</div>
+    <div id="configFields">
+      <div class="field"><label for="backendUrl">OliOps backend URL</label><input type="text" id="backendUrl" placeholder="http://localhost:4500"/></div>
+      <button type="button" class="btn secondary block" id="saveConfigBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="wrap">
+    <header class="topbar">
+      <div class="logo">🧭 Oli<span>Ops</span></div>
+      <div class="topbar-actions">
+        <span id="whoami" style="font-size:13px;color:var(--sub);"></span>
+        <button id="logoutBtn">Sign Out</button>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="active" data-view="contacts">Contacts</button>
+      <button data-view="tasks">Tasks</button>
+      <button data-view="invoices">Invoices</button>
+    </nav>
+
+    <!-- CONTACTS -->
+    <section class="view active" id="view-contacts">
+      <div class="view-head"><h2>Contacts</h2><button class="btn" onclick="openContactModal()">+ Add Contact</button></div>
+      <div id="contactsTableWrap"></div>
+    </section>
+
+    <!-- TASKS -->
+    <section class="view" id="view-tasks">
+      <div class="view-head"><h2>Tasks</h2><button class="btn" onclick="openTaskModal()">+ Add Task</button></div>
+      <div id="tasksTableWrap"></div>
+    </section>
+
+    <!-- INVOICES -->
+    <section class="view" id="view-invoices">
+      <div class="view-head"><h2>Invoices</h2><button class="btn" onclick="openInvoiceModal()">+ Create Invoice</button></div>
+      <div id="invoicesTableWrap"></div>
+    </section>
+  </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal">
+    <h3>Add Contact</h3>
+    <div class="err-banner" id="contactErr"></div>
+    <div class="field"><label>Name *</label><input id="c-name"/></div>
+    <div class="field"><label>Email</label><input id="c-email" type="email"/></div>
+    <div class="field"><label>Phone</label><input id="c-phone"/></div>
+    <div class="field"><label>Company</label><input id="c-company"/></div>
+    <div class="field"><label>Notes</label><textarea id="c-notes" rows="3"></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('contactModal')">Cancel</button>
+      <button class="btn" onclick="submitContact()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Modal -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <h3>Add Task</h3>
+    <div class="err-banner" id="taskErr"></div>
+    <div class="field"><label>Title *</label><input id="t-title"/></div>
+    <div class="field"><label>Due date</label><input id="t-due" type="date"/></div>
+    <div class="field"><label>Related contact</label><select id="t-contact"><option value="">— None —</option></select></div>
+    <div class="field"><label>Description</label><textarea id="t-desc" rows="3"></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('taskModal')">Cancel</button>
+      <button class="btn" onclick="submitTask()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice Modal -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal">
+    <h3>Create Invoice</h3>
+    <div class="err-banner" id="invoiceErr"></div>
+    <div class="field"><label>Bill to (contact)</label><select id="i-contact"><option value="">— Manual entry —</option></select></div>
+    <div class="field"><label>Contact name (if manual)</label><input id="i-contact-name"/></div>
+    <div class="field"><label>Due date</label><input id="i-due" type="date"/></div>
+    <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub);">Line items *</label>
+    <div id="itemRows"></div>
+    <button type="button" class="btn secondary sm" style="margin-bottom:14px;" onclick="addItemRow()">+ Add line item</button>
+    <div class="field"><label>Notes</label><textarea id="i-notes" rows="2"></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('invoiceModal')">Cancel</button>
+      <button class="btn" onclick="submitInvoice()">Create Invoice</button>
+    </div>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>

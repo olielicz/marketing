@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OliCommerce — Cart Recovery</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--ink:#14161a;--sub:#55606e;--accent:#059669;--accent2:#0d9488;--bg:#f4f4f8;--card:#fff;--line:#e7e9ee;--good:#16a34a;--bad:#dc2626;--warn:#d97706;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);text-decoration:none;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px;max-width:400px;width:100%;box-shadow:0 20px 40px -20px rgba(20,22,26,.15);}
+.login-card h1{font-size:22px;margin:0 0 6px;}
+.login-card p.sub{color:var(--sub);font-size:14px;margin:0 0 24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub);}
+.field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;}
+.field input:focus,.field select:focus{outline:2px solid var(--accent);border-color:var(--accent);}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);}
+.btn.block{width:100%;}
+.btn.sm{padding:6px 12px;font-size:12.5px;}
+#loginError{color:var(--bad);font-size:13.5px;margin-top:10px;display:none;}
+.settings-toggle{font-size:12.5px;color:var(--sub);text-align:center;margin-top:18px;cursor:pointer;text-decoration:underline;}
+#configFields{display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
+
+#app{display:none;}
+header.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line);background:#fff;}
+.logo{font-weight:800;font-size:18px;} .logo span{color:var(--accent);}
+.topbar-actions{display:flex;gap:10px;align-items:center;}
+.topbar-actions button{background:none;border:1px solid var(--line);padding:7px 13px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--sub);}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0;}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+.stat-card .label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.03em;font-weight:700;margin-bottom:6px;}
+.stat-card .value{font-size:22px;font-weight:800;}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+th,td{padding:11px 14px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line);}
+th{background:#f8f8fb;color:var(--sub);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11.5px;font-weight:700;}
+.badge.abandoned{background:#fef3c7;color:#92400e;} .badge.recovery_sent{background:#e0e7ff;color:#3730a3;} .badge.recovered{background:#dcfce7;color:#166534;}
+.empty{text-align:center;padding:60px 20px;color:var(--sub);}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.row-actions button,.row-actions a{background:none;border:1px solid var(--line);border-radius:6px;padding:4px 9px;font-size:12px;cursor:pointer;text-decoration:none;color:var(--ink);}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:100;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:520px;width:92%;max-height:85vh;overflow-y:auto;}
+.modal h3{font-size:16px;margin-bottom:12px;}
+.err-banner{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
+.info-banner{background:#e0e7ff;color:#3730a3;padding:10px 14px;border-radius:8px;font-size:12.5px;margin-bottom:14px;}
+.email-preview{border:1px solid var(--line);border-radius:8px;padding:14px;background:#fafafa;max-height:280px;overflow-y:auto;font-size:13px;margin-bottom:14px;}
+.toggle-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>🛒 OliCommerce</h1>
+    <p class="sub">Sign in to manage abandoned carts and recovery emails.</p>
+    <form id="loginForm" autocomplete="off">
+      <div class="field"><label for="username">Username / email</label><input type="text" id="username" required autocomplete="username"/></div>
+      <div class="field"><label for="password">Password</label><input type="password" id="password" required autocomplete="current-password"/></div>
+      <button type="submit" class="btn block" id="loginBtn">Sign In</button>
+      <div id="loginError"></div>
+    </form>
+    <div class="settings-toggle" id="settingsToggle">⚙ Configure server URL</div>
+    <div id="configFields">
+      <div class="field"><label for="backendUrl">OliCommerce backend URL</label><input type="text" id="backendUrl" placeholder="http://localhost:4600"/></div>
+      <button type="button" class="btn secondary block" id="saveConfigBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="wrap">
+    <header class="topbar">
+      <div class="logo">🛒 Oli<span>Commerce</span></div>
+      <div class="topbar-actions">
+        <span id="whoami" style="font-size:13px;color:var(--sub);"></span>
+        <button id="refreshBtn">↻ Refresh</button>
+        <button id="logoutBtn">Sign Out</button>
+      </div>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="label">Abandoned Carts</div><div class="value" id="statAbandoned">0</div></div>
+      <div class="stat-card"><div class="label">Recovery Emails Sent</div><div class="value" id="statSent">0</div></div>
+      <div class="stat-card"><div class="label">Recovered</div><div class="value" id="statRecovered">0</div></div>
+    </div>
+
+    <div id="cartsTableWrap"></div>
+  </div>
+</div>
+
+<!-- Recovery email modal -->
+<div class="modal-overlay" id="recoveryModal">
+  <div class="modal">
+    <h3>Send Recovery Email</h3>
+    <div class="err-banner" id="recoveryErr"></div>
+    <div class="field">
+      <label>Tone</label>
+      <select id="r-tone">
+        <option value="friendly">Friendly reminder</option>
+        <option value="urgent">Urgency</option>
+        <option value="discount">Discount offer (10%)</option>
+      </select>
+    </div>
+    <div class="toggle-row">
+      <input type="checkbox" id="r-use-ai"/>
+      <label for="r-use-ai">Rewrite with AI (requires OPENAI_API_KEY on the server — falls back to the plain template if not configured)</label>
+    </div>
+    <button type="button" class="btn secondary sm" onclick="previewEmail()" style="margin-bottom:14px;">Preview email</button>
+    <div id="previewBox"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('recoveryModal')">Cancel</button>
+      <button class="btn" id="sendRecoveryBtn" onclick="submitSendRecovery()">Send Email</button>
+    </div>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>
