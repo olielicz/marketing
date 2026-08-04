@@ -216,6 +216,10 @@ footer a{color:var(--sub);}
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 <script src="../../shared/paddle-sdk.js"></script>
+<!-- FIX: see oliops/buy/index.html's comment on this same include - the
+     Stripe button was a plain <a> pointing at an unreplaced placeholder
+     URL and would 404 for a real customer. -->
+<script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
 const PLANS = [{"name":"Solo","mo":"35","yr":"312","yr_mo":"26"},{"name":"Pro","mo":"59","yr":"528","yr_mo":"44"},{"name":"Business","mo":"99","yr":"888","yr_mo":"74"}];
@@ -253,10 +257,21 @@ function updateSummary() {
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-  selectPlan(0);
-  // Re-render PayPal button when plan/billing changes
-  const cards = document.querySelectorAll('.plan-card');
-  cards.forEach((c,i) => c.addEventListener('click', () => selectPlan(i)));
+  // FIX: the landing page's pricing cards link here with a "?plan=solo"
+  // / "?plan=pro" / "?plan=business" query param (see ../index.html),
+  // but nothing on this page ever read it - every visitor always landed
+  // on the Solo/entry-tier plan regardless of which "Start Free Trial"
+  // button they actually clicked. Map the query param to this page's
+  // PLANS array index so the right plan is preselected.
+  const PLAN_QUERY_TO_INDEX = { solo: 0, pro: 1, business: 2 };
+  const requestedPlan = new URLSearchParams(location.search).get('plan');
+  const initialIdx = PLAN_QUERY_TO_INDEX.hasOwnProperty(requestedPlan) ? PLAN_QUERY_TO_INDEX[requestedPlan] : 0;
+
+  selectPlan(initialIdx);
+  // FIX: removed a redundant addEventListener('click', ...) that used to
+  // be here on top of each .plan-card's existing inline
+  // onclick="selectPlan(idx)" attribute - every click fired selectPlan()
+  // twice. The inline onclick attributes already handle card selection.
 });
 </script>
 </body>

@@ -32,8 +32,11 @@ main{padding:40px 0 80px;}
 input:checked+.toggle-slider{background:var(--accent);}
 input:checked+.toggle-slider::before{transform:translateX(20px);}
 .save-badge{background:var(--good);color:#fff;border-radius:100px;padding:.2rem .6rem;font-size:.72rem;font-weight:700;}
-.yearly-price{display:none;}.yearly-mode .yearly-price{display:block;}
-.yearly-mode .monthly-price{display:none;}
+/* FIX: removed dead CSS rules for .yearly-price/.monthly-price/.yearly-mode -
+   no element in this page's markup uses those classes (the actual price
+   elements are .plan-price-yearly/.plan-price-monthly, toggled directly
+   via inline JS in updateSummary() below, not via a CSS class switch).
+   These were leftover from an earlier CSS-only toggle approach. */
 /* Plans grid */
 .plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:28px;}
 .plan-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:24px 20px;
@@ -216,6 +219,12 @@ footer a{color:var(--sub);}
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 <script src="../../shared/paddle-sdk.js"></script>
+<!-- FIX: the Stripe button below was a plain <a> pointing at an
+     unreplaced "REPLACE_WITH_..._STRIPE_LINK" placeholder - a real
+     customer clicking it would be sent to a 404 on Stripe's own domain.
+     This disables it gracefully (matching Paddle's "not configured"
+     treatment) until a real Stripe Payment Link is set. -->
+<script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
 const PLANS = [{"name":"Starter","mo":"39","yr":"348","yr_mo":"29"},{"name":"Pro","mo":"69","yr":"612","yr_mo":"51"},{"name":"Agency","mo":"119","yr":"1068","yr_mo":"89"}];
@@ -234,7 +243,10 @@ document.getElementById('billingToggle').addEventListener('change', function() {
   isYearly = this.checked;
   document.querySelectorAll('.plan-price-monthly').forEach(el => el.style.display = isYearly ? 'none' : '');
   document.querySelectorAll('.plan-price-yearly').forEach(el => el.style.display = isYearly ? '' : 'none');
-  document.querySelectorAll('.plan-card').forEach(el => el.classList.toggle('yearly-mode', isYearly));
+  // FIX: removed the .yearly-mode class toggle that used to be here - it
+  // had no matching CSS rule (see the removed dead CSS above) and did
+  // nothing; visibility is already handled correctly by the two lines
+  // above this comment.
   updateSummary();
 });
 
@@ -253,10 +265,20 @@ function updateSummary() {
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-  selectPlan(0);
-  // Re-render PayPal button when plan/billing changes
-  const cards = document.querySelectorAll('.plan-card');
-  cards.forEach((c,i) => c.addEventListener('click', () => selectPlan(i)));
+  // FIX: read an optional ?plan= query param (e.g. from a landing-page
+  // "Start Free Trial" link tied to a specific tier) so the right card
+  // is preselected instead of always defaulting to index 0.
+  const PLAN_QUERY_TO_INDEX = { starter: 0, pro: 1, agency: 2 };
+  const requestedPlan = new URLSearchParams(location.search).get('plan');
+  const initialIdx = PLAN_QUERY_TO_INDEX.hasOwnProperty(requestedPlan) ? PLAN_QUERY_TO_INDEX[requestedPlan] : 0;
+  selectPlan(initialIdx);
+  // FIX: previously ALSO bound a click listener here on top of each
+  // .plan-card's existing inline onclick="selectPlan(idx)" attribute
+  // (see the markup above), so every click fired selectPlan() twice.
+  // Harmless today since selectPlan() is idempotent, but removed to
+  // avoid double-firing anything added to selectPlan() later (e.g.
+  // analytics tracking). The inline onclick attributes already handle
+  // card selection - no addEventListener needed here.
 });
 </script>
 </body>

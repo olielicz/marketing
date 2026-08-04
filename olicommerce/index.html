@@ -265,6 +265,23 @@
           </div>
         </div>
         <div id="sib-container" class="sib-container--large sib-container--vertical" style="direction:ltr">
+          <!--
+            ⚠️ KNOWN ISSUE (flagging, not fixing here — requires Brevo dashboard access):
+            This form's action= URL and form ID are IDENTICAL to
+            oliops/index.html's waitlist form (same Brevo form/list ID:
+            "1aab3e8b.sibforms.com/serve/MUIFAOzHTI4o..."). That means
+            every OliCommerce signup lands in the OliOps waitlist list in
+            Brevo, not a dedicated OliCommerce list — there is currently
+            no way to tell the two products' leads apart in Brevo.
+            FIX (needs to be done by whoever has Brevo dashboard access):
+              1. In Brevo, create a dedicated "OliCommerce Waitlist" list + form.
+              2. Replace the action= URL and the form ID above with the new form's.
+            The hidden SOURCE_TOOL field below is a harmless, forward-
+            compatible stopgap: it does nothing until a matching contact
+            attribute named SOURCE_TOOL is created in Brevo, but once one
+            exists, retroactively-collected signups won't need to be
+            manually re-tagged.
+          -->
           <form id="sib-form" method="POST" action="https://1aab3e8b.sibforms.com/serve/MUIFAOzHTI4oxrMMlQXi3dIHoDgZ652awXoPtVg2XIJy8sdfxabKdUmxyVPRwpYncm-WeRCOz3JxnMmKApho1Aj79WHbFC-D1bLfGKxzQjql5GReYjmgajHk_lD7QbOxizK1vMVu0Rad-GmTBWJ1tsaFfsy90A2wVcgvIRWnNSWnL21b4CSn6j4Mye0QjH-2dZkb-i8giz7GPNg8fw==" data-type="subscription">
             <div class="sib-input sib-form-block">
               <div class="form__entry entry_block">
@@ -286,6 +303,7 @@
             </div>
             <input type="text" name="email_address_check" value="" class="input--hidden" style="display:none;">
             <input type="hidden" name="locale" value="en">
+            <input type="hidden" name="SOURCE_TOOL" value="olicommerce">
           </form>
         </div>
       </div>

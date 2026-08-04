@@ -353,10 +353,42 @@ input,select,textarea{font-family:inherit;}
     <button class="btn btn-ghost btn-sm" onclick="clearCanvas()">🗑 Clear</button>
     <button class="btn btn-ghost btn-sm" onclick="saveWorkflow()">💾 Save</button>
     <button class="btn btn-ghost btn-sm" onclick="toggleLog()">📋 Log</button>
+    <!-- Opens a small settings modal to point this app at a real
+         oliflow-executor deployment (see ../../oliflow-executor). Button
+         label reflects connection state so it's visible at a glance
+         whether Run will be real or simulated. -->
+    <button class="btn btn-ghost btn-sm" id="executorConfigBtn" onclick="openExecutorConfig()">⚙ Connect Backend</button>
     <button class="btn btn-green btn-sm" id="runBtn" onclick="runWorkflow()" title="Simulated run — no real integrations are called. See the Execution Log for details.">▶ Run</button>
     <button class="btn btn-primary btn-sm" id="activateBtn" onclick="toggleActivate()">Activate</button>
   </div>
 </header>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     EXECUTOR CONFIG MODAL
+     Lets the user point this app at a real oliflow-executor deployment
+     and their admin-auth owner session token, instead of running the
+     built-in simulation. See ../../oliflow-executor/README.md.
+     ═══════════════════════════════════════════════════════════════════ -->
+<div id="executorConfigModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:440px;width:90%;">
+    <h3 style="margin:0 0 6px;font-size:16px;">⚙ Connect Real Backend</h3>
+    <p style="margin:0 0 16px;font-size:12.5px;color:var(--text2);">
+      Deploy <code>oliflow-executor</code> (see its README) and an
+      <code>admin-auth</code> owner session (see its README), then paste
+      both here. Leave blank to keep using the built-in simulation.
+    </p>
+    <label style="display:block;font-size:11.5px;color:var(--text2);margin-bottom:4px;">Executor URL</label>
+    <input type="text" id="executorUrlInput" placeholder="http://localhost:4400" style="width:100%;padding:8px 10px;margin-bottom:12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);"/>
+    <label style="display:block;font-size:11.5px;color:var(--text2);margin-bottom:4px;">Owner session token (from admin-auth's <code>POST /api/login</code>)</label>
+    <input type="password" id="executorTokenInput" placeholder="Paste your admin-auth token" style="width:100%;padding:8px 10px;margin-bottom:12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);"/>
+    <label style="display:block;font-size:11.5px;color:var(--text2);margin-bottom:4px;">Test trigger payload (JSON) — used by "▶ Run" as <code>{{trigger.body...}}</code></label>
+    <textarea id="executorTriggerPayloadInput" rows="3" placeholder='{"amount": 250}' style="width:100%;padding:8px 10px;margin-bottom:16px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:monospace;font-size:12px;"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-ghost btn-sm" onclick="closeExecutorConfig()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveExecutorConfig()">Save</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════════
      EDITOR VIEW
@@ -651,6 +683,10 @@ let state = {
   isRunning: false,
   isActive: false,
   currentView: 'editor',
+  // Real backend executor config (see ../../oliflow-executor). Empty by
+  // default -> runWorkflow() falls back to the simulated engine and its
+  // existing disclosure UI (sim-badge, toast, exec-sim-note) when unset.
+  executorConfig: loadState('oliflow_executor_config') || { executorUrl: '', ownerToken: '' },
 };
 
 function currentWf() {
@@ -675,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderVariables();
   setupCanvasEvents();
   loadWorkflowIntoCanvas(currentWf());
+  updateExecutorConfigButton();
   toast('Welcome to OliFlow Engine', 'info');
 });
 </script>
@@ -1272,7 +1309,49 @@ function testNode() {
 </script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════
-   EXECUTION ENGINE (simulated — connects to real backend via webhook)
+   EXECUTOR CONFIG (connect to a real oliflow-executor deployment)
+   ═══════════════════════════════════════════════════════════════════ */
+function openExecutorConfig() {
+  document.getElementById('executorUrlInput').value = state.executorConfig.executorUrl || '';
+  document.getElementById('executorTokenInput').value = state.executorConfig.ownerToken || '';
+  document.getElementById('executorTriggerPayloadInput').value = state.executorConfig.triggerPayloadJson || '';
+  document.getElementById('executorConfigModal').style.display = 'flex';
+}
+function closeExecutorConfig() {
+  document.getElementById('executorConfigModal').style.display = 'none';
+}
+function saveExecutorConfig() {
+  const triggerPayloadJson = document.getElementById('executorTriggerPayloadInput').value.trim();
+  if (triggerPayloadJson) {
+    try { JSON.parse(triggerPayloadJson); }
+    catch (e) { toast('Test trigger payload is not valid JSON: ' + e.message, 'error'); return; }
+  }
+  state.executorConfig = {
+    executorUrl: document.getElementById('executorUrlInput').value.trim().replace(/\/$/, ''),
+    ownerToken: document.getElementById('executorTokenInput').value.trim(),
+    triggerPayloadJson,
+  };
+  saveState('oliflow_executor_config', state.executorConfig);
+  updateExecutorConfigButton();
+  closeExecutorConfig();
+  toast(state.executorConfig.executorUrl ? '✅ Connected — Run will use your real backend' : 'Disconnected — Run will simulate', 'success');
+}
+function updateExecutorConfigButton() {
+  const btn = document.getElementById('executorConfigBtn');
+  if (!btn) return;
+  const connected = Boolean(state.executorConfig && state.executorConfig.executorUrl);
+  btn.textContent = connected ? '🟢 Backend Connected' : '⚙ Connect Backend';
+  btn.title = connected
+    ? `Real execution via ${state.executorConfig.executorUrl}. Click to change or disconnect.`
+    : 'Not connected — Run will use the built-in simulation. Click to connect a real backend.';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EXECUTION ENGINE
+   Dispatches to a REAL backend (oliflow-executor) when configured via
+   "⚙ Connect Backend" above; otherwise falls back to the simulated
+   engine below (unchanged from before — same setTimeout/Math.random()
+   preview behavior, same "🧪 SIMULATED" disclosure).
    ═══════════════════════════════════════════════════════════════════ */
 function runWorkflow() {
   if (state.isRunning) return;
@@ -1285,6 +1364,104 @@ function runWorkflow() {
   });
   if (!triggers.length) { toast('No trigger node found — add a trigger first','error'); return; }
 
+  if (state.executorConfig && state.executorConfig.executorUrl) {
+    return runWorkflowReal(wf);
+  }
+  return runWorkflowSimulated(wf);
+}
+
+/**
+ * Calls the real oliflow-executor's POST /api/execute with this
+ * workflow's exact saved JSON (nodes/connections), matching the shape
+ * oliflow-executor/server/index.js expects. Real node results (success,
+ * error, or "not yet implemented" — never a fabricated success) are
+ * rendered into the same Execution Log UI the simulation uses, so the
+ * rest of the UI (log panel, node status highlighting) behaves the same
+ * regardless of which engine actually ran.
+ */
+async function runWorkflowReal(wf) {
+  state.isRunning = true;
+  document.getElementById('execPanel').classList.add('open');
+  document.getElementById('runBtn').textContent = '⏹ Running…';
+  document.getElementById('runBtn').disabled = true;
+
+  wf.runs = (wf.runs||0) + 1;
+  const execId = uid();
+  addLog('System', `▶ Real execution started — ID: ${execId}`, 'info');
+  document.getElementById('execStatus').textContent = `Running (real backend)... (${new Date().toLocaleTimeString()})`;
+
+  let triggerPayload = {};
+  if (state.executorConfig.triggerPayloadJson) {
+    try { triggerPayload = JSON.parse(state.executorConfig.triggerPayloadJson); }
+    catch (e) { /* saveExecutorConfig() already validates this JSON on save; an empty object is a safe fallback if it somehow got here invalid */ }
+  }
+
+  try {
+    const res = await fetch(`${state.executorConfig.executorUrl}/api/execute`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${state.executorConfig.ownerToken}`,
+      },
+      body: JSON.stringify({
+        workflow: wf,
+        triggerPayload,
+        vars: Object.fromEntries((state.variables||[]).map(v => [v.name, v.value])),
+        executionId: execId,
+      }),
+    });
+
+    if (res.status === 401) {
+      addLog('System', '❌ Backend rejected the request — your owner session token is missing, expired, or was revoked. Reconnect via ⚙ Connect Backend.', 'error');
+      toast('Backend auth failed — reconnect via ⚙ Connect Backend', 'error');
+      finishRealRun(wf, true);
+      return;
+    }
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      addLog('System', `❌ Backend error: ${errBody.error || res.status}`, 'error');
+      finishRealRun(wf, true);
+      return;
+    }
+
+    const result = await res.json();
+    let hasErrors = false;
+    (result.nodeResults || []).forEach(nr => {
+      const node = wf.nodes.find(n => n.id === nr.nodeId);
+      if (node) node.status = nr.ok ? 'success' : (nr.notImplemented ? 'idle' : 'error');
+      if (!nr.ok && !nr.notImplemented) hasErrors = true;
+      const label = nr.label || nr.type;
+      if (nr.ok) {
+        addLog(label, '✅ Completed (real)', 'success');
+      } else if (nr.notImplemented) {
+        addLog(label, `⚪ Not implemented yet: ${nr.error}`, 'warn');
+      } else {
+        addLog(label, `❌ Error: ${nr.error}`, 'error');
+        hasErrors = true;
+      }
+    });
+
+    if (hasErrors) wf.errors = (wf.errors||0) + 1;
+    wf.lastRun = new Date().toISOString();
+    addLog('System', hasErrors ? '⚠️ Real execution finished with errors' : '✅ Real execution complete', hasErrors ? 'warn' : 'success');
+    document.getElementById('execStatus').textContent = hasErrors ? '⚠ Completed with errors (real)' : '✅ Completed (real)';
+  } catch (err) {
+    addLog('System', `❌ Could not reach executor at ${state.executorConfig.executorUrl}: ${err.message}`, 'error');
+    toast('Could not reach your backend — check the URL in ⚙ Connect Backend', 'error');
+  } finally {
+    finishRealRun(wf, false);
+  }
+}
+
+function finishRealRun(wf) {
+  state.isRunning = false;
+  document.getElementById('runBtn').textContent = '▶ Run';
+  document.getElementById('runBtn').disabled = false;
+  renderCanvas();
+  saveCurrentWf();
+}
+
+function runWorkflowSimulated(wf) {
   // FIX: surface the simulated-execution disclosure at the moment a user
   // actually runs a workflow, not just as a badge they might not notice.
   // Shown once per browser (localStorage flag) so it doesn't nag on every run.

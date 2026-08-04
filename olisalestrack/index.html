@@ -259,7 +259,12 @@
   </div>
   <div class="faq-item">
     <h4>Can I connect Shopify, Stripe, or PayPal directly?</h4>
-    <p>Yes — live webhook sync is available (no more manual CSV export/import). Sales and refunds sync in automatically as they happen, straight from Stripe, PayPal, or Shopify's own webhook events. CSV import is still available too, useful for backfilling historical data.</p>
+    <!-- FIX: this claimed live webhook sync without ever linking to
+         where a customer actually sees that synced data - the real
+         dashboard (dashboard/) was previously reachable only from the
+         logged-in account/ page, so a prospect evaluating this feature
+         before signing up had no way to see it in action. -->
+    <p>Yes — live webhook sync is available (no more manual CSV export/import). Sales and refunds sync in automatically as they happen, straight from Stripe, PayPal, or Shopify's own webhook events. CSV import is still available too, useful for backfilling historical data. See it in the <a href="./dashboard/">live dashboard</a> once you're subscribed.</p>
   </div>
 </section>
 

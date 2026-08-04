@@ -38,7 +38,14 @@
 (function() {
   'use strict';
 
-  // ── REPLACE THIS WITH YOUR REAL PAYPAL CLIENT ID ──────────────────────
+  // ── PayPal Client ID (already configured below) ───────────────────────
+  // Note: unlike a Client SECRET, a PayPal Client ID is designed to be
+  // public and safely embedded in browser-side JS like this - it's the
+  // same model as Stripe's "publishable key." The comment that used to
+  // be here ("REPLACE THIS WITH YOUR REAL PAYPAL CLIENT ID") was stale:
+  // the value below has already been replaced with a real Client ID
+  // following the setup steps above. If you ever need to rotate it,
+  // just paste the new one in directly.
   var PAYPAL_CLIENT_ID = 'AReeYev_eodCOTJ1KDm-9q3I2YKEd7QyNecK3MgS2JUm92oIAIJGyCLrF_uSA4yWVwBYd32qdWvHd1R5';
 
   // ── REPLACE EACH WITH YOUR REAL PAYPAL SUBSCRIPTION PLAN ID (starts with P-) ──

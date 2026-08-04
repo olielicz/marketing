@@ -128,6 +128,10 @@
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 <script src="../../shared/paddle-sdk.js"></script>
+<!-- FIX: see oliops/buy/index.html's comment on this same include - the
+     Stripe button was a plain <a> pointing at an unreplaced placeholder
+     URL and would 404 for a real customer. -->
+<script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
 const PLANS = [{"name":"Creator","mo":"27","yr":"252","yr_mo":"21"},{"name":"Team","mo":"49","yr":"468","yr_mo":"39"},{"name":"Agency","mo":"89","yr":"828","yr_mo":"69"}];
