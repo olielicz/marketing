@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oli Tools Pricing Comparison - Save 50-80% vs Competitors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 250px repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .table-cell {
+            padding: 20px;
+            border-right: 1px solid #e9ecef;
+        }
+        
+        .table-cell:last-child {
+            border-right: none;
+        }
+        
+        .table-header .table-cell {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .table-header .table-cell:first-child {
+            color: #667eea;
+        }
+        
+        .table-body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 250px repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s ease;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-row:hover {
+            background: #f8f9fa;
+        }
+        
+        .table-row.highlight {
+            background: #f0f4ff;
+        }
+        
+        .table-row .table-cell {
+            padding: 18px 20px;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+        
+        .table-row .table-cell:last-child {
+            border-right: none;
+        }
+        
+        .table-row .table-cell:first-child {
+            font-weight: 600;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .price {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+        
+        .savings {
+            background: #d4edda;
+            color: #155724;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+        
+        .limited {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .check {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .x {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .partial {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .summary-box {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .summary-box h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+        }
+        
+        .summary-box p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .legend {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .legend h4 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-item-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @media (max-width: 768px) {
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-cell, .table-row .table-cell {
+                border-right: none;
+                padding: 12px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Oli Tools Pricing - Save 50-80% vs Competitors</h1>
+            <p>All-in-one solutions bundling features competitors charge separately for. Compare apples-to-apples pricing across 6 tools and 20+ competitors.</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="oliops">OliOps Suite</button>
+            <button class="tab-btn" data-tab="olicommerce">OliCommerce Stack</button>
+            <button class="tab-btn" data-tab="oliflow">OliFlow Engine</button>
+            <button class="tab-btn" data-tab="oliexplore">OliExplore</button>
+            <button class="tab-btn" data-tab="olilocator">Oli-Locator</button>
+            <button class="tab-btn" data-tab="olisalestrack">OliSalesTrack</button>
+        </div>
+
+        <!-- OLIOPS SUITE -->
+        <div id="oliops" class="tab-content active">
+            <div class="summary-box">
+                <h3>OliOps Suite: CRM + Invoicing + Payroll + Support</h3>
+                <p><strong>Our pricing:</strong> $39-119/mo | <strong>Competitor stack total:</strong> $168-540+/mo</p>
+                <p><strong>Your savings:</strong> 60-80% cheaper by bundling instead of buying tools separately</p>
+                <button class="cta-button">Start Free Trial →</button>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-cell">Feature / Metric</div>
+                    <div class="table-cell"><span class="tool-icon">Oli</span> OliOps Starter</div>
+                    <div class="table-cell"><span class="tool-icon">Z</span> Zoho CRM</div>
+                    <div class="table-cell"><span class="tool-icon">H</span> HubSpot</div>
+                    <div class="table-cell"><span class="tool-icon">I</span> Intercom</div>
+                </div>
+                <div class="table-body">
+                    <div class="table-row">
+                        <div class="table-cell">Monthly Price</div>
+                        <div class="table-cell highlight"><span class="price">$39/mo</span><br><span class="savings">BEST</span></div>
+                        <div class="table-cell">$14-70/user/mo</div>
+                        <div class="table-cell">$45-1,200/mo</div>
+                        <div class="table-cell">$39+/mo</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">CRM Included</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span> (Chat only)</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Invoicing & Payments</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span> Extra</div>
+                        <div class="table-cell"><span class="x">✗</span> Extra</div>
+                        <div class="table-cell"><span class="x">✗</span> Extra</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Payroll</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span> Extra</div>
+                        <div class="table-cell"><span class="x">✗</span> Extra</div>
+                        <div class="table-cell"><span class="x">✗</span> Extra</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">AI Support Router</div>
+                        <div class="table-cell highlight"><span class="partial">Pro tier</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="partial">AI Extra</span></div>
+                        <div class="table-cell"><span class="partial">+$0.99/msg</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Self-Hosted / Data Privacy</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span> Cloud only</div>
+                        <div class="table-cell"><span class="x">✗</span> Cloud only</div>
+                        <div class="table-cell"><span class="x">✗</span> Cloud only</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Per-User Scaling?</div>
+                        <div class="table-cell highlight"><span class="check">✓ Flat fee</span></div>
+                        <div class="table-cell"><span class="x">✗ $14-70/user</span></div>
+                        <div class="table-cell"><span class="x">✗ Per-seat</span></div>
+                        <div class="table-cell"><span class="x">✗ Per-seat</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Year 1 Total Cost (5 users)</div>
+                        <div class="table-cell highlight"><span class="price">$468/yr</span><span class="savings">SAVE 80%</span></div>
+                        <div class="table-cell">$840-4,200/yr</div>
+                        <div class="table-cell">$540-14,400/yr</div>
+                        <div class="table-cell">$468+/yr</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- OLICOMMERCE STACK -->
+        <div id="olicommerce" class="tab-content">
+            <div class="summary-box">
+                <h3>OliCommerce Stack: Cart Recovery + AI Assistant</h3>
+                <p><strong>Our pricing:</strong> $29-59/mo | <strong>Competitor stack total:</strong> $50-100+/mo</p>
+                <p><strong>Your savings:</strong> 40-70% cheaper with flat pricing (no per-contact scaling)</p>
+                <button class="cta-button">Start Free Trial →</button>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-cell">Feature / Metric</div>
+                    <div class="table-cell"><span class="tool-icon">Oli</span> OliCommerce</div>
+                    <div class="table-cell"><span class="tool-icon">K</span> Klaviyo</div>
+                    <div class="table-cell"><span class="tool-icon">R</span> Repurpose AI</div>
+                    <div class="table-cell"><span class="tool-icon">D</span> Drip</div>
+                </div>
+                <div class="table-body">
+                    <div class="table-row">
+                        <div class="table-cell">Entry Price</div>
+                        <div class="table-cell highlight"><span class="price">$29/mo</span><span class="savings">BEST</span></div>
+                        <div class="table-cell">$20/mo + scaling</div>
+                        <div class="table-cell">$40-100/mo</div>
+                        <div class="table-cell">$19/mo + scaling</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Cart Recovery</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span> Publish only</div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">AI Rewrite Engine</div>
+                        <div class="table-cell highlight"><span class="check">✓ 5 tones</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Browse Abandonment Recovery</div>
+                        <div class="table-cell highlight"><span class="check">✓ Pro</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="partial">Limited</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Flat Pricing (No Contact Scaling)</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗ Scales w/ contacts</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗ Scales w/ subscribers</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Year 1 Cost (10K contacts)</div>
+                        <div class="table-cell highlight"><span class="price">$348/yr</span><span class="savings">SAVE 50%</span></div>
+                        <div class="table-cell">$600-1,200+/yr</div>
+                        <div class="table-cell">$480-1,200/yr</div>
+                        <div class="table-cell">$600+/yr</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OLIFLOW ENGINE -->
+        <div id="oliflow" class="tab-content">
+            <div class="summary-box">
+                <h3>OliFlow Automation Engine: Unlimited Automations, Flat Price</h3>
+                <p><strong>Our pricing:</strong> $35-99/mo | <strong>Zapier (100 workflows):</strong> $200-600+/mo</p>
+                <p><strong>Your savings:</strong> 70-85% cheaper (unlimited runs, zero metering)</p>
+                <button class="cta-button">Start Free Trial →</button>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-cell">Feature / Metric</div>
+                    <div class="table-cell"><span class="tool-icon">Oli</span> OliFlow Solo</div>
+                    <div class="table-cell"><span class="tool-icon">Z</span> Zapier Prof</div>
+                    <div class="table-cell"><span class="tool-icon">M</span> Make Plus</div>
+                    <div class="table-cell"><span class="tool-icon">N</span> n8n Cloud</div>
+                </div>
+                <div class="table-body">
+                    <div class="table-row">
+                        <div class="table-cell">Entry Price</div>
+                        <div class="table-cell highlight"><span class="price">$35/mo</span><span class="savings">BEST</span></div>
+                        <div class="table-cell">$19.99-69+/mo</div>
+                        <div class="table-cell">$9-50+/mo</div>
+                        <div class="table-cell">$240/mo minimum</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Workflow Runs/Month</div>
+                        <div class="table-cell highlight"><span class="check">✓ Unlimited</span></div>
+                        <div class="table-cell"><span class="limited">750 + metering</span></div>
+                        <div class="table-cell"><span class="limited">Per-credit scaling</span></div>
+                        <div class="table-cell"><span class="check">✓ Unlimited</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Self-Hosted Option</div>
+                        <div class="table-cell highlight"><span class="check">✓ Included</span></div>
+                        <div class="table-cell"><span class="x">✗ Cloud only</span></div>
+                        <div class="table-cell"><span class="x">✗ Cloud only</span></div>
+                        <div class="table-cell"><span class="check">✓ Open source</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Prebuilt Templates</div>
+                        <div class="table-cell highlight"><span class="partial">7 CRM adapters</span></div>
+                        <div class="table-cell"><span class="check">✓ 9,000+ apps</span></div>
+                        <div class="table-cell"><span class="check">✓ 500+ apps</span></div>
+                        <div class="table-cell"><span class="partial">Community</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Zapier/Make Bridge Support</div>
+                        <div class="table-cell highlight"><span class="check">✓ Documented</span></div>
+                        <div class="table-cell">N/A</div>
+                        <div class="table-cell">N/A</div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Cost for 100 Workflows/Month</div>
+                        <div class="table-cell highlight"><span class="price">$35/mo</span><span class="savings">SAVE 85%</span></div>
+                        <div class="table-cell">$200-600+/mo</div>
+                        <div class="table-cell">$100-400+/mo</div>
+                        <div class="table-cell">$240+/mo</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Year 1 Cost Guarantee</div>
+                        <div class="table-cell highlight"><span class="check">✓ Price locked</span></div>
+                        <div class="table-cell"><span class="x">✗ Scales with usage</span></div>
+                        <div class="table-cell"><span class="x">✗ Scales with usage</span></div>
+                        <div class="table-cell"><span class="check">✓ Flat</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- OLIEXPLORE -->
+        <div id="oliexplore" class="tab-content">
+            <div class="summary-box">
+                <h3>OliExplore: Social Media Collection + AI Rewrite</h3>
+                <p><strong>Our pricing:</strong> $27-49/mo | <strong>Competitor stack:</strong> $29-100+/mo</p>
+                <p><strong>Your savings:</strong> 30-60% cheaper with AI rewriting included</p>
+                <button class="cta-button">Start Free Trial →</button>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-cell">Feature / Metric</div>
+                    <div class="table-cell"><span class="tool-icon">Oli</span> OliExplore Creator</div>
+                    <div class="table-cell"><span class="tool-icon">R</span> Repurpose.io</div>
+                    <div class="table-cell"><span class="tool-icon">E</span> MeetEdgar</div>
+                    <div class="table-cell"><span class="tool-icon">B</span> Buffer</div>
+                </div>
+                <div class="table-body">
+                    <div class="table-row">
+                        <div class="table-cell">Monthly Price</div>
+                        <div class="table-cell highlight"><span class="price">$27/mo</span><span class="savings">BEST</span></div>
+                        <div class="table-cell">$35/mo</div>
+                        <div class="table-cell">$29.99/mo</div>
+                        <div class="table-cell">$5-35/mo</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Accounts Included</div>
+                        <div class="table-cell highlight"><span class="check">✓ 5</span></div>
+                        <div class="table-cell"><span class="limited">3</span></div>
+                        <div class="table-cell"><span class="limited">25 max</span></div>
+                        <div class="table-cell">3-10</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Collect From Real Accounts</div>
+                        <div class="table-cell highlight"><span class="check">✓ Yes</span></div>
+                        <div class="table-cell"><span class="x">✗ No</span></div>
+                        <div class="table-cell"><span class="partial">Queue-based</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">AI Rewrite Engine</div>
+                        <div class="table-cell highlight"><span class="check">✓ 5 tones</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="partial">Limited AI</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Cross-Platform Publishing</div>
+                        <div class="table-cell highlight"><span class="check">✓ All major</span></div>
+                        <div class="table-cell"><span class="check">✓ All major</span></div>
+                        <div class="table-cell"><span class="check">✓ All major</span></div>
+                        <div class="table-cell"><span class="check">✓ All major</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Year 1 Cost (5 accounts)</div>
+                        <div class="table-cell highlight"><span class="price">$324/yr</span><span class="savings">SAVE 40%</span></div>
+                        <div class="table-cell">$420+/yr</div>
+                        <div class="table-cell">$360/yr</div>
+                        <div class="table-cell">$60-420/yr</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OLI-LOCATOR -->
+        <div id="olilocator" class="tab-content">
+            <div class="summary-box">
+                <h3>Oli-Locator: CRM + Lead Gen + Call Center + Inbox</h3>
+                <p><strong>Our pricing:</strong> $59-119/mo | <strong>Competitor stack:</strong> $100-500+/mo</p>
+                <p><strong>Your savings:</strong> 50-70% cheaper with bundled lead gen & CRM</p>
+                <button class="cta-button">Start Free Trial →</button>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-cell">Feature / Metric</div>
+                    <div class="table-cell"><span class="tool-icon">Oli</span> Oli-Locator Solo</div>
+                    <div class="table-cell"><span class="tool-icon">F</span> Follow Up Boss</div>
+                    <div class="table-cell"><span class="tool-icon">K</span> kvCORE</div>
+                    <div class="table-cell"><span class="tool-icon">L</span> LionDesk</div>
+                </div>
+                <div class="table-body">
+                    <div class="table-row">
+                        <div class="table-cell">Entry Price</div>
+                        <div class="table-cell highlight"><span class="price">$59/mo</span><span class="savings">BEST</span></div>
+                        <div class="table-cell">$58-69/mo</div>
+                        <div class="table-cell">$25-50/mo</div>
+                        <div class="table-cell">$29.99/mo</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">CRM Included</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Lead Generation Included</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗ Extra</span></div>
+                        <div class="table-cell"><span class="partial">Website focus</span></div>
+                        <div class="table-cell"><span class="x">✗ Extra</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Call Center/Dialer</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="limited">+$33-39/user/mo</span></div>
+                        <div class="table-cell"><span class="x">✗ Extra</span></div>
+                        <div class="table-cell"><span class="x">✗ Extra</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Unified Inbox</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="limited">Limited</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">BYO Calling (No Lock-In)</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗ Own proprietary</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Year 1 Cost (Solo Agent)</div>
+                        <div class="table-cell highlight"><span class="price">$708/yr</span><span class="savings">SAVE 60%</span></div>
+                        <div class="table-cell">$696-1,140+/yr</div>
+                        <div class="table-cell">$300-600+/yr</div>
+                        <div class="table-cell">$360+/yr</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- OLISALESTRACK -->
+        <div id="olisalestrack" class="tab-content">
+            <div class="summary-box">
+                <h3>OliSalesTrack: Live Revenue Tracking + Profit Analysis</h3>
+                <p><strong>Our pricing:</strong> $24-39/mo | <strong>Baremetrics:</strong> $49+/mo</p>
+                <p><strong>Your savings:</strong> 50-80% cheaper with live sync and correlation analysis</p>
+                <button class="cta-button">Start Free Trial →</button>
+            </div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div class="table-cell">Feature / Metric</div>
+                    <div class="table-cell"><span class="tool-icon">Oli</span> OliSalesTrack Starter</div>
+                    <div class="table-cell"><span class="tool-icon">B</span> Baremetrics</div>
+                    <div class="table-cell"><span class="tool-icon">P</span> Profitwell</div>
+                    <div class="table-icon">S</span> Stripe Dashboard</div>
+                </div>
+                <div class="table-body">
+                    <div class="table-row">
+                        <div class="table-cell">Monthly Price</div>
+                        <div class="table-cell highlight"><span class="price">$24/mo</span><span class="savings">BEST</span></div>
+                        <div class="table-cell">$49/mo</div>
+                        <div class="table-cell">Free - $499/mo</div>
+                        <div class="table-cell"><span class="check">✓ Free</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Live Payment Sync</div>
+                        <div class="table-cell highlight"><span class="check">✓ Stripe/PayPal/Shopify</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Expense Tracking</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Refund-to-Revenue Correlation</div>
+                        <div class="table-cell highlight"><span class="check">✓ Unique</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">P&L Dashboard</div>
+                        <div class="table-cell highlight"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Annual Forecast</div>
+                        <div class="table-cell highlight"><span class="check">✓ Pro</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="check">✓</span></div>
+                        <div class="table-cell"><span class="x">✗</span></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell">Year 1 Cost</div>
+                        <div class="table-cell highlight"><span class="price">$288/yr</span><span class="savings">SAVE 75%</span></div>
+                        <div class="table-cell">$588+/yr</div>
+                        <div class="table-cell">$0-6,000+/yr</div>
+                        <div class="table-cell">$0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h4>💡 How to Read This Comparison</h4>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-item-icon" style="background: #d4edda; color: #155724;">✓</div>
+                    <div>Feature included at this price tier</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-item-icon" style="background: #f8d7da; color: #721c24;">✗</div>
+                    <div>Feature not included (usually costs extra)</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-item-icon" style="background: #fff3cd; color: #856404;">~</div>
+                    <div>Feature available but limited or as add-on</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-item-icon" style="background: #d4edda; color: #155724;">SAVE</div>
+                    <div>Estimated annual savings vs typical competitor</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 50px; color: white;">
+            <p style="font-size: 1.1em; margin-bottom: 20px;">Ready to save 50-80% on your SaaS stack?</p>
+            <button class="cta-button" style="font-size: 1.1em; padding: 16px 40px;">
+                Compare All 6 Tools - Start Your Free Trial Today →
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Deactivate all buttons
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Show selected tab
+                document.getElementById(tabName).classList.add('active');
+                
+                // Activate clicked button
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
