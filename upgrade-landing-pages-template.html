@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade to [TOOL] [TIER] - [VALUE PROP]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background: white;
+            padding: 20px 0;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-logo {
+            font-weight: 700;
+            font-size: 1.5em;
+            color: #667eea;
+        }
+        
+        .navbar-link {
+            color: #666;
+            text-decoration: none;
+            margin-left: 30px;
+            transition: color 0.2s;
+        }
+        
+        .navbar-link:hover {
+            color: #667eea;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .hero-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        
+        .hero-cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 0 10px;
+        }
+        
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            margin-top: 15px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .content-section {
+            padding: 60px 20px;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.3em;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .comparison-section {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .check {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .x {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .pricing-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .pricing-highlight h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-amount {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .pricing-period {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .guarantee {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+            color: #155724;
+        }
+        
+        .guarantee-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .faq-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+        
+        .faq-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .testimonial {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 16px 50px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .roi-calculator {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            margin: 40px 0;
+        }
+        
+        .roi-input {
+            margin: 15px 0;
+        }
+        
+        .roi-input label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .roi-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        
+        .roi-result {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            color: #155724;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            
+            .section-title {
+                font-size: 1.5em;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-section,
+            .faq-section,
+            .roi-calculator {
+                padding: 20px;
+            }
+            
+            .pricing-highlight {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">[TOOL NAME]</div>
+            <div>
+                <a href="#" class="navbar-link">Back to [TOOL]</a>
+                <a href="#" class="navbar-link">Pricing</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="hero">
+        <div class="hero-container">
+            <h1>Unlock [TIER NAME]</h1>
+            <p class="hero-subtitle">[MAIN VALUE PROP - e.g., "Save 20 hours/week with AI automation"]</p>
+            <a href="#upgrade" class="hero-cta">Upgrade Now - 30-Day Free Trial</a>
+            <a href="#faq" class="hero-secondary hero-cta">View FAQ</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <h2 class="section-title">What You Get With [TIER NAME]</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>[FEATURE 1 NAME]</h3>
+                    <p>[FEATURE 1 DESCRIPTION - Include time/money savings metric]</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>[FEATURE 2 NAME]</h3>
+                    <p>[FEATURE 2 DESCRIPTION]</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>[FEATURE 3 NAME]</h3>
+                    <p>[FEATURE 3 DESCRIPTION]</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>[FEATURE 4 NAME]</h3>
+                    <p>[FEATURE 4 DESCRIPTION]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="comparison-section">
+            <h2 class="section-title">Compare Tiers</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>[CURRENT TIER]</th>
+                        <th style="color: #667eea; font-weight: 700;">[UPGRADE TIER] ⭐</th>
+                        <th>[HIGHER TIER if applicable]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Monthly Price</strong></td>
+                        <td>$[X]/mo</td>
+                        <td style="background: #f0f4ff;"><strong>$[Y]/mo</strong></td>
+                        <td>$[Z]/mo</td>
+                    </tr>
+                    <tr>
+                        <td>[FEATURE 1]</td>
+                        <td><span class="check">✓</span></td>
+                        <td style="background: #f0f4ff;"><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>[FEATURE 2 - Premium]</td>
+                        <td><span class="x">✗</span></td>
+                        <td style="background: #f0f4ff;"><span class="check">✓ NEW</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>[FEATURE 3 - Premium]</td>
+                        <td><span class="x">✗</span></td>
+                        <td style="background: #f0f4ff;"><span class="check">✓ NEW</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>[FEATURE 4 - Enterprise]</td>
+                        <td><span class="x">✗</span></td>
+                        <td style="background: #f0f4ff;"><span class="x">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Annual Savings</strong></td>
+                        <td>$[X*12]</td>
+                        <td style="background: #f0f4ff;"><strong>$[Y*12]</strong></td>
+                        <td>$[Z*12]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="pricing-highlight">
+            <h2>[TIER NAME]</h2>
+            <div class="pricing-amount">$[PRICE]/mo</div>
+            <div class="pricing-period">or $[ANNUAL PRICE]/year (save 15%)</div>
+            <div style="margin-top: 30px;">
+                <a href="#upgrade" class="hero-cta" style="background: white; color: #667eea;">Upgrade to [TIER NAME] →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="guarantee">
+            <div class="guarantee-icon">✓</div>
+            <h3>30-Day Money-Back Guarantee</h3>
+            <p>Not satisfied? Full refund, no questions asked. We're confident you'll love [TIER NAME].</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="content-section">
+            <h2 class="section-title">Why Customers Love [TIER NAME]</h2>
+            
+            <div class="testimonial">
+                <div class="testimonial-text">"[TIER NAME] cut my [TASK] time by 40%. It pays for itself in [X days/weeks]. Best upgrade decision I made."</div>
+                <div class="testimonial-author">— [Customer Name], [Company Type/Role]</div>
+            </div>
+            
+            <div class="testimonial">
+                <div class="testimonial-text">"We were juggling [PROBLEM]. [TIER NAME] solved it with [FEATURE]. I can't imagine going back."</div>
+                <div class="testimonial-author">— [Customer Name], [Company Type/Role]</div>
+            </div>
+            
+            <div class="testimonial">
+                <div class="testimonial-text">"[FEATURE] is a game-changer. Worth the upgrade alone. The rest is bonus."</div>
+                <div class="testimonial-author">— [Customer Name], [Company Type/Role]</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="upgrade" class="cta-section">
+        <h2>Ready to Upgrade?</h2>
+        <p style="font-size: 1.1em; margin-bottom: 25px;">
+            Join 1,000+ companies using [TOOL NAME] [TIER NAME]. Start your upgrade today.
+        </p>
+        <button class="cta-button" onclick="location.href='#'">Upgrade Now - 30-Day Free Trial</button>
+    </div>
+    
+    <div class="container">
+        <div id="faq" class="faq-section">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ What's included in [TIER NAME]?</div>
+                <div class="faq-answer">
+                    [TIER NAME] includes [FEATURES]. See the comparison table above for a full breakdown.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Is there a contract or commitment?</div>
+                <div class="faq-answer">
+                    Nope. Month-to-month billing. Cancel anytime. Plus, 30-day money-back guarantee.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Can I downgrade later?</div>
+                <div class="faq-answer">
+                    Yes. Downgrade to [LOWER TIER] anytime. Your data stays intact.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ What if I need [SPECIFIC FEATURE]?</div>
+                <div class="faq-answer">
+                    That's on our roadmap for [TIMEFRAME]. In the meantime, [WORKAROUND]. Ping us if it's urgent — we prioritize customer requests.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Do you offer annual discounts?</div>
+                <div class="faq-answer">
+                    Yes! Annual billing saves you 15%. Pay $[ANNUAL PRICE] per year instead of $[MONTHLY PRICE * 12]/year.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">❓ Still have questions?</div>
+                <div class="faq-answer">
+                    Reply to your trial email, or book a 15-min call: <a href="#">Calendly link</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; 2026 [COMPANY NAME]. All rights reserved.</p>
+        <p>
+            <a href="#" style="color: #667eea; text-decoration: none;">Pricing</a> • 
+            <a href="#" style="color: #667eea; text-decoration: none;">Privacy</a> • 
+            <a href="#" style="color: #667eea; text-decoration: none;">Terms</a> • 
+            <a href="#" style="color: #667eea; text-decoration: none;">Contact</a>
+        </p>
+    </footer>
+</body>
+</html>
