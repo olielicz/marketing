@@ -1,0 +1,15 @@
+{
+  "name": "oli-integration-server",
+  "version": "1.0.0",
+  "description": "Universal integration server for OliOps, OliCommerce, OliFlow, OliExplore, Oli-Locator, and OliSalesTrack. Bridges inbound/outbound webhooks, OAuth2, and GoHighLevel sync for Zapier, Make.com, n8n, and GHL. Zero external dependencies - runs on Node.js 18+ built-ins only.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

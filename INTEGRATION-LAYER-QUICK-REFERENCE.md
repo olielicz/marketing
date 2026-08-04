@@ -1,3 +1,7 @@
+> ⚠️ **CORRECTION:** Some code snippets/URLs below describe the intended
+> final state, not what's deployed today. See `MIGRATION-NOTES.md` and
+> `integration-server/README.md` for what's real right now.
+
 # Integration Layer - Quick Reference Card
 
 **Print this & post it on your team wall** 📌

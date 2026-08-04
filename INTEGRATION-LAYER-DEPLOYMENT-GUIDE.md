@@ -1,3 +1,9 @@
+> ⚠️ **CORRECTION:** This guide described deploying files that were not
+> actually runnable. Use `integration-server/README.md` instead for real
+> deploy steps against tested code. See `MIGRATION-NOTES.md` for details.
+> This file is kept for the still-relevant platform-submission checklist
+> (Zapier/Make/n8n/GHL registration steps), not for the code deployment steps.
+
 # Integration Layer Deployment Guide & Roadmap
 
 **Status:** Ready for Production Deployment  

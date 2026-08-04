@@ -1,0 +1,22 @@
+{
+  "name": "oli-tools-zapier-app",
+  "version": "1.0.0",
+  "description": "Zapier integration for OliOps, OliCommerce, OliFlow, OliExplore, Oli-Locator, and OliSalesTrack.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ../node_modules/.bin/jest --testPathPattern=test",
+    "build": "zapier build",
+    "deploy": "zapier push"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "zapier-platform-core": "15.6.0"
+  },
+  "devDependencies": {
+    "zapier-platform-cli": "15.6.0"
+  },
+  "private": true
+}

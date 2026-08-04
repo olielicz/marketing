@@ -1,3 +1,8 @@
+> ⚠️ **CORRECTION (see `MIGRATION-NOTES.md`):** The "COMPLETE" status below was
+> premature. The 7 files referenced were never wired into a runnable server,
+> and OAuth was mocked (fake tokens, no real provider calls). Real, tested
+> code now lives in `integration-server/` - read `MIGRATION-NOTES.md` first.
+
 # Integration Layer Session Complete ✅
 
 **Date:** August 1, 2026  

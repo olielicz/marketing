@@ -1,3 +1,9 @@
+> ⚠️ **CORRECTION:** "Ready and complete" was inaccurate at the time this was
+> written - see `MIGRATION-NOTES.md`. The business strategy, messaging, and
+> GTM plan below are still useful, but treat all revenue projections and
+> timelines as illustrative, not committed, until `integration-server/` is
+> actually deployed and the Zapier/n8n submissions are real.
+
 # Integration Layer - Business & Marketing Summary
 
 **Date:** August 1, 2026  
