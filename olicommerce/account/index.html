@@ -163,7 +163,12 @@ a{color:#059669;text-decoration:none;}
       <div class="status-meta">Shopify Cart Recovery · AI Assistant</div>
       <div class="status-badge">✅ Active — from $29/mo</div>
     </div>
-    <a href="../" class="btn btn-primary">Open OliCommerce Stack →</a>
+    <!-- FIX: this used to link to "../" (the marketing landing page) -
+         a dead end for a logged-in customer trying to actually use the
+         product. Now links to the real app (see ../app/ and
+         ../../olicommerce-backend/README.md for what it does and how to
+         set it up). -->
+    <a href="../app/" class="btn btn-primary">Open OliCommerce App →</a>
   </div>
 
   <!-- ── What's included ── -->
