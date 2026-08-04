@@ -1,0 +1,312 @@
+================================================================================
+30-DAY ZERO-BUDGET PATH TO PROFIT — ALL 6 OLI TOOLS
+Prepared as: Senior Marketing Director briefing (10+ yrs launch experience)
+Client: WorkItLikeAPro / olielicz
+Budget: $0. Deadline: Day 30. Target: real, collected revenue — not "traction."
+================================================================================
+
+--------------------------------------------------------------------------------
+SECTION 0 — THE ONE THING TO UNDERSTAND BEFORE ANYTHING ELSE
+--------------------------------------------------------------------------------
+
+Every platform this plan uses is free: GitHub Pages hosting, Brevo email
+(300/day forever), Product Hunt, Reddit, LinkedIn, Indie Hackers, EmailJS,
+directory listings. That means your fixed cost this month is $0.
+
+That changes the entire math of "profitable in 30 days." You do not need
+$10,000 in revenue to be profitable. You need ONE dollar more in revenue
+than $0 in cost. Revenue minus zero cost is profit, on day one, on the
+first sale.
+
+So the real 30-day goal is not "be profitable" — that's true the moment
+anyone pays. The real goal is: GET THE FIRST PAYING CUSTOMER ON EACH OF
+THE 6 TOOLS, THEN COMPOUND FROM THERE. Everything below is built around
+that reframe. I will not pretend a zero-budget solo operator will out-market
+Zoho or Zapier in 30 days. I will show you exactly how a zero-budget solo
+operator gets their first 10-50 paying customers per tool in 30 days,
+because that already makes you profitable and gives you real data for
+month 2.
+
+Honest caveat up front: some of this will underperform. Cold email reply
+rates run 5-10% on a good list, not 50%. Product Hunt launches sometimes
+flop. I'm giving you the full-effort, correct-channel plan — not a
+guarantee. What I can guarantee is that doing all of this costs you $0 and
+teaches you which channel to double down on for month 2.
+
+--------------------------------------------------------------------------------
+SECTION 1 — YOUR SIX PRODUCTS, ONE BUYER MAP
+--------------------------------------------------------------------------------
+
+  TOOL                    ENTRY PRICE          WHO ACTUALLY BUYS THIS
+  ---------------------    ------------------    --------------------------------
+  1. OliOps Suite          $39/mo, $348/yr        Solo founders, freelancers,
+                                                   small service businesses tired
+                                                   of 4 separate SaaS bills
+  2. OliCommerce Stack     $29/mo, $264/yr        Shopify store owners losing
+                                                   sales to abandoned carts
+  3. OliFlow Auto Engine   $35/mo, $312/yr        Agencies/ops teams paying
+                                                   usage-metered Zapier/Make bills
+  4. OliExplore            $27/mo, $252/yr        Social media managers/agencies
+                                                   manually reposting content
+  5. Oli-Locator           $59/mo, $516/yr        Solo real estate agents/small
+                                                   teams juggling 3-4 apps
+  6. OliSalesTrack         $24/mo, $204/yr        E-commerce sellers who don't
+                                                   know their real profit margin
+
+SMALL BUSINESS vs. LARGE BUSINESS — the honest split:
+
+  SMALL BUSINESS (solo/2-10 people) is your realistic 30-day buyer for ALL
+  SIX tools. They buy fast, on their own credit card, with no procurement
+  process, often same-day. This is where 100% of your Day 30 revenue will
+  come from. Every tactic below is built for this buyer.
+
+  LARGE BUSINESS (50+ employees, agencies, brokerages, enterprise teams) is
+  a REAL target but NOT a 30-day-close buyer for a brand-new, unreferenced
+  product. Enterprise buyers need: procurement review, security
+  questionnaires, references, a sales call, sometimes a legal review of your
+  Terms of Service — none of which compresses into 30 days for a tool with
+  zero paying customers yet. Any marketing director who tells you otherwise
+  is selling you a fantasy.
+
+  What we DO for large business in 30 days: we seed the pipeline so month
+  2-3 has enterprise deals to close. Specifically: OliFlow's headless REST
+  API and self-hosted model, and Oli-Locator's Team tier, are the two
+  products with genuine enterprise appeal. For those two, Week 3-4 includes
+  direct LinkedIn outreach to Ops Directors / Broker-Owners at 20-50 person
+  companies — not to close in 30 days, but to book Month 2 discovery calls.
+  Treat any enterprise interest this month as a seed, not a Day 30 KPI.
+
+--------------------------------------------------------------------------------
+SECTION 2 — THE FUNNEL EVERY TOOL SHARES (build once, reuse 6x)
+--------------------------------------------------------------------------------
+
+  TRAFFIC SOURCE  -->  LANDING PAGE  -->  EMAIL CAPTURE  -->  NURTURE  -->  BUY PAGE  -->  PAID CUSTOMER
+  (PH/Reddit/        (already live,     (Brevo form,       (5-email    (already      (Stripe/PayPal
+   outreach/          all 6 tools)       300/day free)      sequence,    live, all 6    checkout)
+   directories)                                              already     tools)
+                                                              written for
+                                                              3/6 tools)
+
+  What's already built (confirmed working this session): all 6 landing
+  pages, all 6 login pages, all 6 account dashboards, all 6 buy pages with
+  tier pricing, PayPal wiring (just fixed for all 6 including
+  OliSalesTrack), the login-redirect bug (just fixed), Trend Radar access
+  control (just fixed). The funnel INFRASTRUCTURE is done. This plan is
+  about filling the top of it.
+
+  What's still a placeholder and blocks REAL revenue collection: your
+  PayPal Plan IDs and Stripe Payment Links are still "YOUR_..._PLAN_ID_HERE"
+  placeholders (see PAYMENTS-SETUP.md). THIS IS THE #1 BLOCKING TASK BEFORE
+  DAY 1 OF MARKETING. You cannot be "profitable" if the checkout button
+  doesn't actually charge anyone. Do this before anything else in this plan:
+
+    DAY 0 (before Day 1 marketing begins) — 2-3 hours, no cost:
+    [ ] Create a Stripe account (free) and a PayPal Business account (free)
+    [ ] Create 6 Stripe Payment Links, one per tool, entry-tier price
+    [ ] Create 6 PayPal subscription Plans, one per tool, entry-tier price
+    [ ] Paste the real Plan IDs into shared/paypal-sdk.js (PLAN_IDS object)
+    [ ] Paste the real Stripe links into each buy/index.html
+    [ ] Do one $1 test purchase per payment method to confirm money actually
+        lands in your account, then refund it
+    [ ] Set up EmailJS (free, 200 emails/mo) so buyers get an automatic
+        welcome email with their login link — a buyer with no idea how to
+        log in is a buyer who asks for a refund
+
+  Skipping this step means every tactic below drives traffic to a checkout
+  button that doesn't charge anyone. This is the single highest-leverage
+  2-3 hours of the entire 30 days.
+
+--------------------------------------------------------------------------------
+SECTION 3 — WEEK-BY-WEEK EXECUTION PLAN
+--------------------------------------------------------------------------------
+
+WEEK 1 (Days 1-7) — FOUNDATION + FIRST TRAFFIC
+
+  Day 1  - Confirm all 6 buy pages actually charge (Day 0 checklist above)
+         - Create Brevo account, verify domain, build 6 signup forms
+         - Install GA4 or Plausible (free trial) on all 6 landing pages
+  Day 2  - Load nurture sequences into Brevo for all 6 tools (3 already
+           written: OliOps, OliCommerce, OliFlow — copy the same structure
+           for OliExplore, Oli-Locator, OliSalesTrack today, ~30 min each)
+  Day 3  - Submit all 6 tools to Tier 1 directories (AlternativeTo, SaaSHub,
+           Capterra, G2, Crunchbase) — see directory-submission-list.md,
+           already built, just execute it. 2-3 hours, ~40 listings.
+  Day 4  - Submit all 6 tools to Tier 2 indie directories (Indie Hackers,
+           BetaList, Uneed, Fazier, StartupStash, Launching Next)
+  Day 5  - Build cold outreach lists: 30 contacts for Oli-Locator (real
+           estate agents), 30 for OliExplore (social media managers),
+           25 for OliSalesTrack (e-commerce sellers/Shopify store owners)
+  Day 6  - Send Day 1 of outreach: 15-20 emails using the templates already
+           written in outreach-oli-locator.md / outreach-oliexplore.md
+           (copy the same template structure for OliSalesTrack today)
+  Day 7  - CHECKPOINT: all 6 checkouts verified working, Brevo forms live,
+           40+ directory listings submitted, first outreach batch sent.
+           Log actual numbers — visitors, signups, replies. No vanity
+           metrics — write down the real count.
+
+WEEK 2 (Days 8-14) — FIRST PRODUCT HUNT LAUNCH + OUTREACH VOLUME
+
+  Day 8  - Recruit 15-20 launch-day supporters (friends, past colleagues,
+           other indie makers you know) — DM them privately, ask them to
+           be ready to upvote/comment the morning of launch
+  Day 9  - PRODUCT HUNT LAUNCH #1: OliOps Suite. Submit 12:01am PST.
+           Use product-hunt-oliops-suite.md (already written) verbatim.
+           Reply to every comment within 5 minutes for 6 hours straight.
+           Cross-post to r/SaaS, r/Entrepreneur, r/smallbusiness,
+           Indie Hackers within the first hour.
+  Day 10 - Send Brevo Email #1 to everyone who signed up during the PH
+           launch. Continue outreach: 20 more emails (Oli-Locator/
+           OliExplore/OliSalesTrack rotation)
+  Day 11 - Reply to every PH comment/DM still coming in. Post a LinkedIn
+           update about the launch (free, your own profile, tag the tool)
+  Day 12 - Second outreach batch: 20 more emails. Submit OliSalesTrack to
+           AlternativeTo specifically framed "alternative to Baremetrics"
+  Day 13 - Write and schedule Week 3-4 social posts (X/LinkedIn) for all
+           6 tools using Buffer's free plan (3 accounts, 10 posts/account)
+  Day 14 - CHECKPOINT: log PH ranking, visitors, signups, and — the number
+           that actually matters — HOW MANY REAL DOLLARS HAVE BEEN
+           COLLECTED SO FAR. If zero, diagnose why before Week 3: is
+           traffic not converting on the buy page, or is traffic too low?
+
+WEEK 3 (Days 15-21) — SECOND PH LAUNCH + OUTREACH SCALES + ENTERPRISE SEEDING
+
+  Day 15 - Recruit supporters for OliFlow's PH launch
+  Day 16 - PRODUCT HUNT LAUNCH #2: OliFlow Automation Engine. Cross-post
+           to r/nocode, r/automation, r/SaaS, Indie Hackers.
+  Day 17 - Reply to all PH comments. BEGIN Oli-Locator direct outreach at
+           full volume: 20 emails/day using outreach-oli-locator.md
+  Day 18 - BEGIN OliExplore outreach at full volume: 15-20/day using
+           outreach-oliexplore.md. Post OliSalesTrack "Show Reddit" case
+           study to r/ecommerce, r/shopify, r/Entrepreneur
+  Day 19 - Submit OliSalesTrack to Product Hunt as its own launch (staggered
+           to not cannibalize votes from OliOps/OliFlow)
+  Day 20 - ENTERPRISE SEED (not a close): identify 10 Ops Directors at
+           20-50 person agencies (for OliFlow) and 10 Broker-Owners at
+           mid-size real estate teams (for Oli-Locator) on LinkedIn. Send
+           a short, no-pressure connection note — not a pitch — framed as
+           "building something relevant to your team, would value your
+           feedback." Goal: 10 conversations booked for Month 2, not a
+           Month 1 sale.
+  Day 21 - CHECKPOINT: OliFlow PH badge earned, 100 real estate emails sent
+           cumulative, 50 OliExplore emails sent cumulative, OliSalesTrack
+           PH submitted, 10 enterprise LinkedIn seeds sent. Real dollars
+           collected, logged honestly.
+
+WEEK 4 (Days 22-30) — THIRD PH LAUNCH + CONVERSION PUSH + CLOSE THE MONTH
+
+  Day 22 - Recruit supporters for OliCommerce's PH launch. Post in Shopify
+           Community forum + r/shopify + r/ecommerce
+  Day 23 - PRODUCT HUNT LAUNCH #3: OliCommerce Stack. Reply to every
+           comment for 48 hours.
+  Day 24 - Send a HONEST urgency email (Email #5 in the nurture sequences)
+           to every waitlist that hasn't converted yet — only if the
+           urgency is real (e.g. "launch pricing ends [date]"), never
+           fabricated scarcity
+  Day 25 - Collect testimonials from anyone who has actually paid — even
+           one sentence. Add to landing pages same day.
+  Day 26 - Second outreach round: 25 more Oli-Locator contacts, 25 more
+           OliExplore contacts. Write 1 SEO post for OliSalesTrack on
+           Medium/Substack: "How to find your true profit margin"
+  Day 27 - Re-share all 3 PH launches on LinkedIn/X with "results so far"
+           framing — real numbers, not inflated ones
+  Day 28 - Audit every Week 1 directory listing — confirm still live, fix
+           any broken links (you already have a habit of doing this —
+           keep it up)
+  Day 29 - Follow up (ONE time, per the playbook's own rule) with every
+           cold-outreach contact who hasn't replied yet
+  Day 30 - FINAL SCOREBOARD. Fill in Section 5's tracking sheet completely.
+           Identify which channel produced the most real revenue per tool.
+           That channel gets 80% of Month 2's effort — this is how a
+           real growth team operates: double down on what's proven, cut
+           what isn't, every 30 days.
+
+--------------------------------------------------------------------------------
+SECTION 4 — CHANNEL-BY-CHANNEL PLAYBOOK (why each one, and the honest limit)
+--------------------------------------------------------------------------------
+
+1. PRODUCT HUNT (3 launches this month: OliOps, OliFlow, OliCommerce)
+   Why: single biggest free traffic spike available to an indie product.
+   Honest limit: a PH launch is a one-day spike, not sustained traffic —
+   the value is in the signups/backlink/social proof it generates, not
+   ongoing daily visitors after Day 2.
+
+2. COLD EMAIL OUTREACH (Oli-Locator, OliExplore, OliSalesTrack)
+   Why: these three buyers (real estate agents, social media managers,
+   e-commerce sellers) don't browse SaaS directories looking for tools —
+   they respond to direct, personalized, relevant outreach.
+   Honest limit: 5-10% reply rate is the realistic benchmark on a
+   well-targeted list, per the existing playbooks. This is a volume game —
+   100+ contacts per tool this month, not 10.
+
+3. REDDIT + INDIE HACKERS (all 6 tools)
+   Why: free, and these are the exact forums where your buyers already
+   discuss their exact pain points (r/shopify, r/nocode, r/realtors, etc.)
+   Honest limit: Reddit punishes anything that reads as an ad. Every post
+   must lead with a genuine story/case study/question, never a pitch.
+
+4. DIRECTORY LISTINGS (all 6 tools, 40+ listings)
+   Why: free, passive, compounding SEO backlinks + buyer-intent traffic
+   (someone searching "Baremetrics alternative" on AlternativeTo is
+   already in buying mode).
+   Honest limit: slow burn — most directory traffic builds over months,
+   not days. Do it anyway because it's free and compounds.
+
+5. EMAIL NURTURE (Brevo, all 6 tools)
+   Why: the highest-converting channel you have, because these are people
+   who already raised their hand. A 5-email sequence beats a single "buy
+   now" blast every time.
+   Honest limit: only as good as the traffic feeding the top of the
+   funnel — nurture doesn't create demand, it converts existing interest.
+
+6. ENTERPRISE LINKEDIN SEEDING (OliFlow, Oli-Locator only)
+   Why: these two products have genuine enterprise-fit features (headless
+   API + self-hosting; Team tier + call-center bundle).
+   Honest limit: this is a Month 2-3 pipeline-build, not a Day 30 revenue
+   line. Treat any enterprise reply this month as a win, not a target.
+
+--------------------------------------------------------------------------------
+SECTION 5 — THE ONLY SCOREBOARD THAT MATTERS (fill this in daily)
+--------------------------------------------------------------------------------
+
+  TOOL              SIGNUPS   TRIAL STARTS   PAID CUSTOMERS   REAL $ COLLECTED
+  ----------------  --------  -------------  ---------------  -----------------
+  OliOps Suite         ___         ___              ___              $___
+  OliCommerce Stack    ___         ___              ___              $___
+  OliFlow Engine       ___         ___              ___              $___
+  OliExplore           ___         ___              ___              $___
+  Oli-Locator          ___         ___              ___              $___
+  OliSalesTrack        ___         ___              ___              $___
+  ----------------  --------  -------------  ---------------  -----------------
+  TOTAL                ___         ___              ___              $___
+
+  PROFIT CHECK: since fixed cost is $0, "REAL $ COLLECTED" total > $0 means
+  every one of these six businesses is profitable the moment that number
+  moves off zero. Do not let anyone (including your own instinct) redefine
+  "profitable" as some bigger number this month — profit is revenue minus
+  cost, and your cost is zero.
+
+--------------------------------------------------------------------------------
+SECTION 6 — WHAT I WOULD DO DIFFERENTLY IF THIS WERE MY OWN BUSINESS
+--------------------------------------------------------------------------------
+
+- I would NOT try to launch all 6 on Product Hunt this month — 3 real
+  launches with full effort beats 6 rushed ones. This plan already reflects
+  that: OliExplore, Oli-Locator, and OliSalesTrack get direct
+  outreach/Reddit instead of a competing PH slot, because that's the
+  higher-converting channel for their specific buyer anyway.
+- I would fix the checkout placeholders (Section 2) before writing a single
+  piece of marketing copy. Traffic to a broken buy button is wasted effort,
+  full stop.
+- I would personally message the first 10 people who sign up on each tool —
+  not an automated email, an actual "hey, saw you signed up, anything I can
+  answer?" This doesn't scale, and that's fine — at zero customers, it
+  shouldn't scale yet. This is how you get your first 5 real testimonials
+  and learn what's actually confusing people before you have to guess.
+- I would treat Day 30 as the start of a repeatable playbook, not a finish
+  line — whatever channel worked best gets doubled in Month 2, and this
+  exact document gets updated with real numbers instead of blanks.
+
+================================================================================
+END OF PLAN. See growth-plan-slides/index.html for the visual presentation
+version of this same plan with product screenshots.
+================================================================================
