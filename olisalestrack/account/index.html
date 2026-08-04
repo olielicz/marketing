@@ -163,7 +163,11 @@ a{color:#7c3aed;text-decoration:none;}
       <div class="status-meta">Sales · Refunds · Expenses Tracker</div>
       <div class="status-badge">✅ Active — $24/mo or $204/yr</div>
     </div>
-    <a href="../" class="btn btn-primary">Open OliSalesTrack →</a>
+    <!-- FIX: this used to link to "../" (the marketing landing page) —
+         a dead end for a logged-in customer trying to actually use the
+         product. Now links to the real dashboard (see
+         ../dashboard/README.md for what it does and how to set it up). -->
+    <a href="../dashboard/" class="btn btn-primary">Open OliSalesTrack Dashboard →</a>
   </div>
 
   <!-- ── What's included ── -->
