@@ -1,0 +1,204 @@
+================================================================================
+PRE-LAUNCH CHECKLIST — ALL 6 OLI TOOLS
+What you personally need to do before any of this can take real payments.
+================================================================================
+
+STATUS OF RECENT WORK:
+- PR #14 (30-day growth plan + slide deck) — MERGED into main
+- PR #15 (SEO fixes: structured data, favicon, OG images, meta tags) — MERGED into main
+Both are live on your repo right now. No action needed from you on those.
+
+--------------------------------------------------------------------------------
+THE HONEST HEADLINE
+--------------------------------------------------------------------------------
+Right now, if a customer clicks "Subscribe" on ANY of your 6 tools, no money
+can actually be charged. Every payment button is still a placeholder. This
+is the #1 thing standing between you and real revenue — everything else
+(landing pages, login, pricing display, SEO) is already done and tested.
+
+Below is every remaining gap, in the order you should actually do them,
+written so each step is something you can complete yourself with no coding
+knowledge required — just account creation and copy/pasting values into
+files (I can do the file-editing part for you once you have the values).
+
+================================================================================
+STEP 1 — MAKE PAYMENTS ACTUALLY WORK (do this first, it unblocks everything)
+================================================================================
+
+Why first: nothing else matters if customers can't pay you.
+
+1a. Create a Stripe account (free, ~15 min)
+    → stripe.com/register
+    → Complete business verification (they'll ask for your bank details,
+      business type, etc. — this can take a day or two to fully verify,
+      so do this EARLY)
+
+1b. Create a PayPal Business account (free, ~15 min)
+    → paypal.com/business
+    → Also needs verification — start this early too
+
+1c. Create 6 Stripe Payment Links (one per tool, entry-tier price)
+    → Stripe Dashboard → Payment Links → Create
+    → OliOps $39/mo, OliCommerce $29/mo, OliFlow $35/mo, OliExplore $27/mo,
+      Oli-Locator $59/mo, OliSalesTrack $24/mo
+    → Copy each resulting link (looks like https://buy.stripe.com/xxxxx)
+
+1d. Create 6 PayPal subscription Plans (same prices as above)
+    → PayPal Dashboard → Catalog → Products → Create Product → Create Plan
+    → Copy each Plan ID (starts with "P-")
+
+1e. Send me the 6 Stripe links + 6 PayPal Plan IDs and I will paste them
+    into the correct files for you (shared/paypal-sdk.js + each buy/
+    page). This is a 5-minute task for me once you have the values.
+
+1f. Do a real $1 test purchase on each payment method, confirm the money
+    lands in your account, then refund yourself. Do this BEFORE inviting
+    any real customer — do not skip this step.
+
+⏱️ Realistic time: 2-4 hours of your own effort, spread over 2-3 days
+   (mostly waiting on Stripe/PayPal verification, not active work).
+
+================================================================================
+STEP 2 — MAKE WELCOME/RESET EMAILS ACTUALLY SEND
+================================================================================
+
+Why: right now, when someone "buys" a tool, they get NO email with their
+login link. They'd have no idea how to log in. This will generate refund
+requests and confusion on day one if not fixed.
+
+2a. Create a free EmailJS account (200 emails/month free)
+    → emailjs.com → sign up
+    → Connect your Gmail (workitlikeapr01@gmail.com)
+    → Create 3 email templates: "oli_welcome", "oli_renewal", "oli_reset"
+      (exact template content is already written for you — ask me and
+      I'll give you the copy-paste text for each)
+
+2b. Copy your EmailJS Public Key + Service ID
+
+2c. Send me those two values — I'll paste them into shared/auth.js
+    (2-minute task for me).
+
+⏱️ Realistic time: 30-45 minutes.
+
+================================================================================
+STEP 3 — DECIDE YOUR DOMAIN (can be done in parallel with Steps 1-2)
+================================================================================
+
+Right now your site only lives at: olielicz.github.io/marketing/
+That works and is free — you do NOT have to buy a domain to launch.
+
+If you want a real domain (recommended for trust/credibility, e.g.
+workitlikeapro.com):
+
+3a. Buy the domain (~$10-15/year, Namecheap or similar — this is the
+    only step in this entire checklist that isn't free)
+3b. Point it at GitHub Pages (instructions already in HOSTING-GUIDE.md)
+3c. Tell me once it's live — several files have hardcoded URLs pointing
+    to olielicz.github.io/marketing/ (redirect links, PayPal product
+    URLs, Stripe redirect URLs) that need updating to match your real
+    domain. I can find and update all of them once you confirm the
+    domain.
+
+⏱️ Realistic time: 20 minutes to buy + up to 24 hours for DNS to propagate.
+   You can launch without this and add it later — it is NOT a blocker.
+
+================================================================================
+STEP 4 — CONFIRM YOUR CONTACT FORM ACTUALLY WORKS
+================================================================================
+
+Your contact form uses a free service called FormSubmit. The FIRST time
+anyone submits it, FormSubmit sends a confirmation email to
+workitlikeapr01@gmail.com that you must click to activate it — otherwise
+messages silently go nowhere.
+
+4a. Go to your contact page right now and submit a test message to yourself
+4b. Check workitlikeapr01@gmail.com for a FormSubmit confirmation email
+4c. Click "Confirm" in that email
+4d. Submit a second test message and confirm it actually arrives
+
+⏱️ Realistic time: 5 minutes. Do this before launch — it's easy to miss.
+
+================================================================================
+STEP 5 — ADD ANALYTICS (so you know if anything in the growth plan works)
+================================================================================
+
+Right now there is zero visitor tracking on any page. You can launch
+without this, but you'll be flying blind — you won't know if Product Hunt
+traffic actually converts, or which tool page gets the most visitors.
+
+5a. Create a free Google Analytics 4 account (analytics.google.com)
+    OR a free Plausible trial (simpler, privacy-friendly, paid after trial)
+5b. Copy your tracking snippet/ID
+5c. Send it to me — I'll add it to all 7 pages at once
+
+⏱️ Realistic time: 15 minutes. Not a hard blocker, but do this before Day 1
+   of the marketing plan, not after — you can't measure what you didn't track.
+
+================================================================================
+STEP 6 — OLI-LOCATOR SPECIFIC (it has a real backend, unlike the other 5)
+================================================================================
+
+Oli-Locator is different from your other 5 tools — it has a real server
+(hosted on Vercel), not just a landing page. It needs its own setup:
+
+6a. Confirm the lead-gen project is actually deployed on Vercel
+    (if you're not sure, check vercel.com — log in and look for it)
+
+6b. Set these on Vercel (Settings → Environment Variables):
+    - OWNER_EMAIL + OWNER_PASSWORD (your real admin login — pick a
+      strong password, NOT the one from before, which is compromised
+      and permanently visible in old commits, see Step 6d)
+    - AUTH_SECRET (a random secret string — I can generate one for you)
+    - KV_REST_API_URL + KV_REST_API_TOKEN (Vercel's free KV storage —
+      without this, all data resets every time the server restarts,
+      which is NOT okay for real customers)
+
+6c. IMPORTANT — real customer passwords currently have nowhere to go by
+    email. If someone clicks "Forgot password," the reset link is only
+    shown on-screen, not emailed. This needs a real email service
+    (can reuse the same EmailJS setup from Step 2, or a different one)
+    wired into the lead-gen backend specifically — flag to me when
+    you're ready and I'll handle the code side.
+
+6d. SECURITY REMINDER: an old, real admin password was found hardcoded
+    in this repo's history earlier this session and removed — but it's
+    permanently visible in old GitHub commits. If you ever reused that
+    password (OliLocator#Test2026) anywhere else, change it there too.
+
+6e. Oli-Locator's actual subscription billing (charging real customers)
+    is NOT built yet — right now "subscribing" just creates a free demo
+    account. This needs the same Stripe/PayPal wiring as Step 1, but
+    built into the app itself, not just the marketing page. Tell me when
+    you're ready to tackle this and I'll scope it properly — it's a
+    bigger task than the other 5 tools' payment setup.
+
+⏱️ Realistic time: 1-2 hours for 6a-6c. Step 6e is a separate mini-project,
+   not a quick task — plan for it, don't expect it done same-day.
+
+================================================================================
+WHAT IS ALREADY DONE — YOU DO NOT NEED TO TOUCH THESE
+================================================================================
+✅ All 6 landing pages, login pages, pricing pages — live and tested
+✅ Legal pages (Privacy, Terms, refund policy) — real content, not placeholder
+✅ SEO — titles, descriptions, structured data, favicon, social share images
+✅ Security — no exposed API keys, no hardcoded passwords, login works correctly
+✅ Oli-Locator's core app (leads + properties search) — fully functional demo
+✅ 30-day marketing/outreach plan — ready to execute once Step 1 is done
+
+================================================================================
+RECOMMENDED ORDER (if doing this solo, no help)
+================================================================================
+Day 1:    Start Stripe + PayPal account verification (Step 1a-1b)
+Day 1-2:  While waiting on verification — set up EmailJS (Step 2),
+          test contact form (Step 4), decide on domain (Step 3)
+Day 2-3:  Once Stripe/PayPal verified — create links/plans (Step 1c-1d),
+          send values over for wiring
+Day 3:    Test purchases (Step 1f), set up analytics (Step 5)
+Day 4-5:  Oli-Locator backend setup (Step 6a-6d)
+Day 5+:   Begin Week 1 of the 30-day growth plan — you're now able to
+          actually collect revenue from whatever traffic it brings.
+
+Everything in this checklist is designed to be done BEFORE Day 1 of the
+30-day marketing plan (30-DAY-ZERO-BUDGET-MARKETING-PLAN.txt) — driving
+traffic to a checkout that can't charge anyone wastes the traffic.
+================================================================================
