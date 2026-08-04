@@ -210,6 +210,8 @@
       updateUser(email, toolKey, { orders: orders });
     }
 
+    var emailConfigured = isEmailConfigured();
+
     sendWelcomeEmail({
       toEmail:   email,
       toName:    email.split('@')[0],
@@ -221,7 +223,22 @@
       isNewUser: isNewUser,
     });
 
-    return { success: true, isNewUser: isNewUser };
+    // ⚠️ FIX: always return the temp password + whether email is actually
+    // configured, so callers (paypal-sdk.js, paddle-sdk.js) can show the
+    // password directly on the success screen when there's no other way
+    // for the customer to receive it. Previously this returned neither,
+    // so a real paying customer on a deployment without EmailJS set up
+    // had their password exist ONLY in a browser console.log() call —
+    // permanently inaccessible to them. isNewUser existing users don't
+    // get a new password (their existing one still works), so
+    // tempPassword is only non-null for isNewUser === true.
+    return {
+      success: true,
+      isNewUser: isNewUser,
+      tempPassword: isNewUser ? tempPassword : null,
+      emailConfigured: emailConfigured,
+      loginUrl: getAbsoluteUrl(tool.loginUrl),
+    };
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
@@ -242,9 +259,28 @@
     document.head.appendChild(s);
   }
 
+  /** True once real EmailJS credentials have been filled in below. */
+  function isEmailConfigured() {
+    return EMAILJS_CONFIG.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY'
+      && EMAILJS_CONFIG.serviceId !== 'YOUR_EMAILJS_SERVICE_ID';
+  }
+
   function sendWelcomeEmail(params) {
-    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      console.log('[OliAuth] DEMO — welcome email would send:', params);
+    if (!isEmailConfigured()) {
+      // ⚠️ FIX: this used to be the ONLY place a customer's temporary
+      // password existed after createAccount() generated it — logged to
+      // the browser console and nowhere else. A customer who paid real
+      // money, on a deployment where EmailJS was never configured (the
+      // shipped default), had NO way to ever retrieve their password:
+      // the success modal in paypal-sdk.js/paddle-sdk.js told them "an
+      // email is on its way" (false), and createAccount()'s return value
+      // didn't even include the password for the caller to fall back on.
+      // createAccount() below now always returns tempPassword directly,
+      // and paypal-sdk.js/paddle-sdk.js show it on-screen when email
+      // isn't configured — see their showSuccess()/onCheckoutCompleted().
+      // This console.log is now just a secondary debug aid, not the only
+      // record of the password.
+      console.log('[OliAuth] DEMO/no email configured — welcome details:', params);
       return;
     }
     loadEmailJS(function () {
@@ -516,6 +552,7 @@
     toRelative:               toRelative,
     getAbsoluteUrl:           getAbsoluteUrl,
     /* Config */
+    isEmailConfigured:        isEmailConfigured,
     _emailjsConfig: EMAILJS_CONFIG,
   };
 
