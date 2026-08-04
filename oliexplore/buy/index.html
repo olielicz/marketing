@@ -42,6 +42,7 @@
   input:focus { outline:none; border-color:var(--accent); }
   small.hint { color:var(--sub); font-size:11.5px; display:block; margin-top:4px; }
   .pay-btn { display:block; width:100%; text-align:center; padding:15px; border-radius:10px; font-weight:700; font-size:15.5px; text-decoration:none; margin-top:10px; border:none; cursor:pointer; }
+  .pay-btn.paddle { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; }
   .pay-btn.stripe { background:linear-gradient(135deg,#635bff,#4338ca); color:#fff; }
   .paypal-wrap { margin-top:14px; }
   .success-box, .error-note { display:none; border-radius:10px; padding:14px 18px; font-size:13.5px; margin-top:14px; }
@@ -102,6 +103,9 @@
 
     <div style="text-align:center;font-size:26px;font-weight:800;margin:18px 0 4px;">$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span></div>
 
+    <button class="pay-btn paddle" id="paddleBtn" type="button" disabled>
+      💳 Pay with Card (Paddle)
+    </button>
     <a class="pay-btn stripe" id="stripeBtn" href="https://buy.stripe.com/REPLACE_WITH_OLIEXPLORE_STRIPE_LINK" target="_blank" rel="noopener">
       💳 Pay with Stripe
     </a>
@@ -123,6 +127,7 @@
 
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
+<script src="../../shared/paddle-sdk.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
 const PLANS = [{"name":"Creator","mo":"27","yr":"252","yr_mo":"21"},{"name":"Team","mo":"49","yr":"468","yr_mo":"39"},{"name":"Agency","mo":"89","yr":"828","yr_mo":"69"}];

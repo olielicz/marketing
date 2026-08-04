@@ -31,7 +31,7 @@ Each product has its own fully independent login system:
 Each tool folder contains:
 ├── index.html          ← Landing page (public)
 ├── buy/
-│   └── index.html      ← Checkout page (email capture + PayPal/Stripe)
+│   └── index.html      ← Checkout page (email capture + PayPal/Paddle/Stripe)
 ├── login/
 │   └── index.html      ← Tool-specific login page (branded per tool)
 └── account/
@@ -57,7 +57,7 @@ _redirects                      ← Netlify URL shorthand routes
 .htaccess                       ← Apache security (InfinityFree/Hostinger)
 .nojekyll                       ← GitHub Pages: disables Jekyll processing
 HOSTING-GUIDE.md                ← Free & cheap hosting options (see below)
-PAYMENTS-SETUP.md               ← Stripe + PayPal wiring guide
+PAYMENTS-SETUP.md               ← PayPal + Paddle + Stripe wiring guide
 GO-LIVE-CHECKLIST.md            ← Pre-launch checklist
 00-master-calendar.md           ← 30-day GTM sprint with OliSalesTrack
 
@@ -71,13 +71,13 @@ shared/
 
 ── Backend services (Node, zero dependencies) ──────────────────────────────
 licensing/                      ← Serial-code activation server (OliOps/OliCommerce/OliFlow/OliExplore)
-olisalestrack-sync/             ← Live Stripe/PayPal/Shopify webhook sync server for OliSalesTrack
+olisalestrack-sync/             ← Live PayPal/Stripe/Shopify webhook sync server for OliSalesTrack
 oliexplore-trends/              ← Trend Radar aggregator (GIPHY + YouTube) powering oliexplore/trends/
 
 ── 6 Tool folders (identical structure) ────────────────────────────────────
 {tool}/
   index.html                    ← Landing page
-  buy/index.html                ← Checkout (email capture + PayPal + Stripe)
+  buy/index.html                ← Checkout (email capture + PayPal + Paddle + Stripe)
   login/index.html              ← Per-tool login page (branded)
   account/index.html            ← Per-tool account dashboard
 
@@ -101,15 +101,24 @@ assets/README.md                ← Product image URLs for PayPal dashboard
 ### How it works end-to-end
 
 ```
-1. Customer enters email on buy page → pays via PayPal or Stripe
-2. PayPal: paypal-sdk.js fires → OliAuth.createAccount(email, toolKey, orderId)
+1. Customer enters email on buy page → pays via PayPal, Paddle, or Stripe
+2. PayPal: paypal-sdk.js fires onApprove
+   Paddle: paddle-sdk.js's overlay checkout fires checkout.completed
+   → both call OliAuth.createAccount(email, toolKey, orderId) automatically
+   Stripe: customer redirected to Stripe's hosted checkout, needs its own
+   webhook/Zapier step to trigger account creation — see PAYMENTS-SETUP.md
+   Part 3 whenever you activate it (not needed for launch)
    - Creates account in localStorage (scoped to that tool only)
    - Generates temporary password
    - Sends welcome email via EmailJS with:
        • Tool-specific login link (/TOOL/login/)
        • Temporary password
        • Order reference
-3. Stripe: customer redirected to tool account page (set up Zapier/webhook for email)
+   (Paddle was added alongside Stripe because Stripe does not support
+   Philippines-based sellers — see PAYMENTS-SETUP.md for the full
+   reasoning. The Stripe button remains in place as a placeholder for
+   later, e.g. if you register a business entity in a Stripe-supported
+   country down the line.)
 4. Customer clicks link in email → lands on /TOOL/login/
 5. Signs in with temp password → forced to set own permanent password
 6. Lands on /TOOL/account/ dashboard:
@@ -137,7 +146,7 @@ assets/README.md                ← Product image URLs for PayPal dashboard
 
 1. Sign up free at **[emailjs.com](https://emailjs.com)** (200 emails/mo free)
 2. Add service: Gmail → connect `workitlikeapr01@gmail.com`
-3. Create 3 templates: `oli_welcome`, `oli_renewal`, `oli_reset` (see `PAYMENTS-SETUP.md`)
+3. Create 2 templates: `oli_welcome`, `oli_notice` (the free EmailJS plan caps at 2 templates — `oli_notice` is reused for both password resets and renewal reminders; see `EMAILJS-TEMPLATES.md` and `PAYMENTS-SETUP.md`)
 4. Open `shared/auth.js` lines 7–13 → paste your Public Key + Service ID
 
 ---
@@ -206,7 +215,7 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 | Landing page | `/olisalestrack/` |
 | Monthly price | $24/month |
 | Yearly price | $204/year (save 29%) |
-| Payment | PayPal subscription + Stripe recurring |
+| Payment | PayPal subscription + Paddle recurring (Stripe placeholder, set up later) |
 | Competitors | Baremetrics ($49+/mo), Profitwell, Google Sheets |
 | Key differentiator | Pearson correlation analysis: Sales ↔ Refunds ↔ Expenses |
 | Target buyer | Shopify/WooCommerce/Amazon sellers, SaaS founders, freelancers |
@@ -220,23 +229,23 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 - [ ] Merge PR #2 on `github.com/olielicz/marketing`
 - [ ] Enable GitHub Pages: Settings → Pages → Branch: `main` → `/` (root)
 - [ ] Activate FormSubmit: submit contact form once → click confirmation email
-- [ ] PayPal Client ID → paste in `shared/paypal-sdk.js` line 23
-- [ ] Stripe Payment Links → paste into each `buy/index.html`
-- [ ] Oli-Locator PayPal Plan ID → `shared/paypal-sdk.js` line 26
-- [ ] OliSalesTrack PayPal subscription script → `olisalestrack/buy/index.html`
-- [ ] EmailJS setup → `shared/auth.js` lines 7–13 (Public Key + Service ID)
+- [ ] PayPal Client ID → paste in `shared/paypal-sdk.js`
+- [ ] Paddle Client-side Token + Price IDs → paste in `shared/paddle-sdk.js`
+- [ ] PayPal Plan IDs (all 6 tools) → `shared/paypal-sdk.js` PLAN_IDS object
+- [ ] EmailJS setup → `shared/auth.js` (Public Key + Service ID — already done)
+- [ ] Stripe Payment Links → set up later, not needed for launch (see PAYMENTS-SETUP.md Part 3)
 - [ ] Submit sitemap → Google Search Console
 - [ ] Add Cloudflare in front of GitHub Pages (for `_headers` + DDoS protection)
 
 ### Payments reference
 
-| Tool | Stripe file | Price | PayPal |
-|---|---|---|---|
-| OliOps | `oliops/buy/index.html` | $39/mo or $348/yr | PayPal subscription |
-| OliCommerce | `olicommerce/buy/index.html` | $29/mo or $264/yr | PayPal subscription |
-| OliFlow | `oliflow/buy/index.html` | $35/mo or $312/yr | PayPal subscription |
-| OliExplore | `oliexplore/buy/index.html` | $27/mo or $252/yr | PayPal subscription |
-| Oli-Locator | `oli-locator/buy/index.html` | $59/mo or $516/yr | PayPal subscription plan |
-| OliSalesTrack | `olisalestrack/buy/index.html` | $24/mo or $204/yr | PayPal subscription plan |
+| Tool | Buy page | Price | PayPal | Paddle | Stripe |
+|---|---|---|---|---|---|
+| OliOps | `oliops/buy/index.html` | $39/mo or $348/yr | PayPal subscription | Paddle Price | Later |
+| OliCommerce | `olicommerce/buy/index.html` | $29/mo or $264/yr | PayPal subscription | Paddle Price | Later |
+| OliFlow | `oliflow/buy/index.html` | $35/mo or $312/yr | PayPal subscription | Paddle Price | Later |
+| OliExplore | `oliexplore/buy/index.html` | $27/mo or $252/yr | PayPal subscription | Paddle Price | Later |
+| Oli-Locator | `oli-locator/buy/index.html` | $59/mo or $516/yr | PayPal subscription plan | Paddle Price | Later |
+| OliSalesTrack | `olisalestrack/buy/index.html` | $24/mo or $204/yr | PayPal subscription plan | Paddle Price | Later |
 
 See `PAYMENTS-SETUP.md` for the full step-by-step.
