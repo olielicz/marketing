@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
-  <url><loc>https://olielicz.github.io/marketing/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/</loc><lastmod>2026-08-04</lastmod><priority>1.0</priority><changefreq>weekly</changefreq></url>
   <!-- Product landing pages -->
-  <url><loc>https://olielicz.github.io/marketing/oliops/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/olicommerce/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oliflow/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oliexplore/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oliexplore/trends/</loc><priority>0.8</priority><changefreq>hourly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oli-locator/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/olisalestrack/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliops/</loc><lastmod>2026-08-04</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/olicommerce/</loc><lastmod>2026-08-04</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliflow/</loc><lastmod>2026-08-04</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliexplore/</loc><lastmod>2026-08-04</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliexplore/trends/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>hourly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oli-locator/</loc><lastmod>2026-08-04</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/olisalestrack/</loc><lastmod>2026-08-04</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>
   <!-- Comparison pages -->
-  <url><loc>https://olielicz.github.io/marketing/oli-locator/vs-follow-up-boss/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oli-locator/vs-follow-up-boss/</loc><lastmod>2026-08-04</lastmod><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <!-- Buy pages -->
-  <url><loc>https://olielicz.github.io/marketing/oliops/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/olicommerce/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oliflow/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oliexplore/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/oli-locator/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/olisalestrack/buy/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliops/buy/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/olicommerce/buy/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliflow/buy/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oliexplore/buy/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/oli-locator/buy/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/olisalestrack/buy/</loc><lastmod>2026-08-04</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <!-- Legal / support pages -->
-  <url><loc>https://olielicz.github.io/marketing/contact/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/support/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/security/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/privacy/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://olielicz.github.io/marketing/terms/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/contact/</loc><lastmod>2026-08-04</lastmod><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/support/</loc><lastmod>2026-08-04</lastmod><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/security/</loc><lastmod>2026-08-04</lastmod><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/privacy/</loc><lastmod>2026-08-04</lastmod><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://olielicz.github.io/marketing/terms/</loc><lastmod>2026-08-04</lastmod><priority>0.5</priority><changefreq>monthly</changefreq></url>
 </urlset>

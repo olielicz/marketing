@@ -4,6 +4,14 @@
   # GitHub Pages does NOT honour _headers natively — use Cloudflare as a free proxy
   # in front of GitHub Pages to activate them (see HOSTING-GUIDE.md).
   # Netlify and Cloudflare Pages honour _headers automatically.
+  #
+  # SEO NOTE: the X-Robots-Tag noindex rules below for /login/*  and /account/*
+  # are a defense-in-depth backup only. The primary, host-agnostic mechanism
+  # that actually keeps these pages out of Google right now is the
+  # <meta name="robots" content="noindex,nofollow"> tag already present in
+  # every login/index.html and account/index.html file across all 6 tools —
+  # that tag works on GitHub Pages with no proxy required. Confirmed present
+  # on all 12 pages as of 2026-08-04.
 
   # Block clickjacking — page cannot be embedded in iframes on other domains
   X-Frame-Options: SAMEORIGIN
