@@ -17,17 +17,15 @@ import {
 } from "./store.js";
 import { getPublicKeyPem, signToken } from "./keys.js";
 import { generateSerialCode, isWellFormedSerialCode, productCodeFromSerialCode, PRODUCT_CODES } from "./licenseKey.js";
+import { requireAdmin } from "./adminAuth.js";
 
 const PORT = Number(process.env.PORT) || 4100;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const DEFAULT_MAX_DEVICES = Number(process.env.OLI_LICENSE_DEFAULT_MAX_DEVICES) || 5;
-
-if (!ADMIN_TOKEN) {
-  console.warn(
-    "\n⚠️  ADMIN_TOKEN is not set. License-creation endpoints are effectively open to anyone.\n" +
-      "   Set ADMIN_TOKEN in your .env before deploying this anywhere reachable from the internet.\n"
-  );
-}
+// NOTE: admin authentication (requireAdmin, imported above) now verifies
+// against the shared admin-auth service (../admin-auth) by default instead
+// of a static ADMIN_TOKEN shared secret. See adminAuth.js and
+// ../admin-auth/README.md for the security rationale and setup. The old
+// ADMIN_TOKEN env var still works as an explicit break-glass fallback.
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -63,12 +61,6 @@ function send(res, status, body) {
   res.end(json);
 }
 
-function requireAdmin(req) {
-  const header = req.headers["authorization"] || "";
-  const token = header.startsWith("Bearer ") ? header.slice(7) : "";
-  return Boolean(ADMIN_TOKEN) && token === ADMIN_TOKEN;
-}
-
 const server = createServer(async (req, res) => {
   try {
     if (req.method === "OPTIONS") return send(res, 204, {});
@@ -89,7 +81,7 @@ const server = createServer(async (req, res) => {
     // POST /api/licenses  { product, email?, maxDevices?, note? }  [admin]
     // -> { key, product, maxDevices }
     if (req.method === "POST" && url.pathname === "/api/licenses") {
-      if (!requireAdmin(req)) return send(res, 401, { error: "unauthorized" });
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
       const body = await readJsonBody(req);
       const product = String(body.product || "").toUpperCase();
       if (!PRODUCT_CODES.includes(product)) {
@@ -112,7 +104,7 @@ const server = createServer(async (req, res) => {
 
     // GET /api/licenses/:key  [admin] -> license record incl. device list
     if (req.method === "GET" && url.pathname.startsWith("/api/licenses/")) {
-      if (!requireAdmin(req)) return send(res, 401, { error: "unauthorized" });
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
       const key = decodeURIComponent(url.pathname.slice("/api/licenses/".length));
       const license = await getLicense(key);
       if (!license) return send(res, 404, { error: "not_found" });
@@ -121,7 +113,7 @@ const server = createServer(async (req, res) => {
 
     // POST /api/licenses/:key/revoke  [admin]
     if (req.method === "POST" && /^\/api\/licenses\/[^/]+\/revoke$/.test(url.pathname)) {
-      if (!requireAdmin(req)) return send(res, 401, { error: "unauthorized" });
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
       const key = decodeURIComponent(url.pathname.split("/")[3]);
       const license = await revokeLicense(key);
       if (!license) return send(res, 404, { error: "not_found" });
@@ -130,7 +122,7 @@ const server = createServer(async (req, res) => {
 
     // GET /api/licenses  [admin] -> list all (for a tiny internal dashboard, if wanted)
     if (req.method === "GET" && url.pathname === "/api/licenses") {
-      if (!requireAdmin(req)) return send(res, 401, { error: "unauthorized" });
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
       return send(res, 200, await listLicenses());
     }
 

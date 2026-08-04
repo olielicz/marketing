@@ -17,22 +17,21 @@ import { createServer } from "node:http";
 import { appendEvents, listEvents } from "./store.js";
 import { normalizeStripeEvent, normalizeShopifyEvent, normalizePaypalEvent } from "./normalize.js";
 import { verifyStripeSignature, verifyShopifySignature, verifyPaypalSignature } from "./verify.js";
+import { requireAdmin } from "./adminAuth.js";
 
 const PORT = Number(process.env.PORT) || 4200;
-const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "";
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || "";
 const SHOPIFY_WEBHOOK_SECRET = process.env.SHOPIFY_WEBHOOK_SECRET || "";
 const PAYPAL_WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID || "";
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "";
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || "";
 const PAYPAL_API_BASE = process.env.PAYPAL_API_BASE || "https://api-m.sandbox.paypal.com";
+// NOTE: GET /api/events auth (requireAdmin, imported above) now verifies
+// against the shared admin-auth service (../admin-auth) by default instead
+// of a static ACCESS_TOKEN shared secret. See adminAuth.js and
+// ../admin-auth/README.md. The old ACCESS_TOKEN env var still works as an
+// explicit break-glass fallback.
 
-if (!ACCESS_TOKEN) {
-  console.warn(
-    "\n⚠️  ACCESS_TOKEN is not set. GET /api/events is effectively open to anyone.\n" +
-      "   Set ACCESS_TOKEN in your .env before deploying this anywhere reachable from the internet.\n"
-  );
-}
 if (!STRIPE_WEBHOOK_SECRET) {
   console.warn("⚠️  STRIPE_WEBHOOK_SECRET not set — POST /webhooks/stripe will reject all requests.");
 }
@@ -58,23 +57,47 @@ function readRawBody(req) {
   });
 }
 
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
+
 function send(res, status, body) {
   const json = JSON.stringify(body);
   res.writeHead(status, {
     "Content-Type": "application/json",
     "Content-Length": Buffer.byteLength(json),
+    // ⚠️ FIX: this service originally had no browser-facing consumer at
+    // all (see olisalestrack-sync/README.md — GET /api/events was designed
+    // to be called from OliSalesTrack's own backend, not a browser).
+    // Now that the real dashboard (../olisalestrack/dashboard) calls
+    // GET /api/events directly from client-side JS, requests without
+    // these headers are silently blocked by the browser's CORS policy —
+    // confirmed via a real headless-browser test that failed with
+    // "Failed to fetch" until these were added. Webhook endpoints
+    // (POST /webhooks/*) don't strictly need this since providers call
+    // them server-to-server, not from a browser, but including it
+    // everywhere keeps this consistent with admin-auth/licensing's
+    // existing pattern and costs nothing.
+    "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   });
   res.end(json);
 }
 
-function requireAccess(req) {
-  const header = req.headers["authorization"] || "";
-  const token = header.startsWith("Bearer ") ? header.slice(7) : "";
-  return Boolean(ACCESS_TOKEN) && token === ACCESS_TOKEN;
-}
-
 const server = createServer(async (req, res) => {
   try {
+    // Browsers send a pre-flight OPTIONS request before the real GET
+    // (since it carries an Authorization header) — must be answered with
+    // 2xx + the CORS headers above, or the browser never sends the real
+    // request at all.
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      });
+      return res.end();
+    }
+
     const url = new URL(req.url, `http://localhost:${PORT}`);
 
     // GET /api/health — no auth, used by hosting platforms' health checks
@@ -86,7 +109,7 @@ const server = createServer(async (req, res) => {
     // -> [{ id, provider, type, amountCents, currency, occurredAt, description }, ...]
     // OliSalesTrack calls this on a poll/refresh instead of asking the user to export a CSV.
     if (req.method === "GET" && url.pathname === "/api/events") {
-      if (!requireAccess(req)) return send(res, 401, { error: "unauthorized" });
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
       const since = url.searchParams.get("since") || undefined;
       const provider = url.searchParams.get("provider") || undefined;
       const events = await listEvents({ since, provider });

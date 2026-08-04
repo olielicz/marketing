@@ -1,0 +1,16 @@
+{
+  "name": "oli-admin-auth",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single-owner admin authentication service shared by all 6 Oli tools' admin surfaces (licensing, OliSalesTrack dashboard, OliFlow deploy controls, etc). Zero npm dependencies.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "create-owner": "node scripts/create-owner.js",
+    "test": "node --test"
+  }
+}
