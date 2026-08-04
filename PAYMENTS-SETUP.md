@@ -1,17 +1,56 @@
 # Payment Setup — Complete Guide
 
-Covers Stripe, PayPal, automatic login email delivery, and subscription renewal reminders for all 6 Oli Tools.
+Covers PayPal, Paddle, Stripe, automatic login email delivery, and
+subscription renewal reminders for all 6 Oli Tools.
+
+**Current status:** every buy page has 3 payment buttons — **Paddle**,
+**PayPal**, and **Stripe**. Set up **Paddle and PayPal first** (Parts 1–2
+below) — those are the two being activated now. The Stripe button
+remains in place as a placeholder link to be wired up later; leave it
+as-is (`REPLACE_WITH_..._STRIPE_LINK`) until you're ready for it — it
+won't do anything or show any error to customers until it has a real
+Stripe Payment Link pasted in, since it's a plain link element, not a
+script that runs on page load.
+
+**Why Paddle in addition to Stripe:** Stripe does not support businesses
+based in the Philippines as of 2026 (confirmed — Stripe only supports
+sellers from 46 countries, and the Philippines is not one of them). If
+you eventually register a business entity in a Stripe-supported country,
+the Stripe button here is ready to activate — but for now, as a
+Philippines-based seller, Paddle is the one that can actually process
+card payments for you. Paddle acts as a Merchant of Record — it legally
+sells on your behalf and pays you out afterward — which is why it can
+support sellers from far more countries (200+) than Stripe, and it
+automatically handles international sales tax/VAT for you too, something
+you'd otherwise have to deal with yourself.
+
+**Getting paid into a Philippine bank account:**
+- **PayPal** lets you link a PH bank account directly (BDO, BPI,
+  UnionBank, Metrobank, etc.) and withdraw via PESONet, typically 3-5
+  business days.
+- **Paddle** pays out via bank wire or PayPal on a schedule you choose.
+  Since direct-to-PH-bank-account wire fees can be high, most Filipino
+  sellers route Paddle payouts through a free Wise Business account
+  (holds USD, converts to PHP more cheaply than a bank does), then
+  withdraw from Wise to their local PH bank.
+- Before either can pay you, register a business name with DTI
+  (`bnrs.dti.gov.ph`, ~₱200-500, same-day online) if you haven't
+  already — both PayPal Business and Paddle's manual seller review ask
+  for this.
 
 ---
 
 ## Overview of the payment + login flow
 
 ```
-Customer enters email on buy page → pays via Stripe or PayPal
+Customer enters email on buy page → pays via Paddle, PayPal, or Stripe
            │
            ▼
-  PayPal: paypal-sdk.js fires onApprove
-  Stripe: customer redirected to thank-you page (manual step — see Part 3)
+  PayPal:  paypal-sdk.js fires onApprove
+  Paddle:  paddle-sdk.js's Checkout.open() overlay fires checkout.completed
+  Stripe:  customer redirected to thank-you page (needs its own webhook
+           setup once you activate it — see Part 3 below; not needed yet
+           for Paddle/PayPal)
            │
            ▼
   OliAuth.createAccount(email, toolKey, orderId)  [shared/auth.js]
@@ -26,23 +65,30 @@ Customer enters email on buy page → pays via Stripe or PayPal
               Clicks "Open Tool →" to access purchased tool
 ```
 
+Paddle and PayPal both fire the welcome email automatically client-side —
+no separate Zapier/webhook step needed for either one. Stripe is
+different: because it redirects to Stripe's own hosted checkout page
+instead of staying on-page, it needs a webhook (or Zapier automation) to
+trigger the welcome email — see Part 3 below, whenever you're ready to
+activate the Stripe button.
+
 ---
 
 ## Part 0 — 14-Day Free Trial (applies to all 6 tools)
 
-Every buy page now advertises "$0 today, then $X/mo after a 14-day free trial." This is a copy-only promise until the trial is actually configured on the Stripe/PayPal side — the HTML has no ability to delay a charge by itself. Set this up once per plan:
+Every buy page now advertises "$0 today, then $X/mo after a 14-day free trial." This is a copy-only promise until the trial is actually configured on the Paddle/PayPal side — the HTML has no ability to delay a charge by itself. Set this up once per plan:
 
-**Stripe:**
-1. When creating each Price under Payments → Payment Links (or Products), open **Advanced settings** → **Free trial** → set to **14 days**.
+**Paddle:**
+1. When creating each Price under Catalog → Products → Prices, open **Billing** → **Free trial** → set to **14 days**.
 2. This must be repeated for every tier × billing-cycle Price you create (see Part 2's table) — trial length isn't automatically shared between prices.
 
 **PayPal:**
 1. When creating a subscription Plan under **Products & Plans**, add a **trial billing cycle** before the regular cycle: Billing cycle 1 = Trial, Frequency: Day, `14`, Price: `$0.00`. Billing cycle 2 = Regular, your normal monthly/yearly price.
 2. Do this for every Plan ID you create (see Part 1b/1c below and PLAN_IDS in `shared/paypal-sdk.js`).
 
-**Cancellation during trial:** both Stripe and PayPal let a customer cancel during the trial with zero charge — this happens automatically via their standard subscription-cancel flow (the "Manage in PayPal" / Stripe customer portal links already on each `account/` page). No extra code needed.
+**Cancellation during trial:** both Paddle and PayPal let a customer cancel during the trial with zero charge — this happens automatically via their standard subscription-cancel flow (the "Manage in PayPal" / Paddle customer portal links already on each `account/` page). No extra code needed.
 
-**Testing:** always test the full trial-to-first-charge flow in Stripe Test mode / PayPal Sandbox before going live — advance the test clock (Stripe has a "Test clock" feature for this) to confirm the trial actually converts to a real charge after 14 days instead of silently expiring.
+**Testing:** always test the full trial-to-first-charge flow in Paddle Sandbox mode / PayPal Sandbox before going live to confirm the trial actually converts to a real charge after 14 days instead of silently expiring.
 
 ---
 
@@ -140,16 +186,36 @@ OliSalesTrack uses its own subscription script (separate from paypal-sdk.js beca
 
 ---
 
-## Part 2 — Stripe Payment Links (for all 6 tools)
+## Part 2 — Paddle Checkout (for all 6 tools)
 
-Stripe Payment Links are fully hosted checkout pages — no code, just a URL.
+Paddle uses an overlay checkout — customers stay on your buy page, no
+redirect to a separate hosted page like Stripe Payment Links used.
 
-### Create one link per tool
+### Step 2a — Apply as a Paddle seller
 
-1. Go to **[dashboard.stripe.com/payment-links](https://dashboard.stripe.com/payment-links)**
-2. Click **+ New** → Add a product:
+1. Go to **[paddle.com](https://paddle.com)** → apply as a seller
+2. Fill in your business details — a DTI/SEC-registered business name
+   helps here, though Paddle does accept individual/sole-proprietor
+   sellers in many cases; this is a manual review, budget **1-3 business
+   days** for approval, so start this early
+3. Once approved: Paddle Dashboard → **Developer Tools → Authentication**
+   → copy your **Client-side Token**
+4. Open `shared/paddle-sdk.js` and replace:
+   ```js
+   var PADDLE_CLIENT_TOKEN = 'YOUR_PADDLE_CLIENT_TOKEN_HERE';
+   var PADDLE_ENVIRONMENT = 'sandbox'; // change to 'production' once live
+   ```
 
-All 6 tools are recurring subscriptions. Each Stripe Payment Link only supports one fixed Price, so create a **separate Payment Link per tier × billing cycle** (e.g. OliOps needs 6 links: Starter/Pro/Agency × monthly/yearly). For the initial launch, it's fine to wire only the entry-tier monthly link into each buy page's `stripeBtn` — the on-page plan selector already lets buyers pick a tier, but actually charging a different tier/cycle via Stripe requires either the matching Payment Link swapped in via JS, or (better, once you have bandwidth) a small serverless function that creates a Stripe Checkout Session dynamically based on the selected plan.
+### Step 2b — Create one Price per tool
+
+All 6 tools are recurring subscriptions. Each Paddle Price is fixed to one
+tier × billing cycle, same limitation as PayPal's Plan IDs — so create a
+**separate Price per tier × billing cycle** (e.g. OliOps needs 6 Prices:
+Starter/Pro/Agency × monthly/yearly) if you want every tier to actually
+charge correctly, not just display correctly. For the initial launch,
+it's fine to wire only the entry-tier monthly Price into `PRICE_IDS` in
+`shared/paddle-sdk.js` — the on-page plan selector already lets buyers
+pick a tier for display purposes.
 
 | Tool | Product Name | Tiers (monthly / yearly) | Billing |
 |---|---|---|---|
@@ -160,26 +226,89 @@ All 6 tools are recurring subscriptions. Each Stripe Payment Link only supports 
 | Oli-Locator | `Oli-Locator` | Solo Agent $59/mo·$516/yr, Team $119/mo·$1068/yr | Recurring |
 | OliSalesTrack | `OliSalesTrack Pro` | $24/mo·$204/yr (single tier) | Recurring |
 
+1. Paddle Dashboard → **Catalog → Products** → **Create Product** (one per tool)
+2. Under each Product → **Add Price** → enter the entry-tier monthly amount
+   → set billing period to **Monthly** → Save
+3. Copy the Price ID (starts with `pri_`)
+4. Open `shared/paddle-sdk.js` and paste it into the matching `PRICE_IDS` entry:
+   ```js
+   var PRICE_IDS = {
+     'oliops':        'pri_YOUR_REAL_ID',
+     'olicommerce':   'pri_YOUR_REAL_ID',
+     'oliflow':       'pri_YOUR_REAL_ID',
+     'oliexplore':    'pri_YOUR_REAL_ID',
+     'oli-locator':   'pri_YOUR_REAL_ID',
+     'olisalestrack': 'pri_YOUR_REAL_ID',
+   };
+   ```
+
+### Paddle → login email after payment
+
+Unlike Stripe, Paddle's overlay checkout fires a `checkout.completed`
+JavaScript event directly in the browser — `shared/paddle-sdk.js` already
+listens for this and calls `OliAuth.createAccount()` immediately, the
+same way `paypal-sdk.js` does for PayPal. **No separate webhook or
+Zapier step is needed for the welcome email to fire** — this is simpler
+than the old Stripe setup, which needed a webhook because Stripe
+redirects to a separate hosted page instead of staying on-page.
+
+### Payouts to your Philippine bank account
+
+1. Paddle Dashboard → **Payouts** → choose payout method: bank wire or PayPal
+2. If using bank wire directly to a PH bank, expect higher fees on the
+   currency conversion than routing through Wise
+3. Recommended: set payout method to a **Wise Business account** (free to
+   open, holds USD) → then transfer from Wise to your PH bank when ready
+   — Wise's conversion rate is typically much closer to the real
+   mid-market rate than a direct bank wire
+
+### Testing before going live
+
+Paddle Dashboard has a **Sandbox** environment completely separate from
+Production, with its own test Products/Prices and test card numbers.
+Test the full checkout → account creation → welcome email flow in
+Sandbox before switching `PADDLE_ENVIRONMENT` to `'production'` and
+swapping in your live Client-side Token and Price IDs.
+
+---
+
+## Part 3 — Stripe Payment Links (set up later, not needed for launch)
+
+Every buy page already has a Stripe button (`id="stripeBtn"`) sitting
+next to the Paddle and PayPal ones, currently pointing at a placeholder
+link (`REPLACE_WITH_..._STRIPE_LINK`). It's safe to leave as-is
+indefinitely — it's a plain `<a>` link, not a script, so it doesn't run
+any code or show any error on page load the way Paddle/PayPal do when
+unconfigured. Activate this whenever you're ready (e.g. once you have a
+Stripe-supported business entity set up).
+
+### Create one link per tool
+
+1. Go to **[dashboard.stripe.com/payment-links](https://dashboard.stripe.com/payment-links)**
+2. Click **+ New** → Add a product using the same tier table from Part 2 above
 3. In **After payment** settings → choose **Redirect to URL** → enter:
    ```
    https://olielicz.github.io/marketing/account/
    ```
 4. Copy the generated URL (e.g. `https://buy.stripe.com/xxxxxxxxxxxx`)
-5. Open the matching `buy/index.html` and replace the placeholder:
+5. Open the matching `buy/index.html` and replace the placeholder in the
+   `stripeBtn` link's `href`:
 
 | File | Placeholder to replace |
 |---|---|
-| `oliops/buy/index.html` | `REPLACE_WITH_YOUR_OLIOPS_PAYMENT_LINK` |
-| `olicommerce/buy/index.html` | `REPLACE_WITH_YOUR_OLICOMMERCE_PAYMENT_LINK` |
-| `oliflow/buy/index.html` | `REPLACE_WITH_YOUR_OLIFLOW_PAYMENT_LINK` |
+| `oliops/buy/index.html` | `REPLACE_WITH_OLIOPS_STRIPE_LINK` |
+| `olicommerce/buy/index.html` | `REPLACE_WITH_OLICOMMERCE_STRIPE_LINK` |
+| `oliflow/buy/index.html` | `REPLACE_WITH_OLIFLOW_STRIPE_LINK` |
 | `oliexplore/buy/index.html` | `REPLACE_WITH_OLIEXPLORE_STRIPE_LINK` |
-| `oli-locator/buy/index.html` | `REPLACE_WITH_YOUR_OLILOCATOR_PAYMENT_LINK` |
-| `olisalestrack/buy/index.html` | `REPLACE_WITH_OLISALESTRACK_MONTHLY_STRIPE_LINK` |
-| `olisalestrack/buy/index.html` | `REPLACE_WITH_OLISALESTRACK_YEARLY_STRIPE_LINK` |
+| `oli-locator/buy/index.html` | `REPLACE_WITH_OLI_LOCATOR_STRIPE_LINK` |
+| `olisalestrack/buy/index.html` | `REPLACE_WITH_OLISALESTRACK_STRIPE_LINK` |
 
 ### Stripe → send login email after payment
 
-PayPal fires the welcome email automatically via `paypal-sdk.js`. Stripe does not — you need one of these two options:
+Unlike Paddle and PayPal, Stripe Payment Links redirect the customer to a
+separate hosted page instead of staying on your buy page, so it can't
+call `OliAuth.createAccount()` directly from JavaScript the way the other
+two do. You'll need one of these two options once you activate Stripe:
 
 **Option A — Stripe Webhook + Zapier (no code, ~10 minutes)**
 1. In Stripe Dashboard → Developers → Webhooks → Add endpoint
@@ -199,7 +328,7 @@ Deploy a tiny Vercel function that:
 
 ---
 
-## Part 3 — Automatic Login Email Delivery
+## Part 4 — Automatic Login Email Delivery (Paddle & PayPal)
 
 ### How it works
 
@@ -214,7 +343,7 @@ PayPal payment success
   → Success modal shows with "Sign In to Your Account →" button
 ```
 
-When a customer pays via **Stripe**, they need the Zapier/webhook setup above (Part 2, Stripe section).
+When a customer pays via **Paddle**, the flow is also fully automatic — the same `checkout.completed` event handled in Part 2 above.
 
 ### EmailJS Setup (required for emails to send)
 
@@ -238,13 +367,13 @@ When a customer pays via **Stripe**, they need the Zapier/webhook setup above (P
 
 ---
 
-## Part 4 — Subscription Renewal Reminders
+## Part 5 — Subscription Renewal Reminders
 
 Oli-Locator and OliSalesTrack are recurring subscriptions. Customers receive an automatic reminder email **2-3 days before each renewal**.
 
 ### Auto-charge (you don't do anything)
 
-PayPal Subscriptions and Stripe Recurring billing charge the customer's card automatically each period. If a payment fails, PayPal/Stripe retry automatically and email the customer. You don't need to do anything manually.
+PayPal Subscriptions and Paddle's recurring billing charge the customer's card automatically each period. If a payment fails, PayPal/Paddle retry automatically and email the customer. You don't need to do anything manually.
 
 ### Renewal reminder email trigger
 
@@ -270,7 +399,7 @@ PayPal Subscriptions and Stripe Recurring billing charge the customer's card aut
 
 ---
 
-## Part 5 — Testing Before Going Live
+## Part 6 — Testing Before Going Live
 
 ### PayPal Sandbox
 1. Go to **[developer.paypal.com/tools/sandbox](https://developer.paypal.com/tools/sandbox)**
@@ -285,23 +414,28 @@ PayPal Subscriptions and Stripe Recurring billing charge the customer's card aut
    - ✅ Password change works on first login
 5. Switch back to Live Client ID
 
-### Stripe Test Mode
+### Paddle Sandbox
+1. Paddle Dashboard has a separate **Sandbox** environment (switch via account settings)
+2. Use Paddle's test card numbers (documented in their Sandbox dashboard)
+3. Confirm end-to-end checkout flow, then switch `PADDLE_ENVIRONMENT` to `'production'` in `shared/paddle-sdk.js`
+
+### Stripe Test Mode (whenever you activate it — not needed for launch)
 1. Stripe Dashboard has a **Test mode** toggle (top-left)
 2. Use test card: `4242 4242 4242 4242`, any future date, any CVC
-3. Confirm end-to-end checkout flow
+3. Confirm end-to-end checkout flow once you've wired up the webhook from Part 3
 
 ---
 
 ## Pricing Reference
 
-| Tool | Price | Billing | Stripe file | PayPal |
-|---|---|---|---|---|
-| OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription |
-| OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription |
-| OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription |
-| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription |
-| Oli-Locator | $59/mo or $516/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan |
-| OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan |
+| Tool | Price | Billing | Buy page file | PayPal | Paddle | Stripe |
+|---|---|---|---|---|---|---|
+| OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
+| OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
+| OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
+| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
+| Oli-Locator | $59/mo or $516/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
+| OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
 
 
-> **Important:** if you change a price anywhere, update it in THREE places: the landing page, the buy page, and the actual Stripe Payment Link / PayPal plan (which has the price baked in — changing the HTML does NOT change what is charged).
+> **Important:** if you change a price anywhere, update it in ALL the places it's baked in: the landing page, the buy page, and each actual payment platform's own record of the price (PayPal Plan, Paddle Price, and eventually the Stripe Payment Link) — changing the HTML alone does NOT change what is actually charged on any of the three.
