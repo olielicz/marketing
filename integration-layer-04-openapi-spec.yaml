@@ -1,0 +1,848 @@
+openapi: 3.0.0
+info:
+  title: Oli Tools Universal Integration API
+  description: |
+    Complete API documentation for Oli Tools integration layer.
+    
+    Supports:
+    - Zapier, Make.com, n8n, GoHighLevel (GHL)
+    - Inbound webhooks (Zapier → Oli)
+    - Outbound webhooks (Oli → external services)
+    - OAuth authentication (connect external platforms)
+    
+    **Authentication:** All requests require Bearer token in Authorization header
+    
+    ```
+    Authorization: Bearer {api_token}
+    ```
+  version: 1.0.0
+  contact:
+    name: Oli Support
+    email: support@oli.tools
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.oli.tools
+    description: Production API
+  - url: https://staging-api.oli.tools
+    description: Staging API
+  - url: http://localhost:3000
+    description: Local development
+
+# ============================================================================
+# AUTHENTICATION
+# ============================================================================
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth 2.0 access token or API token
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - error
+
+    WebhookEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique event ID
+        type:
+          type: string
+          enum: [contact.created, contact.updated, lead.created, order.completed, workflow.triggered]
+        tool:
+          type: string
+          enum: [oliops, olicommerce, oliflow, oliexplore, oli-locator, olisalestrack]
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: object
+          description: Event-specific data
+      required:
+        - id
+        - type
+        - tool
+        - timestamp
+
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        phone:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+        location:
+          type: string
+        service:
+          type: string
+        status:
+          type: string
+          enum: [new, contacted, converted, lost]
+        createdAt:
+          type: string
+          format: date-time
+
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        lastTriggeredAt:
+          type: string
+          format: date-time
+
+    OAuthToken:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+          description: Seconds until token expiration
+        tokenType:
+          type: string
+          default: Bearer
+
+# ============================================================================
+# PATHS: INBOUND WEBHOOKS (Zapier → Oli)
+# ============================================================================
+
+paths:
+  /api/webhooks/v1/{toolKey}/{action}:
+    post:
+      summary: Send webhook to Oli tool
+      description: |
+        Inbound webhook handler. Send data from Zapier, Make, n8n, or GHL to trigger actions in Oli tools.
+        
+        **Example:** Zapier receives a new Stripe payment → POST to OliCommerce `create_contact` action
+      parameters:
+        - in: path
+          name: toolKey
+          required: true
+          schema:
+            type: string
+            enum: [oliops, olicommerce, oliflow, oliexplore, oli-locator, olisalestrack]
+          description: Target Oli tool
+        - in: path
+          name: action
+          required: true
+          schema:
+            type: string
+            enum: [create_contact, create_lead, trigger_workflow, publish_post, record_sale, update_contact]
+          description: Action to perform
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Action-specific payload
+              example:
+                email: user@example.com
+                name: John Doe
+                phone: "+1-555-0100"
+      responses:
+        '200':
+          description: Webhook processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                  requestId:
+                    type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Inbound Webhooks
+
+# ============================================================================
+# PATHS: OUTBOUND WEBHOOKS (Oli → External)
+# ============================================================================
+
+  /api/webhooks/register:
+    post:
+      summary: Register outbound webhook
+      description: Register a URL to receive events from Oli tools
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                toolKey:
+                  type: string
+                  enum: [oliops, olicommerce, oliflow, oliexplore, oli-locator, olisalestrack, '*']
+                url:
+                  type: string
+                  format: uri
+                  description: Webhook endpoint to call
+                events:
+                  type: array
+                  items:
+                    type: string
+                  description: Event types to subscribe to. Use ['*'] for all events
+              required:
+                - userId
+                - toolKey
+                - url
+                - events
+      responses:
+        '201':
+          description: Webhook registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhookId:
+                    type: string
+                  success:
+                    type: boolean
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Outbound Webhooks
+
+  /api/webhooks/{webhookId}:
+    put:
+      summary: Update webhook
+      description: Modify an existing webhook subscription
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: webhookId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                events:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Webhook updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhook:
+                    $ref: '#/components/schemas/Webhook'
+      tags:
+        - Outbound Webhooks
+
+    delete:
+      summary: Delete webhook
+      description: Unsubscribe from events
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: webhookId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Webhook deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      tags:
+        - Outbound Webhooks
+
+  /api/webhooks:
+    get:
+      summary: List webhooks
+      description: Get all registered webhooks for a user
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: toolKey
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhooks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+                  count:
+                    type: integer
+      tags:
+        - Outbound Webhooks
+
+  /api/webhooks/statistics:
+    get:
+      summary: Get webhook statistics
+      description: View delivery success rates and queue status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Webhook statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalWebhooks:
+                    type: integer
+                  activeWebhooks:
+                    type: integer
+                  totalSuccesses:
+                    type: integer
+                  totalFailures:
+                    type: integer
+                  successRate:
+                    type: string
+                  queuedEvents:
+                    type: integer
+                  deadLetteredCount:
+                    type: integer
+      tags:
+        - Outbound Webhooks
+
+# ============================================================================
+# PATHS: OAUTH AUTHENTICATION
+# ============================================================================
+
+  /api/oauth/authorize:
+    get:
+      summary: Start OAuth flow
+      description: Get authorization URL for connecting Zapier, Make, n8n, or GHL
+      parameters:
+        - in: query
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [zapier, make, n8n, ghl]
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: redirectUri
+          required: true
+          schema:
+            type: string
+            format: uri
+      responses:
+        '200':
+          description: Authorization URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorizationUrl:
+                    type: string
+                    format: uri
+      tags:
+        - OAuth
+
+  /api/oauth/callback:
+    post:
+      summary: OAuth callback handler
+      description: Exchange authorization code for access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider:
+                  type: string
+                  enum: [zapier, make, n8n, ghl]
+                code:
+                  type: string
+                state:
+                  type: string
+                redirectUri:
+                  type: string
+              required:
+                - provider
+                - code
+                - state
+      responses:
+        '200':
+          description: Token obtained
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthToken'
+      tags:
+        - OAuth
+
+  /api/oauth/token:
+    get:
+      summary: Get access token
+      description: Get a valid access token (auto-refreshes if needed)
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [zapier, make, n8n, ghl]
+      responses:
+        '200':
+          description: Valid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthToken'
+      tags:
+        - OAuth
+
+  /api/oauth/providers:
+    get:
+      summary: List connected providers
+      description: Get all OAuth providers connected by user
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Connected providers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  providers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        provider:
+                          type: string
+                        connectedAt:
+                          type: string
+                          format: date-time
+                        expiresAt:
+                          type: string
+                          format: date-time
+      tags:
+        - OAuth
+
+  /api/oauth/disconnect:
+    post:
+      summary: Disconnect provider
+      description: Revoke access token and disconnect OAuth provider
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                provider:
+                  type: string
+                  enum: [zapier, make, n8n, ghl]
+              required:
+                - userId
+                - provider
+      responses:
+        '200':
+          description: Provider disconnected
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      tags:
+        - OAuth
+
+# ============================================================================
+# PATHS: ACTIONS BY TOOL
+# ============================================================================
+
+  /api/webhooks/v1/oliops/create_contact:
+    post:
+      summary: Create contact in OliOps
+      description: Create a new CRM contact
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                phone:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - email
+      responses:
+        '200':
+          description: Contact created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+      tags:
+        - OliOps
+
+  /api/webhooks/v1/olicommerce/record_cart_recovery:
+    post:
+      summary: Record cart recovery in OliCommerce
+      description: Log a cart abandonment recovery event
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cartId:
+                  type: string
+                email:
+                  type: string
+                cartValue:
+                  type: number
+                items:
+                  type: array
+              required:
+                - cartId
+                - email
+      responses:
+        '200':
+          description: Cart recovery recorded
+      tags:
+        - OliCommerce
+
+  /api/webhooks/v1/oliflow/trigger_workflow:
+    post:
+      summary: Trigger OliFlow workflow
+      description: Execute an automation workflow
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflowId:
+                  type: string
+                triggerData:
+                  type: object
+              required:
+                - workflowId
+      responses:
+        '200':
+          description: Workflow triggered
+      tags:
+        - OliFlow
+
+  /api/webhooks/v1/oliexplore/publish_post:
+    post:
+      summary: Publish social media post
+      description: Queue a post for publishing across platforms
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platforms:
+                  type: array
+                  items:
+                    type: string
+                  enum: [facebook, instagram, x, tiktok, threads, linkedin]
+                content:
+                  type: string
+                hashtags:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - platforms
+                - content
+      responses:
+        '200':
+          description: Post queued for publishing
+      tags:
+        - OliExplore
+
+  /api/webhooks/v1/oli-locator/create_lead:
+    post:
+      summary: Create lead in Oli-Locator
+      description: Add a new sales lead
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lead'
+      responses:
+        '200':
+          description: Lead created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+      tags:
+        - Oli-Locator
+
+  /api/webhooks/v1/olisalestrack/record_sale:
+    post:
+      summary: Record sale in OliSalesTrack
+      description: Log a sales transaction
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                productId:
+                  type: string
+                customerId:
+                  type: string
+                currency:
+                  type: string
+              required:
+                - amount
+                - productId
+      responses:
+        '200':
+          description: Sale recorded
+      tags:
+        - OliSalesTrack
+
+# ============================================================================
+# HEALTH & DEBUGGING
+# ============================================================================
+
+  /api/webhooks/health:
+    get:
+      summary: Health check
+      description: Verify API is operational
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  tools:
+                    type: array
+                    items:
+                      type: string
+      tags:
+        - Health
+
+  /api/webhooks/logs:
+    get:
+      summary: Get webhook logs
+      description: View recent webhook delivery logs (debugging)
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [success, error]
+        - in: query
+          name: tool
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Webhook logs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                  count:
+                    type: integer
+      tags:
+        - Debugging
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Inbound Webhooks
+    description: Send data from external services to Oli tools
+  - name: Outbound Webhooks
+    description: Oli tools send events to external services
+  - name: OAuth
+    description: Connect Zapier, Make, n8n, GHL accounts
+  - name: OliOps
+    description: CRM and business operations
+  - name: OliCommerce
+    description: E-commerce and cart recovery
+  - name: OliFlow
+    description: Workflow automation
+  - name: OliExplore
+    description: Social media management
+  - name: Oli-Locator
+    description: Lead generation and CRM
+  - name: OliSalesTrack
+    description: Revenue tracking and analytics
+  - name: Health
+    description: API health and status
+  - name: Debugging
+    description: Logs and diagnostic tools
