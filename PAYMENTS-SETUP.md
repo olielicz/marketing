@@ -218,19 +218,25 @@ When a customer pays via **Stripe**, they need the Zapier/webhook setup above (P
 
 ### EmailJS Setup (required for emails to send)
 
+The free EmailJS plan caps you at **2 templates total**, so this uses 2,
+not 3 — password resets and renewal reminders share one generic template
+(`oli_notice`) instead of each needing their own. See `EMAILJS-TEMPLATES.md`
+for the full explanation and copy-paste HTML.
+
 1. Go to **[emailjs.com](https://www.emailjs.com)** → Sign up free
 2. Email Services → Add Service → Gmail → connect `workitlikeapr01@gmail.com`
 3. Create template `oli_welcome` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
-4. Create template `oli_renewal` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
-5. Create template `oli_reset` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
-6. Copy your **Public Key** (Account → General) and **Service ID**
-7. Open `shared/auth.js` lines 28-32 and fill in:
+4. Create template `oli_notice` — a generic template reused for BOTH
+   password resets and renewal reminders (full copy-paste HTML in
+   `EMAILJS-TEMPLATES.md`)
+5. Copy your **Public Key** (Account → General) and **Service ID**
+6. Open `shared/auth.js` lines 28-32 and fill in:
    ```js
    var EMAILJS_CONFIG = {
      publicKey:       'your_real_public_key',
      serviceId:       'your_real_service_id',
      welcomeTemplate: 'oli_welcome',
-     renewalTemplate: 'oli_renewal',
+     noticeTemplate:  'oli_notice',
    };
    ```
 
@@ -252,7 +258,9 @@ PayPal Subscriptions and Stripe Recurring billing charge the customer's card aut
 1. Trigger: PayPal → Successful Sale / subscription payment
 2. Filter: payment type is recurring
 3. Delay: wait until 2 days before next renewal date
-4. Action: EmailJS → Send Email (`oli_renewal` template)
+4. Action: EmailJS → Send Email (`oli_notice` template — the same generic
+   template used for password resets, with renewal-specific heading/
+   message/button fields filled in)
 
 **Option B — PayPal Webhook**
 1. PayPal Dashboard → Webhooks → event: `BILLING.SUBSCRIPTION.RENEWED`

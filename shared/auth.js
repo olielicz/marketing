@@ -11,9 +11,14 @@
  * ── EMAILJS SETUP (free, 5 minutes) ──────────────────────────────────────
  * 1. https://www.emailjs.com → Sign up free (200 emails/month free)
  * 2. Add service: Gmail → connect workitlikeapr01@gmail.com
- * 3. Create templates: oli_welcome, oli_renewal, oli_reset
- *    (full copy-paste template HTML for all 3 lives in
- *    EMAILJS-TEMPLATES.md at the repo root — NOT README.md)
+ * 3. Create 2 templates: oli_welcome, oli_notice
+ *    (full copy-paste template HTML lives in EMAILJS-TEMPLATES.md at the
+ *    repo root. NOTE: the free EmailJS plan caps you at 2 templates, so
+ *    "oli_notice" is a single GENERIC template reused for both password
+ *    resets AND renewal reminders — see sendPasswordResetEmail() and
+ *    sendRenewalReminderEmail() below, which each pass different heading/
+ *    body/button text into the same template. You do not need a 3rd
+ *    template slot.)
  * 4. Copy Public Key + Service ID → paste in EMAILJS_CONFIG below
  * ─────────────────────────────────────────────────────────────────────────
  */
@@ -23,11 +28,12 @@
 
   /* ── EmailJS Config ── fill in after EmailJS signup ─────────────────── */
   var EMAILJS_CONFIG = {
-    publicKey:       'YOUR_EMAILJS_PUBLIC_KEY',
-    serviceId:       'YOUR_EMAILJS_SERVICE_ID',
+    publicKey:       'r1WYwtu1o0GcuP811',
+    serviceId:       'workitlikeapr01',
     welcomeTemplate: 'oli_welcome',
-    renewalTemplate: 'oli_renewal',
-    resetTemplate:   'oli_reset',
+    /* Both reset and renewal reuse the SAME generic template — the free
+       EmailJS plan only allows 2 templates. See EMAILJS-TEMPLATES.md. */
+    noticeTemplate:  'oli_notice',
   };
 
   /* ── Tool definitions ────────────────────────────────────────────────── */
@@ -266,26 +272,57 @@
     });
   }
 
+  /**
+   * sendNoticeEmail(params)
+   * Generic "one heading, one message, one button" email — reused for
+   * BOTH renewal reminders and password resets, since the free EmailJS
+   * plan caps templates at 2 (oli_welcome + this one). Each caller below
+   * fills in the heading/body/button text for its specific case; the
+   * template itself (oli_notice, see EMAILJS-TEMPLATES.md) just renders
+   * whatever text/url it's given.
+   */
+  function sendNoticeEmail(params) {
+    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
+      console.log('[OliAuth] DEMO — notice email would send:', params);
+      return;
+    }
+    loadEmailJS(function () {
+      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.noticeTemplate, {
+        to_email:      params.toEmail,
+        to_name:       params.toName,
+        tool_name:     params.toolName,
+        tool_icon:     params.toolIcon || '💎',
+        heading:       params.heading,
+        message:       params.message,
+        button_label:  params.buttonLabel,
+        button_url:    params.buttonUrl,
+        secondary_text:params.secondaryText || '',
+        secondary_url: params.secondaryUrl || '',
+        support_email: 'workitlikeapr01@gmail.com',
+      }).then(function () {
+        console.log('[OliAuth] Notice email sent to', params.toEmail);
+      }).catch(function (err) {
+        console.error('[OliAuth] Notice email error:', err);
+      });
+    });
+  }
+
   function sendRenewalReminderEmail(email, toolKey, renewalDate, amount) {
     var tool = TOOLS[toolKey] || { name: toolKey, icon: '💎' };
     var user = getUser(email, toolKey);
     if (!user) return;
-    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      console.log('[OliAuth] DEMO — renewal reminder would send to', email, 'for', tool.name);
-      return;
-    }
-    loadEmailJS(function () {
-      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.renewalTemplate, {
-        to_email:     email,
-        to_name:      user.name || email.split('@')[0],
-        tool_name:    tool.name,
-        tool_icon:    tool.icon || '💎',
-        renewal_date: renewalDate,
-        amount:       amount,
-        cancel_url:   'https://www.paypal.com/myaccount/autopay/',
-        login_url:    getAbsoluteUrl(tool.loginUrl),
-        support_email:'workitlikeapr01@gmail.com',
-      });
+    sendNoticeEmail({
+      toEmail:       email,
+      toName:        user.name || email.split('@')[0],
+      toolName:      tool.name,
+      toolIcon:      tool.icon,
+      heading:       'Upcoming renewal',
+      message:       'Your ' + tool.name + ' subscription will renew automatically on ' +
+                      renewalDate + ' for ' + amount + '. No action is needed if you\u2019d like to continue.',
+      buttonLabel:   'Open ' + tool.name,
+      buttonUrl:     getAbsoluteUrl(tool.loginUrl),
+      secondaryText: 'Want to cancel or change plans instead?',
+      secondaryUrl:  'https://www.paypal.com/myaccount/autopay/',
     });
   }
 
@@ -293,18 +330,17 @@
     var tool = TOOLS[toolKey] || { name: 'Oli Tools', icon: '💎' };
     var user = getUser(email, toolKey);
     if (!user) return;
-    if (EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
-      console.log('[OliAuth] DEMO — password reset link:', resetUrl);
-      return;
-    }
-    loadEmailJS(function () {
-      window.emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.resetTemplate, {
-        to_email:      email,
-        to_name:       user.name || email.split('@')[0],
-        tool_name:     tool.name,
-        reset_url:     resetUrl,
-        support_email: 'workitlikeapr01@gmail.com',
-      });
+    sendNoticeEmail({
+      toEmail:     email,
+      toName:      user.name || email.split('@')[0],
+      toolName:    tool.name,
+      toolIcon:    tool.icon,
+      heading:     'Password reset requested',
+      message:     'We received a request to reset your ' + tool.name +
+                    ' password. Click below to choose a new one. This link expires in 1 hour. ' +
+                    'If you didn\u2019t request this, you can safely ignore this email.',
+      buttonLabel: 'Reset My Password',
+      buttonUrl:   resetUrl,
     });
   }
 
