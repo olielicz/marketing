@@ -220,9 +220,9 @@ When a customer pays via **Stripe**, they need the Zapier/webhook setup above (P
 
 1. Go to **[emailjs.com](https://www.emailjs.com)** → Sign up free
 2. Email Services → Add Service → Gmail → connect `workitlikeapr01@gmail.com`
-3. Create template `oli_welcome` (see README.md for full template copy)
-4. Create template `oli_renewal` (see README.md for full template copy)
-5. Create template `oli_reset` (see README.md for full template copy)
+3. Create template `oli_welcome` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
+4. Create template `oli_renewal` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
+5. Create template `oli_reset` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
 6. Copy your **Public Key** (Account → General) and **Service ID**
 7. Open `shared/auth.js` lines 28-32 and fill in:
    ```js
