@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>30-Day Zero-Budget Growth Plan — All 6 Oli Tools</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+  :root {
+    --ink:#0f1115; --sub:#5a6472; --bg:#0d0f14; --card:#171a21; --line:#2a2e38;
+    --accent:#6C47FF; --accent2:#FF6B6B; --good:#16a34a; --warn:#d97706; --white:#f4f4f8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--white); overflow: hidden; }
+  .deck { position: relative; width: 100%; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0; display: none; flex-direction: column;
+    padding: 56px 72px; overflow-y: auto;
+  }
+  .slide.active { display: flex; }
+  .slide h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .slide h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 18px; }
+  .kicker { color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .sub { color: #b7bcc9; font-size: 17px; line-height: 1.6; max-width: 800px; }
+  .slide-num { position: absolute; bottom: 22px; right: 32px; color: #565d6b; font-size: 13px; font-weight: 600; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 24px; align-items: center; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 20px; }
+  .grid6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 24px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 800; }
+  .card p { margin: 0; color: #b7bcc9; font-size: 14px; line-height: 1.55; }
+  .shot {
+    border-radius: 14px; border: 1px solid var(--line); overflow: hidden;
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6); background: #fff;
+  }
+  .shot img { width: 100%; display: block; }
+  .shot-caption { text-align: center; color: #8b93a3; font-size: 13px; margin-top: 10px; font-weight: 600; }
+  table.plan { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 14px; }
+  table.plan th, table.plan td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  table.plan th { color: #8b93a3; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+  table.plan td { color: #d8dbe3; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; background: #ffffff12; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 12.5px; font-weight: 700; margin: 3px 4px 3px 0; }
+  .pill.good { color: #4ade80; border-color: #16653480; }
+  .pill.warn { color: #fbbf24; border-color: #92620080; }
+  .week-block { margin-bottom: 14px; }
+  .week-block h4 { margin: 0 0 6px; font-size: 15px; color: var(--accent); font-weight: 800; }
+  .week-block ul { margin: 0; padding-left: 20px; color: #d8dbe3; font-size: 14px; line-height: 1.55; }
+  .big-number { font-size: 64px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .center { text-align: center; margin: auto; }
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .logo-title { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+  .logo-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .nav {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 100; background: #0d0f14dd; padding: 10px 16px;
+    border-radius: 999px; border: 1px solid var(--line); backdrop-filter: blur(8px);
+  }
+  .nav button {
+    background: #ffffff10; border: 1px solid var(--line); color: var(--white);
+    border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .nav button:hover { background: #ffffff1c; }
+  .nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav .dots { display: flex; align-items: center; gap: 5px; padding: 0 6px; }
+  .nav .dot { width: 6px; height: 6px; border-radius: 50%; background: #4a5063; }
+  .nav .dot.active { background: var(--accent); width: 18px; border-radius: 4px; }
+  .scoreboard-table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 13.5px; }
+  .scoreboard-table th, .scoreboard-table td { border: 1px solid var(--line); padding: 10px; text-align: center; }
+  .scoreboard-table th { background: #1d2130; color: #b7bcc9; font-size: 11.5px; text-transform: uppercase; }
+  .scoreboard-table td.tool-name { text-align: left; font-weight: 700; }
+  .footer-note { margin-top: auto; padding-top: 24px; color: #565d6b; font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- SLIDE 1 — TITLE -->
+  <section class="slide active">
+    <div class="center">
+      <div class="logo-title" style="justify-content:center;">
+        <div class="logo-icon">💎</div>
+        <div class="kicker" style="margin:0;">WorkItLikeAPro · Growth Briefing</div>
+      </div>
+      <h1 style="font-size:52px; text-align:center;">30 Days. $0 Budget.<br/>Six Products. Real Profit.</h1>
+      <p class="sub center" style="margin-top:18px;">A senior-marketing-director-level plan to get OliOps Suite, OliCommerce Stack,
+        OliFlow Automation Engine, OliExplore, Oli-Locator, and OliSalesTrack their
+        first paying customers within 30 days — using only free channels.</p>
+      <div class="badge-row" style="justify-content:center; margin-top:28px;">
+        <span class="pill good">✓ 6 products</span>
+        <span class="pill good">✓ $0 ad spend</span>
+        <span class="pill good">✓ SMB + Enterprise</span>
+        <span class="pill warn">Day 30 deadline</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — THE REFRAME -->
+  <section class="slide">
+    <div class="kicker">The one thing to understand first</div>
+    <h2>Your fixed cost this month is $0.<br/>That changes what "profitable" means.</h2>
+    <div class="grid2">
+      <div>
+        <p class="sub">Every channel and every piece of infrastructure in this plan is free: GitHub
+          Pages hosting, Brevo email (300/day forever), Product Hunt, Reddit, LinkedIn,
+          Indie Hackers, EmailJS, and 40+ directory listings.</p>
+        <p class="sub" style="margin-top:14px;">Revenue minus zero cost is profit — on the day of the <em>first</em> sale, not
+          some big month-end number. So the real 30-day goal isn't "be profitable."
+          It's: <strong style="color:#fff;">get the first paying customer on each of the six
+          tools, then compound from there.</strong></p>
+      </div>
+      <div class="card">
+        <h3>🎯 Honest caveat</h3>
+        <p>Cold email reply rates run 5–10% on a good list, not 50%. Product Hunt
+          launches sometimes flop. This is the full-effort, correct-channel plan —
+          not a guarantee. What's guaranteed: every tactic here costs $0 and teaches
+          you which channel to double down on for Month 2.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — SIX PRODUCTS, ONE BUYER MAP -->
+  <section class="slide">
+    <div class="kicker">Section 1</div>
+    <h2>Six products, one buyer map</h2>
+    <table class="plan">
+      <tr><th>Tool</th><th>Entry price</th><th>Who actually buys this</th></tr>
+      <tr><td>1. OliOps Suite</td><td>$39/mo · $348/yr</td><td>Solo founders / small service businesses tired of 4 SaaS bills</td></tr>
+      <tr><td>2. OliCommerce Stack</td><td>$29/mo · $264/yr</td><td>Shopify owners losing sales to abandoned carts</td></tr>
+      <tr><td>3. OliFlow Automation Engine</td><td>$35/mo · $312/yr</td><td>Agencies/ops teams paying usage-metered Zapier/Make bills</td></tr>
+      <tr><td>4. OliExplore</td><td>$27/mo · $252/yr</td><td>Social media managers manually reposting content</td></tr>
+      <tr><td>5. Oli-Locator</td><td>$59/mo · $516/yr</td><td>Solo real estate agents juggling 3–4 apps</td></tr>
+      <tr><td>6. OliSalesTrack</td><td>$24/mo · $204/yr</td><td>E-commerce sellers who don't know their real profit margin</td></tr>
+    </table>
+  </section>
+
+  <!-- SLIDE 4 — PRODUCT SCREENSHOTS GRID -->
+  <section class="slide">
+    <div class="kicker">What we're actually selling</div>
+    <h2>All 6 landing pages — live, tested, working</h2>
+    <div class="grid6">
+      <div><div class="shot"><img src="images/oliops-landing.png" alt="OliOps Suite landing page"/></div><div class="shot-caption">OliOps Suite</div></div>
+      <div><div class="shot"><img src="images/olicommerce-landing.png" alt="OliCommerce Stack landing page"/></div><div class="shot-caption">OliCommerce Stack</div></div>
+      <div><div class="shot"><img src="images/oliflow-landing.png" alt="OliFlow landing page"/></div><div class="shot-caption">OliFlow Automation Engine</div></div>
+      <div><div class="shot"><img src="images/oliexplore-landing.png" alt="OliExplore landing page"/></div><div class="shot-caption">OliExplore</div></div>
+      <div><div class="shot"><img src="images/oli-locator-landing.png" alt="Oli-Locator landing page"/></div><div class="shot-caption">Oli-Locator</div></div>
+      <div><div class="shot"><img src="images/olisalestrack-landing.png" alt="OliSalesTrack landing page"/></div><div class="shot-caption">OliSalesTrack</div></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — SMB vs ENTERPRISE -->
+  <section class="slide">
+    <div class="kicker">The honest split</div>
+    <h2>Small business vs. large business</h2>
+    <div class="grid2">
+      <div class="card" style="border-color:#16653480;">
+        <h3 style="color:#4ade80;">🟢 Small business — your Day 30 buyer</h3>
+        <p>Solo operators and 2–10 person teams buy fast, on their own credit card,
+          with no procurement process — often same-day. <strong>100% of your Day 30
+          revenue comes from here.</strong> Every tactic in this plan is built for
+          this buyer.</p>
+      </div>
+      <div class="card" style="border-color:#92620080;">
+        <h3 style="color:#fbbf24;">🟡 Large business — a Month 2–3 seed, not a Day 30 close</h3>
+        <p>Enterprise buyers need procurement, security review, references, a sales
+          call — none of which compresses into 30 days for a product with zero
+          paying customers yet. We seed this pipeline (OliFlow + Oli-Locator only)
+          with LinkedIn outreach in Week 3, aiming for Month 2 discovery calls —
+          not a Month 1 sale.</p>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:20px;">Any marketing director who promises an enterprise close inside 30 days for an
+      unreferenced product is selling you a fantasy. This plan won't do that.</p>
+  </section>
+
+  <!-- SLIDE 6 — THE SHARED FUNNEL -->
+  <section class="slide">
+    <div class="kicker">Section 2</div>
+    <h2>The funnel every tool shares — build once, reuse 6×</h2>
+    <table class="plan">
+      <tr><th>Traffic source</th><th>Landing page</th><th>Email capture</th><th>Nurture</th><th>Buy page</th><th>Paid customer</th></tr>
+      <tr><td>PH / Reddit / outreach</td><td>✅ Live, all 6</td><td>Brevo, free</td><td>5-email sequence</td><td>✅ Live, all 6</td><td>Stripe / PayPal</td></tr>
+    </table>
+    <div class="card" style="margin-top:24px; border-color:#7c2d12;background:#3d1a06;">
+      <h3 style="color:#fdba74;">⚠️ Day 0 — before any marketing begins</h3>
+      <p style="color:#fed7aa;">Your PayPal Plan IDs and Stripe links are still placeholders
+        (<code>YOUR_..._PLAN_ID_HERE</code>). You cannot be "profitable" if the checkout
+        button doesn't actually charge anyone. Fill in real Stripe Payment Links + PayPal
+        Plan IDs for all 6 tools, do a $1 test purchase on each, then refund it. This is the
+        single highest-leverage 2–3 hours of the entire 30 days.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — WEEK 1 -->
+  <section class="slide">
+    <div class="kicker">Section 3 — Execution</div>
+    <h2>Week 1 (Days 1–7) — Foundation + first traffic</h2>
+    <div class="week-block">
+      <ul>
+        <li><strong>Day 1</strong> — Confirm all 6 buy pages actually charge (Day 0 checklist). Set up Brevo + GA4/Plausible.</li>
+        <li><strong>Day 2</strong> — Load nurture sequences into Brevo for all 6 tools.</li>
+        <li><strong>Day 3</strong> — Submit all 6 tools to Tier 1 directories (AlternativeTo, SaaSHub, Capterra, G2, Crunchbase).</li>
+        <li><strong>Day 4</strong> — Submit to Tier 2 indie directories (Indie Hackers, BetaList, Uneed, Fazier).</li>
+        <li><strong>Day 5</strong> — Build cold outreach lists: 30 real estate agents, 30 social media managers, 25 e-commerce sellers.</li>
+        <li><strong>Day 6</strong> — Send first outreach batch: 15–20 emails using existing templates.</li>
+        <li><strong>Day 7</strong> — <strong>Checkpoint:</strong> checkouts verified, forms live, 40+ listings submitted, first outreach sent.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — WEEK 2 -->
+  <section class="slide">
+    <div class="kicker">Section 3 — Execution</div>
+    <h2>Week 2 (Days 8–14) — First Product Hunt launch</h2>
+    <div class="grid2">
+      <div class="week-block">
+        <ul>
+          <li><strong>Day 8</strong> — Recruit 15–20 launch-day supporters.</li>
+          <li><strong>Day 9</strong> — <strong>PRODUCT HUNT LAUNCH #1: OliOps Suite.</strong> Submit 12:01am PST. Reply to every comment within 5 min for 6 hours. Cross-post to r/SaaS, r/Entrepreneur, Indie Hackers.</li>
+          <li><strong>Day 10</strong> — Send Brevo Email #1 to PH signups. Continue outreach: 20 more emails.</li>
+          <li><strong>Day 11</strong> — Reply to all PH comments. Post a LinkedIn recap.</li>
+          <li><strong>Day 12</strong> — Second outreach batch: 20 more emails.</li>
+          <li><strong>Day 13</strong> — Schedule Week 3–4 social posts in Buffer (free).</li>
+          <li><strong>Day 14</strong> — <strong>Checkpoint:</strong> log PH ranking, signups, and real dollars collected.</li>
+        </ul>
+      </div>
+      <div class="shot"><img src="images/oliops-pricing.png" alt="OliOps Suite pricing page"/></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 — WEEK 3 -->
+  <section class="slide">
+    <div class="kicker">Section 3 — Execution</div>
+    <h2>Week 3 (Days 15–21) — Second launch + outreach scales</h2>
+    <div class="week-block">
+      <ul>
+        <li><strong>Day 15–16</strong> — Recruit supporters, then <strong>PRODUCT HUNT LAUNCH #2: OliFlow.</strong> Cross-post to r/nocode, r/automation.</li>
+        <li><strong>Day 17</strong> — Begin Oli-Locator outreach at full volume: 20 emails/day.</li>
+        <li><strong>Day 18</strong> — Begin OliExplore outreach at full volume. Post OliSalesTrack case study to r/ecommerce, r/shopify.</li>
+        <li><strong>Day 19</strong> — Submit OliSalesTrack to Product Hunt as its own staggered launch.</li>
+        <li><strong>Day 20</strong> — <strong>Enterprise seed (not a close):</strong> 10 LinkedIn notes to Ops Directors (OliFlow) + Broker-Owners (Oli-Locator) — aiming for Month 2 conversations.</li>
+        <li><strong>Day 21</strong> — <strong>Checkpoint:</strong> OliFlow PH badge, 100 real estate + 50 OliExplore emails sent cumulative.</li>
+      </ul>
+    </div>
+    <div class="shot" style="max-width:420px; margin-top:10px;"><img src="images/oliflow-app.png" alt="OliFlow workflow builder app"/></div>
+  </section>
+
+  <!-- SLIDE 10 — WEEK 4 -->
+  <section class="slide">
+    <div class="kicker">Section 3 — Execution</div>
+    <h2>Week 4 (Days 22–30) — Third launch + conversion push</h2>
+    <div class="week-block">
+      <ul>
+        <li><strong>Day 22–23</strong> — Recruit supporters, then <strong>PRODUCT HUNT LAUNCH #3: OliCommerce Stack.</strong></li>
+        <li><strong>Day 24</strong> — Send honest urgency email — only if the scarcity is real, never fabricated.</li>
+        <li><strong>Day 25</strong> — Collect real testimonials from anyone who's paid. Add to landing pages same day.</li>
+        <li><strong>Day 26</strong> — Second outreach round + 1 SEO post for OliSalesTrack.</li>
+        <li><strong>Day 27</strong> — Re-share all 3 PH launches with real "results so far" numbers.</li>
+        <li><strong>Day 28</strong> — Audit every directory listing — confirm still live.</li>
+        <li><strong>Day 29</strong> — One final, polite follow-up to non-responders.</li>
+        <li><strong>Day 30</strong> — <strong>Final scoreboard.</strong> Double down on whatever channel produced the most real revenue per tool.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 — CHANNEL PLAYBOOK -->
+  <section class="slide">
+    <div class="kicker">Section 4</div>
+    <h2>Channel-by-channel: why, and the honest limit</h2>
+    <div class="grid3">
+      <div class="card"><h3>🚀 Product Hunt</h3><p>Biggest free traffic spike available. <strong>Limit:</strong> a one-day spike, not sustained traffic — value is in signups/social proof.</p></div>
+      <div class="card"><h3>✉️ Cold outreach</h3><p>Real estate agents, social managers, sellers respond to direct pitches, not directories. <strong>Limit:</strong> 5–10% reply rate is realistic — a volume game.</p></div>
+      <div class="card"><h3>💬 Reddit / Indie Hackers</h3><p>Free, and your buyers already discuss this exact pain there. <strong>Limit:</strong> punishes anything that reads as an ad — lead with a real story.</p></div>
+      <div class="card"><h3>🔗 Directory listings</h3><p>Free, compounding SEO + buyer-intent traffic. <strong>Limit:</strong> slow burn, builds over months not days.</p></div>
+      <div class="card"><h3>📧 Email nurture</h3><p>Highest-converting channel — these people already raised their hand. <strong>Limit:</strong> only as good as the traffic feeding it.</p></div>
+      <div class="card"><h3>🏢 Enterprise LinkedIn seeding</h3><p>OliFlow + Oli-Locator have genuine enterprise fit. <strong>Limit:</strong> a Month 2–3 pipeline build, not a Day 30 revenue line.</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — SCOREBOARD -->
+  <section class="slide">
+    <div class="kicker">Section 5</div>
+    <h2>The only scoreboard that matters</h2>
+    <table class="scoreboard-table">
+      <tr><th>Tool</th><th>Signups</th><th>Trial starts</th><th>Paid customers</th><th>Real $ collected</th></tr>
+      <tr><td class="tool-name">OliOps Suite</td><td>___</td><td>___</td><td>___</td><td>$___</td></tr>
+      <tr><td class="tool-name">OliCommerce Stack</td><td>___</td><td>___</td><td>___</td><td>$___</td></tr>
+      <tr><td class="tool-name">OliFlow Engine</td><td>___</td><td>___</td><td>___</td><td>$___</td></tr>
+      <tr><td class="tool-name">OliExplore</td><td>___</td><td>___</td><td>___</td><td>$___</td></tr>
+      <tr><td class="tool-name">Oli-Locator</td><td>___</td><td>___</td><td>___</td><td>$___</td></tr>
+      <tr><td class="tool-name">OliSalesTrack</td><td>___</td><td>___</td><td>___</td><td>$___</td></tr>
+    </table>
+    <p class="sub" style="margin-top:20px;"><strong style="color:#fff;">Profit check:</strong> fixed cost is $0, so "Real $ collected" total > $0 means every
+      one of these six businesses is profitable the moment that number moves off zero.
+      Don't let anyone redefine "profitable" as some bigger number this month.</p>
+  </section>
+
+  <!-- SLIDE 13 — DIRECTOR'S TAKE -->
+  <section class="slide">
+    <div class="kicker">Section 6</div>
+    <h2>What I'd do differently if this were my own business</h2>
+    <div class="grid2">
+      <div class="card"><h3>🎯 3 real launches beat 6 rushed ones</h3><p>OliExplore, Oli-Locator, OliSalesTrack get direct outreach instead of competing for a PH slot — the higher-converting channel for their buyer anyway.</p></div>
+      <div class="card"><h3>🔧 Fix checkout before writing copy</h3><p>Traffic to a broken buy button is wasted effort, full stop. This is Day 0, not Day 15.</p></div>
+      <div class="card"><h3>👋 Personally message your first 10 signups</h3><p>Not automated — an actual "saw you signed up, anything I can answer?" This is how you get your first 5 real testimonials.</p></div>
+      <div class="card"><h3>🔁 Day 30 is a start, not a finish line</h3><p>Whatever channel worked best gets doubled in Month 2. Update this exact document with real numbers instead of blanks.</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14 — TREND RADAR / BONUS -->
+  <section class="slide">
+    <div class="kicker">Bonus — recently shipped</div>
+    <h2>OliExplore's Trend Radar — a fresh reason to reach out this month</h2>
+    <div class="grid2">
+      <div>
+        <p class="sub">A live, auto-updating feed of trending memes/GIFs and video — now correctly
+          gated: no access for non-customers, a limited 6-item preview for trial users,
+          and full access once trial converts. This is a genuinely new, demo-able feature
+          worth leading with in this month's OliExplore outreach and Reddit posts.</p>
+      </div>
+      <div class="shot"><img src="images/oliexplore-trends.png" alt="OliExplore Trend Radar page"/></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 15 — CLOSING -->
+  <section class="slide">
+    <div class="center">
+      <div class="kicker" style="text-align:center;">End of plan</div>
+      <h1 style="text-align:center;">Zero dollars in.<br/>The first real dollar out is profit.</h1>
+      <p class="sub center" style="margin-top:16px;">Full written detail in <code>30-DAY-ZERO-BUDGET-MARKETING-PLAN.txt</code>.
+        Every tactic here reuses infrastructure that's already built and tested this
+        session — landing pages, login, checkout, and now a gated Trend Radar. The work
+        left is distribution, not construction.</p>
+      <div class="badge-row" style="justify-content:center; margin-top:24px;">
+        <span class="pill good">Day 0 → fix checkout</span>
+        <span class="pill good">Week 1–4 → execute</span>
+        <span class="pill good">Day 30 → scoreboard + double down</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prevBtn" onclick="go(-1)">← Prev</button>
+  <div class="dots" id="dots"></div>
+  <button id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+  var slides = document.querySelectorAll('.slide');
+  var current = 0;
+  var dotsEl = document.getElementById('dots');
+  slides.forEach(function(_, i) {
+    var d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+  var dots = dotsEl.querySelectorAll('.dot');
+
+  function render() {
+    slides.forEach(function(s, i) { s.classList.toggle('active', i === current); });
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === current); });
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === slides.length - 1;
+  }
+  function go(delta) {
+    var next = current + delta;
+    if (next < 0 || next >= slides.length) return;
+    current = next;
+    render();
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+  render();
+</script>
+
+</body>
+</html>
