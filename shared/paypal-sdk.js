@@ -148,31 +148,65 @@
   function showSuccess(type, id, product) {
     // ── 1. Create account + send welcome email ────────────────────────
     var buyerEmail = getBuyerEmail();
+    var accountResult = null;
     if (buyerEmail && window.OliAuth) {
       var toolKey = detectToolKey();
-      OliAuth.createAccount(buyerEmail, toolKey, id);
+      accountResult = OliAuth.createAccount(buyerEmail, toolKey, id);
     }
 
     // ── 2. Show success UI ─────────────────────────────────────────────
+    // ⚠️ FIX: previously always claimed "An email is on its way ... with
+    // your login details" even when EmailJS was never configured (the
+    // shipped default), in which case NO email would ever be sent and
+    // the customer's only password was in a browser console.log() call
+    // they'd never see. Now: if email isn't configured, show the
+    // temporary password directly on this screen instead of a false
+    // promise. If email IS configured, keep the original messaging.
+    var showPasswordOnScreen = accountResult && accountResult.isNewUser && !accountResult.emailConfigured && accountResult.tempPassword;
+
     var box = document.getElementById('paypal-success-box');
     if (box) {
       box.style.display = 'block';
       var idEl = document.getElementById('paypal-ref-id');
       if (idEl) idEl.textContent = id;
+      if (showPasswordOnScreen) {
+        appendCredentialsNotice(box, buyerEmail, accountResult);
+      }
     } else {
       var loginPath = getLoginPath();
       var modal = document.createElement('div');
       modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+      var emailLine = showPasswordOnScreen
+        ? '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin:0 0 1rem;text-align:left;">'
+          + '<p style="margin:0 0 6px;font-size:13px;color:#92400e;font-weight:700;">⚠️ Save this now — it will not be shown again</p>'
+          + '<p style="margin:0 0 4px;font-size:13.5px;color:#14161a;">Email: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + (buyerEmail || '') + '</code></p>'
+          + '<p style="margin:0;font-size:13.5px;color:#14161a;">Temporary password: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + accountResult.tempPassword + '</code></p>'
+          + '</div>'
+        : '<p style="color:#55606e;margin:0 0 .5rem;font-size:15px">An email is on its way to <strong>' + (buyerEmail || 'your inbox') + '</strong> with your login details.</p>';
       modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:2.5rem 2rem;max-width:440px;width:100%;text-align:center;font-family:inherit">'
         + '<div style="font-size:3rem;margin-bottom:1rem">🎉</div>'
         + '<h2 style="margin:0 0 .75rem;font-size:1.5rem;color:#14161a">Payment successful!</h2>'
-        + '<p style="color:#55606e;margin:0 0 .5rem;font-size:15px">An email is on its way to <strong>' + (buyerEmail || 'your inbox') + '</strong> with your login details.</p>'
+        + emailLine
         + '<p style="color:#55606e;margin:0 0 1.5rem;font-size:13.5px">Reference: <code style="background:#f4f4f8;padding:2px 6px;border-radius:4px">' + id + '</code></p>'
         + '<a href="' + loginPath + '" style="display:block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:700;font-size:15px;margin-bottom:10px">Sign In to Your Account →</a>'
         + '<button onclick="this.closest(\'div[style*=fixed]\').remove()" style="background:transparent;border:none;color:#55606e;font-size:13px;cursor:pointer;padding:4px">I\'ll check email first</button>'
         + '</div>';
       document.body.appendChild(modal);
     }
+  }
+
+  // Appends the same on-screen credentials notice into an existing
+  // success box (used when the buy page has its own #paypal-success-box
+  // markup instead of relying on the fallback modal above).
+  function appendCredentialsNotice(box, buyerEmail, accountResult) {
+    if (box.querySelector('[data-oli-credentials-notice]')) return; // avoid duplicating on re-render
+    var notice = document.createElement('div');
+    notice.setAttribute('data-oli-credentials-notice', '1');
+    notice.style.cssText = 'background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin-top:12px;text-align:left;';
+    notice.innerHTML = '<p style="margin:0 0 6px;font-size:13px;color:#92400e;font-weight:700;">⚠️ Save this now — it will not be shown again</p>'
+      + '<p style="margin:0 0 4px;font-size:13.5px;color:#14161a;">Email: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + (buyerEmail || '') + '</code></p>'
+      + '<p style="margin:0;font-size:13.5px;color:#14161a;">Temporary password: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + accountResult.tempPassword + '</code></p>';
+    box.appendChild(notice);
   }
 
   // ── Detect which tool key this buy page belongs to ──────────────────

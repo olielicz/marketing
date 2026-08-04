@@ -145,23 +145,47 @@
     var buyerEmail = (data && data.customer && data.customer.email) || getBuyerEmail();
     var orderId = (data && data.transaction_id) || (data && data.id) || 'paddle-order';
 
+    var accountResult = null;
     if (buyerEmail && window.OliAuth) {
-      OliAuth.createAccount(buyerEmail, toolKey, orderId);
+      accountResult = OliAuth.createAccount(buyerEmail, toolKey, orderId);
     }
+
+    // ⚠️ FIX: same issue as paypal-sdk.js's showSuccess() — previously
+    // always claimed "An email is on its way" even with EmailJS
+    // unconfigured (shipped default), silently leaving a paying
+    // customer's temp password unreachable in a console.log() call.
+    // Show it on-screen instead when there's no real email service.
+    var showPasswordOnScreen = accountResult && accountResult.isNewUser && !accountResult.emailConfigured && accountResult.tempPassword;
 
     var box = document.getElementById('paypal-success-box'); // shared success box markup
     if (box) {
       box.style.display = 'block';
       var idEl = document.getElementById('paypal-ref-id');
       if (idEl) idEl.textContent = orderId;
+      if (showPasswordOnScreen && !box.querySelector('[data-oli-credentials-notice]')) {
+        var notice = document.createElement('div');
+        notice.setAttribute('data-oli-credentials-notice', '1');
+        notice.style.cssText = 'background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin-top:12px;text-align:left;';
+        notice.innerHTML = '<p style="margin:0 0 6px;font-size:13px;color:#92400e;font-weight:700;">⚠️ Save this now — it will not be shown again</p>'
+          + '<p style="margin:0 0 4px;font-size:13.5px;color:#14161a;">Email: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + (buyerEmail || '') + '</code></p>'
+          + '<p style="margin:0;font-size:13.5px;color:#14161a;">Temporary password: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + accountResult.tempPassword + '</code></p>';
+        box.appendChild(notice);
+      }
     } else {
       var loginPath = getLoginPath();
       var modal = document.createElement('div');
       modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+      var emailLine = showPasswordOnScreen
+        ? '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin:0 0 1rem;text-align:left;">'
+          + '<p style="margin:0 0 6px;font-size:13px;color:#92400e;font-weight:700;">⚠️ Save this now — it will not be shown again</p>'
+          + '<p style="margin:0 0 4px;font-size:13.5px;color:#14161a;">Email: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + (buyerEmail || '') + '</code></p>'
+          + '<p style="margin:0;font-size:13.5px;color:#14161a;">Temporary password: <code style="background:#fff;padding:2px 6px;border-radius:4px;">' + accountResult.tempPassword + '</code></p>'
+          + '</div>'
+        : '<p style="color:#55606e;margin:0 0 .5rem;font-size:15px">An email is on its way to <strong>' + (buyerEmail || 'your inbox') + '</strong> with your login details.</p>';
       modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:2.5rem 2rem;max-width:440px;width:100%;text-align:center;font-family:inherit">'
         + '<div style="font-size:3rem;margin-bottom:1rem">🎉</div>'
         + '<h2 style="margin:0 0 .75rem;font-size:1.5rem;color:#14161a">Payment successful!</h2>'
-        + '<p style="color:#55606e;margin:0 0 .5rem;font-size:15px">An email is on its way to <strong>' + (buyerEmail || 'your inbox') + '</strong> with your login details.</p>'
+        + emailLine
         + '<p style="color:#55606e;margin:0 0 1.5rem;font-size:13.5px">Reference: <code style="background:#f4f4f8;padding:2px 6px;border-radius:4px">' + orderId + '</code></p>'
         + '<a href="' + loginPath + '" style="display:block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;text-decoration:none;padding:13px 24px;border-radius:10px;font-weight:700;font-size:15px;margin-bottom:10px">Sign In to Your Account →</a>'
         + '<button onclick="this.closest(\'div[style*=fixed]\').remove()" style="background:transparent;border:none;color:#55606e;font-size:13px;cursor:pointer;padding:4px">I\'ll check email first</button>'
