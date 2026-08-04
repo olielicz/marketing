@@ -512,7 +512,14 @@ footer a{color:var(--sub);}
           <li style="color:#ccc"><span>–</span> Team members</li>
           <li style="color:#ccc"><span>–</span> API access</li>
         </ul>
-        <div id="paypal-solo" style="margin-bottom:10px;min-height:48px;"></div>
+        <!-- FIX: this was <div id="paypal-solo"></div>, expecting a PayPal
+             SDK to render a button into it - but this page never loads
+             shared/paypal-sdk.js (only auth.js/security.js/cookie-consent.js),
+             and even if it did, that SDK only ever targets a single
+             #paypal-button-container id, never #paypal-solo. The div was
+             permanently empty under every configuration. Replaced with a
+             real, working link to the actual checkout flow. -->
+        <a href="./buy/?plan=solo" class="cta-btn" style="display:block;text-align:center;margin-bottom:10px;">Start Free Trial →</a>
       </div>
       <!-- Pro (Popular) -->
       <div class="pricing-card popular">
@@ -530,7 +537,8 @@ footer a{color:var(--sub);}
           <li><span class="check">✓</span> Priority support</li>
           <li><span class="check">✓</span> Custom webhook domains</li>
         </ul>
-        <div id="paypal-pro" style="margin-bottom:10px;min-height:48px;"></div>
+        <!-- FIX: same dead-div issue as #paypal-solo above. -->
+        <a href="./buy/?plan=pro" class="cta-btn" style="display:block;text-align:center;margin-bottom:10px;">Start Free Trial →</a>
       </div>
       <!-- Business -->
       <div class="pricing-card">
@@ -547,7 +555,8 @@ footer a{color:var(--sub);}
           <li><span class="check">✓</span> Dedicated onboarding call</li>
           <li><span class="check">✓</span> Custom integrations (on request)</li>
         </ul>
-        <div id="paypal-biz" style="margin-bottom:10px;min-height:48px;"></div>
+        <!-- FIX: same dead-div issue as #paypal-solo above. -->
+        <a href="./buy/?plan=business" class="cta-btn" style="display:block;text-align:center;margin-bottom:10px;">Start Free Trial →</a>
       </div>
     </div>
     <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--sub);">

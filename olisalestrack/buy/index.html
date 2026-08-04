@@ -32,8 +32,10 @@ main{padding:40px 0 80px;}
 input:checked+.toggle-slider{background:var(--accent);}
 input:checked+.toggle-slider::before{transform:translateX(20px);}
 .save-badge{background:var(--good);color:#fff;border-radius:100px;padding:.2rem .6rem;font-size:.72rem;font-weight:700;}
-.yearly-price{display:none;}.yearly-mode .yearly-price{display:block;}
-.yearly-mode .monthly-price{display:none;}
+/* FIX: removed dead CSS rules for .yearly-price/.monthly-price/.yearly-mode -
+   no element in this page's markup uses those classes (the actual price
+   elements are .plan-price-yearly/.plan-price-monthly, toggled directly
+   via inline JS in updateSummary() below, not via a CSS class switch). */
 /* Plans grid */
 .plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:28px;}
 .plan-card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:24px 20px;
@@ -200,6 +202,10 @@ footer a{color:var(--sub);}
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
 <script src="../../shared/paddle-sdk.js"></script>
+<!-- FIX: see oliops/buy/index.html's comment on this same include - the
+     Stripe button was a plain <a> pointing at an unreplaced placeholder
+     URL and would 404 for a real customer. -->
+<script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
 const PLANS = [{"name":"Pro","mo":"24","yr":"204","yr_mo":"17"}];
@@ -218,7 +224,8 @@ document.getElementById('billingToggle').addEventListener('change', function() {
   isYearly = this.checked;
   document.querySelectorAll('.plan-price-monthly').forEach(el => el.style.display = isYearly ? 'none' : '');
   document.querySelectorAll('.plan-price-yearly').forEach(el => el.style.display = isYearly ? '' : 'none');
-  document.querySelectorAll('.plan-card').forEach(el => el.classList.toggle('yearly-mode', isYearly));
+  // FIX: removed the .yearly-mode class toggle - no matching CSS rule
+  // existed for it (see removed dead CSS above).
   updateSummary();
 });
 
@@ -238,9 +245,10 @@ function updateSummary() {
 // Init
 document.addEventListener('DOMContentLoaded', () => {
   selectPlan(0);
-  // Re-render PayPal button when plan/billing changes
-  const cards = document.querySelectorAll('.plan-card');
-  cards.forEach((c,i) => c.addEventListener('click', () => selectPlan(i)));
+  // FIX: removed a redundant addEventListener('click', ...) that used to
+  // be here on top of each .plan-card's existing inline
+  // onclick="selectPlan(idx)" attribute - every click fired selectPlan()
+  // twice. The inline onclick attributes already handle card selection.
 });
 </script>
 </body>
