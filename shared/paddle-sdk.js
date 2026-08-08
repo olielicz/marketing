@@ -15,12 +15,17 @@
  *    → copy your Client-side Token (starts with "test_" in Sandbox,
  *    "live_" in Production)
  * 3. Replace PADDLE_CLIENT_TOKEN below with that token
- * 4. Paddle Dashboard → Catalog → Products → create one Product per tool,
- *    then one Price under each Product for the entry tier (e.g. $39/month
- *    for OliOps). Set a 14-day free trial on the Price if you want Paddle
- *    to handle that automatically instead of it being copy-only.
- * 5. Copy each Price ID (starts with "pri_") into PRICE_IDS below
- * 6. That's it — buttons render automatically on every buy page
+ * 4. Paddle Dashboard → Catalog → Products → create one Product per
+ *    tool, then one Price under each Product for EVERY tier × billing
+ *    period shown on that tool's buy page (see PAYMENTS-SETUP.md Part 2
+ *    for the full tier table). Set a 14-day free trial on each Price if
+ *    you want Paddle to handle that automatically instead of it being
+ *    copy-only.
+ * 5. Copy each Price ID (starts with "pri_") into PRICE_IDS below, under
+ *    the matching tool → tier → billing-period slot
+ * 6. That's it — buttons render automatically on every buy page and
+ *    always charge whatever tier/period the customer has selected on
+ *    the page at the moment they click "Pay with Card"
  *
  * Payouts: Paddle pays out via bank wire or PayPal on a schedule you set.
  * Since direct-to-Philippines-bank-account wire fees can be high, most
@@ -40,15 +45,41 @@
   var PADDLE_ENVIRONMENT = 'sandbox';
 
   // ── REPLACE EACH WITH YOUR REAL PADDLE PRICE ID (starts with pri_) ───
-  // These bind to the entry-tier MONTHLY price for each tool, same
-  // pattern as PLAN_IDS in shared/paypal-sdk.js.
+  // Structure: PRICE_IDS[toolKey][tierKey][period] — every tier × billing
+  // period shown on a buy page needs its OWN Paddle Price, because a
+  // Paddle Price is fixed to one exact amount/interval. This is what
+  // actually makes "Pro yearly" charge $612/yr and not silently charge
+  // whatever the entry-tier-monthly Price happened to be, no matter what
+  // tier/period the customer has selected on the page. Tier keys must
+  // match the `key` field on each buy page's PLANS array exactly.
   var PRICE_IDS = {
-    'oliops':        'YOUR_OLIOPS_PADDLE_PRICE_ID',        // Starter, $39/month
-    'olicommerce':   'YOUR_OLICOMMERCE_PADDLE_PRICE_ID',   // Basic, $29/month
-    'oliflow':       'YOUR_OLIFLOW_PADDLE_PRICE_ID',       // Solo, $35/month
-    'oliexplore':    'YOUR_OLIEXPLORE_PADDLE_PRICE_ID',    // Creator, $27/month
-    'oli-locator':   'YOUR_LOCATOR_PADDLE_PRICE_ID',       // Solo Agent, $59/month
-    'olisalestrack': 'YOUR_OLISALESTRACK_PADDLE_PRICE_ID', // Pro, $24/month
+    'oliops': {
+      'starter': { monthly: 'YOUR_OLIOPS_STARTER_MONTHLY_PRICE_ID', yearly: 'YOUR_OLIOPS_STARTER_YEARLY_PRICE_ID' },
+      'pro':     { monthly: 'YOUR_OLIOPS_PRO_MONTHLY_PRICE_ID',     yearly: 'YOUR_OLIOPS_PRO_YEARLY_PRICE_ID' },
+      'agency':  { monthly: 'YOUR_OLIOPS_AGENCY_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PRICE_ID' },
+    },
+    'olicommerce': {
+      'basic':  { monthly: 'YOUR_OLICOMMERCE_BASIC_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLICOMMERCE_BASIC_YEARLY_PRICE_ID' },
+      'growth': { monthly: 'YOUR_OLICOMMERCE_GROWTH_MONTHLY_PRICE_ID', yearly: 'YOUR_OLICOMMERCE_GROWTH_YEARLY_PRICE_ID' },
+      'scale':  { monthly: 'YOUR_OLICOMMERCE_SCALE_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLICOMMERCE_SCALE_YEARLY_PRICE_ID' },
+    },
+    'oliflow': {
+      'solo':     { monthly: 'YOUR_OLIFLOW_SOLO_MONTHLY_PRICE_ID',     yearly: 'YOUR_OLIFLOW_SOLO_YEARLY_PRICE_ID' },
+      'pro':      { monthly: 'YOUR_OLIFLOW_PRO_MONTHLY_PRICE_ID',      yearly: 'YOUR_OLIFLOW_PRO_YEARLY_PRICE_ID' },
+      'business': { monthly: 'YOUR_OLIFLOW_BUSINESS_MONTHLY_PRICE_ID', yearly: 'YOUR_OLIFLOW_BUSINESS_YEARLY_PRICE_ID' },
+    },
+    'oliexplore': {
+      'creator': { monthly: 'YOUR_OLIEXPLORE_CREATOR_MONTHLY_PRICE_ID', yearly: 'YOUR_OLIEXPLORE_CREATOR_YEARLY_PRICE_ID' },
+      'team':    { monthly: 'YOUR_OLIEXPLORE_TEAM_MONTHLY_PRICE_ID',    yearly: 'YOUR_OLIEXPLORE_TEAM_YEARLY_PRICE_ID' },
+      'agency':  { monthly: 'YOUR_OLIEXPLORE_AGENCY_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLIEXPLORE_AGENCY_YEARLY_PRICE_ID' },
+    },
+    'oli-locator': {
+      'solo-agent': { monthly: 'YOUR_LOCATOR_SOLO_AGENT_MONTHLY_PRICE_ID', yearly: 'YOUR_LOCATOR_SOLO_AGENT_YEARLY_PRICE_ID' },
+      'team':       { monthly: 'YOUR_LOCATOR_TEAM_MONTHLY_PRICE_ID',      yearly: 'YOUR_LOCATOR_TEAM_YEARLY_PRICE_ID' },
+    },
+    'olisalestrack': {
+      'pro': { monthly: 'YOUR_OLISALESTRACK_PRO_MONTHLY_PRICE_ID', yearly: 'YOUR_OLISALESTRACK_PRO_YEARLY_PRICE_ID' },
+    },
   };
 
   var paddleReady = false;
@@ -67,6 +98,44 @@
     return null;
   }
 
+  // ── Read the customer's CURRENT tier + billing-period selection ───────
+  // Every buy page's inline script keeps window.OliSelectedPlan in sync
+  // with the visible plan cards / monthly-yearly toggle (updated on every
+  // selectPlan() call and every toggle change — see each buy page's
+  // updateSummary()). Reading it fresh at click-time (not caching it once
+  // at page load) is what makes "Pro yearly" actually charge the Pro
+  // yearly price instead of whatever was selected when the page first
+  // loaded.
+  function getSelectedPlan() {
+    return (window.OliSelectedPlan && typeof window.OliSelectedPlan === 'object') ? window.OliSelectedPlan : null;
+  }
+
+  function isPlaceholder(id) {
+    return !id || id.indexOf('YOUR_') === 0;
+  }
+
+  // True if AT LEAST ONE tier/period for this tool has a real Price ID —
+  // used only to decide whether to show the button at all vs. the
+  // "not configured yet" notice. Doesn't guarantee the customer's
+  // CURRENTLY selected tier/period is one of the configured ones — that
+  // is checked again, separately, at click-time.
+  function isAnyConfigured(toolKey) {
+    var tiers = PRICE_IDS[toolKey];
+    if (!tiers) return false;
+    for (var tierKey in tiers) {
+      if (!tiers.hasOwnProperty(tierKey)) continue;
+      var periods = tiers[tierKey];
+      if (!isPlaceholder(periods.monthly) || !isPlaceholder(periods.yearly)) return true;
+    }
+    return false;
+  }
+
+  function resolvePriceId(toolKey, tierKey, period) {
+    var tiers = PRICE_IDS[toolKey];
+    if (!tiers || !tiers[tierKey]) return null;
+    return tiers[tierKey][period] || null;
+  }
+
   function getBuyerEmail() {
     var cap = document.getElementById('buyerEmailCapture');
     if (cap && cap.value) return cap.value.trim();
@@ -83,15 +152,24 @@
     return depth > 0 ? Array(depth).fill('..').join('/') + '/login/' : './login/';
   }
 
+  function showInlineError(btn, message) {
+    var existing = btn.parentNode && btn.parentNode.querySelector('[data-oli-paddle-error]');
+    if (existing) existing.remove();
+    var note = document.createElement('div');
+    note.setAttribute('data-oli-paddle-error', '1');
+    note.style.cssText = 'background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;font-size:13px;color:#dc2626;margin-top:6px;';
+    note.textContent = message;
+    btn.insertAdjacentElement('afterend', note);
+  }
+
   // ── Load the Paddle.js v2 SDK, then wire the "Pay with Card" button ───
   function init() {
     var btn = document.getElementById('paddleBtn');
     if (!btn) return; // no Paddle button on this page
 
     var toolKey = detectToolKey();
-    var priceId = toolKey ? PRICE_IDS[toolKey] : null;
 
-    if (!toolKey || !priceId || priceId.indexOf('YOUR_') === 0) {
+    if (!toolKey || !isAnyConfigured(toolKey)) {
       btn.outerHTML = '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;font-size:13px;color:#92400e">⚙️ Set PRICE_IDS.' + (toolKey || '?') + ' in shared/paddle-sdk.js to activate card payments.</div>';
       return;
     }
@@ -129,6 +207,22 @@
 
     btn.addEventListener('click', function () {
       if (!paddleReady) return;
+
+      // Resolve the price fresh at click-time from whatever tier/period
+      // is currently selected in the page's UI — never from a value
+      // cached at page load, so switching plans/billing cycle right
+      // before clicking always charges the right amount.
+      var selection = getSelectedPlan();
+      if (!selection || selection.toolKey !== toolKey) {
+        showInlineError(btn, '⚠️ Could not determine your selected plan. Please reselect a plan above and try again.');
+        return;
+      }
+      var priceId = resolvePriceId(toolKey, selection.tierKey, selection.period);
+      if (isPlaceholder(priceId)) {
+        showInlineError(btn, '⚙️ The "' + selection.tierKey + '" plan (' + selection.period + ') isn\'t configured with a real Paddle Price ID yet. Try a different plan, or contact support.');
+        return;
+      }
+
       var email = getBuyerEmail();
       var checkoutOptions = {
         items: [{ priceId: priceId, quantity: 1 }],

@@ -214,9 +214,17 @@ footer a{color:var(--sub);}
 <script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
-const PLANS = [{"name":"Solo Agent","mo":"59","yr":"516","yr_mo":"43"},{"name":"Team","mo":"119","yr":"1068","yr_mo":"89"}];
+// FIX: added a `key` field to each tier (must match shared/paddle-sdk.js's
+// and shared/paypal-sdk.js's PRICE_IDS/PLAN_IDS[toolKey] tier keys
+// exactly) so the correct-amount fix below can tell the SDKs exactly
+// which tier x billing-period the customer has selected.
+const TOOL_KEY = 'oli-locator';
+const PLANS = [{"key":"solo-agent","name":"Solo Agent","mo":"59","yr":"516","yr_mo":"43"},{"key":"team","name":"Team","mo":"119","yr":"1068","yr_mo":"89"}];
 let selectedPlan = 0;
 let isYearly = false;
+
+// See oliops/buy/index.html's comment on this same line.
+window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: PLANS[0].key, period: 'monthly' };
 
 // Select plan
 function selectPlan(idx) {
@@ -245,14 +253,29 @@ function updateSummary() {
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
+
+  // FIX: see oliops/buy/index.html's comment on this same fix - this is
+  // what makes the Paddle/PayPal buttons actually charge whichever
+  // tier/billing-period is currently selected on screen, instead of a
+  // single hardcoded price regardless of the customer's selection.
+  window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: plan.key, period: isYearly ? 'yearly' : 'monthly' };
+  document.dispatchEvent(new CustomEvent('oli:planChanged'));
 }
 
 // Init
 document.addEventListener('DOMContentLoaded', () => {
-  selectPlan(0);
-  // Re-render PayPal button when plan/billing changes
-  const cards = document.querySelectorAll('.plan-card');
-  cards.forEach((c,i) => c.addEventListener('click', () => selectPlan(i)));
+  // FIX: read an optional ?plan= query param, same as oliops/olicommerce/
+  // oliflow's buy pages, so a future landing-page link tied to a
+  // specific tier (e.g. "?plan=team") preselects the right card instead
+  // of always defaulting to index 0.
+  const PLAN_QUERY_TO_INDEX = { 'solo-agent': 0, 'team': 1 };
+  const requestedPlan = new URLSearchParams(location.search).get('plan');
+  const initialIdx = PLAN_QUERY_TO_INDEX.hasOwnProperty(requestedPlan) ? PLAN_QUERY_TO_INDEX[requestedPlan] : 0;
+  selectPlan(initialIdx);
+  // FIX: removed a redundant addEventListener('click', ...) here on top
+  // of each .plan-card's existing inline onclick="selectPlan(idx)"
+  // attribute (see the markup above) - every click fired selectPlan()
+  // twice. The inline onclick attributes already handle card selection.
 });
 </script>
 </body>

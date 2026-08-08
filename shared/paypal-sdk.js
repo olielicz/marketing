@@ -12,20 +12,24 @@
  * 4. Replace YOUR_PAYPAL_CLIENT_ID_HERE below with that Client ID
  * 5. That's it — buttons render automatically on every buy page
  *
- * ALL 6 TOOLS ARE MONTHLY/YEARLY SUBSCRIPTIONS (no one-time/lifetime pricing).
- * Each buy page also has an on-page tier selector (Starter/Pro/Agency, etc.)
- * and a monthly/yearly toggle — but a single PayPal subscription button can
- * only bind to ONE pre-created Plan ID at a time. This file wires the
- * ENTRY-TIER MONTHLY plan by default for each tool. To make the higher
- * tiers / yearly cycle actually charge correctly via PayPal too (not just
- * change the on-page display), create additional Plan IDs the same way
- * or a server-side flow. See PAYMENTS-SETUP.md Part 1 for exact steps.
+ * ALL 6 TOOLS ARE MONTHLY/YEARLY SUBSCRIPTIONS (no one-time/lifetime
+ * pricing), and each buy page has an on-page tier selector (Starter/Pro/
+ * Agency, etc.) plus a monthly/yearly toggle. A single PayPal Subscribe
+ * button is bound to exactly ONE Plan ID — so this file keeps a Plan ID
+ * for EVERY tier × billing-period combination (see PLAN_IDS below) and
+ * RE-RENDERS the button whenever the customer changes their selection,
+ * so the button that's actually on screen always subscribes to whatever
+ * tier/period is currently selected, never a stale/default one.
  *
- * SUBSCRIPTION PLAN SETUP (for each tool's entry tier):
- * 1. Go to PayPal Dashboard → Catalog → Products → Create product
- * 2. Create a plan under that product (entry-tier monthly price, e.g. $39/month)
- * 3. Copy the Plan ID (starts with P-)
- * 4. Paste it into the matching PLAN_IDS entry below
+ * SUBSCRIPTION PLAN SETUP (repeat for every tier × billing period a
+ * tool's buy page offers — see PAYMENTS-SETUP.md Part 1 for the full
+ * per-tool tier table):
+ * 1. Go to PayPal Dashboard → Catalog → Products → Create product (one per tool)
+ * 2. Create a plan under that product for each tier × period (e.g.
+ *    "OliOps Starter Monthly", "OliOps Starter Yearly", "OliOps Pro
+ *    Monthly", ...)
+ * 3. Copy each Plan ID (starts with P-)
+ * 4. Paste it into the matching PLAN_IDS[toolKey][tierKey][period] slot below
  *
  * All 6 tools (including OliSalesTrack) are wired through this one file —
  * there is no separate PayPal script for OliSalesTrack, despite an old
@@ -49,31 +53,90 @@
   var PAYPAL_CLIENT_ID = 'AReeYev_eodCOTJ1KDm-9q3I2YKEd7QyNecK3MgS2JUm92oIAIJGyCLrF_uSA4yWVwBYd32qdWvHd1R5';
 
   // ── REPLACE EACH WITH YOUR REAL PAYPAL SUBSCRIPTION PLAN ID (starts with P-) ──
-  // These bind to the entry-tier MONTHLY plan for each tool (see comment above).
+  // Structure: PLAN_IDS[toolKey][tierKey][period]. Tier keys must match
+  // the `key` field on each buy page's PLANS array exactly.
   var PLAN_IDS = {
-    'oliops':       'YOUR_OLIOPS_PLAN_ID_HERE',       // Starter, $39/month
-    'olicommerce':  'YOUR_OLICOMMERCE_PLAN_ID_HERE',  // Basic, $29/month
-    'oliflow':      'YOUR_OLIFLOW_PLAN_ID_HERE',      // Solo, $35/month
-    'oliexplore':   'YOUR_OLIEXPLORE_PLAN_ID_HERE',   // Creator, $27/month
-    'oli-locator':  'YOUR_LOCATOR_PLAN_ID_HERE',      // Solo Agent, $59/month
-    'olisalestrack':'YOUR_OLISALESTRACK_PLAN_ID_HERE',// Pro, $24/month
+    'oliops': {
+      'starter': { monthly: 'YOUR_OLIOPS_STARTER_MONTHLY_PLAN_ID', yearly: 'YOUR_OLIOPS_STARTER_YEARLY_PLAN_ID' },
+      'pro':     { monthly: 'YOUR_OLIOPS_PRO_MONTHLY_PLAN_ID',     yearly: 'YOUR_OLIOPS_PRO_YEARLY_PLAN_ID' },
+      'agency':  { monthly: 'YOUR_OLIOPS_AGENCY_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PLAN_ID' },
+    },
+    'olicommerce': {
+      'basic':  { monthly: 'YOUR_OLICOMMERCE_BASIC_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLICOMMERCE_BASIC_YEARLY_PLAN_ID' },
+      'growth': { monthly: 'YOUR_OLICOMMERCE_GROWTH_MONTHLY_PLAN_ID', yearly: 'YOUR_OLICOMMERCE_GROWTH_YEARLY_PLAN_ID' },
+      'scale':  { monthly: 'YOUR_OLICOMMERCE_SCALE_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLICOMMERCE_SCALE_YEARLY_PLAN_ID' },
+    },
+    'oliflow': {
+      'solo':     { monthly: 'YOUR_OLIFLOW_SOLO_MONTHLY_PLAN_ID',     yearly: 'YOUR_OLIFLOW_SOLO_YEARLY_PLAN_ID' },
+      'pro':      { monthly: 'YOUR_OLIFLOW_PRO_MONTHLY_PLAN_ID',      yearly: 'YOUR_OLIFLOW_PRO_YEARLY_PLAN_ID' },
+      'business': { monthly: 'YOUR_OLIFLOW_BUSINESS_MONTHLY_PLAN_ID', yearly: 'YOUR_OLIFLOW_BUSINESS_YEARLY_PLAN_ID' },
+    },
+    'oliexplore': {
+      'creator': { monthly: 'YOUR_OLIEXPLORE_CREATOR_MONTHLY_PLAN_ID', yearly: 'YOUR_OLIEXPLORE_CREATOR_YEARLY_PLAN_ID' },
+      'team':    { monthly: 'YOUR_OLIEXPLORE_TEAM_MONTHLY_PLAN_ID',    yearly: 'YOUR_OLIEXPLORE_TEAM_YEARLY_PLAN_ID' },
+      'agency':  { monthly: 'YOUR_OLIEXPLORE_AGENCY_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLIEXPLORE_AGENCY_YEARLY_PLAN_ID' },
+    },
+    'oli-locator': {
+      'solo-agent': { monthly: 'YOUR_LOCATOR_SOLO_AGENT_MONTHLY_PLAN_ID', yearly: 'YOUR_LOCATOR_SOLO_AGENT_YEARLY_PLAN_ID' },
+      'team':       { monthly: 'YOUR_LOCATOR_TEAM_MONTHLY_PLAN_ID',      yearly: 'YOUR_LOCATOR_TEAM_YEARLY_PLAN_ID' },
+    },
+    'olisalestrack': {
+      'pro': { monthly: 'YOUR_OLISALESTRACK_PRO_MONTHLY_PLAN_ID', yearly: 'YOUR_OLISALESTRACK_PRO_YEARLY_PLAN_ID' },
+    },
   };
 
   // ── THANK-YOU PAGE (edit once, applies everywhere) ─────────────────────
   var SUCCESS_BASE_URL = window.location.origin; // e.g. https://yourdomain.com
+
+  var container = null;   // cached once init() finds it
+  var currentToolKey = null;
+
+  function isPlaceholder(id) {
+    return !id || id.indexOf('YOUR_') === 0;
+  }
+
+  // True if AT LEAST ONE tier/period for this tool has a real Plan ID —
+  // decides whether to attempt rendering at all vs. showing the
+  // "not configured" notice. The SPECIFIC tier/period currently selected
+  // is re-checked every time renderButtonForSelection() runs.
+  function isAnyConfigured(toolKey) {
+    var tiers = PLAN_IDS[toolKey];
+    if (!tiers) return false;
+    for (var tierKey in tiers) {
+      if (!tiers.hasOwnProperty(tierKey)) continue;
+      var periods = tiers[tierKey];
+      if (!isPlaceholder(periods.monthly) || !isPlaceholder(periods.yearly)) return true;
+    }
+    return false;
+  }
+
+  function resolvePlanId(toolKey, tierKey, period) {
+    var tiers = PLAN_IDS[toolKey];
+    if (!tiers || !tiers[tierKey]) return null;
+    return tiers[tierKey][period] || null;
+  }
 
   // ── Internal: detect which product this buy page is for ───────────────
   // All 6 tools are recurring subscriptions — amount shown is the entry-tier
   // monthly price, used only for display before the PayPal SDK loads.
   function detectProduct() {
     var path = window.location.pathname.toLowerCase();
-    if (path.includes('oliops'))      return { key: 'oliops',      name: 'OliOps Suite — Starter Plan',       amount: '39.00', recurring: true };
-    if (path.includes('olicommerce')) return { key: 'olicommerce', name: 'OliCommerce Stack — Basic Plan',    amount: '29.00', recurring: true };
-    if (path.includes('oliflow'))     return { key: 'oliflow',     name: 'OliFlow Engine — Solo Plan',        amount: '35.00', recurring: true };
-    if (path.includes('oliexplore'))  return { key: 'oliexplore',  name: 'OliExplore — Creator Plan',         amount: '27.00', recurring: true };
-    if (path.includes('oli-locator')) return { key: 'oli-locator', name: 'Oli-Locator — Solo Agent Plan',     amount: '59.00', recurring: true };
-    if (path.includes('olisalestrack')) return { key: 'olisalestrack', name: 'OliSalesTrack — Pro Plan',     amount: '24.00', recurring: true };
+    if (path.includes('oliops'))      return { key: 'oliops',      name: 'OliOps Suite',       recurring: true };
+    if (path.includes('olicommerce')) return { key: 'olicommerce', name: 'OliCommerce Stack',  recurring: true };
+    if (path.includes('oliflow'))     return { key: 'oliflow',     name: 'OliFlow Engine',     recurring: true };
+    if (path.includes('oliexplore'))  return { key: 'oliexplore',  name: 'OliExplore',         recurring: true };
+    if (path.includes('oli-locator')) return { key: 'oli-locator', name: 'Oli-Locator',        recurring: true };
+    if (path.includes('olisalestrack')) return { key: 'olisalestrack', name: 'OliSalesTrack',  recurring: true };
     return null;
+  }
+
+  // ── Read the customer's CURRENT tier + billing-period selection ───────
+  // See paddle-sdk.js's getSelectedPlan() for the full explanation — both
+  // files read the same window.OliSelectedPlan global, kept in sync by
+  // each buy page's inline script every time the plan cards or the
+  // monthly/yearly toggle change.
+  function getSelectedPlan() {
+    return (window.OliSelectedPlan && typeof window.OliSelectedPlan === 'object') ? window.OliSelectedPlan : null;
   }
 
   // ── Load SDK and render button ─────────────────────────────────────────
@@ -88,7 +151,7 @@
       document.head.appendChild(authScript);
     }
 
-    var container = document.getElementById('paypal-button-container');
+    container = document.getElementById('paypal-button-container');
     if (!container) return; // no container on this page
 
     var product = detectProduct();
@@ -96,6 +159,7 @@
       container.innerHTML = '<p style="color:#92400e;font-size:13px;">⚠️ Could not detect product. Check paypal-sdk.js configuration.</p>';
       return;
     }
+    currentToolKey = product.key;
 
     if (PAYPAL_CLIENT_ID === 'YOUR_PAYPAL_CLIENT_ID_HERE') {
       container.innerHTML = [
@@ -108,6 +172,11 @@
       return;
     }
 
+    if (!isAnyConfigured(product.key)) {
+      container.innerHTML = '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;font-size:13px;color:#92400e">⚙️ Set PLAN_IDS.' + product.key + ' in shared/paypal-sdk.js to activate subscriptions.</div>';
+      return;
+    }
+
     // Build SDK URL
     var sdkSrc = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + '&currency=USD';
     if (product.recurring) {
@@ -117,22 +186,43 @@
     var script = document.createElement('script');
     script.src = sdkSrc;
     script.setAttribute('data-sdk-integration-source', 'button-factory');
-    script.onload = function() { renderButton(container, product); };
+    script.onload = function() {
+      renderButtonForSelection(product);
+      // Re-render the button whenever the buy page's plan cards or the
+      // monthly/yearly toggle change, so the on-screen PayPal button
+      // always subscribes to whatever is currently selected — a single
+      // rendered button can't be "re-pointed" at a different Plan ID
+      // after the fact, so it has to be torn down and rebuilt.
+      document.addEventListener('oli:planChanged', function () {
+        renderButtonForSelection(product);
+      });
+    };
     script.onerror = function() {
       container.innerHTML = '<p style="color:#dc2626;font-size:13px;">⚠️ PayPal failed to load. Check your Client ID and internet connection.</p>';
     };
     document.head.appendChild(script);
   }
 
-  function renderButton(container, product) {
-    if (!window.paypal) return;
+  function renderButtonForSelection(product) {
+    if (!window.paypal || !container) return;
 
-    // ── All 6 tools are subscriptions — render a PayPal Subscribe button ──
-    var planId = PLAN_IDS[product.key];
-    if (!planId || planId.indexOf('YOUR_') === 0) {
-      container.innerHTML = '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;font-size:13px;color:#92400e">⚙️ Set PLAN_IDS.' + product.key + ' in shared/paypal-sdk.js to activate subscriptions.</div>';
+    var selection = getSelectedPlan();
+    var tierKey = selection && selection.toolKey === product.key ? selection.tierKey : null;
+    var period = selection && selection.toolKey === product.key ? selection.period : null;
+    var planId = tierKey && period ? resolvePlanId(product.key, tierKey, period) : null;
+
+    // Clear whatever button/notice was there before re-rendering.
+    container.innerHTML = '';
+
+    if (!tierKey || !period) {
+      container.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;font-size:13px;color:#dc2626;">⚠️ Could not determine your selected plan. Please reselect a plan above.</div>';
       return;
     }
+    if (isPlaceholder(planId)) {
+      container.innerHTML = '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;font-size:13px;color:#92400e">⚙️ The "' + tierKey + '" plan (' + period + ') isn\'t configured with a real PayPal Plan ID yet. Try a different plan.</div>';
+      return;
+    }
+
     window.paypal.Buttons({
       style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'subscribe', height: 48 },
       createSubscription: function(data, actions) {

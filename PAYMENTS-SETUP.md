@@ -92,7 +92,7 @@ Every buy page now advertises "$0 today, then $X/mo after a 14-day free trial." 
 
 ---
 
-## Part 1 — PayPal Setup (handles 5 of 6 tools automatically)
+## Part 1 — PayPal Setup (all 6 tools, every tier × billing period)
 
 ### Step 1a — Get your Live Client ID
 
@@ -100,89 +100,68 @@ Every buy page now advertises "$0 today, then $X/mo after a 14-day free trial." 
 2. Click **Apps & Credentials** → **Live** tab
 3. Click **Create App** → name: `Oli Tools` → type: `Merchant` → Create
 4. Copy the **Client ID**
-5. Open `shared/paypal-sdk.js` and replace line 23:
+5. Open `shared/paypal-sdk.js` and replace the `PAYPAL_CLIENT_ID` line
+   (this one has already been done — a real Client ID is filled in):
    ```js
    var PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID_HERE';
    ```
 
-**This single change activates PayPal buttons on all 6 tools' entry-tier plans automatically.** OliOps ($39/mo or $348/yr), OliCommerce ($29/mo or $264/yr), OliFlow ($35/mo or $312/yr), and OliExplore ($27/mo or $252/yr) all use `paypal-sdk.js` directly. Each also has higher Pro/Agency/Business tiers configurable the same way (see Part 2's table below for the full tier list per tool).
+**This single change activates the PayPal Client ID for all 6 tools** —
+but a real Client ID alone isn't enough to charge correctly. Every buy
+page lets a customer pick a tier (e.g. Starter/Pro/Agency) AND a
+monthly/yearly toggle, and PayPal requires a **separate Plan ID for
+every exact amount/interval combination**. `shared/paypal-sdk.js`'s
+`PLAN_IDS` is structured as `PLAN_IDS[toolKey][tierKey][period]` for
+exactly this reason — it re-renders the on-page Subscribe button
+whenever the customer changes their selection, always pointing at the
+Plan ID that matches what's actually on screen. **You must create one
+PayPal Plan for every tier × billing period shown in the table in Part
+2 below**, for all 6 tools — there is no shortcut tier that "activates
+automatically"; each amount needs its own real Plan ID or that specific
+selection will show a "not yet configured" notice instead of a working
+button.
 
-### Step 1b — Oli-Locator Subscription Plans ($59/mo Solo Agent, $119/mo Team)
+### Step 1b — Create every tier × period Plan, for every tool
+
+Repeat this once per tool (6 tools), and once per tier × billing period
+within each tool (see the table in Part 2 for the exact tier list and
+amounts per tool — e.g. OliOps needs 6 Plans: Starter/Pro/Agency ×
+monthly/yearly; Oli-Locator needs 4; OliSalesTrack needs 2):
 
 1. PayPal Dashboard → **Products & Plans** → **Create Product**
-   - Name: `Oli-Locator — Agency Plan`
-   - Product ID: `OLI-LOCATOR-AGENCY-V1`
+   - Name: e.g. `OliOps Suite`, `Oli-Locator`, `OliSalesTrack Pro`, etc.
    - Type: `SERVICE` · Category: `SOFTWARE`
-   - Home URL: `https://olielicz.github.io/marketing/oli-locator/`
-   - Image URL: `https://olielicz.github.io/marketing/assets/oli-locator-product.png`
-2. Click **Create Plan** under that product (create one plan per tier × billing cycle — 4 plans total):
+   - Home URL: the tool's live marketing page, e.g.
+     `https://olielicz.github.io/marketing/oli-locator/`
+2. Under that product, click **Create Plan** once per tier × billing
+   period, e.g. for Oli-Locator:
    - `Oli-Locator Solo Agent Monthly` → **$59.00 USD/month**
    - `Oli-Locator Solo Agent Yearly` → **$516.00 USD/year**
    - `Oli-Locator Team Monthly` → **$119.00 USD/month**
    - `Oli-Locator Team Yearly` → **$1068.00 USD/year**
    - Status: **Active** → Save each
 3. Copy each **Plan ID** (starts with `P-`)
-4. Open `shared/paypal-sdk.js` and replace line 26 (and add the additional tier/yearly plan IDs the same way):
+4. Open `shared/paypal-sdk.js` and paste each into the matching
+   `PLAN_IDS[toolKey][tierKey][period]` slot. Tier keys must match the
+   `key` field on that tool's buy page's `PLANS` array exactly (visible
+   in the bottom `<script>` block of each `buy/index.html` — e.g.
+   `'solo-agent'` and `'team'` for Oli-Locator):
    ```js
-   var LOCATOR_PLAN_ID = 'P-YOUR_ACTUAL_PLAN_ID';
+   var PLAN_IDS = {
+     'oli-locator': {
+       'solo-agent': { monthly: 'P-YOUR_REAL_ID', yearly: 'P-YOUR_REAL_ID' },
+       'team':       { monthly: 'P-YOUR_REAL_ID', yearly: 'P-YOUR_REAL_ID' },
+     },
+     // ...repeat for every tool
+   };
    ```
 
-### Step 1c — OliSalesTrack Subscription ($24/mo or $204/yr)
-
-OliSalesTrack uses its own subscription script (separate from paypal-sdk.js because it has monthly + yearly plans).
-
-1. Create a PayPal product (same steps as above):
-   - Name: `OliSalesTrack Pro`
-   - Product ID: `OLISALESTRACK-PRO`
-   - Home URL: `https://olielicz.github.io/marketing/olisalestrack/`
-
-2. Create **two plans** under that product:
-   - Plan 1: `OliSalesTrack Monthly` → $24.00/month → copy Plan ID
-   - Plan 2: `OliSalesTrack Yearly` → $204.00/year → copy Plan ID
-
-3. Open `olisalestrack/buy/index.html` and add this script before `</body>`:
-
-```html
-<script>
-(function() {
-  var clientId  = 'YOUR_PAYPAL_CLIENT_ID_HERE'; // same ID from Step 1a
-  var monthlyId = 'P-YOUR_MONTHLY_PLAN_ID'; // $24/month
-  var yearlyId  = 'P-YOUR_YEARLY_PLAN_ID'; // $204/year
-
-  function renderSalestrackBtn(containerId, planId, toolKey) {
-    var s = document.createElement('script');
-    s.src = 'https://www.paypal.com/sdk/js?client-id=' + clientId
-          + '&vault=true&intent=subscription&currency=USD';
-    s.onload = function() {
-      paypal.Buttons({
-        style: { layout:'vertical', color:'gold', shape:'rect', label:'subscribe', height:45 },
-        createSubscription: function(d, a) {
-          return a.subscription.create({ plan_id: planId });
-        },
-        onApprove: function(d) {
-          // Create account + send welcome email
-          var email = document.getElementById('buyerEmailCapture').value
-                   || document.querySelector('input[type=email]')?.value || '';
-          if (email && window.OliAuth) OliAuth.createAccount(email, toolKey, d.subscriptionID);
-          // Show success
-          var box = document.getElementById('paypal-success-box');
-          if (box) { box.style.display='block'; var r=document.getElementById('paypal-ref-id'); if(r) r.textContent=d.subscriptionID; }
-        },
-        onError: function() {
-          var e=document.getElementById('paypal-error-note'); if(e) e.style.display='block';
-        }
-      }).render('#' + containerId);
-    };
-    document.head.appendChild(s);
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    renderSalestrackBtn('paypal-button-container',        monthlyId, 'olisalestrack');
-    renderSalestrackBtn('paypal-button-container-yearly', yearlyId,  'olisalestrack');
-  });
-})();
-</script>
-```
+You don't have to configure every single tier × period before launch —
+`paypal-sdk.js` shows the PayPal button as long as AT LEAST ONE tier for
+that tool has a real Plan ID; if a customer picks a tier/period you
+haven't configured yet, they see a clear "not yet configured, try a
+different plan" notice instead of a broken button or being charged the
+wrong amount.
 
 ---
 
@@ -206,16 +185,19 @@ redirect to a separate hosted page like Stripe Payment Links used.
    var PADDLE_ENVIRONMENT = 'sandbox'; // change to 'production' once live
    ```
 
-### Step 2b — Create one Price per tool
+### Step 2b — Create every tier × period Price, for every tool
 
-All 6 tools are recurring subscriptions. Each Paddle Price is fixed to one
-tier × billing cycle, same limitation as PayPal's Plan IDs — so create a
-**separate Price per tier × billing cycle** (e.g. OliOps needs 6 Prices:
-Starter/Pro/Agency × monthly/yearly) if you want every tier to actually
-charge correctly, not just display correctly. For the initial launch,
-it's fine to wire only the entry-tier monthly Price into `PRICE_IDS` in
-`shared/paddle-sdk.js` — the on-page plan selector already lets buyers
-pick a tier for display purposes.
+All 6 tools are recurring subscriptions, and every buy page has an
+on-page tier selector plus a monthly/yearly toggle — exactly like
+PayPal's Plan IDs, a Paddle Price is fixed to ONE exact tier × billing
+cycle, so you need a **separate Price per tier × billing cycle** for
+every tool (e.g. OliOps needs 6 Prices: Starter/Pro/Agency × monthly/
+yearly) for every tier to charge correctly, not just display correctly.
+`shared/paddle-sdk.js`'s `PRICE_IDS` is structured as
+`PRICE_IDS[toolKey][tierKey][period]` for this exact reason — the
+"Pay with Card" button resolves the real Price to charge fresh, at the
+moment it's clicked, from whatever tier/period is currently selected on
+the page.
 
 | Tool | Product Name | Tiers (monthly / yearly) | Billing |
 |---|---|---|---|
@@ -224,23 +206,33 @@ pick a tier for display purposes.
 | OliFlow Engine | `OliFlow Automation Engine` | Solo $35/mo·$312/yr, Pro $59/mo·$528/yr, Business $99/mo·$888/yr | Recurring |
 | OliExplore | `OliExplore` | Creator $27/mo·$252/yr, Team $49/mo·$468/yr, Agency $89/mo·$828/yr | Recurring |
 | Oli-Locator | `Oli-Locator` | Solo Agent $59/mo·$516/yr, Team $119/mo·$1068/yr | Recurring |
-| OliSalesTrack | `OliSalesTrack Pro` | $24/mo·$204/yr (single tier) | Recurring |
+| OliSalesTrack | `OliSalesTrack Pro` | Pro $24/mo·$204/yr (single tier) | Recurring |
 
 1. Paddle Dashboard → **Catalog → Products** → **Create Product** (one per tool)
-2. Under each Product → **Add Price** → enter the entry-tier monthly amount
-   → set billing period to **Monthly** → Save
-3. Copy the Price ID (starts with `pri_`)
-4. Open `shared/paddle-sdk.js` and paste it into the matching `PRICE_IDS` entry:
+2. Under each Product → **Add Price** → repeat once per tier × billing
+   period from the table above (e.g. 6 Prices for OliOps, 4 for
+   Oli-Locator, 2 for OliSalesTrack) → set billing period to **Monthly**
+   or **Yearly** accordingly → Save each
+3. Copy each Price ID (starts with `pri_`)
+4. Open `shared/paddle-sdk.js` and paste each into the matching
+   `PRICE_IDS[toolKey][tierKey][period]` slot. Tier keys must match the
+   `key` field on that tool's buy page's `PLANS` array exactly (e.g.
+   `'starter'`, `'pro'`, `'agency'` for OliOps):
    ```js
    var PRICE_IDS = {
-     'oliops':        'pri_YOUR_REAL_ID',
-     'olicommerce':   'pri_YOUR_REAL_ID',
-     'oliflow':       'pri_YOUR_REAL_ID',
-     'oliexplore':    'pri_YOUR_REAL_ID',
-     'oli-locator':   'pri_YOUR_REAL_ID',
-     'olisalestrack': 'pri_YOUR_REAL_ID',
+     'oliops': {
+       'starter': { monthly: 'pri_YOUR_REAL_ID', yearly: 'pri_YOUR_REAL_ID' },
+       'pro':     { monthly: 'pri_YOUR_REAL_ID', yearly: 'pri_YOUR_REAL_ID' },
+       'agency':  { monthly: 'pri_YOUR_REAL_ID', yearly: 'pri_YOUR_REAL_ID' },
+     },
+     // ...repeat for every tool
    };
    ```
+
+Same as PayPal (Part 1b): you don't need every slot filled before
+launch. The Paddle button shows as long as at least one tier for that
+tool is configured; if a customer's specific selection isn't configured
+yet, they see a clear inline error instead of being charged incorrectly.
 
 ### Paddle → login email after payment
 

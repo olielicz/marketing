@@ -134,9 +134,17 @@
 <script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
-const PLANS = [{"name":"Creator","mo":"27","yr":"252","yr_mo":"21"},{"name":"Team","mo":"49","yr":"468","yr_mo":"39"},{"name":"Agency","mo":"89","yr":"828","yr_mo":"69"}];
+// FIX: added a `key` field to each tier (must match shared/paddle-sdk.js's
+// and shared/paypal-sdk.js's PRICE_IDS/PLAN_IDS[toolKey] tier keys
+// exactly) so the correct-amount fix below can tell the SDKs exactly
+// which tier x billing-period the customer has selected.
+const TOOL_KEY = 'oliexplore';
+const PLANS = [{"key":"creator","name":"Creator","mo":"27","yr":"252","yr_mo":"21"},{"key":"team","name":"Team","mo":"49","yr":"468","yr_mo":"39"},{"key":"agency","name":"Agency","mo":"89","yr":"828","yr_mo":"69"}];
 let selectedPlan = 0;
 let isYearly = false;
+
+// See oliops/buy/index.html's comment on this same line.
+window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: PLANS[0].key, period: 'monthly' };
 
 function selectPlan(i) {
   selectedPlan = i;
@@ -168,6 +176,13 @@ function updateSummary() {
   document.getElementById('sumCycle').textContent = cycleLabel;
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
+
+  // FIX: see oliops/buy/index.html's comment on this same fix - this is
+  // what makes the Paddle/PayPal buttons actually charge whichever
+  // tier/billing-period is currently selected on screen, instead of a
+  // single hardcoded price regardless of the customer's selection.
+  window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: plan.key, period: isYearly ? 'yearly' : 'monthly' };
+  document.dispatchEvent(new CustomEvent('oli:planChanged'));
 }
 </script>
 </body>
