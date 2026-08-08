@@ -29,10 +29,12 @@ import {
   recordSuccessfulLogin, recordFailedAttempt, clearFailedAttempts, countRecentFailedAttempts,
   updateOwnerPassword,
   listCarts, getCart, upsertCart, markCartStatus, recordRecoveryEmailSent, deleteCart,
+  listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { generateRecoveryEmail } from "./recoveryEmail.js";
 import { sendMail } from "./smtpClient.js";
+import { generateSupportAnswer } from "./supportAssistant.js";
 
 const PORT = Number(process.env.PORT) || 4600;
 const SESSION_TTL_MS = (Number(process.env.OLICOMMERCE_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -120,6 +122,50 @@ const server = createServer(async (req, res) => {
       if (!body.externalId) return send(res, 400, { error: "externalId is required (your platform's own cart/checkout id, used to de-duplicate repeated webhook fires)" });
       const { cart, isNew } = await upsertCart(body);
       return send(res, isNew ? 201 : 200, { ok: true, cart, isNew });
+    }
+
+    /* ------------------------------ AI Support Assistant (public) ------------------------------ */
+    // Public like the cart-abandoned webhook above — this helps the
+    // merchant running this OliCommerce instance troubleshoot the
+    // product itself (e.g. while locked out of their own login), not a
+    // customer-facing widget for their store's shoppers.
+    if (req.method === "POST" && url.pathname === "/api/support/chat") {
+      const body = await readJsonBody(req);
+      const message = String(body.message || "").trim();
+      if (!message) return send(res, 400, { error: "message is required" });
+
+      const result = await generateSupportAnswer(message, {
+        history: Array.isArray(body.history) ? body.history : [],
+        useAi: Boolean(body.useAi),
+        openaiApiKey: process.env.OPENAI_API_KEY,
+        openaiApiBaseUrl: process.env.OPENAI_API_BASE_URL,
+        openaiModel: process.env.OPENAI_MODEL,
+      });
+
+      let ticket = null;
+      if (result.shouldEscalate) {
+        ticket = await createSupportTicket({
+          subject: message.slice(0, 120),
+          transcript: [...(Array.isArray(body.history) ? body.history : []), { role: "user", content: message }, { role: "assistant", content: result.answer }],
+          contactEmail: body.contactEmail || "",
+          contactName: body.contactName || "",
+          reason: `assistant_not_confident (source: ${result.source})`,
+        });
+      }
+
+      return send(res, 200, { ...result, ticketId: ticket ? ticket.id : null });
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/support/tickets") {
+      const body = await readJsonBody(req);
+      const ticket = await createSupportTicket({
+        subject: body.subject || "Support request",
+        transcript: Array.isArray(body.transcript) ? body.transcript : [],
+        contactEmail: body.contactEmail || "",
+        contactName: body.contactName || "",
+        reason: body.reason || "manual_request",
+      });
+      return send(res, 201, { ticket });
     }
 
     /* -------------------------------- Auth -------------------------------- */
@@ -260,6 +306,36 @@ const server = createServer(async (req, res) => {
       const cart = await markCartStatus(id, "recovered");
       if (!cart) return send(res, 404, { error: "not_found" });
       return send(res, 200, { cart });
+    }
+
+    /* ------------------------- Support tickets (owner-only management) ------------------------- */
+
+    if (req.method === "GET" && url.pathname === "/api/support/tickets") {
+      const status = url.searchParams.get("status") || undefined;
+      return send(res, 200, { tickets: await listSupportTickets({ status }) });
+    }
+    if (req.method === "GET" && url.pathname.startsWith("/api/support/tickets/")) {
+      const id = url.pathname.split("/")[4];
+      const ticket = await getSupportTicket(id);
+      if (!ticket) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { ticket });
+    }
+    if (req.method === "POST" && /^\/api\/support\/tickets\/[^/]+\/close$/.test(url.pathname)) {
+      const id = url.pathname.split("/")[4];
+      const ticket = await updateSupportTicketStatus(id, "closed");
+      if (!ticket) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { ticket });
+    }
+    if (req.method === "POST" && /^\/api\/support\/tickets\/[^/]+\/reopen$/.test(url.pathname)) {
+      const id = url.pathname.split("/")[4];
+      const ticket = await updateSupportTicketStatus(id, "open");
+      if (!ticket) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { ticket });
+    }
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/support/tickets/")) {
+      const id = url.pathname.split("/")[4];
+      const deleted = await deleteSupportTicket(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
     }
 
     return send(res, 404, { error: "not_found" });

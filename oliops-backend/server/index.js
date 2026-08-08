@@ -4,15 +4,18 @@
  *
  * Explicit scope (read this before selling this as "OliOps"):
  *   ✅ Real: contacts (CRM), tasks, invoices (create/list/mark paid/print).
- *   ❌ NOT implemented: payroll, and any "AI support router." Building
- *      payroll correctly (tax withholding tables, filings, multi-state
- *      compliance) is a serious regulated-domain undertaking, not a
- *      feature you bolt onto a CRM in a single pass — shipping a fake
- *      version of it would be actively harmful to a real customer's
- *      business. An "AI support router" that isn't wired to a real
- *      model would be exactly the kind of fabricated capability this
- *      whole effort has been about NOT doing. Both are left out
- *      entirely rather than faked. See README.md's "Scope" section.
+ *   ✅ Real: an AI Support Assistant (see supportAssistant.js) — a real
+ *      knowledge-base matcher (zero config, always available) with an
+ *      optional, honest AI-assisted tier (requires a real OPENAI_API_KEY,
+ *      e.g. a free Groq key — see README.md), and real escalation to a
+ *      support ticket when neither is confident. This replaces the
+ *      previously-marketed-but-unbuilt "AI support router."
+ *   ❌ NOT implemented: payroll. Building payroll correctly (tax
+ *      withholding tables, filings, multi-state compliance) is a
+ *      serious regulated-domain undertaking, not a feature you bolt onto
+ *      a CRM in a single pass — shipping a fake version of it would be
+ *      actively harmful to a real customer's business. See README.md's
+ *      "Scope" section.
  *
  * Start with:  node server/index.js
  * Create the owner account first with:  node scripts/create-owner.js
@@ -25,9 +28,11 @@ import {
   listContacts, getContact, createContact, updateContact, deleteContact,
   listTasks, createTask, updateTask, deleteTask,
   listInvoices, getInvoice, createInvoice, markInvoicePaid, deleteInvoice,
+  listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { renderInvoiceHtml } from "./invoiceHtml.js";
+import { generateSupportAnswer } from "./supportAssistant.js";
 
 const PORT = Number(process.env.PORT) || 4500;
 const SESSION_TTL_MS = (Number(process.env.OLIOPS_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -97,6 +102,53 @@ const server = createServer(async (req, res) => {
     if (req.method === "GET" && url.pathname === "/api/health") {
       const owner = await getOwner();
       return send(res, 200, { ok: true, ownerConfigured: Boolean(owner) });
+    }
+
+    /* ------------------------------ AI Support Assistant (public) ------------------------------ */
+    // Deliberately public (no owner login required) — mirrors why the
+    // "forgot password" knowledge-base answer has to work even when the
+    // asker is locked out of their own account. This is support FOR the
+    // business owner running this OliOps instance (troubleshooting the
+    // product itself), not a customer-facing widget for their clients.
+    if (req.method === "POST" && url.pathname === "/api/support/chat") {
+      const body = await readJsonBody(req);
+      const message = String(body.message || "").trim();
+      if (!message) return send(res, 400, { error: "message is required" });
+
+      const result = await generateSupportAnswer(message, {
+        history: Array.isArray(body.history) ? body.history : [],
+        useAi: Boolean(body.useAi),
+        openaiApiKey: process.env.OPENAI_API_KEY,
+        openaiApiBaseUrl: process.env.OPENAI_API_BASE_URL,
+        openaiModel: process.env.OPENAI_MODEL,
+      });
+
+      let ticket = null;
+      if (result.shouldEscalate) {
+        ticket = await createSupportTicket({
+          subject: message.slice(0, 120),
+          transcript: [...(Array.isArray(body.history) ? body.history : []), { role: "user", content: message }, { role: "assistant", content: result.answer }],
+          contactEmail: body.contactEmail || "",
+          contactName: body.contactName || "",
+          reason: `assistant_not_confident (source: ${result.source})`,
+        });
+      }
+
+      return send(res, 200, { ...result, ticketId: ticket ? ticket.id : null });
+    }
+
+    // Lets a user (or the app's UI) explicitly ask to talk to a human,
+    // without going through the assistant first.
+    if (req.method === "POST" && url.pathname === "/api/support/tickets") {
+      const body = await readJsonBody(req);
+      const ticket = await createSupportTicket({
+        subject: body.subject || "Support request",
+        transcript: Array.isArray(body.transcript) ? body.transcript : [],
+        contactEmail: body.contactEmail || "",
+        contactName: body.contactName || "",
+        reason: body.reason || "manual_request",
+      });
+      return send(res, 201, { ticket });
     }
 
     /* -------------------------------- Auth -------------------------------- */
@@ -232,6 +284,40 @@ const server = createServer(async (req, res) => {
     if (req.method === "DELETE" && url.pathname.startsWith("/api/invoices/")) {
       const id = url.pathname.split("/")[3];
       const deleted = await deleteInvoice(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
+    /* ------------------------- Support tickets (owner-only management) ------------------------- */
+    // Creating a ticket is public (see above — the assistant/escalation
+    // flow needs to work even for a locked-out owner). Viewing/managing
+    // the resulting queue requires the owner login, same as every other
+    // business-data endpoint in this service.
+
+    if (req.method === "GET" && url.pathname === "/api/support/tickets") {
+      const status = url.searchParams.get("status") || undefined;
+      return send(res, 200, { tickets: await listSupportTickets({ status }) });
+    }
+    if (req.method === "GET" && url.pathname.startsWith("/api/support/tickets/")) {
+      const id = url.pathname.split("/")[4];
+      const ticket = await getSupportTicket(id);
+      if (!ticket) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { ticket });
+    }
+    if (req.method === "POST" && /^\/api\/support\/tickets\/[^/]+\/close$/.test(url.pathname)) {
+      const id = url.pathname.split("/")[4];
+      const ticket = await updateSupportTicketStatus(id, "closed");
+      if (!ticket) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { ticket });
+    }
+    if (req.method === "POST" && /^\/api\/support\/tickets\/[^/]+\/reopen$/.test(url.pathname)) {
+      const id = url.pathname.split("/")[4];
+      const ticket = await updateSupportTicketStatus(id, "open");
+      if (!ticket) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { ticket });
+    }
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/support/tickets/")) {
+      const id = url.pathname.split("/")[4];
+      const deleted = await deleteSupportTicket(id);
       return send(res, deleted ? 200 : 404, { ok: deleted });
     }
 

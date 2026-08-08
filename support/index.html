@@ -161,7 +161,7 @@
   <details class="faq-item">
     <summary class="faq-q">The AI support chatbot gives a generic or wrong answer</summary>
     <div class="faq-a">
-      <p>The built-in chatbot resolves common questions from a knowledge base and escalates anything it's not confident about to a real support ticket automatically — so if it can't answer, it should still get a human answer to your customer via the ticket queue. If it's confidently giving wrong information, <a href="../contact/">let us know</a> which question triggered it so we can review the knowledge base.</p>
+      <p>The built-in chatbot (in the app's "🤖 AI Support" tab) answers from a real knowledge base by default, and escalates anything it's not confident about to a real support ticket automatically — so if it can't answer, it should still get a human answer via the ticket queue. Optionally enable AI-assisted answers too, by setting a real <code>OPENAI_API_KEY</code> in your backend's environment (a free key from <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq</a> works — see your product's README for exact setup); without a key configured, every answer comes from the knowledge base, never a fabricated "AI" result. If it's confidently giving wrong information, <a href="../contact/">let us know</a> which question triggered it so we can review the knowledge base.</p>
     </div>
   </details>
 </section>
@@ -193,6 +193,13 @@
       <p>Check the destination email/endpoint configured for CSV forwarding — a typo in the supplier's email address is the most common cause. Also confirm new orders are actually triggering the order-paid webhook (see the abandoned-cart troubleshooting above; it's the same underlying webhook dependency).</p>
     </div>
   </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Where's the AI Support Assistant for OliCommerce itself (not the storefront assistant)?</summary>
+    <div class="faq-a">
+      <p>Below the carts table in the OliCommerce app — it's a separate feature from the storefront-facing AI shopping assistant above. It answers questions about running OliCommerce itself (webhooks, SMTP, recovery emails) from a real knowledge base by default, optionally uses AI for anything it isn't confident about (shares the same <code>OPENAI_API_KEY</code> your backend may already have configured for AI-rewritten recovery emails — a free <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq</a> key works too), and escalates unanswered questions to a real support ticket.</p>
+    </div>
+  </details>
 </section>
 
 <section class="wrap tool-section" id="oliflow">
@@ -220,6 +227,13 @@
     <summary class="faq-q">REST API calls return 401/403</summary>
     <div class="faq-a">
       <p>Confirm your API key is included in the <code>Authorization</code> header and hasn't been regenerated/revoked since you last saved it. API keys can be viewed and regenerated from Settings → API Access — regenerating invalidates the old key immediately, so update any scripts using the old one.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">Where's the AI Support Assistant, and how does it decide what to answer?</summary>
+    <div class="faq-a">
+      <p>Click "🤖 AI Support" in the app's topbar (it uses the same backend connection as "⚙ Connect Backend"). It answers from a real knowledge base grounded in OliFlow's actual node-type coverage by default, optionally calls a real AI provider (configure <code>OPENAI_API_KEY</code> on your <code>oliflow-executor</code> deployment — a free <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Groq</a> key works) for anything the knowledge base isn't confident about, and creates a real, trackable support ticket for whatever neither can confidently resolve.</p>
     </div>
   </details>
 </section>

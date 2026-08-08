@@ -191,3 +191,48 @@ test("logout revokes the session", async () => {
   const afterLogout = await request("GET", "/api/contacts", { token });
   assert.equal(afterLogout.status, 401);
 });
+
+
+test("AI support chat answers confidently from the knowledge base with zero configuration", async () => {
+  const res = await request("POST", "/api/support/chat", { body: { message: "I forgot my password and can't log in" } });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.source, "knowledge_base");
+  assert.equal(res.body.confident, true);
+  assert.equal(res.body.ticketId, null);
+});
+
+test("AI support chat escalates an unanswerable question to a real support ticket", async () => {
+  const res = await request("POST", "/api/support/chat", { body: { message: "does oliops predict lottery numbers", contactEmail: "user@example.com" } });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.shouldEscalate, true);
+  assert.ok(res.body.ticketId);
+
+  const tickets = await request("GET", "/api/support/tickets", { token: ownerToken });
+  assert.equal(tickets.status, 200);
+  const found = tickets.body.tickets.find((t) => t.id === res.body.ticketId);
+  assert.ok(found);
+  assert.equal(found.contactEmail, "user@example.com");
+  assert.equal(found.status, "open");
+});
+
+test("support ticket lifecycle: manual create, close, reopen, delete", async () => {
+  const created = await request("POST", "/api/support/tickets", { body: { subject: "Manual test ticket", contactEmail: "manual@example.com" } });
+  assert.equal(created.status, 201);
+  const id = created.body.ticket.id;
+
+  const closed = await request("POST", `/api/support/tickets/${id}/close`, { token: ownerToken });
+  assert.equal(closed.status, 200);
+  assert.equal(closed.body.ticket.status, "closed");
+
+  const reopened = await request("POST", `/api/support/tickets/${id}/reopen`, { token: ownerToken });
+  assert.equal(reopened.body.ticket.status, "open");
+
+  const deleted = await request("DELETE", `/api/support/tickets/${id}`, { token: ownerToken });
+  assert.equal(deleted.status, 200);
+  assert.equal(deleted.body.ok, true);
+});
+
+test("support ticket endpoints require owner auth to view/manage (but not to create)", async () => {
+  const res = await request("GET", "/api/support/tickets");
+  assert.equal(res.status, 401);
+});

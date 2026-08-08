@@ -19,7 +19,7 @@ function ensureDb() {
   if (!existsSync(DB_FILE)) {
     writeFileSync(
       DB_FILE,
-      JSON.stringify({ owner: null, sessions: {}, failedAttempts: {}, contacts: {}, tasks: {}, invoices: {}, invoiceSeq: 0 }, null, 2),
+      JSON.stringify({ owner: null, sessions: {}, failedAttempts: {}, contacts: {}, tasks: {}, invoices: {}, invoiceSeq: 0, supportTickets: {} }, null, 2),
       { mode: 0o600 }
     );
   }
@@ -28,7 +28,10 @@ function ensureDb() {
 function readDb() {
   ensureDb();
   try {
-    return JSON.parse(readFileSync(DB_FILE, "utf8"));
+    const db = JSON.parse(readFileSync(DB_FILE, "utf8"));
+    // Migration for databases created before supportTickets existed.
+    if (!db.supportTickets) db.supportTickets = {};
+    return db;
   } catch (err) {
     throw new Error(`OliOps database at ${DB_FILE} is corrupted: ${err.message}`);
   }
@@ -290,6 +293,64 @@ export async function deleteInvoice(id) {
   const db = readDb();
   if (!db.invoices[id]) return false;
   delete db.invoices[id];
+  await writeDb(db);
+  return true;
+}
+
+
+/* --------------------------------- Support tickets --------------------------------- */
+// Created by the real AI Support Assistant (see supportAssistant.js) when
+// it can't confidently answer a question from the knowledge base or AI,
+// or when a customer explicitly asks to talk to a human. This is the
+// real implementation of the escalation behavior already documented on
+// the public /support/ page ("escalates anything it's not confident
+// about to a real support ticket automatically").
+
+export async function listSupportTickets({ status } = {}) {
+  const db = readDb();
+  let tickets = Object.values(db.supportTickets);
+  if (status) tickets = tickets.filter((t) => t.status === status);
+  return tickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+export async function getSupportTicket(id) {
+  const db = readDb();
+  return db.supportTickets[id] || null;
+}
+
+export async function createSupportTicket({ subject, transcript, contactEmail, contactName, reason }) {
+  const db = readDb();
+  const id = randomUUID();
+  const ticket = {
+    id,
+    subject: subject || "Support request",
+    transcript: transcript || [],
+    contactEmail: contactEmail || "",
+    contactName: contactName || "",
+    reason: reason || "escalated_by_assistant",
+    status: "open", // open | closed
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  db.supportTickets[id] = ticket;
+  await writeDb(db);
+  return ticket;
+}
+
+export async function updateSupportTicketStatus(id, status) {
+  const db = readDb();
+  const ticket = db.supportTickets[id];
+  if (!ticket) return null;
+  ticket.status = status;
+  ticket.updatedAt = new Date().toISOString();
+  await writeDb(db);
+  return ticket;
+}
+
+export async function deleteSupportTicket(id) {
+  const db = readDb();
+  if (!db.supportTickets[id]) return false;
+  delete db.supportTickets[id];
   await writeDb(db);
   return true;
 }
