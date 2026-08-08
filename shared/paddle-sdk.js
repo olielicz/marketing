@@ -39,7 +39,11 @@
   'use strict';
 
   // ── REPLACE WITH YOUR REAL PADDLE CLIENT-SIDE TOKEN ───────────────────
-  var PADDLE_CLIENT_TOKEN = 'YOUR_PADDLE_CLIENT_TOKEN_HERE';
+  // This is a Sandbox token (starts with "test_") — safe to have in
+  // client-side JS, but it only works against Paddle's Sandbox
+  // environment (fake cards, no real charges) until you swap it and
+  // PADDLE_ENVIRONMENT below for their Production/live equivalents.
+  var PADDLE_CLIENT_TOKEN = 'test_056b269ee889a1058fd9aea03f7';
 
   // ── Set to 'sandbox' while testing, 'production' once you go live ────
   var PADDLE_ENVIRONMENT = 'sandbox';
@@ -54,7 +58,7 @@
   // match the `key` field on each buy page's PLANS array exactly.
   var PRICE_IDS = {
     'oliops': {
-      'starter': { monthly: 'YOUR_OLIOPS_STARTER_MONTHLY_PRICE_ID', yearly: 'YOUR_OLIOPS_STARTER_YEARLY_PRICE_ID' },
+      'starter': { monthly: 'pri_01kzhd6dc91dc4vgzk754xhtye', yearly: 'pri_01kzhd7gcx4ra6fdkmgjjtyj56' },
       'pro':     { monthly: 'YOUR_OLIOPS_PRO_MONTHLY_PRICE_ID',     yearly: 'YOUR_OLIOPS_PRO_YEARLY_PRICE_ID' },
       'agency':  { monthly: 'YOUR_OLIOPS_AGENCY_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PRICE_ID' },
     },
