@@ -14,6 +14,8 @@ import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
 import { executeWorkflow } from "./executor.js";
 import { requireAdmin } from "./adminAuth.js";
+import { generateSupportAnswer } from "./supportAssistant.js";
+import { listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket } from "./store.js";
 
 const PORT = Number(process.env.PORT) || 4400;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
@@ -80,6 +82,89 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { ok: true });
     }
 
+    /* ------------------------------ AI Support Assistant (public) ------------------------------ */
+    // Public, unlike POST /api/execute — a user asking "why is my
+    // workflow not triggering" needs to be able to get help even if
+    // their admin-auth token is expired or misconfigured, which is
+    // often exactly the problem they're asking about. See
+    // supportAssistant.js's header comment for the three-tier honesty
+    // pattern (knowledge base -> optional real AI -> real ticket
+    // escalation) shared with oliops-backend and olicommerce-backend.
+    if (req.method === "POST" && url.pathname === "/api/support/chat") {
+      const body = await readJsonBody(req);
+      const message = String(body.message || "").trim();
+      if (!message) return send(res, 400, { error: "message is required" });
+
+      const result = await generateSupportAnswer(message, {
+        history: Array.isArray(body.history) ? body.history : [],
+        useAi: Boolean(body.useAi),
+        openaiApiKey: process.env.OPENAI_API_KEY,
+        openaiApiBaseUrl: process.env.OPENAI_API_BASE_URL,
+        openaiModel: process.env.OPENAI_MODEL,
+      });
+
+      let ticket = null;
+      if (result.shouldEscalate) {
+        ticket = await createSupportTicket({
+          subject: message.slice(0, 120),
+          transcript: [...(Array.isArray(body.history) ? body.history : []), { role: "user", content: message }, { role: "assistant", content: result.answer }],
+          contactEmail: body.contactEmail || "",
+          contactName: body.contactName || "",
+          reason: `assistant_not_confident (source: ${result.source})`,
+        });
+      }
+
+      return send(res, 200, { ...result, ticketId: ticket ? ticket.id : null });
+    }
+
+    // Creating a ticket is deliberately PUBLIC (mirrors /api/support/chat's
+    // escalation path above — a user locked out of admin-auth still needs
+    // to be able to reach a human). Every other ticket operation below
+    // (list/view/close/reopen/delete) requires a real admin-auth session.
+    if (req.method === "POST" && url.pathname === "/api/support/tickets") {
+      const body = await readJsonBody(req);
+      const ticket = await createSupportTicket({
+        subject: body.subject || "Support request",
+        transcript: Array.isArray(body.transcript) ? body.transcript : [],
+        contactEmail: body.contactEmail || "",
+        contactName: body.contactName || "",
+        reason: body.reason || "manual_request",
+      });
+      return send(res, 201, { ticket });
+    }
+
+    if (url.pathname === "/api/support/tickets" || url.pathname.startsWith("/api/support/tickets/")) {
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
+
+      if (req.method === "GET" && url.pathname === "/api/support/tickets") {
+        const status = url.searchParams.get("status") || undefined;
+        return send(res, 200, { tickets: await listSupportTickets({ status }) });
+      }
+      if (req.method === "GET" && url.pathname.startsWith("/api/support/tickets/")) {
+        const id = url.pathname.split("/")[4];
+        const ticket = await getSupportTicket(id);
+        if (!ticket) return send(res, 404, { error: "not_found" });
+        return send(res, 200, { ticket });
+      }
+      if (req.method === "POST" && /^\/api\/support\/tickets\/[^/]+\/close$/.test(url.pathname)) {
+        const id = url.pathname.split("/")[4];
+        const ticket = await updateSupportTicketStatus(id, "closed");
+        if (!ticket) return send(res, 404, { error: "not_found" });
+        return send(res, 200, { ticket });
+      }
+      if (req.method === "POST" && /^\/api\/support\/tickets\/[^/]+\/reopen$/.test(url.pathname)) {
+        const id = url.pathname.split("/")[4];
+        const ticket = await updateSupportTicketStatus(id, "open");
+        if (!ticket) return send(res, 404, { error: "not_found" });
+        return send(res, 200, { ticket });
+      }
+      if (req.method === "DELETE" && url.pathname.startsWith("/api/support/tickets/")) {
+        const id = url.pathname.split("/")[4];
+        const deleted = await deleteSupportTicket(id);
+        return send(res, deleted ? 200 : 404, { ok: deleted });
+      }
+    }
+
     // POST /api/execute  { workflow, triggerPayload?, vars? }  [admin]
     // -> { executionId, nodeResults, respondWith, finalVars }
     //
@@ -128,6 +213,15 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`OliFlow Executor Server listening on http://localhost:${PORT}`);
-});
+// Guarded the same way as ../oliops-backend/server/index.js and
+// ../olicommerce-backend/server/index.js: only auto-listen when this
+// file is run directly (`node server/index.js`), not when imported by
+// a test file that wants to control its own listen()/close() lifecycle
+// (see test/supportServer.test.js).
+if (import.meta.url === `file://${process.argv[1]}`) {
+  server.listen(PORT, () => {
+    console.log(`OliFlow Executor Server listening on http://localhost:${PORT}`);
+  });
+}
+
+export { server };

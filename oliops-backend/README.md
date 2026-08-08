@@ -21,6 +21,24 @@ backend"). This IS that backend, for the CRM + invoicing part of OliOps.
   never reused even after deletion, mark paid/unpaid, and a genuine
   printable HTML view (`GET /api/invoices/:id/html`) any browser can
   print-to-PDF natively.
+- ✅ **AI Support Assistant** (`server/supportAssistant.js`) — real,
+  three-tier, honest support automation:
+  1. A deterministic knowledge-base matcher (zero configuration, always
+     available) grounded in this product's actual, documented behavior.
+  2. An optional AI-assisted tier — if (and only if) you configure a
+     real `OPENAI_API_KEY`, questions the knowledge base doesn't confidently
+     cover are answered by a real OpenAI-compatible chat completions call,
+     instructed to answer only from the same knowledge base and to say so
+     honestly when it isn't sure. **Without a configured key, every answer
+     comes from the real knowledge base — never a fabricated "AI" result.**
+  3. Real escalation — when neither tier is confident, a real support
+     ticket is created (`POST /api/support/tickets`, `GET /api/support/tickets`)
+     instead of guessing. This is the honest, working version of the
+     "AI support router" that was previously marketed but never built —
+     see the git history of this README for that prior state, and
+     `../olicommerce-backend/server/recoveryEmail.js` for the identical
+     honesty pattern this follows (never claim AI was used unless it
+     genuinely was, always have a real non-AI fallback).
 - ✅ **Real owner authentication** — scrypt password hashing, Ed25519-
   signed sessions checked against a live server-side revocation table
   (logout/password-change take effect immediately), login lockout after
@@ -29,13 +47,41 @@ backend"). This IS that backend, for the CRM + invoicing part of OliOps.
   THEIR OliOps instance, not the cross-tool admin-auth service that
   administers your (the seller's) licensing/sales infrastructure.
 
-12 automated tests (`npm test`), all passing, covering the full
-auth+contacts+tasks+invoices lifecycle including edge cases (rejecting
-an invoice with no line items, confirming invoice numbers are never
-reused, confirming a password change actually revokes every session).
-Also verified end-to-end with a real headless browser driving the actual
-frontend (`../oliops/app/`) against a running instance of this backend —
-not just unit tests in isolation.
+Automated tests (`npm test`) cover the full auth+contacts+tasks+invoices
+lifecycle including edge cases (rejecting an invoice with no line items,
+confirming invoice numbers are never reused, confirming a password change
+actually revokes every session), plus the AI Support Assistant's
+knowledge-base matching, honest AI fallback behavior, and ticket
+escalation (see `test/supportAssistant.test.js`). Also verified
+end-to-end with a real headless browser driving the actual frontend
+(`../oliops/app/`) against a running instance of this backend — not just
+unit tests in isolation.
+
+## Setting up the AI Support Assistant
+
+The knowledge-base tier works immediately with **zero configuration** —
+it's real keyword matching against an accurate FAQ, not a stub. To also
+enable the AI-assisted tier for questions the knowledge base doesn't
+confidently cover:
+
+1. Get a free API key from an OpenAI-compatible provider. **Groq** is
+   recommended — genuinely free, no credit card required, and fast:
+   https://console.groq.com/keys. OpenAI itself, or any other
+   OpenAI-compatible provider, also works.
+2. Set these in your `.env` (see `.env.example`):
+   ```
+   OPENAI_API_KEY=gsk_your_real_key_here
+   OPENAI_API_BASE_URL=https://api.groq.com/openai/v1
+   OPENAI_MODEL=llama-3.3-70b-versatile
+   ```
+   (For OpenAI directly, use `https://api.openai.com/v1` and a model
+   like `gpt-4o-mini` instead.)
+3. Restart the server. The assistant now tries the knowledge base first,
+   and only calls the AI provider for questions it isn't confident
+   about — the AI is instructed to answer strictly from the same
+   knowledge base and to admit when it doesn't know, rather than invent
+   an answer. Either way, whatever it can't confidently resolve becomes
+   a real support ticket.
 
 ## Explicit scope — what is NOT included, and why
 
@@ -50,19 +96,9 @@ their problem with the IRS, not a bug report). If you want real payroll,
 integrate a real payroll provider's API (Gusto, Check, etc.) rather than
 building tax-compliance logic from scratch here.
 
-**"AI support router" is not implemented.** An AI feature that isn't
-actually wired to a real language model would be exactly the kind of
-fabricated capability this whole line of work has been about avoiding.
-If you want this, it needs a real integration with a real LLM provider
-(OpenAI, Anthropic, etc.) using a real API key you supply — see
-`../oliflow-executor`'s node-type coverage table for the same principle
-applied to OliFlow's `openai` node (also not implemented, for the same
-reason: no fake AI output, ever).
-
-Both of these are marketed features in the original OliOps positioning.
-Selling OliOps today should describe it as **CRM + Invoicing**, not the
-full "CRM + Invoicing + Payroll + AI Support" bundle, until (if ever)
-those two pieces get built for real.
+Selling OliOps today should describe it as **CRM + Invoicing + AI
+Support**, not payroll — until (if ever) payroll gets built for real via
+a real provider integration.
 
 ## Setup
 
@@ -123,6 +159,13 @@ npm test   # 12 assertions covering the full lifecycle
 | `POST /api/invoices/:id/mark-paid` | Bearer | Mark an invoice paid |
 | `GET /api/invoices/:id/html` | Bearer | Printable HTML view |
 | `DELETE /api/invoices/:id` | Bearer | Delete an invoice |
+| `POST /api/support/chat` | none | `{message, history?, useAi?, contactEmail?, contactName?}` → `{answer, source, confident, shouldEscalate, ticketId}` |
+| `POST /api/support/tickets` | none | Manually create a support ticket (e.g. an explicit "talk to a human" button) |
+| `GET /api/support/tickets` | Bearer | List support tickets, optionally `?status=open\|closed` |
+| `GET /api/support/tickets/:id` | Bearer | View one ticket incl. full transcript |
+| `POST /api/support/tickets/:id/close` | Bearer | Mark a ticket closed |
+| `POST /api/support/tickets/:id/reopen` | Bearer | Reopen a closed ticket |
+| `DELETE /api/support/tickets/:id` | Bearer | Delete a ticket |
 
 ## Known limitations
 

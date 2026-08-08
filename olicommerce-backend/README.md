@@ -34,6 +34,13 @@ of OliCommerce.
   error, rate limit), the system automatically falls back to the plain
   template and tells you so — it never blocks sending, and never
   pretends a template email came from AI.
+- ✅ **AI Support Assistant** (`server/supportAssistant.js`) — the same
+  honest, three-tier pattern as `../oliops-backend`'s: a real
+  knowledge-base matcher (zero config, always available), an optional
+  AI-assisted tier reusing the same `OPENAI_API_KEY` this service already
+  supports for recovery-email rewriting (e.g. a free Groq key), and real
+  escalation to a support ticket when neither is confident. See "Setting
+  up the AI Support Assistant" below.
 - ✅ **Real owner authentication** — same scrypt + Ed25519 + live-
   revocation pattern as `../admin-auth` and `../oliops-backend` (a
   separate account — this is the merchant's own login for their
@@ -100,6 +107,25 @@ Run the automated tests:
 ```bash
 npm test   # 24 assertions across the full lifecycle
 ```
+
+## Setting up the AI Support Assistant
+
+Works with zero configuration via the real knowledge base. To also
+enable the AI-assisted tier (reuses the SAME `OPENAI_API_KEY` you may
+already have set for recovery-email rewriting — no separate key needed):
+
+1. Get a free key from Groq (no credit card): https://console.groq.com/keys
+   — or use OpenAI itself, or any OpenAI-compatible provider.
+2. Set in `.env`:
+   ```
+   OPENAI_API_KEY=gsk_your_real_key_here
+   OPENAI_API_BASE_URL=https://api.groq.com/openai/v1
+   OPENAI_MODEL=llama-3.3-70b-versatile
+   ```
+3. Restart. `POST /api/support/chat` now tries the knowledge base first,
+   and calls the AI provider (grounded strictly in the same knowledge
+   base) only for questions it isn't confident about — whatever it still
+   can't confidently resolve becomes a real support ticket.
 
 ## Connecting your storefront (Shopify, WooCommerce, or custom)
 
@@ -170,6 +196,13 @@ Content-Type: application/json
 | `POST /api/carts/:id/preview-email` | Bearer | `{tone, useAi}` → builds (doesn't send) a recovery email |
 | `POST /api/carts/:id/send-recovery` | Bearer | `{tone, useAi}` → actually sends the recovery email |
 | `POST /api/carts/:id/mark-recovered` | Bearer | Mark a cart as recovered |
+| `POST /api/support/chat` | none | `{message, history?, useAi?, contactEmail?, contactName?}` → `{answer, source, confident, shouldEscalate, ticketId}` |
+| `POST /api/support/tickets` | none | Manually create a support ticket |
+| `GET /api/support/tickets` | Bearer | List support tickets, optionally `?status=open\|closed` |
+| `GET /api/support/tickets/:id` | Bearer | View one ticket incl. full transcript |
+| `POST /api/support/tickets/:id/close` | Bearer | Mark a ticket closed |
+| `POST /api/support/tickets/:id/reopen` | Bearer | Reopen a closed ticket |
+| `DELETE /api/support/tickets/:id` | Bearer | Delete a ticket |
 
 ## Known limitations
 

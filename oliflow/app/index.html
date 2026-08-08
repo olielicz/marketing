@@ -329,6 +329,29 @@ input,select,textarea{font-family:inherit;}
 .var-row .del-var{background:none;border:none;color:var(--text3);font-size:16px;
   transition:color .15s;}
 .var-row .del-var:hover{color:var(--red);}
+
+/* ── AI SUPPORT PANEL ── */
+.support-modal .modal{max-width:920px;}
+.support-body{display:grid;grid-template-columns:1.4fr 1fr;gap:0;height:520px;}
+@media(max-width:760px){.support-body{grid-template-columns:1fr;height:auto;}}
+.support-chat-col{display:flex;flex-direction:column;border-right:1px solid var(--border);}
+.support-chat-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.support-msg{max-width:85%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;}
+.support-msg.user{align-self:flex-end;background:var(--accent);color:#fff;}
+.support-msg.assistant{align-self:flex-start;background:var(--bg3);color:var(--text);}
+.support-msg .src-badge{display:block;font-size:10px;font-weight:700;margin-bottom:4px;letter-spacing:.03em;text-transform:uppercase;}
+.support-msg.assistant .src-badge.knowledge_base{color:#8b5cf6;}
+.support-msg.assistant .src-badge.ai{color:#10b981;}
+.support-msg.assistant .src-badge.fallback{color:#f59e0b;}
+.support-empty{color:var(--text3);font-size:13px;text-align:center;margin:auto;padding:0 30px;}
+.support-toggle-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text3);}
+.support-inputrow{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);}
+.support-inputrow input{flex:1;padding:9px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;}
+.support-tickets-col{padding:14px;overflow-y:auto;}
+.support-ticket-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.support-ticket-card .t-subject{font-weight:700;font-size:12.5px;margin-bottom:4px;color:var(--text);}
+.support-ticket-card .t-meta{font-size:10.5px;color:var(--text3);}
+.support-need-backend{padding:30px;text-align:center;color:var(--text3);font-size:13px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -358,6 +381,7 @@ input,select,textarea{font-family:inherit;}
          label reflects connection state so it's visible at a glance
          whether Run will be real or simulated. -->
     <button class="btn btn-ghost btn-sm" id="executorConfigBtn" onclick="openExecutorConfig()">⚙ Connect Backend</button>
+    <button class="btn btn-ghost btn-sm" onclick="openSupportModal()">🤖 AI Support</button>
     <button class="btn btn-green btn-sm" id="runBtn" onclick="runWorkflow()" title="Simulated run — no real integrations are called. See the Execution Log for details.">▶ Run</button>
     <button class="btn btn-primary btn-sm" id="activateBtn" onclick="toggleActivate()">Activate</button>
   </div>
@@ -386,6 +410,57 @@ input,select,textarea{font-family:inherit;}
     <div style="display:flex;gap:8px;justify-content:flex-end;">
       <button class="btn btn-ghost btn-sm" onclick="closeExecutorConfig()">Cancel</button>
       <button class="btn btn-primary btn-sm" onclick="saveExecutorConfig()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     AI SUPPORT MODAL
+     Real AI Support Assistant — talks to oliflow-executor's
+     /api/support/chat + /api/support/tickets endpoints (see
+     oliflow-executor/server/supportAssistant.js). Reuses the SAME
+     executorConfig (URL + owner token) already set via "⚙ Connect
+     Backend" above, since both are the same deployed executor. Chat
+     works even without a real executor connected — it just shows a
+     short explainer instead of a chat log in that case, since there's
+     no backend yet to answer honestly from.
+     ═══════════════════════════════════════════════════════════════════ -->
+<div id="supportModal" class="modal-overlay support-modal" style="display:none;" onclick="if(event.target===this)closeSupportModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:20px;">🤖</span>
+      <h2>AI Support Assistant</h2>
+      <button class="modal-close" onclick="closeSupportModal()">×</button>
+    </div>
+    <div class="modal-body" style="padding:0;">
+      <div id="supportNeedsBackend" class="support-need-backend" style="display:none;">
+        Connect a real oliflow-executor backend first (⚙ Connect Backend, above) — the AI Support Assistant runs
+        on that same server (real knowledge-base answers, with optional AI, and real support-ticket escalation
+        when it's not confident — never a fabricated response).
+      </div>
+      <div id="supportBody" class="support-body">
+        <div class="support-chat-col">
+          <div class="support-chat-log" id="supportChatLog">
+            <div class="support-empty" id="supportChatEmpty">Ask a question about OliFlow — e.g. "my workflow isn't triggering" or "why is my http_request node blocked."</div>
+          </div>
+          <div class="support-toggle-row">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+              <input type="checkbox" id="supportUseAi"/> Use AI (if configured on the server)
+            </label>
+          </div>
+          <form class="support-inputrow" id="supportChatForm">
+            <input type="text" id="supportChatInput" placeholder="Type your question…" autocomplete="off"/>
+            <button type="submit" class="btn btn-primary btn-sm" id="supportSendBtn">Send</button>
+          </form>
+        </div>
+        <div class="support-tickets-col">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <strong style="font-size:12.5px;">Support Tickets</strong>
+            <button class="btn btn-ghost btn-sm" onclick="loadSupportTickets()">↻</button>
+          </div>
+          <div id="supportTicketsWrap"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1347,6 +1422,132 @@ function updateExecutorConfigButton() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   AI SUPPORT ASSISTANT
+   Talks to the real oliflow-executor's /api/support/chat and
+   /api/support/tickets endpoints (see
+   oliflow-executor/server/supportAssistant.js) — the same honest,
+   three-tier pattern (real knowledge base -> optional real AI -> real
+   ticket escalation) used by OliOps' and OliCommerce's assistants.
+   Reuses the SAME executorConfig (URL + owner token) already set via
+   "⚙ Connect Backend", since chat/ticket-creation is public on that
+   server but ticket LISTING requires the same owner token /api/execute
+   already uses.
+   ═══════════════════════════════════════════════════════════════════ */
+let supportChatHistory = [];
+
+function openSupportModal() {
+  const connected = Boolean(state.executorConfig && state.executorConfig.executorUrl);
+  document.getElementById('supportNeedsBackend').style.display = connected ? 'none' : 'block';
+  document.getElementById('supportBody').style.display = connected ? 'grid' : 'none';
+  document.getElementById('supportModal').style.display = 'flex';
+  if (connected) loadSupportTickets();
+}
+function closeSupportModal() {
+  document.getElementById('supportModal').style.display = 'none';
+}
+
+function appendSupportMessage(role, text, meta = {}) {
+  const emptyEl = document.getElementById('supportChatEmpty');
+  if (emptyEl) emptyEl.remove();
+  const log = document.getElementById('supportChatLog');
+  const div = document.createElement('div');
+  div.className = `support-msg ${role}`;
+  let html = '';
+  if (role === 'assistant' && meta.source) {
+    const label = meta.source === 'knowledge_base' ? '📚 Knowledge base' : meta.source === 'ai' ? '✨ AI-assisted' : '🎫 Escalated to support';
+    html += `<span class="src-badge ${meta.source}">${label}</span>`;
+  }
+  html += escHtml(text);
+  if (meta.ticketId) {
+    html += `<br><span style="font-size:10.5px;opacity:.75;">Support ticket created (#${meta.ticketId.slice(0,8)}) — a real person will follow up.</span>`;
+  }
+  div.innerHTML = html;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+const supportChatFormEl = document.getElementById('supportChatForm');
+if (supportChatFormEl) {
+  supportChatFormEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!state.executorConfig || !state.executorConfig.executorUrl) return;
+    const input = document.getElementById('supportChatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    appendSupportMessage('user', message);
+    supportChatHistory.push({ role: 'user', content: message });
+    input.value = '';
+    const sendBtn = document.getElementById('supportSendBtn');
+    sendBtn.disabled = true;
+    sendBtn.textContent = '…';
+    try {
+      const res = await fetch(`${state.executorConfig.executorUrl}/api/support/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          history: supportChatHistory.slice(-8),
+          useAi: document.getElementById('supportUseAi').checked,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        appendSupportMessage('assistant', data.error || 'Something went wrong reaching the assistant.', { source: 'fallback' });
+        return;
+      }
+      appendSupportMessage('assistant', data.answer, { source: data.source, ticketId: data.ticketId });
+      supportChatHistory.push({ role: 'assistant', content: data.answer });
+      if (data.ticketId) await loadSupportTickets();
+    } catch (err) {
+      appendSupportMessage('assistant', `Could not reach ${state.executorConfig.executorUrl}: ${err.message}`, { source: 'fallback' });
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send';
+    }
+  });
+}
+
+async function loadSupportTickets() {
+  const wrap = document.getElementById('supportTicketsWrap');
+  if (!wrap || !state.executorConfig || !state.executorConfig.executorUrl) return;
+  try {
+    const res = await fetch(`${state.executorConfig.executorUrl}/api/support/tickets`, {
+      headers: { Authorization: `Bearer ${state.executorConfig.ownerToken}` },
+    });
+    if (!res.ok) {
+      wrap.innerHTML = `<p style="color:var(--text3);font-size:12px;">${res.status === 401 ? 'Owner token missing/invalid — reconnect via ⚙ Connect Backend to view tickets.' : 'Could not load tickets.'}</p>`;
+      return;
+    }
+    const data = await res.json();
+    renderSupportTickets(data.tickets || []);
+  } catch (err) {
+    wrap.innerHTML = `<p style="color:var(--text3);font-size:12px;">Could not reach backend: ${escHtml(err.message)}</p>`;
+  }
+}
+function renderSupportTickets(tickets) {
+  const wrap = document.getElementById('supportTicketsWrap');
+  if (!tickets.length) { wrap.innerHTML = '<p style="color:var(--text3);font-size:12px;">No support tickets yet.</p>'; return; }
+  wrap.innerHTML = tickets.map(t => `
+    <div class="support-ticket-card">
+      <div class="t-subject">${escHtml(t.subject)}</div>
+      <div class="t-meta">${new Date(t.createdAt).toLocaleString()} · ${t.status}${t.contactEmail ? ' · ' + escHtml(t.contactEmail) : ''}</div>
+      <div style="margin-top:8px;">
+        ${t.status === 'open'
+          ? `<button class="btn btn-ghost btn-sm" onclick="closeSupportTicket('${t.id}')">Mark resolved</button>`
+          : `<button class="btn btn-ghost btn-sm" onclick="reopenSupportTicket('${t.id}')">Reopen</button>`}
+      </div>
+    </div>`).join('');
+}
+async function closeSupportTicket(id) {
+  await fetch(`${state.executorConfig.executorUrl}/api/support/tickets/${id}/close`, { method: 'POST', headers: { Authorization: `Bearer ${state.executorConfig.ownerToken}` } });
+  await loadSupportTickets();
+}
+async function reopenSupportTicket(id) {
+  await fetch(`${state.executorConfig.executorUrl}/api/support/tickets/${id}/reopen`, { method: 'POST', headers: { Authorization: `Bearer ${state.executorConfig.ownerToken}` } });
+  await loadSupportTickets();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    EXECUTION ENGINE
    Dispatches to a REAL backend (oliflow-executor) when configured via
    "⚙ Connect Backend" above; otherwise falls back to the simulated
@@ -1955,6 +2156,13 @@ function toast(msg, type='info', dur=3000) {
   stack.appendChild(t);
   setTimeout(() => { t.style.opacity='0'; t.style.transition='.3s'; setTimeout(()=>t.remove(),300); }, dur);
 }
+
+// Expose AI Support functions referenced by inline onclick= handlers.
+window.openSupportModal = openSupportModal;
+window.closeSupportModal = closeSupportModal;
+window.loadSupportTickets = loadSupportTickets;
+window.closeSupportTicket = closeSupportTicket;
+window.reopenSupportTicket = reopenSupportTicket;
 
 /* Workflow name change */
 document.getElementById('wfNameInput')?.addEventListener('change', function() {

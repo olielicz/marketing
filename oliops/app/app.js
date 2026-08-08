@@ -21,12 +21,14 @@ function formatMoney(cents) { return `$${((cents || 0) / 100).toFixed(2)}`; }
 const els = {};
 ['loginScreen','app','loginForm','loginBtn','loginError','settingsToggle','configFields','backendUrl','saveConfigBtn',
  'whoami','logoutBtn','contactsTableWrap','tasksTableWrap','invoicesTableWrap',
- 'contactModal','taskModal','invoiceModal','contactErr','taskErr','invoiceErr','itemRows'
+ 'contactModal','taskModal','invoiceModal','contactErr','taskErr','invoiceErr','itemRows',
+ 'chatLog','chatEmpty','chatForm','chatInput','chatSendBtn','chatUseAi','ticketsWrap'
 ].forEach(id => els[id] = document.getElementById(id));
 
 let cachedContacts = [];
 let cachedTasks = [];
 let cachedInvoices = [];
+let chatHistory = [];
 
 /* ---------------- Config UI ---------------- */
 function initConfigUI() { els.backendUrl.value = loadConfig().backendUrl; }
@@ -130,8 +132,92 @@ document.querySelectorAll('nav.tabs button').forEach(btn => {
 
 /* ---------------- Load everything ---------------- */
 async function loadAll() {
-  await Promise.all([loadContacts(), loadTasks(), loadInvoices()]);
+  await Promise.all([loadContacts(), loadTasks(), loadInvoices(), loadSupportTickets()]);
 }
+
+/* ---------------- AI Support Assistant ---------------- */
+// Talks to the real, honest AI Support Assistant on oliops-backend (see
+// oliops-backend/server/supportAssistant.js): a real knowledge-base
+// match by default, an optional real AI call if the checkbox is ticked
+// AND the server has a real OPENAI_API_KEY configured, and real
+// escalation to a support ticket when neither is confident. This is the
+// working version of the previously-marketed-but-unbuilt "AI support
+// router" — see oliops-backend/README.md's "Scope" history.
+function appendChatMessage(role, text, meta = {}) {
+  if (els.chatEmpty) els.chatEmpty.remove();
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  let html = '';
+  if (role === 'assistant' && meta.source) {
+    const label = meta.source === 'knowledge_base' ? '📚 Knowledge base' : meta.source === 'ai' ? '✨ AI-assisted' : '🎫 Escalated to support';
+    html += `<span class="src-badge ${meta.source}">${label}</span>`;
+  }
+  html += escapeHtml(text);
+  if (meta.ticketId) {
+    html += `<br><span style="font-size:11.5px;opacity:.8;">A support ticket was created (#${meta.ticketId.slice(0,8)}) — a real person will follow up.</span>`;
+  }
+  div.innerHTML = html;
+  els.chatLog.appendChild(div);
+  els.chatLog.scrollTop = els.chatLog.scrollHeight;
+}
+
+if (els.chatForm) {
+  els.chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = els.chatInput.value.trim();
+    if (!message) return;
+    appendChatMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+    els.chatInput.value = '';
+    els.chatSendBtn.disabled = true;
+    els.chatSendBtn.textContent = '…';
+    try {
+      const res = await apiFetch('/api/support/chat', {
+        method: 'POST',
+        body: JSON.stringify({ message, history: chatHistory.slice(-8), useAi: els.chatUseAi.checked }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        appendChatMessage('assistant', data.error || 'Something went wrong reaching the assistant.', { source: 'fallback' });
+        return;
+      }
+      appendChatMessage('assistant', data.answer, { source: data.source, ticketId: data.ticketId });
+      chatHistory.push({ role: 'assistant', content: data.answer });
+      if (data.ticketId) await loadSupportTickets();
+    } catch (err) {
+      appendChatMessage('assistant', `Could not reach the backend: ${err.message}`, { source: 'fallback' });
+    } finally {
+      els.chatSendBtn.disabled = false;
+      els.chatSendBtn.textContent = 'Send';
+    }
+  });
+}
+
+async function loadSupportTickets() {
+  if (!els.ticketsWrap) return;
+  const res = await apiFetch('/api/support/tickets');
+  if (!res.ok) return;
+  const data = await res.json();
+  renderSupportTickets(data.tickets || []);
+}
+function renderSupportTickets(tickets) {
+  if (!tickets.length) { els.ticketsWrap.innerHTML = '<div class="empty" style="padding:30px 10px;">No support tickets yet.</div>'; return; }
+  els.ticketsWrap.innerHTML = tickets.map(t => `
+    <div class="ticket-card">
+      <div class="t-subject">${escapeHtml(t.subject)}</div>
+      <div class="t-meta">${new Date(t.createdAt).toLocaleString()} · <span class="badge ${t.status === 'open' ? 'escalated' : 'done'}">${t.status}</span>${t.contactEmail ? ' · ' + escapeHtml(t.contactEmail) : ''}</div>
+      <div class="row-actions" style="margin-top:8px;">
+        ${t.status === 'open'
+          ? `<button onclick="closeTicket('${t.id}')">Mark resolved</button>`
+          : `<button onclick="reopenTicket('${t.id}')">Reopen</button>`}
+      </div>
+    </div>`).join('');
+}
+async function closeTicket(id) { await apiFetch(`/api/support/tickets/${id}/close`, { method: 'POST' }); await loadSupportTickets(); }
+async function reopenTicket(id) { await apiFetch(`/api/support/tickets/${id}/reopen`, { method: 'POST' }); await loadSupportTickets(); }
+window.closeTicket = closeTicket;
+window.reopenTicket = reopenTicket;
+window.loadSupportTickets = loadSupportTickets;
 
 /* ---------------- Contacts ---------------- */
 async function loadContacts() {

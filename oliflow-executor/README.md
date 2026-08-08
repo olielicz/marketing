@@ -38,6 +38,38 @@ requests, not just by reading it:
      silently break strict prototype/equality checks anywhere downstream.
      Fixed by round-tripping the result through `structuredClone()`.
 
+## AI Support Assistant
+
+A real, honest, three-tier support assistant (`server/supportAssistant.js`
++ `server/store.js`), following the exact same pattern already used by
+`../oliops-backend` and `../olicommerce-backend`:
+
+1. **Knowledge base** (zero configuration, always available) — real
+   keyword matching against an accurate FAQ grounded in this executor's
+   actual node-type coverage (the table below) and known limitations.
+2. **AI-assisted** (opt-in, requires a real `OPENAI_API_KEY` — a free
+   Groq key works: https://console.groq.com/keys) — a real call to an
+   OpenAI-compatible chat completions endpoint, instructed to answer
+   ONLY from the same knowledge base and to admit when it doesn't know,
+   rather than invent a wrong answer about what this executor supports.
+3. **Escalation** — when neither tier is confident, a real support
+   ticket is created and persisted (the first real persistence this
+   service has needed — see `server/store.js`'s header comment for why
+   that's different from the stateless `POST /api/execute` design).
+
+```bash
+# Try it with zero configuration:
+curl -X POST http://localhost:4400/api/support/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "why is my workflow not triggering"}'
+```
+
+`POST /api/support/chat` and `POST /api/support/tickets` (ticket
+creation) are deliberately public — a user whose admin-auth token is
+broken still needs to be able to ask why. Listing/managing tickets
+(`GET /api/support/tickets`, close/reopen/delete) requires the same real
+admin-auth session as `POST /api/execute`.
+
 ## Node type coverage
 
 | Node type | Status | Notes |

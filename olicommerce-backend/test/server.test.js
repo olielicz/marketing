@@ -170,3 +170,45 @@ test("deleting a cart removes it from the list", async () => {
   const listedAfter = await request("GET", "/api/carts", { token: ownerToken });
   assert.equal(listedAfter.body.carts.length, 0);
 });
+
+
+test("AI support chat answers confidently from the knowledge base with zero configuration", async () => {
+  const res = await request("POST", "/api/support/chat", { body: { message: "how do I connect my shopify abandoned cart webhook" } });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.source, "knowledge_base");
+  assert.equal(res.body.confident, true);
+  assert.equal(res.body.ticketId, null);
+});
+
+test("AI support chat escalates an unanswerable question to a real support ticket", async () => {
+  const res = await request("POST", "/api/support/chat", { body: { message: "does olicommerce predict tomorrow's lottery numbers", contactEmail: "merchant2@example.com" } });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.shouldEscalate, true);
+  assert.ok(res.body.ticketId);
+
+  const tickets = await request("GET", "/api/support/tickets", { token: ownerToken });
+  assert.equal(tickets.status, 200);
+  const found = tickets.body.tickets.find((t) => t.id === res.body.ticketId);
+  assert.ok(found);
+  assert.equal(found.contactEmail, "merchant2@example.com");
+});
+
+test("support ticket lifecycle: manual create, close, reopen, delete", async () => {
+  const created = await request("POST", "/api/support/tickets", { body: { subject: "Manual test ticket" } });
+  assert.equal(created.status, 201);
+  const id = created.body.ticket.id;
+
+  const closed = await request("POST", `/api/support/tickets/${id}/close`, { token: ownerToken });
+  assert.equal(closed.body.ticket.status, "closed");
+
+  const reopened = await request("POST", `/api/support/tickets/${id}/reopen`, { token: ownerToken });
+  assert.equal(reopened.body.ticket.status, "open");
+
+  const deleted = await request("DELETE", `/api/support/tickets/${id}`, { token: ownerToken });
+  assert.equal(deleted.status, 200);
+});
+
+test("support ticket management endpoints require owner auth", async () => {
+  const res = await request("GET", "/api/support/tickets");
+  assert.equal(res.status, 401);
+});
