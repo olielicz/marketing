@@ -208,9 +208,18 @@ footer a{color:var(--sub);}
 <script src="../../shared/stripe-link-guard.js"></script>
 <script src="../../shared/security.js"></script>
 <script>
-const PLANS = [{"name":"Pro","mo":"24","yr":"204","yr_mo":"17"}];
+// FIX: added a `key` field (must match shared/paddle-sdk.js's and
+// shared/paypal-sdk.js's PRICE_IDS/PLAN_IDS[toolKey] tier keys exactly)
+// so the correct-amount fix below can tell the SDKs exactly which tier x
+// billing-period the customer has selected. OliSalesTrack has only one
+// tier today, but still needs monthly vs. yearly to charge correctly.
+const TOOL_KEY = 'olisalestrack';
+const PLANS = [{"key":"pro","name":"Pro","mo":"24","yr":"204","yr_mo":"17"}];
 let selectedPlan = 0;
 let isYearly = false;
+
+// See oliops/buy/index.html's comment on this same line.
+window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: PLANS[0].key, period: 'monthly' };
 
 // Select plan
 function selectPlan(idx) {
@@ -240,6 +249,14 @@ function updateSummary() {
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
+
+  // FIX: see oliops/buy/index.html's comment on this same fix - this is
+  // what makes the Paddle/PayPal buttons actually charge whichever
+  // billing-period is currently selected on screen (monthly vs. yearly),
+  // instead of a single hardcoded price regardless of the customer's
+  // selection.
+  window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: plan.key, period: isYearly ? 'yearly' : 'monthly' };
+  document.dispatchEvent(new CustomEvent('oli:planChanged'));
 }
 
 // Init
