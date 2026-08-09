@@ -36,6 +36,43 @@ claims can now be restored, because real code backs them.
   default; JSON export/import for backup.
 - **Installable PWA** — works offline, installs on Windows/Android/iOS.
 
+## Real features added since vendoring (previously documented as missing)
+
+A follow-up pass built genuine implementations of three features that
+were previously listed as honest gaps in this deployment:
+
+- **AI-generated insights** (`InsightsPanel`, `generateInsightsNarrative()`) —
+  a real, optional AI narrative of this month's already-computed
+  correlation/P&L numbers. The AI is grounded strictly in numbers this
+  app itself already calculated (never raw transactions, never asked to
+  compute anything new), and a numeric honesty guard
+  (`responseCitesOnlyRealNumbers()`) rejects any AI response that cites
+  a figure outside that real dataset, falling back to a genuine
+  deterministic, rule-based narrative (`buildRuleBasedNarrative()`) —
+  which is what runs by default with no AI key configured at all. Same
+  honesty pattern as `olicommerce-backend/server/storefrontAssistant.js`
+  and `oliops-backend/server/supportAssistant.js` elsewhere in this
+  project, adapted to run client-side with a user-supplied API key
+  (never sent anywhere but the AI provider you configure).
+- **PDF report export** (`buildSimplePdf()`, `downloadCorrelationsPdf()`) —
+  a real, dependency-free PDF generator (hand-built PDF objects + cross-
+  reference table, same technique as OliCompute's server-side
+  `services/pdf.js`, adapted to run entirely in the browser) exporting
+  the Correlations page's real numbers to a downloadable PDF. Nothing is
+  sent to a server — the PDF bytes are assembled and downloaded via a
+  `Blob`, client-side only.
+- **Multiple business profiles** (`loadProfiles()`/`createProfile()`/
+  `switchProfile()`/etc., `ProfileSwitcher` component, "Business
+  profiles" card in Settings) — real, separate `localStorage`-scoped
+  datasets per business, with a working switcher in the sidebar/top bar
+  and full profile management (create/rename/delete, always keeping at
+  least one). The original single-profile user's existing real data is
+  preserved under its original storage key (`olisalestrack:v2`) as the
+  first "My Business" profile — nothing is migrated or lost.
+
+`UpgradePage` has been updated again to list these three as included,
+now that they're real.
+
 ## What was corrected when vendoring this in
 
 The upstream `UpgradePage` advertised a $19/mo "Pro" tier and a $149

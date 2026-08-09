@@ -151,7 +151,14 @@ created for Facebook/Instagram, or make a new one).
 ## Putting it together in OliExplore
 
 1. Open OliExplore → sidebar → **⚙ Live API Setup**.
-2. Paste your proxy URL (from Step 0).
+2. Paste your proxy URL (from Step 0), then click **Test connection** —
+   this makes a real request to your proxy's `/health` endpoint and
+   tells you right away whether the URL is reachable and which
+   platform secrets it can actually see configured, before you go
+   register any developer apps. (This only checks your own proxy — it
+   cannot register an app or generate credentials for you; every step
+   above that requires your own account on each platform is still
+   yours to do.)
 3. Paste each platform's Client ID/Key you copied above. Save.
 4. Go to **Connections** → click **"Log in & Connect"** on a platform
    that now shows "Live login ready". A popup opens the platform's real
@@ -163,14 +170,35 @@ Any platform you *haven't* configured keeps working exactly as before
 in demo/offline mode — nothing is required to keep using OliExplore as
 a sandbox.
 
+## What can't be automated for you
+
+Every platform above needs a developer app registered under **your
+own** account (your Meta/X/TikTok login, your acceptance of that
+platform's developer terms, your app's identity). This is true by
+design on every platform's side — there is no API, credential, or piece
+of code that can create a real OAuth app on your behalf without you
+personally being the one who registers it. That part of this setup
+will always require you to click through each platform's own developer
+console yourself; nothing in OliExplore (or any tool) can shortcut it.
+What OliExplore DOES do for you: everything after you have real
+credentials — the OAuth popup flow, PKCE, token storage, the proxy's
+token exchange, and (new) a real health check of your deployed proxy
+so you're not debugging blind.
+
 ## Troubleshooting
 
 - **"Live API is not configured yet"** — you opened Connect before
   saving a proxy URL + Client ID in Settings for that platform.
+- **"Test connection" fails / proxy unreachable** — double check the URL
+  (no trailing path, just the worker's base URL), that `npx wrangler
+  deploy` actually succeeded, and that you're not testing a
+  `localhost:8787` URL from a page that isn't also running locally.
 - **"Token exchange failed"** — check your proxy's redirect URI exactly
   matches what's registered in the platform's app settings (including
   trailing slashes), and that the matching secret was set with
-  `wrangler secret put`.
+  `wrangler secret put`. Run "Test connection" first — if it reports
+  that platform's secret as "not set yet," that's your answer before
+  you even attempt a login.
 - **"session expired"** — access tokens eventually expire; reconnect
   from the Connections tab.
 - **Popup blocked** — allow popups for your GitHub Pages domain and

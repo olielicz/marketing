@@ -1,7 +1,7 @@
 {
   "name": "OliSalesTrack",
   "short_name": "OliSalesTrack",
-  "description": "Track sales, refunds, expenses and profit with real-time correlation analysis. Know exactly what's driving your numbers.",
+  "description": "Track sales, refunds, expenses and profit across multiple business profiles, with correlation analysis, AI-generated insights, and PDF report export.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

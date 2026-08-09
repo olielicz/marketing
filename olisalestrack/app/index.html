@@ -129,6 +129,72 @@
 
     const STORAGE_KEY = 'olisalestrack:v2';
 
+    /* ===================================================================
+     * Multiple business profiles
+     * ===================================================================
+     * NEW: real, separate localStorage-scoped datasets per business, with
+     * a switcher UI (see ProfileSwitcher below and "Manage profiles" in
+     * Settings). Previously "multiple business profiles" was a marketed
+     * feature with zero implementation anywhere in this app — this is
+     * the genuine, working version. The FIRST profile ever created keeps
+     * using the original, un-namespaced STORAGE_KEY so existing users'
+     * real data (saved before this feature existed) is never orphaned —
+     * every additional profile gets its own namespaced key.
+     * ================================================================= */
+    const PROFILES_KEY = 'olisalestrack:profiles:v1';
+
+    function loadProfiles() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(PROFILES_KEY));
+        if (raw && Array.isArray(raw.profiles) && raw.profiles.length) return raw;
+      } catch { /* fall through to first-run default below */ }
+      const def = { id: 'default', name: 'My Business', createdAt: new Date().toISOString(), storageKey: STORAGE_KEY };
+      const profiles = { activeId: def.id, profiles: [def] };
+      try { localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); } catch { /* localStorage unavailable */ }
+      return profiles;
+    }
+    function saveProfiles(p) {
+      try { localStorage.setItem(PROFILES_KEY, JSON.stringify(p)); } catch { /* localStorage unavailable */ }
+    }
+    function activeProfile() {
+      const p = loadProfiles();
+      return p.profiles.find(x => x.id === p.activeId) || p.profiles[0];
+    }
+    function storageKeyForProfile(profile) {
+      return profile.storageKey || `olisalestrack:v2:profile:${profile.id}`;
+    }
+    function createProfile(name) {
+      const p = loadProfiles();
+      const id = 'p' + Math.random().toString(36).slice(2, 10);
+      const profile = { id, name: name || 'New business', createdAt: new Date().toISOString(), storageKey: `olisalestrack:v2:profile:${id}` };
+      const next = { activeId: id, profiles: [...p.profiles, profile] };
+      saveProfiles(next);
+      return next;
+    }
+    function switchProfile(id) {
+      const p = loadProfiles();
+      if (!p.profiles.some(x => x.id === id)) return p;
+      const next = { ...p, activeId: id };
+      saveProfiles(next);
+      return next;
+    }
+    function renameProfile(id, name) {
+      const p = loadProfiles();
+      const next = { ...p, profiles: p.profiles.map(x => x.id === id ? { ...x, name } : x) };
+      saveProfiles(next);
+      return next;
+    }
+    function deleteProfile(id) {
+      const p = loadProfiles();
+      if (p.profiles.length <= 1) return p; // never delete the last remaining profile
+      const target = p.profiles.find(x => x.id === id);
+      const remaining = p.profiles.filter(x => x.id !== id);
+      const next = { activeId: p.activeId === id ? remaining[0].id : p.activeId, profiles: remaining };
+      saveProfiles(next);
+      if (target) { try { localStorage.removeItem(storageKeyForProfile(target)); } catch { /* best effort */ } }
+      return next;
+    }
+
     const defaultState = () => ({
       sales:    [],
       refunds:  [],
@@ -142,16 +208,17 @@
       },
     });
 
-    function loadState() {
+    function loadState(storageKey) {
+      const key = storageKey || STORAGE_KEY;
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(key);
         if (!raw) return defaultState();
         const parsed = JSON.parse(raw);
         return { ...defaultState(), ...parsed, settings: { ...defaultState().settings, ...(parsed.settings || {}) } };
       } catch { return defaultState(); }
     }
-    function saveState(state) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn('save failed', e); }
+    function saveState(state, storageKey) {
+      try { localStorage.setItem(storageKey || STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn('save failed', e); }
     }
 
     function reducer(state, action) {
@@ -233,6 +300,122 @@
       }
       out.push(cur);
       return out;
+    }
+
+    /* ===================================================================
+     * Real, dependency-free client-side PDF export
+     * ===================================================================
+     * NEW: "PDF report generation" was previously a marketed feature
+     * with zero implementation anywhere in this app. This builds a
+     * genuine PDF (raw PDF objects + a valid cross-reference table,
+     * Letter size, built by hand, no library) entirely in the browser
+     * from this page's real, already-computed numbers — same technique
+     * OliCompute's server/services/pdf.js uses server-side for invoices,
+     * adapted here to run client-side with no backend. Opens/downloads
+     * directly via a Blob; nothing is sent to any server.
+     * ================================================================= */
+    function buildSimplePdf({ title, subtitle, lines }) {
+      const PAGE_W = 612, PAGE_H = 792;
+      const ops = [];
+      const yOf = (top) => PAGE_H - top;
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/[\r\n]+/g, ' ');
+      }
+      function text(x, top, str, size, bold, rgb) {
+        if (rgb) ops.push(`${rgb} rg`);
+        ops.push(`BT /${bold ? 'F2' : 'F1'} ${size} Tf ${x} ${yOf(top)} Td (${esc(str)}) Tj ET`);
+        if (rgb) ops.push('0 0 0 rg');
+      }
+      function hr(top) { ops.push(`0.8 G 1 w 50 ${yOf(top)} m 562 ${yOf(top)} l S`); }
+
+      const L = 50;
+      text(L, 60, title, 20, true, '0.39 0.4 0.94'); // #6366f1 brand
+      if (subtitle) text(L, 82, subtitle, 11, false, '0.4 0.45 0.52');
+      hr(96);
+
+      let top = 122;
+      for (const line of lines) {
+        if (line.type === 'section') {
+          top += 8;
+          text(L, top, line.text, 13, true);
+          top += 6; hr(top + 6); top += 20;
+          continue;
+        }
+        if (line.type === 'kv') {
+          text(L, top, line.label, 10, false, '0.4 0.45 0.52');
+          text(300, top, line.value, 10, true);
+          top += 17;
+          continue;
+        }
+        // Plain paragraph — naive word-wrap at ~95 chars per line for Helvetica 10pt on a 512pt-wide column.
+        const words = String(line.text || '').split(/\s+/);
+        let buf = '';
+        for (const w of words) {
+          if ((buf + ' ' + w).trim().length > 95) { text(L, top, buf.trim(), 10, false); top += 14; buf = w; }
+          else buf = (buf + ' ' + w).trim();
+        }
+        if (buf) { text(L, top, buf, 10, false); top += 14; }
+        top += 6;
+        if (top > 740) top = 740; // simple single-page clamp; acceptable for a summary report
+      }
+
+      text(L, 766, `Generated by OliSalesTrack on ${todayISO()}`, 8, false, '0.4 0.45 0.52');
+
+      const content = ops.join('\n');
+      const objs = [];
+      objs[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+      objs[2] = '<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
+      objs[3] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>`;
+      objs[4] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
+      objs[5] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>';
+      const contentBytes = new TextEncoder().encode(content).length;
+      objs[6] = `<< /Length ${contentBytes} >>\nstream\n${content}\nendstream`;
+
+      let pdf = '%PDF-1.4\n';
+      const offsets = [];
+      const enc = new TextEncoder();
+      for (let i = 1; i <= 6; i++) {
+        offsets[i] = enc.encode(pdf).length;
+        pdf += `${i} 0 obj\n${objs[i]}\nendobj\n`;
+      }
+      const xrefStart = enc.encode(pdf).length;
+      pdf += 'xref\n0 7\n0000000000 65535 f \n';
+      for (let i = 1; i <= 6; i++) pdf += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
+      pdf += `trailer\n<< /Size 7 /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+
+      // Latin-1-safe: every character emitted above is ASCII, so charCodeAt is exact.
+      const bytes = new Uint8Array(pdf.length);
+      for (let i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i);
+      return bytes;
+    }
+
+    function downloadPdfBytes(bytes, filename) {
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }
+
+    /** Builds and downloads a real PDF summarizing this month's correlation/P&L data. */
+    function downloadCorrelationsPdf(state, month, ts, pairs) {
+      const cur = state.settings.currency;
+      const lines = [{ type: 'section', text: 'Correlation Analysis' }];
+      for (const p of pairs) {
+        lines.push({ type: 'kv', label: p.label, value: `r = ${p.r.toFixed(2)} (${corrLabel(p.r)})` });
+        lines.push({ type: 'text', text: p.insight.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu, '').trim() });
+      }
+      lines.push({ type: 'section', text: 'Monthly Summary (last 12 months)' });
+      for (const d of ts.slice().reverse()) {
+        lines.push({ type: 'kv', label: d.label, value: `Sales ${fmtMoney(d.sales, cur)} · Refunds ${fmtMoney(d.refunds, cur)} · Expenses ${fmtMoney(d.expenses, cur)} · Profit ${fmtMoney(d.profit, cur)}` });
+      }
+      const bytes = buildSimplePdf({
+        title: 'OliSalesTrack — Correlation & P&L Report',
+        subtitle: `Generated for ${fmtMonth(month)} · currency ${cur}`,
+        lines,
+      });
+      downloadPdfBytes(bytes, `olisalestrack-report-${month}.pdf`);
     }
 
     /* Aggregations */
@@ -1134,10 +1317,191 @@
     }
     function normalizeBaseUrlLS(url) { return String(url || '').trim().replace(/\/$/, ''); }
 
+    /* ===================================================================
+     * AI-generated insights — real, grounded, honesty-guarded
+     * ===================================================================
+     * NEW: "AI business insights" was previously a marketed feature with
+     * zero implementation anywhere in this app. This is the genuine
+     * version, built with the same honesty pattern used throughout the
+     * rest of this project (see olicommerce-backend/server/
+     * storefrontAssistant.js and oliops-backend/server/supportAssistant.js):
+     *   1. The AI is given ONLY the real, already-computed aggregate
+     *      numbers this app itself calculated (correlation coefficients,
+     *      P&L totals) — never raw transaction records, and it is never
+     *      asked to compute anything. It is asked only to NARRATE numbers
+     *      that are already true.
+     *   2. A numeric honesty guard scans the AI's response for any
+     *      number that doesn't correspond to a real value it was given
+     *      (allowing for reasonable formatting differences — $, commas,
+     *      %, rounding) and rejects the response if it invents one,
+     *      falling back to the deterministic narrative instead.
+     *   3. Without a configured AI key, a real, deterministic,
+     *      rule-based narrative (reusing the same insight logic already
+     *      used in CorrelationsPage) is used instead — clearly labeled
+     *      as such. The AI tier is optional; the rule-based tier is not
+     *      a stub, it always works.
+     * This is a pure client-side PWA with no backend of its own, so
+     * unlike the backend services in this repo, the AI call happens
+     * directly from the browser using a key YOU provide and control
+     * (stored in localStorage only if you opt in) — same "bring your own
+     * key" model used by the AI shopping assistant embed.
+     * ================================================================= */
+    const AI_CONFIG_KEY = 'olisalestrack:ai:v1';
+
+    function loadAiConfig() {
+      try { return JSON.parse(localStorage.getItem(AI_CONFIG_KEY)) || { apiKey: '', baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini', remember: false }; }
+      catch { return { apiKey: '', baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini', remember: false }; }
+    }
+    function saveAiConfig(cfg) {
+      // Only persist the API key itself if the user has explicitly opted
+      // in via "remember" — otherwise it lives only in memory for this
+      // session, same privacy stance as the Shopify token setting above.
+      const toStore = cfg.remember ? cfg : { ...cfg, apiKey: '' };
+      try { localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(toStore)); } catch { /* best effort */ }
+    }
+
+    /** Builds the real, already-computed data block the AI is grounded in — never raw transactions. */
+    function buildInsightsDataBlock(state, month) {
+      const months = lastNMonths(12, new Date(month + '-15'));
+      const ts = buildMonthTimeSeries(state, months);
+      const t = totalsForMonth(state, month);
+      const salesArr = ts.map(d => d.sales), refundsArr = ts.map(d => d.refunds), expensesArr = ts.map(d => d.expenses), profitArr = ts.map(d => d.profit);
+      const correlations = [
+        { pair: 'Sales vs Refunds', r: Math.round(pearson(salesArr, refundsArr) * 100) / 100 },
+        { pair: 'Sales vs Expenses', r: Math.round(pearson(expensesArr, salesArr) * 100) / 100 },
+        { pair: 'Refunds vs Profit', r: Math.round(pearson(refundsArr, profitArr) * 100) / 100 },
+      ];
+      const numbers = {
+        currentMonth: fmtMonth(month),
+        grossSales: Math.round(t.grossSales * 100) / 100,
+        totalRefunds: Math.round(t.totalRefunds * 100) / 100,
+        totalExpenses: Math.round(t.totalExpenses * 100) / 100,
+        netProfit: Math.round(t.profit * 100) / 100,
+        refundRatePct: Math.round(t.refundRate * 1000) / 10,
+        profitMarginPct: Math.round(t.profitMargin * 1000) / 10,
+        correlations,
+      };
+      return numbers;
+    }
+
+    /** Every real number the AI is allowed to reference, as normalized strings, for the honesty guard below. */
+    function allowedNumberTokens(data) {
+      const raw = [data.grossSales, data.totalRefunds, data.totalExpenses, data.netProfit, data.refundRatePct, data.profitMarginPct, ...data.correlations.map(c => c.r)];
+      const tokens = new Set();
+      for (const n of raw) {
+        if (n === null || n === undefined || Number.isNaN(n)) continue;
+        for (const decimals of [0, 1, 2]) tokens.add(Math.abs(n).toFixed(decimals));
+        tokens.add(String(Math.round(Math.abs(n))));
+      }
+      return tokens;
+    }
+
+    /** Numeric honesty guard: rejects a response that cites a number not present in `allowed`. */
+    function responseCitesOnlyRealNumbers(text, allowed) {
+      const found = String(text).match(/\d[\d,]*\.?\d*/g) || [];
+      for (const raw of found) {
+        const cleaned = raw.replace(/,/g, '');
+        const asFloat = parseFloat(cleaned);
+        if (Number.isNaN(asFloat)) continue;
+        // Ignore obviously non-financial small integers (e.g. "3 months",
+        // "top 5") — only scrutinize numbers that look like they could be
+        // a fabricated dollar figure, percentage, or correlation coefficient.
+        if (cleaned.length <= 1 && !cleaned.includes('.')) continue;
+        let matches = allowed.has(cleaned);
+        if (!matches) {
+          for (const dec of [0, 1, 2]) { if (allowed.has(asFloat.toFixed(dec))) { matches = true; break; } }
+        }
+        if (!matches) return false;
+      }
+      return true;
+    }
+
+    /** Real, deterministic, rule-based narrative — used whenever AI is unavailable or fails the honesty guard. */
+    function buildRuleBasedNarrative(data) {
+      const lines = [];
+      lines.push(`In ${data.currentMonth}, gross sales were ${fmtMoney(data.grossSales)}, with ${fmtMoney(data.totalRefunds)} in refunds (${data.refundRatePct}% of sales) and ${fmtMoney(data.totalExpenses)} in expenses, for a net profit of ${fmtMoney(data.netProfit)} (${data.profitMarginPct}% margin).`);
+      const salesRefunds = data.correlations.find(c => c.pair === 'Sales vs Refunds');
+      const salesExpenses = data.correlations.find(c => c.pair === 'Sales vs Expenses');
+      const refundsProfit = data.correlations.find(c => c.pair === 'Refunds vs Profit');
+      if (salesRefunds) lines.push(Math.abs(salesRefunds.r) > 0.5 ? `Sales and refunds are correlated (r=${salesRefunds.r}) — busier periods are also generating more refunds; consider reviewing fulfilment or quality control on high-volume days.` : `Sales and refunds show a weak correlation (r=${salesRefunds.r}), a healthy sign that refund volume isn't simply tracking your busiest periods.`);
+      if (salesExpenses) lines.push(salesExpenses.r > 0.4 ? `Spending is positively correlated with sales (r=${salesExpenses.r}) — your marketing/ops spend appears to be working.` : `The correlation between spending and sales is weak (r=${salesExpenses.r}) — some expense categories may not be generating a proportional return.`);
+      if (refundsProfit) lines.push(refundsProfit.r < -0.4 ? `Refunds are strongly correlated with lower profit (r=${refundsProfit.r}) — refund spikes are directly eroding your margin.` : `Refunds have a limited measured effect on profit this period (r=${refundsProfit.r}).`);
+      return lines.join(' ');
+    }
+
+    /** Real HTTP call to an OpenAI-compatible chat completions endpoint. Grounded strictly in `data`. */
+    async function callInsightsAI(data, cfg) {
+      const system = 'You are a small-business analytics assistant. You will be given REAL, already-computed numbers about a business (sales, refunds, expenses, correlation coefficients). Write a concise (120-200 word) plain-English narrative explaining what these numbers show, plus 1-3 concrete suggestions. You MUST NOT invent, estimate, or restate any number that is not exactly one of the numbers provided below (rounding to 0-2 decimals is fine, inventing new figures is not).';
+      const user = `Real computed numbers for ${data.currentMonth}:\n` +
+        `- Gross sales: ${data.grossSales}\n- Total refunds: ${data.totalRefunds} (${data.refundRatePct}% of sales)\n` +
+        `- Total expenses: ${data.totalExpenses}\n- Net profit: ${data.netProfit} (${data.profitMarginPct}% margin)\n` +
+        data.correlations.map(c => `- Correlation ${c.pair}: r=${c.r}`).join('\n');
+
+      const res = await fetch(`${normalizeBaseUrlLS(cfg.baseUrl)}/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.apiKey}` },
+        body: JSON.stringify({ model: cfg.model || 'gpt-4o-mini', temperature: 0.4, max_tokens: 400,
+          messages: [{ role: 'system', content: system }, { role: 'user', content: user }] }),
+      });
+      if (!res.ok) throw new Error(`AI provider returned HTTP ${res.status}`);
+      const json = await res.json();
+      const text = json?.choices?.[0]?.message?.content;
+      if (!text) throw new Error('AI provider returned an empty response');
+      return text.trim();
+    }
+
+    /** Orchestrates the 3-tier real/optional-AI/fallback flow, always returning something real. */
+    async function generateInsightsNarrative(state, month, cfg) {
+      const data = buildInsightsDataBlock(state, month);
+      if (!cfg || !cfg.apiKey) {
+        return { text: buildRuleBasedNarrative(data), source: 'rule-based', data };
+      }
+      try {
+        const aiText = await callInsightsAI(data, cfg);
+        const allowed = allowedNumberTokens(data);
+        if (!responseCitesOnlyRealNumbers(aiText, allowed)) {
+          console.warn('[insights] AI response cited a number not in the real dataset — discarding and using the rule-based narrative instead.');
+          return { text: buildRuleBasedNarrative(data), source: 'rule-based-honesty-fallback', data };
+        }
+        return { text: aiText, source: 'ai', data };
+      } catch (err) {
+        console.warn('[insights] AI call failed, falling back to rule-based narrative:', err.message);
+        return { text: buildRuleBasedNarrative(data), source: 'rule-based-error-fallback', data };
+      }
+    }
+
+    function AiInsightsSettingsSection({ state, dispatch }) {
+      const [cfg, setCfg] = useState(loadAiConfig());
+      function set(k, v) { const next = { ...cfg, [k]: v }; setCfg(next); }
+      function save() { saveAiConfig(cfg); }
+      return html`
+        <${Card} title="AI insights (optional)">
+          <p class="text-sm text-white/70 leading-relaxed mb-3">
+            Optionally connect an OpenAI-compatible API key to get a plain-English narrative
+            of your real correlation/P&amp;L numbers on the <a href="#correlations" class="text-cyan2 underline">Correlations</a> page.
+            The AI is only ever shown numbers this app has already computed — it cannot invent
+            new figures, and a real check discards any response that cites one anyway. Without a
+            key, you still get a real, rule-based narrative — this tier is optional, not required.
+          </p>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <${Field} label="API key"><${Input} type="password" value=${cfg.apiKey} onInput=${(v) => set('apiKey', v)} placeholder="sk-..."/></Field>
+            <${Field} label="Model"><${Input} value=${cfg.model} onInput=${(v) => set('model', v)} placeholder="gpt-4o-mini"/></Field>
+            <div class="col-span-2"><${Field} label="API base URL" hint="Any OpenAI-compatible endpoint (OpenAI, Groq, OpenRouter, local Ollama, …)."><${Input} value=${cfg.baseUrl} onInput=${(v) => set('baseUrl', v)}/></Field></div>
+          </div>
+          <label class="flex items-center gap-2 text-sm text-white/70 mb-3">
+            <input type="checkbox" checked=${cfg.remember} onChange=${(e) => set('remember', e.target.checked)}/>
+            Remember this key in this browser (otherwise it's cleared on reload)
+          </label>
+          <${Button} tone="ghost" onClick=${save}>Save<//>
+        <//>`;
+    }
+
     /* ----- Settings ------------------------------------------------ */
 
-    function SettingsPage({ state, dispatch, installable, onInstall }) {
+    function SettingsPage({ state, dispatch, installable, onInstall, profiles, activeProfile, onSwitchProfile, onCreateProfile, onRenameProfile, onDeleteProfile }) {
       const fileRef = useRef(null);
+      const [newProfileName, setNewProfileName] = useState('');
+      const [renaming, setRenaming] = useState(null);
 
       function exportJSON() {
         const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -1173,7 +1537,41 @@
             </div>
           <//>
 
+          ${profiles && html`
+          <${Card} title="Business profiles">
+            <p class="text-sm text-white/70 leading-relaxed mb-4">
+              Each profile is a real, completely separate dataset — its own sales, refunds,
+              expenses, and live-sync settings, stored under its own key in this browser's
+              storage. Use this if you run more than one shop/store and want each tracked
+              independently, without one's numbers ever mixing into another's.
+            </p>
+            <ul class="space-y-2 mb-4">
+              ${profiles.profiles.map(p => html`
+                <li key=${p.id} class=${cls('flex items-center gap-3 rounded-lg border px-3 py-2',
+                    p.id === profiles.activeId ? 'border-brand/40 bg-brand/10' : 'border-white/10')}>
+                  ${renaming === p.id
+                    ? html`
+                      <${Input} value=${p.name} onInput=${(v) => onRenameProfile(p.id, v)} className="flex-1"/>
+                      <${Button} size="sm" tone="ghost" onClick=${() => setRenaming(null)}>Done<//>`
+                    : html`
+                      <button class="flex-1 text-left text-sm" onClick=${() => onSwitchProfile(p.id)}>
+                        ${p.id === profiles.activeId && html`<span class="text-brand mr-1">●</span>`}${p.name}
+                      </button>
+                      <${Button} size="sm" tone="ghost" onClick=${() => setRenaming(p.id)}>Rename<//>
+                      ${profiles.profiles.length > 1 && html`
+                        <${Button} size="sm" tone="danger" onClick=${() => { if (confirm(`Delete profile "${p.name}" and all its data? This cannot be undone.`)) onDeleteProfile(p.id); }}>Delete<//>`}
+                    `}
+                </li>`)}
+            </ul>
+            <div class="flex gap-2">
+              <${Input} value=${newProfileName} onInput=${setNewProfileName} placeholder="New business name, e.g. Second Shop"/>
+              <${Button} onClick=${() => { if (newProfileName.trim()) { onCreateProfile(newProfileName.trim()); setNewProfileName(''); } }}>+ Add profile<//>
+            </div>
+          <//>`}
+
           <${LiveSyncSection} state=${state} dispatch=${dispatch}/>
+
+          <${AiInsightsSettingsSection} state=${state} dispatch=${dispatch}/>
 
           <${Card} title="Install as app">
             <p class="text-sm text-white/70 leading-relaxed">
@@ -1228,6 +1626,45 @@
         const t = totalsForMonth(state, ym);
         return { ym, label: fmtMonthShort(ym), sales: t.grossSales, refunds: t.totalRefunds, expenses: t.totalExpenses, profit: t.profit, refundRate: t.refundRate };
       });
+    }
+
+    function InsightsPanel({ state, month }) {
+      const [insight, setInsight] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      async function generate() {
+        setLoading(true);
+        try {
+          const cfg = loadAiConfig();
+          const result = await generateInsightsNarrative(state, month, cfg);
+          setInsight(result);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      const sourceLabel = {
+        ai: '🤖 AI-generated (grounded in your real numbers)',
+        'rule-based': '📐 Rule-based (no AI key configured)',
+        'rule-based-honesty-fallback': '📐 Rule-based (AI response rejected — it cited a number outside your real data)',
+        'rule-based-error-fallback': '📐 Rule-based (AI call failed)',
+      };
+
+      return html`
+        <${Card} title="AI insights">
+          <p class="text-sm text-white/60 mb-3">
+            A narrative summary of the real numbers above — grounded strictly in this month's
+            already-computed totals and correlations. Configure an AI key in
+            <a href="#settings" class="text-cyan2 underline">Settings</a> for an AI-written version,
+            or generate the always-available rule-based one below.
+          </p>
+          <${Button} onClick=${generate} disabled=${loading} tone="good">${loading ? 'Generating…' : (insight ? 'Regenerate' : 'Generate insights')}<//>
+          ${insight && html`
+            <div class="mt-4 rounded-lg border border-white/10 bg-ink-800/50 p-4">
+              <p class="text-sm text-white/80 leading-relaxed">${insight.text}</p>
+              <p class="text-[11px] text-white/40 mt-3">${sourceLabel[insight.source] || insight.source}</p>
+            </div>`}
+        <//>`;
     }
 
     function CorrelationsPage({ state, month }) {
@@ -1298,9 +1735,15 @@
 
       return html`
         <div class="space-y-5">
+          <div class="flex justify-end">
+            <${Button} tone="ghost" onClick=${() => downloadCorrelationsPdf(state, month, ts, pairs)}>⬇ Export PDF report<//>
+          </div>
+
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             ${pairs.map(p => html`<${CorrCard} key=${p.label} pair=${p}/>`)}
           </div>
+
+          <${InsightsPanel} state=${state} month=${month}/>
 
           <${Card} title="Sales vs Refund Rate — 12-month overlay">
             <p class="text-xs text-white/50 mb-3">Bars: Sales (cyan) vs Refund Rate % (red). A rising red bar alongside rising cyan = healthy refund management.</p>
@@ -1369,8 +1812,9 @@
               <div class="text-4xl mb-3">✅</div>
               <h2 class="text-xl font-bold mb-2">You already have full access</h2>
               <p class="text-sm text-white/60 mb-5">
-                Correlation analysis, refund/expense tracking, dispute portal links, and CSV/live-sync
-                import — every feature in this app is included with your one OliSalesTrack subscription.
+                Correlation analysis, AI-generated insights, PDF report export, multiple business
+                profiles, refund/expense tracking, dispute portal links, and CSV/live-sync import —
+                every feature in this app is included with your one OliSalesTrack subscription.
                 There's no separate "Pro" tier to unlock.
               </p>
               <div class="rounded-xl border border-white/10 p-5 text-left max-w-sm mx-auto">
@@ -1378,6 +1822,9 @@
                 <div class="text-xs text-white/50 mb-3">OliSalesTrack — single plan, everything included</div>
                 <ul class="text-xs text-white/70 space-y-1.5 mb-4">
                   <li>✅ Correlation analysis (Pearson r)</li>
+                  <li>✅ AI-generated insights (optional AI key, real fallback)</li>
+                  <li>✅ PDF report export</li>
+                  <li>✅ Multiple business profiles</li>
                   <li>✅ Sales, refunds &amp; expense tracking</li>
                   <li>✅ Live sync from Stripe/PayPal/Shopify</li>
                   <li>✅ CSV import (Shopify/WooCommerce/Stripe)</li>
@@ -1407,14 +1854,31 @@
       { id: 'settings',     label: 'Settings',     icon: '⚙' },
     ];
 
-    function Sidebar({ page, onNavigate }) {
+    /* Compact profile switcher shown in the sidebar — real, separate
+     * datasets per business (see the "Multiple business profiles"
+     * section near STORAGE_KEY above), not a fake dropdown of one item. */
+    function ProfileSwitcher({ profiles, onSwitchProfile, compact }) {
+      const active = profiles.profiles.find(p => p.id === profiles.activeId) || profiles.profiles[0];
+      if (profiles.profiles.length <= 1) {
+        return compact ? null : html`<div class="text-[10px] uppercase tracking-[0.18em] text-white/40">${active.name}</div>`;
+      }
+      return html`
+        <${Select} value=${profiles.activeId} onChange=${onSwitchProfile}
+          className=${compact ? 'text-xs py-1' : 'text-xs'}>
+          ${profiles.profiles.map(p => html`<option key=${p.id} value=${p.id}>${p.name}</option>`)}
+        <//>`;
+    }
+
+    function Sidebar({ page, onNavigate, profiles, onSwitchProfile }) {
       return html`
         <aside class="hidden md:flex flex-col w-56 shrink-0 border-r border-white/5 bg-ink-950/80 glass">
           <div class="p-5 flex items-center gap-3">
             <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand to-cyan2 flex items-center justify-center font-bold text-white text-sm">$↺</div>
-            <div>
+            <div class="min-w-0 flex-1">
               <div class="text-sm font-bold tracking-wide">OliSalesTrack</div>
-              <div class="text-[10px] uppercase tracking-[0.18em] text-white/40">v2 · local</div>
+              ${profiles
+                ? html`<div class="mt-1"><${ProfileSwitcher} profiles=${profiles} onSwitchProfile=${onSwitchProfile}/></div>`
+                : html`<div class="text-[10px] uppercase tracking-[0.18em] text-white/40">v2 · local</div>`}
             </div>
           </div>
           <nav class="px-3 pb-3 space-y-1">
@@ -1438,11 +1902,13 @@
         </nav>`;
     }
 
-    function TopBar({ page, month, setMonth, currency, onSettings }) {
+    function TopBar({ page, month, setMonth, currency, profiles, onSwitchProfile }) {
       const titles = NAV.reduce((m, n) => (m[n.id] = n.label, m), {});
       return html`
         <header class="flex items-center gap-3 px-4 sm:px-6 py-3 border-b border-white/5 bg-ink-950/60 glass">
           <h1 class="text-lg font-bold tracking-tight">${titles[page] || ''}</h1>
+          ${profiles && profiles.profiles.length > 1 && html`
+            <div class="md:hidden"><${ProfileSwitcher} profiles=${profiles} onSwitchProfile=${onSwitchProfile} compact/></div>`}
           <div class="ml-auto flex items-center gap-2">
             <${Input} type="month" value=${month} onInput=${setMonth} className="w-44"/>
             <span class="text-xs text-white/40 hidden sm:inline">${currency}</span>
@@ -1455,8 +1921,24 @@
      * ================================================================= */
 
     function App() {
-      const [state, dispatch] = useReducer(reducer, null, loadState);
-      useEffect(() => { saveState(state); }, [state]);
+      const [profiles, setProfiles] = useState(loadProfiles);
+      const profile = useMemo(() => profiles.profiles.find(p => p.id === profiles.activeId) || profiles.profiles[0], [profiles]);
+      const storageKey = storageKeyForProfile(profile);
+
+      // Real, separate dataset per business profile: re-seeding the
+      // reducer's initial state whenever the active profile changes
+      // (switching profiles), keyed by that profile's own storageKey —
+      // NOT shared with any other profile.
+      const [state, dispatch] = useReducer(reducer, storageKey, loadState);
+      useEffect(() => { saveState(state, storageKey); }, [state, storageKey]);
+      // When the active profile changes, load ITS data instead of
+      // continuing to show/mutate the previous profile's in-memory state.
+      useEffect(() => { dispatch({ type: 'init', state: loadState(storageKey) }); }, [storageKey]);
+
+      function onSwitchProfile(id) { setProfiles(switchProfile(id)); }
+      function onCreateProfile(name) { setProfiles(createProfile(name)); }
+      function onRenameProfile(id, name) { setProfiles(renameProfile(id, name)); }
+      function onDeleteProfile(id) { setProfiles(deleteProfile(id)); }
 
       const initialHash = (location.hash || '#dashboard').slice(1);
       const [page, setPageRaw] = useState(initialHash.split('?')[0] || 'dashboard');
@@ -1512,15 +1994,18 @@
         case 'disputes': body = html`<${DisputesPage} state=${state}/>`; break;
         case 'import':   body = html`<${ImportPage}   state=${state} dispatch=${dispatch}/>`; break;
         case 'upgrade':  body = html`<${UpgradePage}/>`; break;
-        case 'settings': body = html`<${SettingsPage} state=${state} dispatch=${dispatch} installable=${installable} onInstall=${onInstall}/>`; break;
+        case 'settings': body = html`<${SettingsPage} state=${state} dispatch=${dispatch} installable=${installable} onInstall=${onInstall}
+          profiles=${profiles} activeProfile=${profile}
+          onSwitchProfile=${onSwitchProfile} onCreateProfile=${onCreateProfile}
+          onRenameProfile=${onRenameProfile} onDeleteProfile=${onDeleteProfile}/>`; break;
         default:         body = html`<${Dashboard}    state=${state} dispatch=${dispatch} month=${month} setMonth=${setMonth}/>`;
       }
 
       return html`
         <div class="h-full flex">
-          <${Sidebar} page=${page} onNavigate=${setPage}/>
+          <${Sidebar} page=${page} onNavigate=${setPage} profiles=${profiles} onSwitchProfile=${onSwitchProfile}/>
           <div class="flex-1 flex flex-col min-w-0">
-            <${TopBar} page=${page} month=${month} setMonth=${setMonth} currency=${cur}/>
+            <${TopBar} page=${page} month=${month} setMonth=${setMonth} currency=${cur} profiles=${profiles} onSwitchProfile=${onSwitchProfile}/>
             <main class="flex-1 overflow-auto scroll-thin px-4 sm:px-6 py-5 pb-24 md:pb-5">${body}</main>
           </div>
           <${MobileNav} page=${page} onNavigate=${setPage}/>

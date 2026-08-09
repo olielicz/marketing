@@ -40,6 +40,7 @@ import {
   listExpenses, createExpense, deleteExpense,
   getTaxSettings, updateTaxSettings,
   computePayroll, getAccountingOverview, getProfitAndLoss, getExpensesByCategory, getAgedReceivables,
+  getFilingSummary,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { renderInvoiceHtml } from "./invoiceHtml.js";
@@ -380,6 +381,17 @@ const server = createServer(async (req, res) => {
     if (req.method === "GET" && url.pathname === "/api/payroll") {
       const month = url.searchParams.get("month") || undefined;
       return send(res, 200, await computePayroll(month));
+    }
+
+    /* --------------------- Filing summary (computed handoff report) --------------------- */
+    // See store.js's getFilingSummary() for the explicit scope note:
+    // this is a real, computed handoff document for an accountant or
+    // payroll-tax provider — not an e-filed submission to a tax
+    // authority.
+    if (req.method === "GET" && url.pathname === "/api/payroll/filing-summary") {
+      const to = url.searchParams.get("to") || new Date().toISOString().slice(0, 10);
+      const from = url.searchParams.get("from") || `${new Date().getFullYear()}-01-01`;
+      return send(res, 200, await getFilingSummary(from, to));
     }
 
     /* --------------------- Accounting overview (computed) --------------------- */

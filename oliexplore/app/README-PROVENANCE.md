@@ -38,6 +38,25 @@ code, reachable at `./` from `../index.html`'s "🚀 Open App" link.
   registering a developer app on each platform requires YOUR identity/
   account there; this can't be done on your behalf.
 
+## Real addition since vendoring: a proxy health check
+
+A follow-up pass added a genuine `GET /health` endpoint to
+`server/worker.js` plus a real "Test connection" button in Settings
+(`js/ui/settings.js`, `checkProxyHealth()`/`runProxyHealthCheck()`).
+This makes an actual HTTP request to your deployed proxy and reports
+back which platform secrets it can see are configured (booleans only —
+never the secret values) and whether CORS has been locked down — so a
+missing secret or a mistyped URL is caught immediately in Settings,
+instead of only surfacing after clicking through an entire OAuth popup.
+
+**What this explicitly does NOT and cannot do:** register a developer
+app on Facebook/X/TikTok/Threads, or generate real OAuth client
+credentials, on your behalf. That step is fundamentally yours to
+complete on each platform's own developer console — no code can do it
+for you, since it requires your own identity/account on that platform.
+`LIVE_SETUP.md` now has an explicit "What can't be automated for you"
+section explaining this directly, rather than leaving it implicit.
+
 ## What is genuinely out of scope, honestly
 
 - No server-side persistence — everything is `localStorage`-based, by

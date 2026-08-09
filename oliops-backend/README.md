@@ -94,7 +94,9 @@ reports}.js` modules into this service's existing JSON-file store
 (`server/store.js`).
 
 - ✅ **Employees** — hourly (with a real rate) or salaried (fixed
-  monthly amount). Full CRUD.
+  monthly amount), plus an optional per-employee `withholdingRatePct`
+  override and an `allowances` count (kept as a real record for your
+  accountant/filing summary — see below). Full CRUD.
 - ✅ **Time entries** — real logged hours per employee per day.
 - ✅ **Payroll** (`GET /api/payroll?month=YYYY-MM`) — hourly employees'
   pay is computed as their REAL logged hours that month × their rate;
@@ -115,19 +117,42 @@ reports}.js` modules into this service's existing JSON-file store
   receivables (unpaid invoices bucketed by how overdue they genuinely
   are, computed from each invoice's real due date).
 
-**What this still does NOT do, on purpose:** tax withholding tables,
-employer tax filings, and multi-state payroll-tax compliance remain out
-of scope — that's a seriously regulated domain a CRM shouldn't half-build.
-This computes what an employee is genuinely OWED from their real hours
-or salary; it does not withhold, file, or remit anything to a tax
-authority. If you need that, pair this with a real payroll provider
-(Gusto, Check, etc.) for the compliance side, while still using these
-real hours/salary records as your source of truth for what's owed.
+### Payroll withholding + a real filing summary
 
-Selling OliOps today can accurately say **CRM + Invoicing + Payroll +
-Accounting Reports + AI Support** — every one of those is now backed by
-real, tested code. Just don't describe payroll as handling tax
-withholding/filing, since it deliberately doesn't.
+- ✅ **Withholding** — each employee now has a real, flat
+  `withholdingRatePct` (their own override, or the org-wide
+  `taxSettings.defaultWithholdingRatePct` if they don't have one).
+  `GET /api/payroll` now returns, per employee, real `grossPayCents`,
+  `withheldCents`, and `netPayCents` — genuine arithmetic on a rate a
+  human explicitly configured, the exact same honesty principle as
+  invoice tax above (this app never invents a rate for you).
+- ✅ **Filing summary** (`GET /api/payroll/filing-summary?from=&to=`) —
+  a real, computed handoff report: total gross pay, total withheld,
+  total net pay, and a per-employee breakdown, aggregated across every
+  month in the date range from your real payroll records. This is the
+  document you'd actually hand to an accountant or payroll-tax provider
+  at quarter/year end, or use yourself to remit what you withheld.
+
+**What this deliberately still does NOT do:** look up official
+IRS/HMRC/ATO withholding tables by income bracket and filing status,
+apply FICA/Social Security/Medicare/state-specific rules, or submit an
+e-filing (Form 941/W-2, HMRC RTI, ATO STP, etc.) to any tax authority. A
+single flat percentage cannot correctly replicate a real progressive
+withholding table, and building a binding regulatory filing integration
+is a fundamentally different (and far more regulated) product than a
+self-hosted CRM should attempt. The `scopeNote` field on the filing
+summary's own JSON payload says this explicitly, so it's visible even to
+a raw API consumer, not just this README. If you need certified
+withholding tables or actual e-filing, pair this with a real
+payroll-tax provider (Gusto, Check, etc.) — while still using these real
+hours/salary/withholding records as your source of truth for what's
+owed and what's been set aside.
+
+Selling OliOps today can accurately say **CRM + Invoicing + Payroll
+(with real withholding) + a real Filing Summary report + Accounting
+Reports + AI Support** — every one of those is now backed by real,
+tested code. Just don't describe it as handling official tax-bracket
+lookups or actual government e-filing, since it deliberately doesn't.
 
 ## Setup
 
@@ -202,7 +227,8 @@ npm test   # 12 assertions covering the full lifecycle
 | `DELETE /api/expenses/:id` | Bearer | Delete an expense |
 | `GET /api/tax-settings` | Bearer | Get the owner-configured default tax rate |
 | `PUT /api/tax-settings` | Bearer | Update the default tax rate |
-| `GET /api/payroll?month=` | Bearer | Real payroll computed from logged hours/salaries |
+| `GET /api/payroll?month=` | Bearer | Real payroll computed from logged hours/salaries, incl. real withholding + net pay per employee |
+| `GET /api/payroll/filing-summary?from=&to=` | Bearer | Real gross/withheld/net handoff summary for an accountant/payroll-tax provider (not an e-filing) |
 | `GET /api/accounting` | Bearer | Real accounting overview (revenue/expenses/payroll/net) |
 | `GET /api/reports?from=&to=` | Bearer | Real P&L, expenses by category, aged receivables |
 | `GET /api/support/tickets` | Bearer | List support tickets, optionally `?status=open\|closed` |
