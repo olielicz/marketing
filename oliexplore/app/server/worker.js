@@ -48,6 +48,31 @@ export default {
     try {
       const parts = url.pathname.split("/").filter(Boolean); // e.g. ["oauth","x","token"]
 
+      // GET /health — real, verifiable proxy status. Reports which
+      // platform secrets are ACTUALLY set as Worker environment
+      // variables right now (booleans only — never the secret values
+      // themselves) plus whether ALLOWED_ORIGIN has been locked down
+      // from the wildcard default. This backs the "Test connection"
+      // button in Settings (see ../js/ui/settings.js) with a real
+      // check instead of only finding out something's wrong the first
+      // time a user attempts a live OAuth popup.
+      if (parts[0] === "health" && parts.length === 1 && request.method === "GET") {
+        return withCors(
+          json({
+            ok: true,
+            allowedOriginConfigured: Boolean(env.ALLOWED_ORIGIN && env.ALLOWED_ORIGIN !== "*"),
+            secretsConfigured: {
+              facebook: Boolean(env.META_CLIENT_SECRET),
+              instagram: Boolean(env.META_CLIENT_SECRET),
+              x: Boolean(env.X_CLIENT_SECRET),
+              tiktok: Boolean(env.TIKTOK_CLIENT_SECRET),
+              threads: Boolean(env.THREADS_CLIENT_SECRET),
+            },
+          }),
+          origin
+        );
+      }
+
       if (parts[0] === "oauth" && parts[2] === "token" && request.method === "POST") {
         const platform = parts[1];
         const body = await request.json();

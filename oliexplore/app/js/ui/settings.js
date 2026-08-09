@@ -30,6 +30,31 @@ import {
 import { esc } from "./util.js";
 import { toast } from "./toast.js";
 
+/* ---------------------------------------------------------------------
+   Real proxy health check.
+
+   IMPORTANT — what this can and cannot do: registering a developer app
+   on Facebook/X/TikTok/Threads requires YOUR identity and YOUR account
+   on that platform. No amount of code can create real OAuth app
+   credentials on your behalf — that step is fundamentally yours to do
+   (LIVE_SETUP.md walks through it). What this DOES do for real: once
+   you've deployed the proxy and pasted its URL here, it makes a real
+   GET /health request and reports back exactly what the proxy itself
+   can see — which platform secrets are actually configured as Worker
+   environment variables right now, and whether CORS has been locked
+   down from the wildcard default — so you find out about a missing
+   secret or a typo'd URL immediately, instead of only discovering it
+   after clicking through a whole OAuth popup.
+   --------------------------------------------------------------------- */
+async function checkProxyHealth(proxyUrl) {
+  if (!proxyUrl) throw new Error("Enter a proxy URL first.");
+  const res = await fetch(`${proxyUrl.replace(/\/+$/, "")}/health`, { method: "GET" });
+  if (!res.ok) throw new Error(`Proxy responded with HTTP ${res.status} — check the URL and that it's deployed.`);
+  const data = await res.json();
+  if (!data || data.ok !== true) throw new Error("Proxy responded but didn't report a healthy status.");
+  return data;
+}
+
 const modal = () => document.getElementById("settingsModal");
 
 export function initSettings() {
@@ -66,12 +91,19 @@ function render() {
 
     <div class="field">
       <label class="field__label" for="proxyUrlInput">Your proxy URL</label>
-      <input id="proxyUrlInput" class="input" type="url"
-             placeholder="https://your-worker.example.workers.dev"
-             value="${esc(proxy)}" />
+      <div style="display:flex; gap:8px; align-items:flex-start;">
+        <input id="proxyUrlInput" class="input" type="url"
+               placeholder="https://your-worker.example.workers.dev"
+               value="${esc(proxy)}" style="flex:1;" />
+        <button type="button" class="btn btn--soft" id="testProxyBtn">Test connection</button>
+      </div>
       <p class="field__hint">
         The base URL of the worker you deployed from <code>/server</code>. Required for every live platform below.
+        "Test connection" makes a real request to your proxy's <code>/health</code> endpoint and reports what it
+        finds — it cannot register a developer app or generate credentials for you; see <code>LIVE_SETUP.md</code>
+        for that part, which only you can do on each platform's own site.
       </p>
+      <div id="proxyHealthResult"></div>
     </div>
 
     <div class="field">
@@ -93,6 +125,39 @@ function render() {
     toast("Disconnected all live accounts. Proxy URL and Client IDs were kept.", "info");
     render();
   });
+  document.getElementById("testProxyBtn").addEventListener("click", runProxyHealthCheck);
+}
+
+async function runProxyHealthCheck() {
+  const btn = document.getElementById("testProxyBtn");
+  const resultEl = document.getElementById("proxyHealthResult");
+  const url = document.getElementById("proxyUrlInput").value.trim();
+  btn.disabled = true;
+  btn.textContent = "Testing…";
+  resultEl.innerHTML = "";
+  try {
+    const data = await checkProxyHealth(url);
+    const rows = Object.entries(data.secretsConfigured)
+      .map(([platform, configured]) => `<li>${configured ? "✅" : "⬜"} ${esc(platform)} secret ${configured ? "is set" : "not set yet"}</li>`)
+      .join("");
+    resultEl.innerHTML = `
+      <div class="auth-note" style="margin-top:10px; border-color: var(--good, #2ecc71);">
+        <strong>✅ Proxy is reachable and healthy.</strong>
+        <ul style="margin:8px 0 4px 18px; padding:0;">${rows}</ul>
+        ${data.allowedOriginConfigured ? "" : `<p style="margin:6px 0 0;">⚠️ CORS is still wide open (<code>ALLOWED_ORIGIN=*</code>) — lock it down to your real domain before going live (see <code>server/README.md</code>).</p>`}
+      </div>`;
+    toast("Proxy is reachable ✓", "success");
+  } catch (err) {
+    resultEl.innerHTML = `
+      <div class="auth-note" style="margin-top:10px; border-color: var(--bad, #e74c3c);">
+        <strong>❌ Could not verify the proxy.</strong>
+        <p style="margin:6px 0 0;">${esc(err.message)}</p>
+      </div>`;
+    toast(err.message || "Proxy check failed.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Test connection";
+  }
 }
 
 /* Facebook + Instagram share one Meta app / Client ID, so group

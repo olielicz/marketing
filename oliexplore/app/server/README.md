@@ -44,7 +44,11 @@ https://oliexplore-proxy.<your-subdomain>.workers.dev
 ```
 
 That's the **proxy URL** you paste into OliExplore's "Live API Setup"
-panel (gear icon in the sidebar).
+panel (gear icon in the sidebar). Once pasted, click **Test connection**
+there — it hits this worker's real `GET /health` endpoint and reports
+back which platform secrets you've actually set and whether CORS is
+still wide open, so you catch a missing secret or wrong URL immediately
+instead of only discovering it mid-OAuth-popup.
 
 ## Configure secrets
 
