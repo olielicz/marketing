@@ -15,7 +15,12 @@ function saveSession(s) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s))
 function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
 function normalizeUrl(u) { return String(u || '').trim().replace(/\/$/, ''); }
 function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
-function formatMoney(cents, currency) { try { return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format((cents || 0) / 100); } catch { return `$${((cents || 0) / 100).toFixed(2)}`; } }
+// FIX: the catch-fallback below still hardcoded "$" even though the
+// real path already correctly uses the cart's own real currency (set by
+// the source Shopify/WooCommerce webhook) with a genuine USD default -
+// this only matters if Intl.NumberFormat somehow throws (e.g. a
+// malformed currency string slipped through).
+function formatMoney(cents, currency) { try { return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency || 'USD' }).format((cents || 0) / 100); } catch { return `${currency || 'USD'} ${((cents || 0) / 100).toFixed(2)}`; } }
 
 const els = {};
 ['loginScreen','app','loginForm','loginBtn','loginError','settingsToggle','configFields','backendUrl','saveConfigBtn',
