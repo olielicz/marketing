@@ -10,12 +10,18 @@
  *      e.g. a free Groq key — see README.md), and real escalation to a
  *      support ticket when neither is confident. This replaces the
  *      previously-marketed-but-unbuilt "AI support router."
- *   ❌ NOT implemented: payroll. Building payroll correctly (tax
- *      withholding tables, filings, multi-state compliance) is a
- *      serious regulated-domain undertaking, not a feature you bolt onto
- *      a CRM in a single pass — shipping a fake version of it would be
- *      actively harmful to a real customer's business. See README.md's
- *      "Scope" section.
+ *   ✅ Real: employees, logged hours, and payroll computed FROM those
+ *      real hours (hourly = hours × rate; salary = fixed monthly amount)
+ *      — ported from OliCompute's real payroll.js logic. Also real: a
+ *      configurable tax rate applied to invoice subtotals, expense
+ *      tracking, and accounting reports (P&L, expenses by category, aged
+ *      receivables) computed from real invoice/expense/payroll records.
+ *      This is the honest, working version of the payroll/tax/
+ *      accounting features that were previously marketed, found to be
+ *      unimplemented, and removed — now genuinely built. See README.md's
+ *      "Explicit scope" section for exactly what payroll here does NOT
+ *      do (tax withholding, filing, multi-state compliance remain out
+ *      of scope — this computes what's OWED, not what's WITHHELD).
  *
  * Start with:  node server/index.js
  * Create the owner account first with:  node scripts/create-owner.js
@@ -29,6 +35,11 @@ import {
   listTasks, createTask, updateTask, deleteTask,
   listInvoices, getInvoice, createInvoice, markInvoicePaid, deleteInvoice,
   listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket,
+  listEmployees, getEmployee, createEmployee, updateEmployee, deleteEmployee,
+  listTimeEntries, createTimeEntry, deleteTimeEntry,
+  listExpenses, createExpense, deleteExpense,
+  getTaxSettings, updateTaxSettings,
+  computePayroll, getAccountingOverview, getProfitAndLoss, getExpensesByCategory, getAgedReceivables,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { renderInvoiceHtml } from "./invoiceHtml.js";
@@ -267,7 +278,11 @@ const server = createServer(async (req, res) => {
     if (req.method === "POST" && url.pathname === "/api/invoices") {
       const body = await readJsonBody(req);
       if (!body.items || !body.items.length) return send(res, 400, { error: "at least one line item is required" });
-      return send(res, 201, { invoice: await createInvoice(body) });
+      try {
+        return send(res, 201, { invoice: await createInvoice(body) });
+      } catch (err) {
+        return send(res, 400, { error: err.message });
+      }
     }
     if (req.method === "POST" && /^\/api\/invoices\/[^/]+\/mark-paid$/.test(url.pathname)) {
       const id = url.pathname.split("/")[3];
@@ -285,6 +300,105 @@ const server = createServer(async (req, res) => {
       const id = url.pathname.split("/")[3];
       const deleted = await deleteInvoice(id);
       return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
+    /* ------------------------------ Employees ------------------------------ */
+
+    if (req.method === "GET" && url.pathname === "/api/employees") {
+      return send(res, 200, { employees: await listEmployees() });
+    }
+    if (req.method === "POST" && url.pathname === "/api/employees") {
+      const body = await readJsonBody(req);
+      if (!body.name) return send(res, 400, { error: "name is required" });
+      return send(res, 201, { employee: await createEmployee(body) });
+    }
+    if (req.method === "PUT" && url.pathname.startsWith("/api/employees/")) {
+      const id = url.pathname.split("/")[3];
+      const body = await readJsonBody(req);
+      const updated = await updateEmployee(id, body);
+      if (!updated) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { employee: updated });
+    }
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/employees/")) {
+      const id = url.pathname.split("/")[3];
+      const deleted = await deleteEmployee(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
+    /* ----------------------------- Time entries ----------------------------- */
+
+    if (req.method === "GET" && url.pathname === "/api/time-entries") {
+      const employeeId = url.searchParams.get("employeeId") || undefined;
+      const month = url.searchParams.get("month") || undefined;
+      return send(res, 200, { timeEntries: await listTimeEntries({ employeeId, month }) });
+    }
+    if (req.method === "POST" && url.pathname === "/api/time-entries") {
+      const body = await readJsonBody(req);
+      try {
+        return send(res, 201, { timeEntry: await createTimeEntry(body) });
+      } catch (err) {
+        return send(res, 400, { error: err.message });
+      }
+    }
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/time-entries/")) {
+      const id = url.pathname.split("/")[3];
+      const deleted = await deleteTimeEntry(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
+    /* ------------------------------- Expenses ------------------------------- */
+
+    if (req.method === "GET" && url.pathname === "/api/expenses") {
+      return send(res, 200, { expenses: await listExpenses() });
+    }
+    if (req.method === "POST" && url.pathname === "/api/expenses") {
+      const body = await readJsonBody(req);
+      try {
+        return send(res, 201, { expense: await createExpense(body) });
+      } catch (err) {
+        return send(res, 400, { error: err.message });
+      }
+    }
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/expenses/")) {
+      const id = url.pathname.split("/")[3];
+      const deleted = await deleteExpense(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
+    /* ----------------------------- Tax settings ----------------------------- */
+
+    if (req.method === "GET" && url.pathname === "/api/tax-settings") {
+      return send(res, 200, { taxSettings: await getTaxSettings() });
+    }
+    if (req.method === "PUT" && url.pathname === "/api/tax-settings") {
+      const body = await readJsonBody(req);
+      return send(res, 200, { taxSettings: await updateTaxSettings(body) });
+    }
+
+    /* -------------------------- Payroll (computed) -------------------------- */
+
+    if (req.method === "GET" && url.pathname === "/api/payroll") {
+      const month = url.searchParams.get("month") || undefined;
+      return send(res, 200, await computePayroll(month));
+    }
+
+    /* --------------------- Accounting overview (computed) --------------------- */
+
+    if (req.method === "GET" && url.pathname === "/api/accounting") {
+      return send(res, 200, await getAccountingOverview());
+    }
+
+    /* ------------------------------ Reports (computed) ------------------------------ */
+
+    if (req.method === "GET" && url.pathname === "/api/reports") {
+      const to = url.searchParams.get("to") || new Date().toISOString().slice(0, 10);
+      const from = url.searchParams.get("from") || `${new Date().getFullYear()}-01-01`;
+      const [profitAndLoss, expensesByCategory, agedReceivables] = await Promise.all([
+        getProfitAndLoss(from, to),
+        getExpensesByCategory(from, to),
+        getAgedReceivables(),
+      ]);
+      return send(res, 200, { range: { from, to }, profitAndLoss, expensesByCategory, agedReceivables });
     }
 
     /* ------------------------- Support tickets (owner-only management) ------------------------- */

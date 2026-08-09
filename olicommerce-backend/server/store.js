@@ -15,7 +15,7 @@ function ensureDb() {
   if (!existsSync(DB_FILE)) {
     writeFileSync(
       DB_FILE,
-      JSON.stringify({ owner: null, sessions: {}, failedAttempts: {}, carts: {}, seenCartIds: {}, supportTickets: {} }, null, 2),
+      JSON.stringify({ owner: null, sessions: {}, failedAttempts: {}, carts: {}, seenCartIds: {}, supportTickets: {}, products: {} }, null, 2),
       { mode: 0o600 }
     );
   }
@@ -26,6 +26,7 @@ function readDb() {
   try {
     const db = JSON.parse(readFileSync(DB_FILE, "utf8"));
     if (!db.supportTickets) db.supportTickets = {};
+    if (!db.products) db.products = {};
     return db;
   } catch (err) {
     throw new Error(`OliCommerce database at ${DB_FILE} is corrupted: ${err.message}`);
@@ -282,6 +283,68 @@ export async function deleteSupportTicket(id) {
   const db = readDb();
   if (!db.supportTickets[id]) return false;
   delete db.supportTickets[id];
+  await writeDb(db);
+  return true;
+}
+
+
+/* ---------------------------------- Product catalog ---------------------------------- */
+// Real, merchant-managed product records — the honest, scoped-down
+// replacement for "OliMind AI" (a full separate Postgres+pgvector+Redis
+// semantic-search/recommendation microservice, never built/deployed —
+// see storefrontAssistant.js's header comment for the full provenance).
+// This is what the real storefront AI shopping assistant is grounded
+// in: it can only ever mention a product that's actually in THIS list,
+// with its REAL price — never an invented one.
+
+export async function listProducts() {
+  const db = readDb();
+  return Object.values(db.products).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+export async function getProduct(id) {
+  const db = readDb();
+  return db.products[id] || null;
+}
+
+export async function createProduct({ title, description, priceCents, url, tags, inStock }) {
+  const db = readDb();
+  const id = randomUUID();
+  const product = {
+    id,
+    title: title || "",
+    description: description || "",
+    priceCents: Math.max(0, Math.round(Number(priceCents) || 0)),
+    url: url || "",
+    tags: Array.isArray(tags) ? tags.map((t) => String(t).toLowerCase()) : [],
+    inStock: inStock !== false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  db.products[id] = product;
+  await writeDb(db);
+  return product;
+}
+
+export async function updateProduct(id, patch) {
+  const db = readDb();
+  const product = db.products[id];
+  if (!product) return null;
+  if (patch.title !== undefined) product.title = String(patch.title);
+  if (patch.description !== undefined) product.description = String(patch.description);
+  if (patch.priceCents !== undefined) product.priceCents = Math.max(0, Math.round(Number(patch.priceCents) || 0));
+  if (patch.url !== undefined) product.url = String(patch.url);
+  if (patch.tags !== undefined) product.tags = Array.isArray(patch.tags) ? patch.tags.map((t) => String(t).toLowerCase()) : product.tags;
+  if (patch.inStock !== undefined) product.inStock = Boolean(patch.inStock);
+  product.updatedAt = new Date().toISOString();
+  await writeDb(db);
+  return product;
+}
+
+export async function deleteProduct(id) {
+  const db = readDb();
+  if (!db.products[id]) return false;
+  delete db.products[id];
   await writeDb(db);
   return true;
 }

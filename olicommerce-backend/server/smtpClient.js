@@ -57,7 +57,7 @@ function writeCommand(socket, command) {
 export async function sendMail(opts) {
   const {
     host, port = 587, secure = false, user, pass, from, to, subject, html, text, timeoutMs = 15000,
-    rejectUnauthorized = true,
+    rejectUnauthorized = true, attachments,
   } = opts;
 
   if (!host) return { ok: false, error: "SMTP host is required." };
@@ -108,18 +108,7 @@ export async function sendMail(opts) {
     writeCommand(socket, "DATA");
     checkCode(await readLine(socket), ["354"]);
 
-    const bodyLines = [
-      `From: ${from}`,
-      `To: ${recipients.join(", ")}`,
-      `Subject: ${subject || ""}`,
-      `MIME-Version: 1.0`,
-    ];
-    if (html) {
-      bodyLines.push(`Content-Type: text/html; charset=utf-8`, "", html);
-    } else {
-      bodyLines.push(`Content-Type: text/plain; charset=utf-8`, "", text || "");
-    }
-    const escapedBody = bodyLines.join("\r\n").replace(/^\./gm, "..");
+    const escapedBody = buildMessage({ from, to: recipients, subject, html, text, attachments }).replace(/^\./gm, "..");
     writeCommand(socket, escapedBody + "\r\n.");
     checkCode(await readLine(socket), ["250"]);
 
@@ -131,6 +120,51 @@ export async function sendMail(opts) {
     if (socket && !socket.destroyed) socket.destroy();
     return { ok: false, error: err.message };
   }
+}
+
+/**
+ * Builds the full RFC 5322 message body. When `attachments` is given,
+ * this builds a real `multipart/mixed` MIME message with the HTML/text
+ * body as one part and each attachment (base64-encoded, per RFC 2045)
+ * as a subsequent part — added to support the real supplier CSV
+ * forwarding feature (see orderCsv.js). Ported/adapted from the same
+ * multipart structure any real mail client would produce; kept
+ * dependency-free by hand-building the MIME boundaries rather than
+ * pulling in a mail-builder library.
+ */
+function buildMessage({ from, to, subject, html, text, attachments }) {
+  const headers = [`From: ${from}`, `To: ${to.join(", ")}`, `Subject: ${subject || ""}`, `MIME-Version: 1.0`];
+
+  if (!attachments || !attachments.length) {
+    if (html) return [...headers, `Content-Type: text/html; charset=utf-8`, "", html].join("\r\n");
+    return [...headers, `Content-Type: text/plain; charset=utf-8`, "", text || ""].join("\r\n");
+  }
+
+  const boundary = `----olicommerce-boundary-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const parts = [];
+
+  parts.push(`--${boundary}`);
+  if (html) {
+    parts.push(`Content-Type: text/html; charset=utf-8`, "", html);
+  } else {
+    parts.push(`Content-Type: text/plain; charset=utf-8`, "", text || "");
+  }
+
+  for (const att of attachments) {
+    const contentBuffer = Buffer.isBuffer(att.content) ? att.content : Buffer.from(String(att.content), "utf8");
+    const base64 = contentBuffer.toString("base64").replace(/(.{76})/g, "$1\r\n");
+    parts.push(
+      `--${boundary}`,
+      `Content-Type: ${att.contentType || "application/octet-stream"}; name="${att.filename}"`,
+      `Content-Disposition: attachment; filename="${att.filename}"`,
+      `Content-Transfer-Encoding: base64`,
+      "",
+      base64
+    );
+  }
+  parts.push(`--${boundary}--`);
+
+  return [...headers, `Content-Type: multipart/mixed; boundary="${boundary}"`, "", parts.join("\r\n")].join("\r\n");
 }
 
 function connectSocket(host, port, secure, timeoutMs, rejectUnauthorized) {

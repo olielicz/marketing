@@ -83,22 +83,51 @@ confidently cover:
    an answer. Either way, whatever it can't confidently resolve becomes
    a real support ticket.
 
-## Explicit scope — what is NOT included, and why
+## Payroll, tax, and accounting reports (ported from OliCompute)
 
-**Payroll is not implemented.** Building payroll correctly means tax
-withholding tables (federal + state, which change every year), employer
-tax filings, multi-state compliance, and getting all of that legally
-correct for a real business's real employees. That is a serious,
-regulated-domain undertaking — not a feature you bolt onto a CRM in one
-pass. Shipping a fake or half-correct version of payroll would be
-actively harmful to a real customer's business (wrong withholding =
-their problem with the IRS, not a bug report). If you want real payroll,
-integrate a real payroll provider's API (Gusto, Check, etc.) rather than
-building tax-compliance logic from scratch here.
+Real employee records, real logged hours, real computed payroll, a
+real (owner-configured, never invented) tax rate applied to invoices,
+real expense tracking, and real accounting reports — ported from
+[OliCompute](https://github.com/olielicz/OliCompute)'s working
+`services/{employees,timeEntries,payroll,settings,expenses,accounting,
+reports}.js` modules into this service's existing JSON-file store
+(`server/store.js`).
 
-Selling OliOps today should describe it as **CRM + Invoicing + AI
-Support**, not payroll — until (if ever) payroll gets built for real via
-a real provider integration.
+- ✅ **Employees** — hourly (with a real rate) or salaried (fixed
+  monthly amount). Full CRUD.
+- ✅ **Time entries** — real logged hours per employee per day.
+- ✅ **Payroll** (`GET /api/payroll?month=YYYY-MM`) — hourly employees'
+  pay is computed as their REAL logged hours that month × their rate;
+  salaried employees receive their fixed amount. This is real
+  arithmetic on real records, not a guess.
+- ✅ **Invoice tax** — `taxRatePct` on an invoice is either an explicit
+  per-invoice override or falls back to a real default rate YOU
+  configure (`GET`/`PUT /api/tax-settings`). The math (subtotal × rate)
+  is genuinely computed — this is different from "automatic tax
+  calculation," which would imply the software knows your jurisdiction's
+  rate. It doesn't, and never claims to; you tell it the rate.
+- ✅ **Expenses** — real categorized spend records.
+- ✅ **Accounting overview** (`GET /api/accounting`) — real net = real
+  revenue (paid invoices) − real expenses − real payroll for the current
+  month.
+- ✅ **Reports** (`GET /api/reports?from=&to=`) — a real Profit & Loss
+  for any date range, expenses grouped by category, and aged
+  receivables (unpaid invoices bucketed by how overdue they genuinely
+  are, computed from each invoice's real due date).
+
+**What this still does NOT do, on purpose:** tax withholding tables,
+employer tax filings, and multi-state payroll-tax compliance remain out
+of scope — that's a seriously regulated domain a CRM shouldn't half-build.
+This computes what an employee is genuinely OWED from their real hours
+or salary; it does not withhold, file, or remit anything to a tax
+authority. If you need that, pair this with a real payroll provider
+(Gusto, Check, etc.) for the compliance side, while still using these
+real hours/salary records as your source of truth for what's owed.
+
+Selling OliOps today can accurately say **CRM + Invoicing + Payroll +
+Accounting Reports + AI Support** — every one of those is now backed by
+real, tested code. Just don't describe payroll as handling tax
+withholding/filing, since it deliberately doesn't.
 
 ## Setup
 
@@ -161,6 +190,21 @@ npm test   # 12 assertions covering the full lifecycle
 | `DELETE /api/invoices/:id` | Bearer | Delete an invoice |
 | `POST /api/support/chat` | none | `{message, history?, useAi?, contactEmail?, contactName?}` → `{answer, source, confident, shouldEscalate, ticketId}` |
 | `POST /api/support/tickets` | none | Manually create a support ticket (e.g. an explicit "talk to a human" button) |
+| `GET /api/employees` | Bearer | List employees |
+| `POST /api/employees` | Bearer | Create an employee (`name` required) |
+| `PUT /api/employees/:id` | Bearer | Update an employee |
+| `DELETE /api/employees/:id` | Bearer | Delete an employee |
+| `GET /api/time-entries` | Bearer | List logged hours, optionally `?employeeId=&month=YYYY-MM` |
+| `POST /api/time-entries` | Bearer | Log hours (`employeeId`, `hours` required) |
+| `DELETE /api/time-entries/:id` | Bearer | Delete a time entry |
+| `GET /api/expenses` | Bearer | List expenses |
+| `POST /api/expenses` | Bearer | Create an expense (`category`, `amountCents` required) |
+| `DELETE /api/expenses/:id` | Bearer | Delete an expense |
+| `GET /api/tax-settings` | Bearer | Get the owner-configured default tax rate |
+| `PUT /api/tax-settings` | Bearer | Update the default tax rate |
+| `GET /api/payroll?month=` | Bearer | Real payroll computed from logged hours/salaries |
+| `GET /api/accounting` | Bearer | Real accounting overview (revenue/expenses/payroll/net) |
+| `GET /api/reports?from=&to=` | Bearer | Real P&L, expenses by category, aged receivables |
 | `GET /api/support/tickets` | Bearer | List support tickets, optionally `?status=open\|closed` |
 | `GET /api/support/tickets/:id` | Bearer | View one ticket incl. full transcript |
 | `POST /api/support/tickets/:id/close` | Bearer | Mark a ticket closed |

@@ -72,3 +72,9 @@ test("webhook succeeds when the correct shared secret is provided via query para
   });
   assert.equal(result.status, 201);
 });
+
+test("order-paid webhook also respects the shared secret when configured", async () => {
+  const res = await post("/api/webhooks/order-paid", { name: "#1", line_items: [{ sku: "X", title: "Widget", quantity: 1, price: "1.00" }] });
+  assert.equal(res.status, 401);
+  assert.equal(res.body.error, "invalid_secret");
+});

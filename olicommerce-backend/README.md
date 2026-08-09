@@ -45,17 +45,82 @@ of OliCommerce.
   revocation pattern as `../admin-auth` and `../oliops-backend` (a
   separate account — this is the merchant's own login for their
   OliCommerce instance).
+- ✅ **Supplier CSV forwarding** (`server/orderCsv.js`) — a real
+  order-paid webhook (`POST /api/webhooks/order-paid`) builds a genuine,
+  supplier-friendly CSV (one row per line item, with order/shipping
+  context repeated on every row) and emails it to your configured
+  supplier as a real attachment via this service's own SMTP client.
+  Ported directly from the working
+  [ecomm-automation](https://github.com/olielicz/ecomm-automation) repo's
+  order-paid handler and CSV builder. This is the honest, working
+  version of the "Supplier CSV forwarding" feature that was previously
+  marketed on OliCommerce's landing/buy/account pages, found to have
+  zero implementation anywhere in this backend, and removed — now
+  genuinely built and tested.
 
-24 automated tests (`npm test`), all passing, covering the full
-auth+webhook-capture+de-dup+email-preview+email-send lifecycle,
-including a real SMTP send verified against a from-scratch fake SMTP
-server, and a real (mocked) OpenAI-compatible endpoint call proving the
-AI path genuinely makes an HTTP request and genuinely falls back
-honestly when unconfigured or failing. Also verified end-to-end with a
+58 automated tests (`npm test`), all passing, covering the full
+auth+webhook-capture+de-dup+email-preview+email-send lifecycle, the
+supplier CSV forwarding path (including a real SMTP send with a real
+multipart MIME attachment verified against a from-scratch fake SMTP
+server), and the AI shopping assistant (including a test that
+specifically proves the honesty guard drops a hallucinated product a
+mock AI response tried to recommend). Also verified end-to-end with a
 real headless browser driving the actual frontend against a running
 backend: injected a real cart-abandoned webhook, logged in, previewed a
 recovery email, sent it, and confirmed both the UI and the backend
 correctly show `recovery_sent` status.
+
+## AI shopping assistant — real, scoped-down, and honest
+
+The storefront-facing **"OliMind AI shopping assistant"** previously
+marketed alongside this feature traced back to a separate, private
+build (a full Postgres+pgvector+Redis semantic-search microservice) —
+never deployed, and architecturally incompatible with this service's
+zero-dependency, JSON-file-backed design (bolting a database onto a
+service built to run on a $5-8/mo VPS with none would contradict this
+whole repo's deployment philosophy — see
+`../HOSTINGER-PHILIPPINES-DEPLOYMENT-READINESS.md`).
+
+Instead, `server/storefrontAssistant.js` is a genuinely real, scoped-down
+shopping assistant, following the exact same three-tier honesty pattern
+as the merchant-facing AI Support Assistant above:
+
+1. **Catalog match** (zero config, always available) — real keyword
+   matching against your own product catalog (`GET`/`POST`/`PUT`/
+   `DELETE /api/products`, owner-managed). Every answer quotes a real
+   product's real title, real price, and real URL — never invented.
+2. **AI-assisted** (opt-in, reuses the same `OPENAI_API_KEY`) — a real
+   OpenAI-compatible call, instructed to recommend ONLY products in
+   your real catalog. A hard cross-check (`parseAIResponse()`) silently
+   drops any product title the model returns that doesn't exactly match
+   something in your real catalog — this is enforced in code, not just
+   prompted for, so a hallucinated product can never reach a shopper
+   even if the model claims one exists.
+3. **Honest "we don't carry that"** — when nothing in your catalog
+   matches, it says so plainly instead of guessing.
+
+**Embedding the AI shopping assistant on your storefront:** paste this
+one line into your theme (Shopify: Online Store → Themes → Edit code →
+`theme.liquid`, just before `</body>`):
+
+```html
+<script src="https://your-olicommerce-deployment.example.com/api/storefront/widget.js"></script>
+```
+
+This loads a real, dependency-free chat widget (no framework, no build
+step) that talks to your backend's real `/api/storefront/chat` endpoint
+— genuinely working, not a stub.
+
+## Supplier CSV forwarding — what's real, what's a naming clarification
+
+**Supplier CSV forwarding** is genuinely real:
+point your storefront's order-paid webhook at
+`POST /api/webhooks/order-paid` with the same shape Shopify's real
+`orders/paid` webhook sends (`line_items`, `shipping_address`, etc. —
+same field-mapping convention as the cart-abandoned webhook documented
+below), configure `OLICOMMERCE_SUPPLIER_EMAIL` + your existing SMTP
+settings, and every paid order is forwarded to your supplier as a real
+CSV attachment automatically.
 
 ## Explicit scope — what is NOT included, and why
 
@@ -173,8 +238,9 @@ Content-Type: application/json
 | `PORT` | `4600` | Port this server listens on |
 | `OLICOMMERCE_DATA_DIR` | `./data` | Where carts/sessions are stored |
 | `OLICOMMERCE_STORE_NAME` | `your store` | Used in recovery email copy |
-| `OLICOMMERCE_WEBHOOK_SECRET` | (empty = unenforced) | Shared secret your storefront webhook must include |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | — | Required to send recovery emails |
+| `OLICOMMERCE_WEBHOOK_SECRET` | (empty = unenforced) | Shared secret your storefront webhook must include (applies to BOTH the cart-abandoned and order-paid webhooks) |
+| `OLICOMMERCE_SUPPLIER_EMAIL` | (empty = CSV forwarding disabled) | Where real order CSVs are sent when a `order-paid` webhook fires |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | — | Required to send recovery emails AND supplier CSV forwarding emails |
 | `SMTP_REJECT_UNAUTHORIZED` | `true` | Set to `false` ONLY for a self-hosted SMTP server with a self-signed cert |
 | `OPENAI_API_KEY` | (empty = AI rewrite unavailable) | Enables the optional AI-rewrite path |
 | `OPENAI_API_BASE_URL` | `https://api.openai.com/v1` | Point at an OpenAI-compatible provider if not using OpenAI directly |
@@ -188,6 +254,7 @@ Content-Type: application/json
 |---|---|---|
 | `GET /api/health` | none | Health check |
 | `POST /api/webhooks/cart-abandoned` | shared secret (optional) | Capture/update an abandoned cart from your storefront |
+| `POST /api/webhooks/order-paid` | shared secret (optional) | Forward a paid order's CSV to your configured supplier by email |
 | `POST /api/login` | none | `{username, password}` → `{token, expiresAt}` |
 | `POST /api/logout` | Bearer | Revoke the current session |
 | `POST /api/change-password` | Bearer | Revokes ALL sessions on success |
@@ -196,6 +263,12 @@ Content-Type: application/json
 | `POST /api/carts/:id/preview-email` | Bearer | `{tone, useAi}` → builds (doesn't send) a recovery email |
 | `POST /api/carts/:id/send-recovery` | Bearer | `{tone, useAi}` → actually sends the recovery email |
 | `POST /api/carts/:id/mark-recovered` | Bearer | Mark a cart as recovered |
+| `GET /api/products` | Bearer | List your real product catalog |
+| `POST /api/products` | Bearer | Add a product (`title` required) |
+| `PUT /api/products/:id` | Bearer | Update a product |
+| `DELETE /api/products/:id` | Bearer | Delete a product |
+| `POST /api/storefront/chat` | none | `{message, history?, useAi?}` → real, catalog-grounded shopping assistant answer for your shoppers |
+| `GET /api/storefront/widget.js` | none | The real, embeddable storefront chat widget script |
 | `POST /api/support/chat` | none | `{message, history?, useAi?, contactEmail?, contactName?}` → `{answer, source, confident, shouldEscalate, ticketId}` |
 | `POST /api/support/tickets` | none | Manually create a support ticket |
 | `GET /api/support/tickets` | Bearer | List support tickets, optionally `?status=open\|closed` |
