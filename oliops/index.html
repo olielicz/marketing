@@ -5,22 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png"/>
-<title>OliOps Suite — CRM, Invoicing &amp; AI Support in One</title>
-<!-- FIX: previously claimed "payroll, accounting" here and in the tags
-     below. Neither is implemented — oliops-backend's own README has an
-     explicit "Payroll is not implemented" section, and invoices do NOT
-     auto-calculate tax or generate P&L reports (real line-item math
-     only). Corrected to describe what actually ships: CRM + invoicing
-     + AI support. See oliops-backend/README.md's "Explicit scope"
-     section for the full, honest breakdown. -->
-<meta name="description" content="OliOps Suite bundles a real CRM, real invoicing, and a real AI support assistant into one subscription instead of three separate monthly bills. From $39/mo.">
-<meta property="og:title" content="OliOps Suite — CRM + Invoicing + AI Support | From $39/mo"/>
-<meta property="og:description" content="Replace 3 subscriptions with one tool. Real CRM, real invoicing, real AI support assistant. From $39/mo or $348/yr."/>
+<title>OliOps Suite — CRM, Invoicing, Payroll &amp; AI Support in One</title>
+<!-- FIX (updated): "payroll" and "accounting"/P&L reports were
+     previously removed here because neither was implemented at the
+     time. That gap has since been closed honestly: real employees,
+     time entries, payroll computation (hours×rate or salary), an
+     owner-configured tax rate applied to invoices, expense tracking,
+     and real P&L/aged-receivables/expense-by-category reports were
+     ported from the working OliCompute repo into oliops-backend/
+     server/store.js — see oliops-backend/README.md's "Payroll, tax,
+     and accounting reports" section for the full, honest breakdown of
+     what this does and does NOT do (no tax withholding/filing). -->
+<meta name="description" content="OliOps Suite bundles a real CRM, real invoicing, real payroll &amp; accounting reports, and a real AI support assistant into one subscription instead of four separate monthly bills. From $39/mo.">
+<meta property="og:title" content="OliOps Suite — CRM + Invoicing + Payroll + AI Support | From $39/mo"/>
+<meta property="og:description" content="Replace 4 subscriptions with one tool. Real CRM, real invoicing, real payroll &amp; P&amp;L reports, real AI support assistant. From $39/mo or $348/yr."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/oliops/"/>
 <meta property="og:image" content="https://olielicz.github.io/marketing/assets/og/oliops.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="OliOps Suite — CRM + Invoicing + AI Support | From $39/mo"/>
-<meta name="twitter:description" content="Replace 3 subscriptions with one tool. Real CRM, real invoicing, real AI support assistant. From $39/mo or $348/yr."/>
+<meta name="twitter:title" content="OliOps Suite — CRM + Invoicing + Payroll + AI Support | From $39/mo"/>
+<meta name="twitter:description" content="Replace 4 subscriptions with one tool. Real CRM, real invoicing, real payroll &amp; P&amp;L reports, real AI support assistant. From $39/mo or $348/yr."/>
 <meta name="twitter:image" content="https://olielicz.github.io/marketing/assets/og/oliops.png"/>
 <link rel="canonical" href="https://olielicz.github.io/marketing/oliops/"/>
 <script type="application/ld+json">
@@ -30,7 +33,7 @@
   "name": "OliOps Suite",
   "url": "https://olielicz.github.io/marketing/oliops/",
   "image": "https://olielicz.github.io/marketing/assets/og/oliops.png",
-  "description": "OliOps Suite bundles a real CRM, real invoicing, and a real AI support assistant into one subscription instead of three separate monthly bills.",
+  "description": "OliOps Suite bundles a real CRM, real invoicing, real payroll and accounting reports, and a real AI support assistant into one subscription instead of four separate monthly bills.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -189,6 +192,7 @@
   <nav>
     <a href="./login/" style="color:#4f46e5;font-weight:600;">Sign In</a>
     <a href="./account/" style="color:#4f46e5;font-weight:700;background:#4f46e51a;padding:6px 14px;border-radius:8px;">My Account</a>
+    <a href="./app/" style="color:#4f46e5;font-weight:700;">Open App</a>
     <a href="#tools">What's Inside</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -201,13 +205,14 @@
 
 <section class="hero wrap">
   <div class="eyebrow">💎 The hidden gem small businesses wish they'd found sooner</div>
-  <h1>Fire your <span class="hl">3 separate subscriptions.</span><br>Hire one gem instead.</h1>
-  <!-- FIX: was "4 separate subscriptions" / "Invoicing & payroll. Full
-       accounting." — payroll and full accounting/P&L reporting are not
-       implemented (see oliops-backend/README.md's "Explicit scope"
-       section). Corrected to the 3 tools that are genuinely real and
-       connected: CRM, invoicing, and an AI support assistant. -->
-  <p class="sub-headline">A real CRM. Real invoicing. An AI support assistant that works while you sleep. OliOps Suite is all three — built to actually talk to each other, for a flat monthly rate instead of three monthly bills that never stop.</p>
+  <h1>Fire your <span class="hl">4 separate subscriptions.</span><br>Hire one gem instead.</h1>
+  <!-- FIX (updated): real payroll (from logged hours or salary) and
+       real accounting reports (P&L, expenses-by-category, aged
+       receivables) now exist, ported from OliCompute — restored the
+       4th tool, worded honestly (payroll computes what's owed from
+       real hours/salary; it does NOT handle tax withholding or
+       filing — see oliops-backend/README.md). -->
+  <p class="sub-headline">A real CRM. Real invoicing with a real, owner-configured tax rate. Real payroll computed from logged hours or salary, plus real P&amp;L and accounting reports. An AI support assistant that works while you sleep. OliOps Suite is all four — built to actually talk to each other, for a flat monthly rate instead of four monthly bills that never stop.</p>
   <div class="hero-ctas">
     <a href="./buy/" class="cta-btn">Subscribe Now — $39/mo</a>
     <a href="#tools" class="cta-btn ghost">See what's inside ↓</a>
@@ -219,7 +224,8 @@
   </div>
   <div class="tools-strip">
     <div class="tool-pill">🗂 CRM &amp; Client Management</div>
-    <div class="tool-pill">💰 Invoicing</div>
+    <div class="tool-pill">💰 Invoicing &amp; Tax</div>
+    <div class="tool-pill">🧾 Payroll &amp; P&amp;L Reports</div>
     <div class="tool-pill">🤖 AI Support Assistant</div>
   </div>
 </section>
@@ -237,32 +243,34 @@
 <section class="problem">
   <div class="wrap">
     <h2 class="section-title">Right now, your business runs on tabs</h2>
-    <p class="section-sub">A CRM tab. An invoicing tab. A separate accounting login. A help-desk widget bolted on top. None of them know the others exist — so you're the one stitching it together, every single day.</p>
+    <p class="section-sub">A CRM tab. An invoicing tab. A separate payroll/accounting login. A help-desk widget bolted on top. None of them know the others exist — so you're the one stitching it together, every single day.</p>
     <div class="stack-compare">
       <div class="stack-col bad">
         <h4>❌ The subscription stack</h4>
         <div class="stack-line"><span>CRM tool (e.g. Zoho CRM, ~$14-45/user/mo)</span><span>~$30/mo</span></div>
         <div class="stack-line"><span>Invoicing app</span><span>~$25/mo</span></div>
+        <div class="stack-line"><span>Payroll/accounting tool (e.g. Gusto, QuickBooks)</span><span>~$40-80/mo</span></div>
         <div class="stack-line"><span>AI support chatbot (e.g. Tidio/Intercom-tier)</span><span>~$50-200/mo</span></div>
-        <div class="stack-total"><span>Per year</span><span>~$1,260-3,060</span></div>
+        <div class="stack-total"><span>Per year</span><span>~$1,740-4,020</span></div>
       </div>
       <div class="vs">VS</div>
       <div class="stack-col good">
         <h4>💎 OliOps Suite</h4>
         <div class="stack-line"><span>CRM + invoicing</span><span>included</span></div>
+        <div class="stack-line"><span>Payroll + P&amp;L reports</span><span>included</span></div>
         <div class="stack-line"><span>AI support assistant</span><span>included</span></div>
         <div class="stack-line"><span>All future updates</span><span>included</span></div>
         <div class="stack-total"><span>Per year (Starter)</span><span>$348</span></div>
       </div>
     </div>
-    <p style="text-align:center; font-size:12.5px; color:var(--sub); margin-top:14px; max-width:640px; margin-left:auto; margin-right:auto;">Comparison tools and price ranges are illustrative, based on published 2026 pricing for common categories (small-business CRM, invoicing/accounting software, and AI chatbot platforms) — not a claim about any single named competitor's exact bundle. See each vendor's site for current rates.</p>
+    <p style="text-align:center; font-size:12.5px; color:var(--sub); margin-top:14px; max-width:640px; margin-left:auto; margin-right:auto;">Comparison tools and price ranges are illustrative, based on published 2026 pricing for common categories (small-business CRM, invoicing/accounting software, payroll tools, and AI chatbot platforms) — not a claim about any single named competitor's exact bundle. See each vendor's site for current rates. OliOps' payroll computes real pay owed from logged hours or salary; it does not handle tax withholding or filing — pair it with a real payroll provider for that.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <h2 class="section-title">Three tools. Actually connected. That's the whole trick.</h2>
-    <p class="section-sub">Not three apps duct-taped together — one system where a client, an invoice, and a support ticket are all part of the same story.</p>
+    <h2 class="section-title">Four tools. Actually connected. That's the whole trick.</h2>
+    <p class="section-sub">Not four apps duct-taped together — one system where a client, an invoice, a paycheck, and a support ticket are all part of the same story.</p>
     <div class="grid3">
       <div class="card">
         <span class="icon">🗂</span>
@@ -271,21 +279,22 @@
       </div>
       <div class="card">
         <span class="icon">💼</span>
-        <!-- FIX: was "automatic tax calculation, payroll from logged
-             hours... profit & loss report" - none of that exists.
-             Invoices really do compute real line-item totals (quantity
-             × unit price) and print to a real HTML/PDF view; tax is a
-             manual line item you add yourself, and there's no payroll
-             or P&L module. See oliops-backend/README.md's "Explicit
-             scope" section. -->
         <h3>OliCompute — real invoicing, done right</h3>
-        <p>Create invoices with real line-item math, sequential numbering, mark paid/unpaid, and a genuine printable view any browser can save as a PDF. (No payroll or automated accounting reports yet — see our <a href="../support/">support page</a> for the full, honest feature list.)</p>
+        <p>Create invoices with real line-item math, sequential numbering, mark paid/unpaid, an owner-configured tax rate genuinely applied to the subtotal, and a printable view any browser can save as a PDF.</p>
+      </div>
+      <div class="card">
+        <span class="icon">🧾</span>
+        <!-- FIX (updated): real payroll (hours×rate or salary) and real
+             accounting/P&L reports now exist, ported from the working
+             OliCompute repo — restored as their own card. See
+             oliops-backend/README.md's "Payroll, tax, and accounting
+             reports" section for the full, honest breakdown (this
+             computes what's owed, it does not withhold or file tax). -->
+        <h3>Payroll &amp; Reports — real numbers, no guessing</h3>
+        <p>Log employee hours (or set a salary) and payroll is computed for real — hours × rate, or the fixed salary. A real Profit &amp; Loss report, expenses-by-category, and aged receivables round it out. (Tax withholding and filing are intentionally out of scope — pair this with a real payroll provider for that part. See our <a href="../support/">support page</a> for the full, honest breakdown.)</p>
       </div>
       <div class="card">
         <span class="icon">🤖</span>
-        <!-- FIX: was "automate-CSR" - not a real product name in the
-             code; the actual feature is the AI Support Assistant
-             (see oliops-backend/server/supportAssistant.js). -->
         <h3>AI Support Assistant — help that never sleeps</h3>
         <p>Real answers from a knowledge base first, with an optional AI-assisted tier for anything it isn't confident about — and every unanswered question becomes a real support ticket instead of a guess.</p>
       </div>
@@ -298,19 +307,17 @@
     <div class="price-card">
       <div class="tag">⭐ MOST POPULAR — BEST VALUE</div>
       <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliOps Suite — Starter Plan</div>
-      <!-- FIX: was "~$1,740-3,540/year... OliOps is $468/yr" and "Saves
-           $1,392-3,192/year" - both numbers included accounting/payroll
-           tooling OliOps doesn't have, and $468/yr didn't match the
-           Starter plan's real $348/yr price shown two lines below.
-           Corrected to the CRM+invoicing+AI-support comparison and the
-           real $348/yr Starter price. Three tiers (Starter/Pro/Agency)
-           exist — see ./buy/ for Pro and Agency pricing. -->
-      <div class="price-was">~$1,260–$3,060/year for equivalent tools — OliOps Starter is $348/yr</div>
+      <!-- FIX (updated): real payroll + accounting reports now exist -
+           restored the 4-tool comparison and updated the illustrative
+           competitor total to include a payroll/accounting line.
+           Three tiers (Starter/Pro/Agency) exist — see ./buy/ for Pro
+           and Agency pricing. -->
+      <div class="price-was">~$1,740–$4,020/year for equivalent tools — OliOps Starter is $348/yr</div>
       <div class="price-big">$39<span style="font-size:18px;font-weight:600;color:var(--sub)">/month</span></div>
       <div style="color:#16a34a;font-weight:700;font-size:14px;margin:-4px 0 8px;">🎁 First 14 days free — cancel before day 14 and pay nothing</div>
-      <div class="price-save">Saves $912–$2,712/year vs buying Zoho CRM + invoicing + an AI chatbot separately</div>
+      <div class="price-save">Saves $1,392–$3,672/year vs buying Zoho CRM + invoicing + payroll/accounting + an AI chatbot separately</div>
       <ul class="price-list">
-        <li>All 3 connected tools: CRM, invoicing, AI support</li>
+        <li>All 4 connected tools: CRM, invoicing, payroll/reports, AI support</li>
         <li>Self-hosted — license valid on up to 5 devices</li>
         <li>Every future update, included</li>
         <li>Priority email support included</li>
@@ -404,7 +411,7 @@
     </div>
     <div class="faq-item">
       <h4>Is this a subscription or a one-time payment?</h4>
-      <p>It's a subscription — Starter plan is $39/month (or $348/year) for access to all three connected tools (CRM, invoicing, AI support), including every future update. First 14 days are free, and you can cancel anytime. Pro ($69/mo) and Agency ($119/mo) tiers add higher device limits — see the <a href="./buy/">pricing page</a> for details.</p>
+      <p>It's a subscription — Starter plan is $39/month (or $348/year) for access to all four connected tools (CRM, invoicing, payroll &amp; accounting reports, AI support), including every future update. First 14 days are free, and you can cancel anytime. Pro ($69/mo) and Agency ($119/mo) tiers add higher device limits — see the <a href="./buy/">pricing page</a> for details.</p>
     </div>
     <div class="faq-item">
       <h4>How does the serial code / 5-device limit work?</h4>
@@ -453,15 +460,15 @@
     <div class="t-grid">
       <div class="t-card">
         <div class="t-stars">💼</div>
-        <p class="t-quote">CRM, invoicing/payroll, and an AI support agent share one dataset — a client record, an invoice, and a support ticket are the same underlying record, not three exports stitched together.</p>
+        <p class="t-quote">CRM, invoicing/payroll, and an AI support agent share one dataset — a client record, an invoice, a paycheck, and a support ticket are the same underlying system, not four exports stitched together.</p>
       </div>
       <div class="t-card">
         <div class="t-stars">💰</div>
-        <p class="t-quote">Starter plan is $39/mo — for context, buying Zoho CRM + a separate invoicing tool + an AI support chatbot typically runs $1,260–$3,060/year, every year.</p>
+        <p class="t-quote">Starter plan is $39/mo — for context, buying Zoho CRM + a separate invoicing tool + a payroll/accounting tool + an AI support chatbot typically runs $1,740–$4,020/year, every year.</p>
       </div>
       <div class="t-card">
         <div class="t-stars">🔒</div>
-        <p class="t-quote">Self-hostable — your client and financial data can stay on infrastructure you control, instead of living in three different vendors' clouds.</p>
+        <p class="t-quote">Self-hostable — your client, financial, and payroll data can stay on infrastructure you control, instead of living in four different vendors' clouds.</p>
       </div>
       <div class="t-card">
         <div class="t-stars">📣</div>

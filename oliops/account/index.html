@@ -160,7 +160,7 @@ a{color:#4f46e5;text-decoration:none;}
     <div class="status-icon">💼</div>
     <div style="flex:1">
       <div class="status-title">OliOps Suite</div>
-      <div class="status-meta">CRM · Invoicing · AI Support</div>
+      <div class="status-meta">CRM · Invoicing · Payroll &amp; Reports · AI Support</div>
       <div class="status-badge">✅ Active — from $39/mo</div>
     </div>
     <!-- FIX: this used to link to "../" (the marketing landing page) -
@@ -174,13 +174,14 @@ a{color:#4f46e5;text-decoration:none;}
   <!-- ── What's included ── -->
   <div class="card">
     <div class="card-title"><span class="card-title-icon">🧰</span> What's Included</div>
-    <!-- FIX: was "OliCompute invoicing & payroll" - payroll isn't
-         implemented (see ../../oliops-backend/README.md's "Explicit
-         scope" section), and "automate-CSR" isn't the real feature's
-         name (see server/supportAssistant.js's "AI Support Assistant"). -->
+    <!-- FIX (updated): real payroll and accounting reports now exist,
+         ported from OliCompute (see ../../oliops-backend/README.md's
+         "Payroll, tax, and accounting reports" section) - restored. -->
     <ul class="feature-list" id="featureList">
       <li>OliCRM client management</li>
-      <li>Real invoicing (line items, printable PDF)</li>
+      <li>Real invoicing (line items, tax rate, printable PDF)</li>
+      <li>Payroll from logged hours or salary</li>
+      <li>Real P&amp;L &amp; accounting reports</li>
       <li>AI Support Assistant</li>
       <li>Up to 5 device activations</li>
     </ul>

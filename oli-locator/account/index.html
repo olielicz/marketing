@@ -160,18 +160,36 @@ a{color:#2563eb;text-decoration:none;}
     <div class="status-icon">🏡</div>
     <div style="flex:1">
       <div class="status-title">Oli-Locator</div>
-      <div class="status-meta">Real Estate CRM · USA · UK · Australia</div>
+      <!-- FIX: was "USA · UK · Australia" - the real lead-gen codebase
+           only supports US and UK (see ../index.html's fix comment). -->
+      <div class="status-meta">Real Estate CRM · USA · UK</div>
       <div class="status-badge">✅ Active — from $59/month</div>
     </div>
-    <a href="../" class="btn btn-primary">Open Oli-Locator →</a>
+    <!-- FIX: this used to link to "../" (this same marketing landing
+         page) - a dead end for a logged-in customer trying to actually
+         use the product, same class of bug already fixed on
+         OliExplore/OliOps/OliCommerce/OliSalesTrack's account pages.
+         Oli-Locator's real app (lead-gen) is a separate, serverless
+         Vercel deployment that cannot be vendored as static files into
+         this GitHub Pages site (needs Vercel KV + /api routes) - see
+         ../README-INTEGRATION.md for the full explanation. Point this
+         at your own deployed lead-gen URL once you have one; until
+         then this links to the setup instructions instead of a dead
+         end. -->
+    <a href="../README-INTEGRATION.md" class="btn btn-primary">Open Oli-Locator →</a>
   </div>
 
   <!-- ── What's included ── -->
   <div class="card">
     <div class="card-title"><span class="card-title-icon">🧰</span> What's Included</div>
+    <p style="font-size:12.5px;color:#55606e;margin:-4px 0 12px;">
+      Oli-Locator's app runs as a separate deployment (see
+      <a href="../README-INTEGRATION.md">setup instructions</a>) — not hosted on this
+      marketing site.
+    </p>
     <ul class="feature-list" id="featureList">
-      <li>Property search (USA, UK & Australia)</li>
-      <li>Lead generation & CRM</li>
+      <li>Property search (USA &amp; UK)</li>
+      <li>Lead generation &amp; CRM</li>
       <li>Unified inbox</li>
       <li>Call center — use your own phone app</li>
     </ul>

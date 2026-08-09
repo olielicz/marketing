@@ -110,10 +110,11 @@ footer a{color:var(--sub);}
 <main class="wrap">
   <div style="margin-bottom:24px;">
     <h1 class="page-title">Choose Your Plan</h1>
-    <!-- FIX: was "CRM + Invoicing + Payroll + AI Support" - payroll is
-         not implemented (see ../../oliops-backend/README.md's
-         "Explicit scope" section). -->
-    <p class="page-sub">CRM + Invoicing + AI Support — All In One</p>
+    <!-- FIX (updated): real payroll now exists, ported from OliCompute
+         into ../../oliops-backend/server/store.js (see
+         ../../oliops-backend/README.md's "Payroll, tax, and accounting
+         reports" section) - restored. -->
+    <p class="page-sub">CRM + Invoicing + Payroll + AI Support — All In One</p>
     <div class="toggle-wrap">
       <span>Monthly</span>
       <label class="toggle-switch">
@@ -159,15 +160,17 @@ footer a{color:var(--sub);}
       <div class="line"><span id="sumPlan">Starter</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
       <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$39/mo</span></div>
-      <!-- FIX: removed "Invoicing & tax calculation" (tax is a manual
-           line item, not auto-calculated), "Payroll from logged hours"
-           (not implemented), and "Profit & loss reports" (no such
-           report exists) - none of these are real features of
-           oliops-backend. See ../../oliops-backend/README.md's
-           "Explicit scope" section. -->
+      <!-- FIX (updated): real payroll (from logged hours or salary), a
+           real owner-configured tax rate on invoices, and real P&L /
+           accounting reports now exist - ported from OliCompute into
+           oliops-backend/server/store.js. Restored, worded honestly
+           (no tax withholding/filing - see
+           ../../oliops-backend/README.md). -->
       <ul class="included">
       <li>OliCRM client management</li>
-      <li>Real invoicing (line items, printable PDF)</li>
+      <li>Real invoicing (line items, tax rate, printable PDF)</li>
+      <li>Payroll from logged hours or salary</li>
+      <li>Real P&amp;L &amp; accounting reports</li>
       <li>AI support assistant</li>
       <li>Up to 5 device activations</li>
       <li>All future updates included</li>
@@ -212,12 +215,10 @@ footer a{color:var(--sub);}
     </div>
   </div>
 
-  <!-- FIX: was "Zoho CRM + invoicing + accounting + chatbot at
-       $1,740-3,540/year" - "accounting" isn't a real OliOps feature.
-       Corrected to the 3 real comparable categories: CRM + invoicing +
-       AI chatbot. -->
+  <!-- FIX (updated): real payroll + accounting reports now exist -
+       restored the 4-category comparison. -->
   <div style="max-width:600px;margin:24px auto 0;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:13px;color:#92400e;">
-    <strong>💡 vs competitors:</strong> Zoho CRM + invoicing + AI chatbot at $1,260–$3,060/year combined
+    <strong>💡 vs competitors:</strong> Zoho CRM + invoicing + payroll/accounting + AI chatbot at $1,740–$4,020/year combined
   </div>
 </main>
 

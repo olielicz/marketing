@@ -5,24 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png"/>
-<title>OliCommerce Stack — Shopify Cart Recovery Tool</title>
-<!-- FIX: previously claimed an "AI shopping assistant" here and
-     throughout this page — a customer-facing, on-storefront chat/
-     product-search widget called "OliMind." No such widget, embed
-     script, or backend exists anywhere in this codebase; it was
-     inherited marketing copy for a separate, never-built repo. The
-     real AI features are back-office only: optional AI-rewritten
-     recovery emails, and a merchant-facing AI Support Assistant. See
-     olicommerce-backend/README.md and server/recoveryEmail.js /
-     server/supportAssistant.js. Corrected below. -->
-<meta name="description" content="70% of your Shopify carts walk away. OliCommerce Stack recovers them automatically with real recovery emails, an optional AI rewrite, and a real AI support assistant. From $29/mo.">
-<meta property="og:title" content="OliCommerce Stack — Shopify Cart Recovery | From $29/mo"/>
-<meta property="og:description" content="Stop losing 70% of your Shopify carts. Recover them automatically with real emails and an optional AI rewrite. From $29/mo or $264/yr."/>
+<title>OliCommerce Stack — Cart Recovery, AI Shopping Assistant &amp; Supplier CSV</title>
+<!-- FIX (updated): the "AI shopping assistant" and "Supplier CSV
+     forwarding" claims were previously removed here because neither had
+     any real implementation. Both gaps have since been closed
+     honestly: server/storefrontAssistant.js is a real, scoped-down,
+     catalog-grounded storefront chat widget (built new, since the
+     original "OliMind AI" referred to a separate, architecturally
+     incompatible Postgres+pgvector+Redis system — see
+     olicommerce-backend/README.md's "AI shopping assistant" section for
+     the full provenance), and server/orderCsv.js is real supplier CSV
+     forwarding ported from the working ecomm-automation repo. Restored
+     below, honestly described. -->
+<meta name="description" content="70% of your Shopify carts walk away. OliCommerce Stack recovers them automatically, plus a real catalog-grounded AI shopping assistant for your storefront and real supplier CSV forwarding. From $29/mo.">
+<meta property="og:title" content="OliCommerce Stack — Cart Recovery + AI Shopping Assistant | From $29/mo"/>
+<meta property="og:description" content="Stop losing 70% of your Shopify carts. Recover them automatically, chat with shoppers via a real catalog-grounded AI assistant, and auto-forward paid orders to your supplier as CSV. From $29/mo or $264/yr."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/olicommerce/"/>
 <meta property="og:image" content="https://olielicz.github.io/marketing/assets/og/olicommerce.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="OliCommerce Stack — Shopify Cart Recovery | From $29/mo"/>
-<meta name="twitter:description" content="Stop losing 70% of your Shopify carts. Recover them automatically with real emails and an optional AI rewrite. From $29/mo or $264/yr."/>
+<meta name="twitter:title" content="OliCommerce Stack — Cart Recovery + AI Shopping Assistant | From $29/mo"/>
+<meta name="twitter:description" content="Stop losing 70% of your Shopify carts. Recover them automatically, chat with shoppers via a real catalog-grounded AI assistant, and auto-forward paid orders to your supplier as CSV. From $29/mo or $264/yr."/>
 <meta name="twitter:image" content="https://olielicz.github.io/marketing/assets/og/olicommerce.png"/>
 <link rel="canonical" href="https://olielicz.github.io/marketing/olicommerce/"/>
 <script type="application/ld+json">
@@ -32,7 +34,7 @@
   "name": "OliCommerce Stack",
   "url": "https://olielicz.github.io/marketing/olicommerce/",
   "image": "https://olielicz.github.io/marketing/assets/og/olicommerce.png",
-  "description": "OliCommerce Stack recovers abandoned Shopify carts automatically with real recovery emails, an optional AI rewrite, and a real AI support assistant for the merchant.",
+  "description": "OliCommerce Stack recovers abandoned Shopify carts automatically, includes a real catalog-grounded AI shopping assistant for shoppers, forwards paid orders to your supplier as a real CSV, and gives merchants a real AI support assistant.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -143,6 +145,7 @@
   <nav>
     <a href="./login/" style="color:#059669;font-weight:600;">Sign In</a>
     <a href="./account/" style="color:#059669;font-weight:700;background:#0596691a;padding:6px 14px;border-radius:8px;">My Account</a>
+    <a href="./app/" style="color:#059669;font-weight:700;">Open App</a>
     <a href="#tools">What's Inside</a>
     <a href="#pricing">Pricing</a>
     <a href="../contact/" class="all-tools">Contact Us</a>
@@ -155,11 +158,11 @@
 <section class="hero wrap">
   <div class="eyebrow">💎 The gem hiding in your abandoned-cart data</div>
   <h1>Right now, <span class="hl">7 out of 10 carts</span><br>are walking out the door</h1>
-  <!-- FIX: was "gives your store an AI shopping assistant that never
-       clocks out" - no storefront-facing AI assistant exists. The real
-       AI features are an optional AI rewrite for recovery emails and a
-       merchant-facing AI support assistant, both described below. -->
-  <p class="sub-headline">Every unrecovered cart is money you already earned, slipping away silently. OliCommerce Stack catches it automatically with real recovery emails — with an optional AI rewrite — plus a real AI support assistant to help you run it. One subscription purchase, plugs into Shopify in minutes.</p>
+  <!-- FIX (updated): a real, scoped-down, catalog-grounded storefront
+       AI shopping assistant now genuinely exists (server/
+       storefrontAssistant.js) — restored the claim, worded honestly
+       (grounded in your real catalog, not a general-purpose chatbot). -->
+  <p class="sub-headline">Every unrecovered cart is money you already earned, slipping away silently. OliCommerce Stack catches it automatically with real recovery emails — with an optional AI rewrite — plus a real, catalog-grounded AI shopping assistant your customers can chat with on your storefront, real supplier CSV forwarding on every paid order, and a real AI support assistant to help you run it all. One subscription purchase, plugs into Shopify in minutes.</p>
   <div class="hero-ctas">
     <a href="./buy/" class="cta-btn">Subscribe Now — $29/mo</a>
     <a href="#tools" class="cta-btn ghost">See what's inside ↓</a>
@@ -169,12 +172,16 @@
     <span>✅ Up to 5 devices per license</span>
     <span>✅ Cancel anytime</span>
   </div>
-  <!-- FIX: removed "Supplier CSV Forwarding" (zero implementation
-       anywhere in olicommerce-backend) and "AI Shopping Assistant"
-       (fictional storefront widget, see comment above). -->
+  <!-- FIX (updated): "Supplier CSV Forwarding" and "AI Shopping
+       Assistant" are now real (see olicommerce-backend/server/
+       orderCsv.js and server/storefrontAssistant.js) — restored both,
+       described honestly (scoped, catalog-grounded, not the
+       fictional "OliMind" widget this previously referred to). -->
   <div class="tools-strip">
     <div class="tool-pill">🛍 Abandoned Cart Recovery</div>
     <div class="tool-pill">📧 Automated Recovery Emails</div>
+    <div class="tool-pill">💬 AI Shopping Assistant</div>
+    <div class="tool-pill">📦 Supplier CSV Forwarding</div>
     <div class="tool-pill">🤖 AI Support Assistant</div>
   </div>
 </section>
@@ -196,14 +203,13 @@
 
 <section class="problem">
   <div class="wrap">
-    <!-- FIX: this whole section previously described two products,
-         "ecomm-automation" (which claimed CSV supplier forwarding —
-         unimplemented) and "OliMind AI" (a fictional storefront
-         chat/product-search widget — no such code exists anywhere).
-         Replaced with what OliCommerce Stack actually is: one real
-         cart-recovery backend with a real, optional AI email-rewrite
-         feature and a real, merchant-facing AI Support Assistant. -->
-    <h2 class="section-title">One real backend, one honest AI feature set</h2>
+    <!-- FIX (updated): "ecomm-automation"'s CSV supplier forwarding and
+         a scoped-down "AI shopping assistant" are now genuinely real
+         (server/orderCsv.js and server/storefrontAssistant.js) — this
+         section now covers all four real features: cart recovery,
+         the storefront AI shopping assistant, supplier CSV forwarding,
+         and the merchant-facing AI Support Assistant. -->
+    <h2 class="section-title">One real backend, four honest features</h2>
     <p class="section-sub">Not another app-store subscription — a direct plug into the webhooks your store already has.</p>
     <div class="grid2">
       <div class="card">
@@ -212,9 +218,19 @@
         <p>Plugs directly into Shopify's own abandoned-checkout webhook: captures the cart, tracks its status, and sends a real recovery email via your own SMTP — optionally rewritten by AI for tone before it's sent. (WooCommerce has no native abandoned-cart webhook — see our <a href="../support/">support page</a> for the workaround.)</p>
       </div>
       <div class="card">
+        <span class="icon">💬</span>
+        <h3>AI Shopping Assistant — a real, catalog-grounded chat widget</h3>
+        <p>A one-line embed adds a real chat widget to your storefront. It answers from your own real product catalog first, optionally escalates to AI for anything it isn't sure about — with a hard-coded honesty guard that discards any product the AI recommends that isn't actually in your catalog — and says "we don't carry that" honestly when nothing matches. It never invents a product or price.</p>
+      </div>
+      <div class="card">
+        <span class="icon">📦</span>
+        <h3>Supplier CSV Forwarding — every paid order, automatically</h3>
+        <p>When an order is marked paid, a real CSV (one row per line item, with shipping/order context on every row) is built and emailed to your supplier as a genuine attachment — no manual export, no copy-pasting from your storefront's order screen.</p>
+      </div>
+      <div class="card">
         <span class="icon">🤖</span>
         <h3>AI Support Assistant — help for you, not your customers</h3>
-        <p>A real, three-tier assistant built into your OliCommerce dashboard: answers from a knowledge base first, optionally escalates to AI for anything it isn't confident about, and creates a real support ticket for whatever neither can resolve. This helps <em>you</em> run OliCommerce — it's not a storefront chat widget for your shoppers.</p>
+        <p>A real, three-tier assistant built into your OliCommerce dashboard: answers from a knowledge base first, optionally escalates to AI for anything it isn't confident about, and creates a real support ticket for whatever neither can resolve. This helps <em>you</em> run OliCommerce — it's a separate tool from the storefront-facing shopping assistant above.</p>
       </div>
     </div>
   </div>
@@ -246,19 +262,20 @@
     <div class="price-card">
       <div class="tag">⭐ MOST POPULAR</div>
       <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliCommerce Stack — Subscription</div>
-      <!-- FIX: was "Competitors: Klaviyo $20+/mo, cart-recovery apps
-           $240-480/yr, AI assistants $600+/yr" - the "AI assistants
-           $600+/yr" comparison implied a storefront AI product that
-           doesn't exist here. Removed that line item. Feature bullet
-           "Order automation + AI shopping assistant" corrected to
-           describe the real cart-recovery + AI-rewrite + AI support
-           feature set. -->
+      <!-- FIX (updated): the AI shopping assistant and supplier CSV
+           forwarding are now real - restored both as feature bullets.
+           Kept the "AI assistants $600+/yr" comparison removed since
+           that figure was based on general-purpose AI chatbot
+           platforms, not a real like-for-like comparison to this
+           catalog-grounded, scoped feature. -->
       <div class="price-was">Competitors: Klaviyo $20+/mo, cart-recovery apps $240–$480/yr</div>
       <div class="price-big">$29<span style="font-size:18px;font-weight:600;color:var(--sub)">/month</span></div>
       <div style="color:#16a34a;font-weight:700;font-size:14px;margin:-4px 0 8px;">🎁 First 14 days free — cancel before day 14 and pay nothing</div>
       <div class="price-save">Recovers its subscription cost with a single abandoned cart each month</div>
       <ul class="price-list">
         <li>Abandoned cart recovery + optional AI-rewritten emails</li>
+        <li>AI shopping assistant, embedded on your storefront</li>
+        <li>Supplier CSV forwarding on every paid order</li>
         <li>AI Support Assistant for you, the merchant</li>
         <li>Self-hosted — license valid on up to 5 devices</li>
         <li>Every future update, included</li>

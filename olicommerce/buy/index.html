@@ -109,10 +109,10 @@ footer a{color:var(--sub);}
 <main class="wrap">
   <div style="margin-bottom:24px;">
     <h1 class="page-title">Choose Your Plan</h1>
-    <!-- FIX: was "Shopify Cart Recovery + AI Shopping Assistant" - no
-         storefront AI assistant exists (see olicommerce/index.html's
-         "Two tools" section fix for full context). -->
-    <p class="page-sub">Shopify Cart Recovery + AI Support Assistant</p>
+    <!-- FIX (updated): a real, scoped-down, catalog-grounded AI shopping
+         assistant now exists (see olicommerce/index.html's fix
+         comments for full context) - restored the description. -->
+    <p class="page-sub">Shopify Cart Recovery + AI Shopping Assistant + Supplier CSV Forwarding</p>
     <div class="toggle-wrap">
       <span>Monthly</span>
       <label class="toggle-switch">
@@ -158,16 +158,16 @@ footer a{color:var(--sub);}
       <div class="line"><span id="sumPlan">Basic</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
       <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$29/mo</span></div>
-      <!-- FIX: removed "Thank-you + order emails" and "Supplier CSV
-           forwarding" (zero implementation anywhere in
-           olicommerce-backend) and "OliMind AI shopping assistant"
-           (fictional storefront widget). Replaced with the real
-           feature set: cart recovery, optional AI-rewritten recovery
-           emails, and the merchant-facing AI Support Assistant. -->
+      <!-- FIX (updated): "Supplier CSV forwarding" and a real,
+           scoped-down "AI shopping assistant" now genuinely exist
+           (server/orderCsv.js, server/storefrontAssistant.js) -
+           restored both. -->
       <ul class="included">
       <li>Abandoned cart recovery (auto)</li>
       <li>Real recovery emails via your own SMTP</li>
       <li>Optional AI-rewritten email tone</li>
+      <li>AI shopping assistant (storefront chat widget)</li>
+      <li>Supplier CSV forwarding on paid orders</li>
       <li>AI Support Assistant (for you, the merchant)</li>
       <li>Shopify webhook integration</li>
       <li>All future updates included</li>
