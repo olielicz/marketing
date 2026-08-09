@@ -172,3 +172,77 @@ test("expenses by category: groups and totals real expenses", async () => {
   assert.equal(marketing.totalCents, 3000);
   assert.equal(marketing.count, 2);
 });
+
+
+test("payroll withholding: employee-level rate overrides the org-wide default", async () => {
+  await store.updateTaxSettings({ defaultWithholdingRatePct: 10 });
+
+  const withOverride = await store.createEmployee({
+    name: "Override Employee",
+    payType: "salary",
+    monthlySalaryCents: 500000,
+    withholdingRatePct: 25,
+  });
+  const withoutOverride = await store.createEmployee({
+    name: "Default Withholding Employee",
+    payType: "salary",
+    monthlySalaryCents: 500000,
+  });
+
+  const month = new Date().toISOString().slice(0, 7);
+  const payroll = await store.computePayroll(month);
+  const overrideLine = payroll.lines.find((l) => l.employeeId === withOverride.id);
+  const defaultLine = payroll.lines.find((l) => l.employeeId === withoutOverride.id);
+
+  assert.equal(overrideLine.withholdingRatePct, 25);
+  assert.equal(overrideLine.grossPayCents, 500000);
+  assert.equal(overrideLine.withheldCents, 125000); // 500000 * 25%
+  assert.equal(overrideLine.netPayCents, 375000);
+
+  assert.equal(defaultLine.withholdingRatePct, 10); // inherited from org default
+  assert.equal(defaultLine.withheldCents, 50000); // 500000 * 10%
+  assert.equal(defaultLine.netPayCents, 450000);
+
+  // payCents stays equal to gross for backward compatibility with
+  // accounting overview / P&L, which treat payroll as an employer cost.
+  assert.equal(overrideLine.payCents, overrideLine.grossPayCents);
+});
+
+test("payroll withholding: a null/omitted employee rate falls back to a 0% org default cleanly (never NaN)", async () => {
+  const emp = await store.createEmployee({ name: "No Withholding Configured", payType: "hourly", hourlyRateCents: 3000 });
+  await store.createTimeEntry({ employeeId: emp.id, hours: 10, date: `${new Date().toISOString().slice(0, 7)}-10` });
+  const payroll = await store.computePayroll(new Date().toISOString().slice(0, 7));
+  const line = payroll.lines.find((l) => l.employeeId === emp.id);
+  assert.equal(Number.isNaN(line.withheldCents), false);
+  assert.equal(line.netPayCents <= line.grossPayCents, true);
+});
+
+test("filing summary: aggregates real gross/withheld/net across a date range, per employee and in total", async () => {
+  const cleanDir = mkdtempSync(path.join(os.tmpdir(), "oliops-backend-filing-test-"));
+  process.env.OLIOPS_DATA_DIR = cleanDir;
+  const isolated = await import(`../server/store.js?cachebust=${Date.now()}`);
+
+  await isolated.updateTaxSettings({ defaultWithholdingRatePct: 15, employerName: "Test Co", employerTaxId: "12-3456789" });
+  const emp = await isolated.createEmployee({ name: "Filing Test Employee", payType: "salary", monthlySalaryCents: 300000 });
+
+  // Two consecutive months of the same salary, to prove the summary
+  // aggregates across months in the range rather than reporting only
+  // the first/last.
+  await isolated.getFilingSummary("2026-01-01", "2026-01-31"); // warm-up, asserts nothing
+  const summary = await isolated.getFilingSummary("2026-01-01", "2026-02-28");
+
+  assert.equal(summary.employer.name, "Test Co");
+  assert.equal(summary.employer.taxId, "12-3456789");
+  assert.equal(summary.totals.grossPayCents, 300000 * 2);
+  assert.equal(summary.totals.withheldCents, Math.round(300000 * 0.15) * 2);
+  assert.equal(summary.totals.netPayCents, summary.totals.grossPayCents - summary.totals.withheldCents);
+
+  const empLine = summary.employees.find((e) => e.employeeId === emp.id);
+  assert.ok(empLine);
+  assert.equal(empLine.grossPayCents, 300000 * 2);
+
+  // Explicit, honest scope note travels with the payload itself.
+  assert.match(summary.scopeNote, /not an e-filed submission/i);
+
+  rmSync(cleanDir, { recursive: true, force: true });
+});

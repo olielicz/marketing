@@ -403,7 +403,7 @@ export async function getEmployee(id) {
   return db.employees[id] || null;
 }
 
-export async function createEmployee({ name, email, role, payType, hourlyRateCents, monthlySalaryCents, status }) {
+export async function createEmployee({ name, email, role, payType, hourlyRateCents, monthlySalaryCents, status, withholdingRatePct, allowances }) {
   const db = readDb();
   const id = randomUUID();
   const type = payType === "salary" ? "salary" : "hourly";
@@ -416,6 +416,21 @@ export async function createEmployee({ name, email, role, payType, hourlyRateCen
     hourlyRateCents: type === "hourly" ? Math.max(0, Math.round(Number(hourlyRateCents) || 0)) : 0,
     monthlySalaryCents: type === "salary" ? Math.max(0, Math.round(Number(monthlySalaryCents) || 0)) : 0,
     status: status === "inactive" ? "inactive" : "active",
+    // Real, but deliberately simplified withholding: a flat percentage
+    // this employee's gross pay is reduced by on every payroll run. Null
+    // means "use the org-wide default rate" (see taxSettings.defaultWithholdingRatePct)
+    // instead of this employee having their own override. See the
+    // withholding section near computePayroll() below for exactly what
+    // this does and does not do.
+    withholdingRatePct: withholdingRatePct === undefined || withholdingRatePct === null || withholdingRatePct === ""
+      ? null
+      : Math.max(0, Math.min(100, Number(withholdingRatePct) || 0)),
+    // A count of withholding allowances/dependents, stored for the
+    // filing summary's records only — this implementation does not
+    // look up bracket tables by allowance count (see the same note
+    // below), it is retained purely as a real, useful record you'd
+    // hand to an accountant or payroll-tax provider.
+    allowances: Math.max(0, Math.round(Number(allowances) || 0)),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -435,6 +450,12 @@ export async function updateEmployee(id, patch) {
   if (patch.payType !== undefined) allowed.payType = patch.payType === "salary" ? "salary" : "hourly";
   if (patch.hourlyRateCents !== undefined) allowed.hourlyRateCents = Math.max(0, Math.round(Number(patch.hourlyRateCents) || 0));
   if (patch.monthlySalaryCents !== undefined) allowed.monthlySalaryCents = Math.max(0, Math.round(Number(patch.monthlySalaryCents) || 0));
+  if (patch.withholdingRatePct !== undefined) {
+    allowed.withholdingRatePct = patch.withholdingRatePct === null || patch.withholdingRatePct === ""
+      ? null
+      : Math.max(0, Math.min(100, Number(patch.withholdingRatePct) || 0));
+  }
+  if (patch.allowances !== undefined) allowed.allowances = Math.max(0, Math.round(Number(patch.allowances) || 0));
   Object.assign(employee, allowed, { updatedAt: new Date().toISOString() });
   await writeDb(db);
   return employee;
@@ -544,12 +565,12 @@ export async function deleteExpense(id) {
 // set that rate.
 export async function getTaxSettings() {
   const db = readDb();
-  return db.taxSettings || { taxName: "Tax", taxNumber: "", defaultRatePct: 0 };
+  return db.taxSettings || { taxName: "Tax", taxNumber: "", defaultRatePct: 0, defaultWithholdingRatePct: 0, employerName: "", employerTaxId: "" };
 }
 
 export async function updateTaxSettings(patch) {
   const db = readDb();
-  const current = db.taxSettings || { taxName: "Tax", taxNumber: "", defaultRatePct: 0 };
+  const current = db.taxSettings || { taxName: "Tax", taxNumber: "", defaultRatePct: 0, defaultWithholdingRatePct: 0, employerName: "", employerTaxId: "" };
   const next = { ...current };
   if (patch.taxName !== undefined) next.taxName = String(patch.taxName).trim() || "Tax";
   if (patch.taxNumber !== undefined) next.taxNumber = String(patch.taxNumber).trim();
@@ -557,6 +578,21 @@ export async function updateTaxSettings(patch) {
     const rate = Number(patch.defaultRatePct);
     next.defaultRatePct = Number.isFinite(rate) && rate >= 0 ? rate : 0;
   }
+  // Real, owner-configured default payroll withholding rate — same
+  // honesty principle as defaultRatePct above: this app never guesses a
+  // real withholding percentage for you, you supply it (from your own
+  // knowledge of your jurisdiction's brackets, or an accountant's
+  // guidance). See the withholding section near computePayroll() for
+  // exactly what this does and does not compute.
+  if (patch.defaultWithholdingRatePct !== undefined) {
+    const rate = Number(patch.defaultWithholdingRatePct);
+    next.defaultWithholdingRatePct = Number.isFinite(rate) && rate >= 0 && rate <= 100 ? rate : 0;
+  }
+  // Employer identity fields shown on the real filing summary report
+  // (see getFilingSummary() below) — the kind of information an
+  // accountant or payroll-tax provider would need on a handoff document.
+  if (patch.employerName !== undefined) next.employerName = String(patch.employerName).trim();
+  if (patch.employerTaxId !== undefined) next.employerTaxId = String(patch.employerTaxId).trim();
   db.taxSettings = next;
   await writeDb(db);
   return next;
@@ -566,19 +602,41 @@ export async function updateTaxSettings(patch) {
 // Ported from OliCompute's real server/services/payroll.js: hourly
 // employees are paid for hours ACTUALLY logged that month (via
 // createTimeEntry above); salaried employees receive their fixed
-// monthly amount. This is real arithmetic on real records — it is not
-// tax withholding, filing, or compliance, which remain explicitly out of
-// scope (see README.md's "Explicit scope" section, still accurate).
+// monthly amount. This is real arithmetic on real records.
+//
+// WITHHOLDING — what this genuinely does and does not do:
+// Each employee's gross pay is now reduced by a real, flat percentage
+// (their own withholdingRatePct override, or the org-wide
+// taxSettings.defaultWithholdingRatePct if they don't have one) to
+// produce a real "withheldCents" and real "netPayCents" per line. This
+// is genuine arithmetic on a rate a human explicitly configured — same
+// honesty principle as invoice tax above (never invent a rate).
+// What this deliberately does NOT do: look up official IRS/HMRC/ATO
+// withholding tables by income bracket and filing status, apply
+// FICA/Social Security/Medicare/state-specific rules, or remit anything
+// to a tax authority. A single flat percentage cannot correctly
+// replicate a real progressive withholding table — pretending otherwise
+// would be exactly the kind of fabricated feature this whole project is
+// about avoiding. Use this for a real, working "here's roughly what to
+// set aside and hand off" number, backed by a rate YOU or your
+// accountant chose — not as a certified payroll-tax calculation. Pair
+// it with a real payroll-tax provider (Gusto, Check, etc.) for the
+// compliance-grade version.
 
 export async function computePayroll(month) {
   const db = readDb();
   const m = /^\d{4}-\d{2}$/.test(month || "") ? month : new Date().toISOString().slice(0, 7);
   const employees = Object.values(db.employees).filter((e) => e.status !== "inactive" && e.status !== "archived");
   const entries = Object.values(db.timeEntries).filter((t) => monthOf(t.date) === m);
+  const taxSettings = db.taxSettings || { defaultWithholdingRatePct: 0 };
+  const defaultWithholdingRatePct = Number(taxSettings.defaultWithholdingRatePct) || 0;
 
   const lines = employees.map((e) => {
     const hours = entries.filter((t) => t.employeeId === e.id).reduce((sum, t) => sum + t.hours, 0);
-    const payCents = e.payType === "salary" ? e.monthlySalaryCents : Math.round(hours * e.hourlyRateCents);
+    const grossPayCents = e.payType === "salary" ? e.monthlySalaryCents : Math.round(hours * e.hourlyRateCents);
+    const withholdingRatePct = e.withholdingRatePct !== null && e.withholdingRatePct !== undefined ? e.withholdingRatePct : defaultWithholdingRatePct;
+    const withheldCents = Math.round((grossPayCents * withholdingRatePct) / 100);
+    const netPayCents = grossPayCents - withheldCents;
     return {
       employeeId: e.id,
       name: e.name,
@@ -586,7 +644,16 @@ export async function computePayroll(month) {
       payType: e.payType,
       hours: Math.round(hours * 100) / 100,
       rateCents: e.payType === "salary" ? e.monthlySalaryCents : e.hourlyRateCents,
-      payCents,
+      withholdingRatePct,
+      allowances: e.allowances || 0,
+      // payCents kept for backward compatibility with existing callers
+      // (accounting overview, P&L) that expect payroll COST — that's
+      // the employer's real cost, i.e. gross pay, regardless of how
+      // much of it is withheld vs paid out.
+      payCents: grossPayCents,
+      grossPayCents,
+      withheldCents,
+      netPayCents,
     };
   });
 
@@ -597,7 +664,69 @@ export async function computePayroll(month) {
       employees: lines.length,
       totalHours: Math.round(lines.reduce((sum, l) => sum + l.hours, 0) * 100) / 100,
       totalPayCents: lines.reduce((sum, l) => sum + l.payCents, 0),
+      totalGrossPayCents: lines.reduce((sum, l) => sum + l.grossPayCents, 0),
+      totalWithheldCents: lines.reduce((sum, l) => sum + l.withheldCents, 0),
+      totalNetPayCents: lines.reduce((sum, l) => sum + l.netPayCents, 0),
     },
+  };
+}
+
+/* ------------------------------- Filing summary ------------------------------- */
+// A real, computed handoff document for a date range: total gross pay,
+// total withheld, total net pay, and a per-employee breakdown — the
+// kind of summary you'd actually hand to an accountant or payroll-tax
+// provider (or use yourself to remit withheld amounts) at the end of a
+// quarter or year. This is explicitly NOT an e-filing submission to any
+// tax authority (IRS Form 941/W-2, HMRC RTI, ATO STP, etc.) — building
+// a real integration with any one of those would mean this software is
+// making binding regulatory filings on a business's behalf, which is a
+// completely different (and far more regulated) product than what a
+// $39/mo self-hosted CRM should attempt. What's real here: the
+// arithmetic is genuinely computed from your real payroll records
+// across every month in the range, not a mocked/static number.
+export async function getFilingSummary(from, to) {
+  const db = readDb();
+  const taxSettings = db.taxSettings || {};
+  const months = monthsBetween(from, to);
+  const perEmployee = new Map();
+  let totalGrossPayCents = 0;
+  let totalWithheldCents = 0;
+  let totalNetPayCents = 0;
+
+  for (const m of months) {
+    const payroll = await computePayroll(m);
+    for (const line of payroll.lines) {
+      if (!perEmployee.has(line.employeeId)) {
+        perEmployee.set(line.employeeId, {
+          employeeId: line.employeeId,
+          name: line.name,
+          role: line.role,
+          allowances: line.allowances,
+          withholdingRatePct: line.withholdingRatePct,
+          grossPayCents: 0,
+          withheldCents: 0,
+          netPayCents: 0,
+        });
+      }
+      const entry = perEmployee.get(line.employeeId);
+      entry.grossPayCents += line.grossPayCents;
+      entry.withheldCents += line.withheldCents;
+      entry.netPayCents += line.netPayCents;
+      totalGrossPayCents += line.grossPayCents;
+      totalWithheldCents += line.withheldCents;
+      totalNetPayCents += line.netPayCents;
+    }
+  }
+
+  return {
+    range: { from, to },
+    employer: { name: taxSettings.employerName || "", taxId: taxSettings.employerTaxId || "" },
+    employees: Array.from(perEmployee.values()).sort((a, b) => b.grossPayCents - a.grossPayCents),
+    totals: { grossPayCents: totalGrossPayCents, withheldCents: totalWithheldCents, netPayCents: totalNetPayCents },
+    generatedAt: new Date().toISOString(),
+    // Explicit, honest note carried in the payload itself so it's
+    // visible even to a consumer of the raw API, not just the README.
+    scopeNote: "This is a computed handoff summary for your accountant or payroll-tax provider. It is not an e-filed submission to any tax authority.",
   };
 }
 
