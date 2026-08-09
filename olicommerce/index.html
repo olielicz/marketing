@@ -6,14 +6,23 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png"/>
 <title>OliCommerce Stack — Shopify Cart Recovery Tool</title>
-<meta name="description" content="70% of your Shopify carts walk away. OliCommerce Stack recovers them automatically and adds an AI shopping assistant. Plugs into your store in minutes. From $29/mo.">
-<meta property="og:title" content="OliCommerce Stack — Shopify Cart Recovery + AI Assistant | From $29/mo"/>
-<meta property="og:description" content="Stop losing 70% of your Shopify carts. Recover them automatically + AI shopping assistant. From $29/mo or $264/yr."/>
+<!-- FIX: previously claimed an "AI shopping assistant" here and
+     throughout this page — a customer-facing, on-storefront chat/
+     product-search widget called "OliMind." No such widget, embed
+     script, or backend exists anywhere in this codebase; it was
+     inherited marketing copy for a separate, never-built repo. The
+     real AI features are back-office only: optional AI-rewritten
+     recovery emails, and a merchant-facing AI Support Assistant. See
+     olicommerce-backend/README.md and server/recoveryEmail.js /
+     server/supportAssistant.js. Corrected below. -->
+<meta name="description" content="70% of your Shopify carts walk away. OliCommerce Stack recovers them automatically with real recovery emails, an optional AI rewrite, and a real AI support assistant. From $29/mo.">
+<meta property="og:title" content="OliCommerce Stack — Shopify Cart Recovery | From $29/mo"/>
+<meta property="og:description" content="Stop losing 70% of your Shopify carts. Recover them automatically with real emails and an optional AI rewrite. From $29/mo or $264/yr."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/olicommerce/"/>
 <meta property="og:image" content="https://olielicz.github.io/marketing/assets/og/olicommerce.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="OliCommerce Stack — Shopify Cart Recovery + AI Assistant | From $29/mo"/>
-<meta name="twitter:description" content="Stop losing 70% of your Shopify carts. Recover them automatically + AI shopping assistant. From $29/mo or $264/yr."/>
+<meta name="twitter:title" content="OliCommerce Stack — Shopify Cart Recovery | From $29/mo"/>
+<meta name="twitter:description" content="Stop losing 70% of your Shopify carts. Recover them automatically with real emails and an optional AI rewrite. From $29/mo or $264/yr."/>
 <meta name="twitter:image" content="https://olielicz.github.io/marketing/assets/og/olicommerce.png"/>
 <link rel="canonical" href="https://olielicz.github.io/marketing/olicommerce/"/>
 <script type="application/ld+json">
@@ -23,7 +32,7 @@
   "name": "OliCommerce Stack",
   "url": "https://olielicz.github.io/marketing/olicommerce/",
   "image": "https://olielicz.github.io/marketing/assets/og/olicommerce.png",
-  "description": "OliCommerce Stack recovers abandoned Shopify carts automatically and adds an AI shopping assistant.",
+  "description": "OliCommerce Stack recovers abandoned Shopify carts automatically with real recovery emails, an optional AI rewrite, and a real AI support assistant for the merchant.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -146,7 +155,11 @@
 <section class="hero wrap">
   <div class="eyebrow">💎 The gem hiding in your abandoned-cart data</div>
   <h1>Right now, <span class="hl">7 out of 10 carts</span><br>are walking out the door</h1>
-  <p class="sub-headline">Every unrecovered cart is money you already earned, slipping away silently. OliCommerce Stack catches it automatically — plus gives your store an AI shopping assistant that never clocks out. One subscription purchase, plugs into Shopify in minutes.</p>
+  <!-- FIX: was "gives your store an AI shopping assistant that never
+       clocks out" - no storefront-facing AI assistant exists. The real
+       AI features are an optional AI rewrite for recovery emails and a
+       merchant-facing AI support assistant, both described below. -->
+  <p class="sub-headline">Every unrecovered cart is money you already earned, slipping away silently. OliCommerce Stack catches it automatically with real recovery emails — with an optional AI rewrite — plus a real AI support assistant to help you run it. One subscription purchase, plugs into Shopify in minutes.</p>
   <div class="hero-ctas">
     <a href="./buy/" class="cta-btn">Subscribe Now — $29/mo</a>
     <a href="#tools" class="cta-btn ghost">See what's inside ↓</a>
@@ -156,11 +169,13 @@
     <span>✅ Up to 5 devices per license</span>
     <span>✅ Cancel anytime</span>
   </div>
+  <!-- FIX: removed "Supplier CSV Forwarding" (zero implementation
+       anywhere in olicommerce-backend) and "AI Shopping Assistant"
+       (fictional storefront widget, see comment above). -->
   <div class="tools-strip">
     <div class="tool-pill">🛍 Abandoned Cart Recovery</div>
-    <div class="tool-pill">📧 Automated Order Emails</div>
-    <div class="tool-pill">📦 Supplier CSV Forwarding</div>
-    <div class="tool-pill">🤖 AI Shopping Assistant</div>
+    <div class="tool-pill">📧 Automated Recovery Emails</div>
+    <div class="tool-pill">🤖 AI Support Assistant</div>
   </div>
 </section>
 
@@ -181,18 +196,25 @@
 
 <section class="problem">
   <div class="wrap">
-    <h2 class="section-title">Two tools, one checkout-recovery machine</h2>
+    <!-- FIX: this whole section previously described two products,
+         "ecomm-automation" (which claimed CSV supplier forwarding —
+         unimplemented) and "OliMind AI" (a fictional storefront
+         chat/product-search widget — no such code exists anywhere).
+         Replaced with what OliCommerce Stack actually is: one real
+         cart-recovery backend with a real, optional AI email-rewrite
+         feature and a real, merchant-facing AI Support Assistant. -->
+    <h2 class="section-title">One real backend, one honest AI feature set</h2>
     <p class="section-sub">Not another app-store subscription — a direct plug into the webhooks your store already has.</p>
     <div class="grid2">
       <div class="card">
         <span class="icon">🛒</span>
-        <h3>ecomm-automation — the safety net under every cart</h3>
-        <p>Plugs directly into Shopify's own webhooks: sends thank-you emails the moment an order is paid, recovers abandoned checkouts automatically, and forwards order CSVs to your supplier — no manual work, no missed follow-ups.</p>
+        <h3>Cart recovery — the safety net under every cart</h3>
+        <p>Plugs directly into Shopify's own abandoned-checkout webhook: captures the cart, tracks its status, and sends a real recovery email via your own SMTP — optionally rewritten by AI for tone before it's sent. (WooCommerce has no native abandoned-cart webhook — see our <a href="../support/">support page</a> for the workaround.)</p>
       </div>
       <div class="card">
         <span class="icon">🤖</span>
-        <h3>OliMind AI — a salesperson who never sleeps</h3>
-        <p>An AI-powered product search, recommendation, and live chat assistant your customers can actually talk to on your storefront — answering questions and closing sales at 2am while you're asleep.</p>
+        <h3>AI Support Assistant — help for you, not your customers</h3>
+        <p>A real, three-tier assistant built into your OliCommerce dashboard: answers from a knowledge base first, optionally escalates to AI for anything it isn't confident about, and creates a real support ticket for whatever neither can resolve. This helps <em>you</em> run OliCommerce — it's not a storefront chat widget for your shoppers.</p>
       </div>
     </div>
   </div>
@@ -224,18 +246,26 @@
     <div class="price-card">
       <div class="tag">⭐ MOST POPULAR</div>
       <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">OliCommerce Stack — Subscription</div>
-      <div class="price-was">Competitors: Klaviyo $20+/mo, cart-recovery apps $240–$480/yr, AI assistants $600+/yr</div>
+      <!-- FIX: was "Competitors: Klaviyo $20+/mo, cart-recovery apps
+           $240-480/yr, AI assistants $600+/yr" - the "AI assistants
+           $600+/yr" comparison implied a storefront AI product that
+           doesn't exist here. Removed that line item. Feature bullet
+           "Order automation + AI shopping assistant" corrected to
+           describe the real cart-recovery + AI-rewrite + AI support
+           feature set. -->
+      <div class="price-was">Competitors: Klaviyo $20+/mo, cart-recovery apps $240–$480/yr</div>
       <div class="price-big">$29<span style="font-size:18px;font-weight:600;color:var(--sub)">/month</span></div>
       <div style="color:#16a34a;font-weight:700;font-size:14px;margin:-4px 0 8px;">🎁 First 14 days free — cancel before day 14 and pay nothing</div>
       <div class="price-save">Recovers its subscription cost with a single abandoned cart each month</div>
       <ul class="price-list">
-        <li>Order automation + AI shopping assistant</li>
+        <li>Abandoned cart recovery + optional AI-rewritten emails</li>
+        <li>AI Support Assistant for you, the merchant</li>
         <li>Self-hosted — license valid on up to 5 devices</li>
         <li>Every future update, included</li>
         <li>Priority email support included</li>
         <li>14-day free trial, then billed monthly or yearly</li>
       </ul>
-      <a href="./buy/" class="cta-btn" style="width:100%; text-align:center; display:block;">Start Free Trial</a>
+      <a href="./buy/?plan=basic" class="cta-btn" style="width:100%; text-align:center; display:block;">Start Free Trial</a>
       <div class="guarantee">🛡️ 14-day free trial + 30-day money-back guarantee after that</div>
       <div class="pay-icons"><span class="badge">Stripe</span><span class="badge">PayPal</span><span>secure checkout · cards, wallets &amp; bank transfers worldwide</span></div>
     </div>
@@ -370,7 +400,7 @@
     <div class="t-grid">
       <div class="t-card">
         <div class="t-stars">🛍</div>
-        <p class="t-quote">Cart recovery and an AI shopping assistant in one subscription — most competitors sell these as two separate tools with two separate bills.</p>
+        <p class="t-quote">Cart recovery and a real AI support assistant in one subscription — most competitors sell cart-recovery apps and AI support tooling as two separate bills.</p>
       </div>
       <div class="t-card">
         <div class="t-stars">🔌</div>

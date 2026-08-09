@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Subscribe — OliSalesTrack</title>
-<meta name="description" content="Subscribe to OliSalesTrack. 24/month or 204/year. Secure checkout via Paddle and PayPal."/>
+<meta name="description" content="Subscribe to OliSalesTrack — live sales &amp; refund sync from Stripe, PayPal, and Shopify. 24/month or 204/year. Secure checkout via Paddle and PayPal."/>
 <meta name="robots" content="noindex"/>
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
 <style>
@@ -109,7 +109,11 @@ footer a{color:var(--sub);}
 <main class="wrap">
   <div style="margin-bottom:24px;">
     <h1 class="page-title">Choose Your Plan</h1>
-    <p class="page-sub">Sales + Refunds + Expenses Tracker with Correlation Analysis</p>
+    <!-- FIX: was "Sales + Refunds + Expenses Tracker with Correlation
+         Analysis" - expense tracking and correlation analysis aren't
+         implemented (see olisalestrack/index.html's fix comments for
+         full context). -->
+    <p class="page-sub">Live Sales &amp; Refund Sync</p>
     <div class="toggle-wrap">
       <span>Monthly</span>
       <label class="toggle-switch">
@@ -139,13 +143,14 @@ footer a{color:var(--sub);}
       <div class="line"><span id="sumPlan">Pro</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
       <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$24/mo</span></div>
+      <!-- FIX: removed 5 unimplemented feature bullets (period views,
+           correlation analysis, AI insights, PDF/CSV export, multiple
+           business profiles) - see olisalestrack/index.html's fix
+           comments for the full explanation. Kept only real features. -->
       <ul class="included">
-      <li>Sales + refund + expense tracking</li>
-      <li>Daily / weekly / monthly / yearly views</li>
-      <li>Pearson correlation analysis</li>
-      <li>AI business insights</li>
-      <li>PDF reports + CSV export</li>
-      <li>Multiple business profiles</li>
+      <li>Live sales + refund sync (Stripe, PayPal, Shopify)</li>
+      <li>Verified webhook signatures</li>
+      <li>Real-time sales &amp; refund totals</li>
       <li>Priority email support</li>
       </ul>
     </div>
@@ -188,8 +193,12 @@ footer a{color:var(--sub);}
     </div>
   </div>
 
+  <!-- FIX: was "OliSalesTrack is $24/mo with more features" - not
+       accurate (Baremetrics has real features OliSalesTrack doesn't
+       yet, like MRR/ARR analytics). Corrected to the real, honest
+       comparison: cheaper live-sync at a lower price point. -->
   <div style="max-width:600px;margin:24px auto 0;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:13px;color:#92400e;">
-    <strong>💡 vs competitors:</strong> Baremetrics at $49+/mo, Profitwell at $49+/mo — OliSalesTrack is $24/mo with more features
+    <strong>💡 vs competitors:</strong> Baremetrics at $49+/mo, Profitwell at $49+/mo — OliSalesTrack is $24/mo for the same live Stripe/PayPal/Shopify sync
   </div>
 </main>
 
