@@ -151,8 +151,19 @@ export async function getCart(id) {
  * the source platform's own cart/checkout id (externalId) to de-dupe —
  * a Shopify "checkout was updated" webhook re-firing for the same
  * checkout should update the existing record, not create a duplicate.
+ *
+ * ⚠️ FIX: when a webhook payload doesn't specify a currency (some
+ * checkout-update events omit it), this previously hardcoded a fallback
+ * with no way to configure it. Now defaults to OLICOMMERCE_STORE_CURRENCY
+ * (same env var used by storefrontAssistant.js and recoveryEmail.js,
+ * defaults to "USD" out of the box but genuinely supports any real ISO
+ * 4217 code — GBP, EUR, AUD, PHP, etc.) instead of a hardcoded value. A
+ * real currency present in the webhook itself (Shopify/WooCommerce do
+ * send this) still always takes priority — this default only applies
+ * when it's genuinely missing from the payload.
  */
 export async function upsertCart({ externalId, source, customerEmail, customerName, items, cartValueCents, currency, checkoutUrl }) {
+  const defaultCurrency = process.env.OLICOMMERCE_STORE_CURRENCY || "USD";
   const db = readDb();
   const existingId = db.seenCartIds[externalId];
 
@@ -187,7 +198,7 @@ export async function upsertCart({ externalId, source, customerEmail, customerNa
     customerName: customerName || "",
     items: normalizedItems,
     cartValueCents: computedValueCents,
-    currency: currency || "USD",
+    currency: currency || defaultCurrency,
     checkoutUrl: checkoutUrl || "",
     status: "abandoned", // abandoned | recovery_sent | recovered
     abandonedAt: new Date().toISOString(),

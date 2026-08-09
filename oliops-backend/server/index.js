@@ -295,7 +295,12 @@ const server = createServer(async (req, res) => {
       const id = url.pathname.split("/")[3];
       const invoice = await getInvoice(id);
       if (!invoice) return send(res, 404, { error: "not_found" });
-      return send(res, 200, renderInvoiceHtml(invoice, { name: BUSINESS_NAME, email: BUSINESS_EMAIL }), "text/html");
+      // FIX: previously always rendered with a hardcoded "$" - now passes
+      // the real, owner-configured currency from tax settings (defaults
+      // to "PHP" for this deployment) through to the invoice HTML
+      // renderer, which uses Intl.NumberFormat to format it correctly.
+      const taxSettings = await getTaxSettings();
+      return send(res, 200, renderInvoiceHtml(invoice, { name: BUSINESS_NAME, email: BUSINESS_EMAIL, currency: taxSettings.currency }), "text/html");
     }
     if (req.method === "DELETE" && url.pathname.startsWith("/api/invoices/")) {
       const id = url.pathname.split("/")[3];

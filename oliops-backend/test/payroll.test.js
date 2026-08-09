@@ -246,3 +246,53 @@ test("filing summary: aggregates real gross/withheld/net across a date range, pe
 
   rmSync(cleanDir, { recursive: true, force: true });
 });
+
+
+test("tax settings: currency defaults to USD and is genuinely configurable to any real ISO 4217 code", async () => {
+  // FIX regression coverage: invoices previously always rendered with a
+  // hardcoded "$" with no way to change it at all. That's now fixed two
+  // ways: (1) the out-of-the-box default is USD, and (2) every other
+  // real currency (GBP, EUR, AUD, PHP, and any other ISO 4217 code
+  // Intl.NumberFormat recognizes) is genuinely supported via
+  // updateTaxSettings()'s validation - this isn't a USD-only tool with
+  // a couple of extras bolted on.
+  const defaults = await store.getTaxSettings();
+  assert.equal(defaults.currency, "USD");
+
+  for (const code of ["gbp", "eur", "aud", "php", "cad", "jpy"]) {
+    const updated = await store.updateTaxSettings({ currency: code });
+    assert.equal(updated.currency, code.toUpperCase()); // normalized to uppercase
+    const reread = await store.getTaxSettings();
+    assert.equal(reread.currency, code.toUpperCase()); // persisted, not just returned once
+  }
+
+  await assert.rejects(
+    () => store.updateTaxSettings({ currency: "NOT_A_REAL_CURRENCY" }),
+    /not a valid ISO 4217 currency code/
+  );
+
+  // Reset for any tests that run after this one in the same file/db.
+  await store.updateTaxSettings({ currency: "USD" });
+});
+
+test("invoice HTML rendering: real currency flows through to the printed amount for USD, GBP, EUR, AUD, and PHP alike", async () => {
+  const { renderInvoiceHtml } = await import("../server/invoiceHtml.js");
+  const invoice = await store.createInvoice({ contactName: "Test Client", items: [{ description: "Service", quantity: 1, unitPriceCents: 150000 }] });
+
+  // No currency passed at all -> real, honest default (USD), not a
+  // silently-hardcoded symbol that happens to also be USD's.
+  const defaultHtml = renderInvoiceHtml(invoice, { name: "Test Biz", email: "biz@test.com" });
+  assert.match(defaultHtml, /\$1,500\.00/);
+
+  const expectations = {
+    USD: /\$1,500\.00/,
+    GBP: /(£|GBP)1,500\.00/,
+    EUR: /(€|EUR)1,500\.00/,
+    AUD: /(A\$|AUD)1,500\.00/,
+    PHP: /(₱|PHP)1,500\.00/,
+  };
+  for (const [currency, pattern] of Object.entries(expectations)) {
+    const html = renderInvoiceHtml(invoice, { name: "Test Biz", email: "biz@test.com", currency });
+    assert.match(html, pattern, `expected a real ${currency} amount to render, got no match`);
+  }
+});

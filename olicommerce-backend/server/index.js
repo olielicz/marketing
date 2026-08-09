@@ -52,6 +52,15 @@ const MAX_FAILED_ATTEMPTS = Number(process.env.OLICOMMERCE_MAX_FAILED_ATTEMPTS) 
 const LOCKOUT_WINDOW_MS = (Number(process.env.OLICOMMERCE_LOCKOUT_WINDOW_MINUTES) || 15) * 60 * 1000;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 const STORE_NAME = process.env.OLICOMMERCE_STORE_NAME || "your store";
+// ⚠️ FIX: storefrontAssistant.js's formatMoney() previously hardcoded
+// "$" with no setting to change it at all - a real customer caught this
+// (a shopper asking about products would always see USD prices,
+// regardless of the store's real currency). Defaults to USD out of the
+// box, but this is genuinely NOT limited to USD — set
+// OLICOMMERCE_STORE_CURRENCY to any real ISO 4217 code (GBP, EUR, AUD,
+// PHP, CAD, JPY, ...) and every price the storefront assistant quotes,
+// plus recoveryEmail.js's cart-abandonment emails below, switches to it.
+const STORE_CURRENCY = process.env.OLICOMMERCE_STORE_CURRENCY || "USD";
 const WEBHOOK_SHARED_SECRET = process.env.OLICOMMERCE_WEBHOOK_SECRET || "";
 const SUPPLIER_EMAIL = process.env.OLICOMMERCE_SUPPLIER_EMAIL || "";
 
@@ -271,6 +280,7 @@ const server = createServer(async (req, res) => {
         openaiApiKey: process.env.OPENAI_API_KEY,
         openaiApiBaseUrl: process.env.OPENAI_API_BASE_URL,
         openaiModel: process.env.OPENAI_MODEL,
+        currency: STORE_CURRENCY,
       });
       return send(res, 200, result);
     }

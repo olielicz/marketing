@@ -140,6 +140,11 @@ test("invoice lifecycle: create with real line-item math, list, mark paid, rende
   const html = await request("GET", `/api/invoices/${invoice.id}/html`, { token: ownerToken });
   assert.equal(html.status, 200);
   assert.match(html.body, /INV-\d{5}/);
+  // FIX: this now genuinely uses the real currency from tax settings
+  // (see store.js's TAX_SETTINGS_DEFAULTS) instead of a hardcoded "$" -
+  // the default is USD out of the box, but every other real currency
+  // (GBP/EUR/AUD/PHP/etc.) is fully supported too - see
+  // payroll.test.js's dedicated multi-currency tests for that coverage.
   assert.match(html.body, /\$500\.00/);
   assert.match(html.body, /PAID/);
 });

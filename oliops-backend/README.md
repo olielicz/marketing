@@ -108,6 +108,13 @@ reports}.js` modules into this service's existing JSON-file store
   is genuinely computed — this is different from "automatic tax
   calculation," which would imply the software knows your jurisdiction's
   rate. It doesn't, and never claims to; you tell it the rate.
+- ✅ **Currency** — `currency` in `GET`/`PUT /api/tax-settings` is a real
+  ISO 4217 code that every printable invoice is formatted in via the
+  standard `Intl.NumberFormat` currency formatter. Defaults to **USD**
+  out of the box, but this is genuinely NOT limited to USD — set it to
+  `GBP`, `EUR`, `AUD`, `PHP`, or any other real code
+  (`PUT /api/tax-settings {"currency":"GBP"}`) and every invoice renders
+  in that currency's real symbol/format from then on.
 - ✅ **Expenses** — real categorized spend records.
 - ✅ **Accounting overview** (`GET /api/accounting`) — real net = real
   revenue (paid invoices) − real expenses − real payroll for the current
