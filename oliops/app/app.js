@@ -16,7 +16,24 @@ function saveSession(s) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s))
 function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
 function normalizeUrl(u) { return String(u || '').trim().replace(/\/$/, ''); }
 function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
-function formatMoney(cents) { return `$${((cents || 0) / 100).toFixed(2)}`; }
+// ⚠️ FIX: this previously hardcoded "$" regardless of the business's
+// real currency — the same bug already fixed server-side in
+// oliops-backend/server/invoiceHtml.js and store.js, but missed here in
+// the client-rendered invoice list table (a real customer would see a
+// hardcoded dollar sign in the app's own dashboard even after fixing
+// their printable invoice's currency). Now uses the real ISO 4217
+// currency code fetched from the backend's own /api/tax-settings (see
+// cachedCurrency below) via the standard Intl.NumberFormat formatter —
+// defaults to USD out of the box, genuinely supports GBP/EUR/AUD/PHP/
+// any other real code once the owner configures it.
+let cachedCurrency = 'USD';
+function formatMoney(cents) {
+  try {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: cachedCurrency || 'USD' }).format((cents || 0) / 100);
+  } catch {
+    return `${cachedCurrency || 'USD'} ${((cents || 0) / 100).toFixed(2)}`;
+  }
+}
 
 const els = {};
 ['loginScreen','app','loginForm','loginBtn','loginError','settingsToggle','configFields','backendUrl','saveConfigBtn',
@@ -132,7 +149,23 @@ document.querySelectorAll('nav.tabs button').forEach(btn => {
 
 /* ---------------- Load everything ---------------- */
 async function loadAll() {
+  await loadTaxSettings(); // must resolve before loadInvoices() so formatMoney() uses the real currency, not the USD default, on first render
   await Promise.all([loadContacts(), loadTasks(), loadInvoices(), loadSupportTickets()]);
+}
+
+/** Fetches the real, owner-configured currency (and tax rate) from the
+ *  backend's own /api/tax-settings — see oliops-backend/server/store.js's
+ *  getTaxSettings(). Falls back to the honest USD default on any error
+ *  rather than blocking the rest of the app from loading. */
+async function loadTaxSettings() {
+  try {
+    const res = await apiFetch('/api/tax-settings');
+    if (!res.ok) return;
+    const data = await res.json();
+    cachedCurrency = (data.taxSettings && data.taxSettings.currency) || 'USD';
+  } catch {
+    cachedCurrency = 'USD';
+  }
 }
 
 /* ---------------- AI Support Assistant ---------------- */
@@ -331,7 +364,9 @@ function openInvoiceModal() {
 function addItemRow() {
   const row = document.createElement('div');
   row.className = 'item-row';
-  row.innerHTML = `<input placeholder="Description" class="i-desc"/><input placeholder="Qty" type="number" min="1" value="1" class="i-qty"/><input placeholder="Unit $" type="number" min="0" step="0.01" class="i-price"/><button type="button" onclick="this.closest('.item-row').remove()" style="border:none;background:none;cursor:pointer;color:var(--bad);">✕</button>`;
+  // FIX: "Unit $" was a hardcoded placeholder label - now shows the real
+  // configured currency code (e.g. "Unit GBP") instead of always implying USD.
+  row.innerHTML = `<input placeholder="Description" class="i-desc"/><input placeholder="Qty" type="number" min="1" value="1" class="i-qty"/><input placeholder="Unit ${escapeHtml(cachedCurrency || 'USD')}" type="number" min="0" step="0.01" class="i-price"/><button type="button" onclick="this.closest('.item-row').remove()" style="border:none;background:none;cursor:pointer;color:var(--bad);">✕</button>`;
   els.itemRows.appendChild(row);
 }
 async function submitInvoice() {
