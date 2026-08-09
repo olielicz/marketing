@@ -269,6 +269,50 @@ credentials from step 6.
 
 ---
 
+## 12. ⚠️ Wire up real payment processing (required to actually sell anything)
+
+Everything above makes the 6 tools' real product code live and reachable.
+**It does not make them sellable yet** — that's a separate, one-time
+configuration step in 2 files, unrelated to the VPS itself:
+
+- `shared/paddle-sdk.js` — as of this writing, only **OliOps Starter**
+  has a real Paddle Price ID configured (`PRICE_IDS.oliops.starter`).
+  Every other tier across all 6 tools (OliOps Pro/Agency, OliCommerce all
+  3 tiers, OliFlow all 3, OliExplore all 3, Oli-Locator both tiers,
+  OliSalesTrack) is still a placeholder `YOUR_..._PRICE_ID` string. Until
+  you create the matching Product/Price in your Paddle Dashboard and
+  paste the real Price ID in, that tier's "Pay with Card" button shows a
+  clear "not configured yet" notice instead of taking a real payment —
+  it will NOT silently charge the wrong amount or break.
+- `shared/paypal-sdk.js` — **zero** tiers across all 6 tools have a real
+  PayPal Plan ID configured yet; every entry in `PLAN_IDS` is still a
+  placeholder. Same graceful "not configured" behavior applies.
+- Stripe is intentionally left disabled site-wide (`REPLACE_WITH_..._STRIPE_LINK`
+  placeholders + `stripe-link-guard.js`) — Stripe does not support
+  Philippines-based sellers as of 2026, so Paddle is the real card
+  processor for this business, not Stripe. Leave the Stripe button as-is.
+
+**`PAYMENTS-SETUP.md` (marketing repo root) is the full, step-by-step guide**
+for creating your Paddle seller account, PayPal Business account, and
+every Product/Price/Plan needed — it already covers this in detail
+(Parts 0-3). The short version: this is a ~30-60 minute one-time task in
+the Paddle and PayPal dashboards (plus Paddle's 1-3 business day manual
+seller approval, so start that first), not a code change, and not
+something that requires touching the VPS at all — you edit
+`shared/paddle-sdk.js` / `shared/paypal-sdk.js` locally, then
+`git push` + `git pull` on the VPS (the static site is served directly
+from the repo checkout, no build step) to make the real IDs live.
+
+**Before telling customers these tools are for sale, do a real end-to-end
+test purchase** on at least one tier per tool, using Paddle's Sandbox
+mode (already the default in `paddle-sdk.js` — `PADDLE_ENVIRONMENT =
+'sandbox'`) or PayPal's Sandbox buyer account, to confirm the whole
+checkout → account-creation → welcome-email flow actually works before
+switching `PADDLE_ENVIRONMENT` to `'production'` and going live with a
+real Paddle Client Token.
+
+---
+
 ## Ongoing operations cheat-sheet
 
 ```bash
@@ -293,6 +337,16 @@ df -h                            # disk space check (data/*.json files are tiny,
 - **oliexplore-trends and Oli-Locator's Vercel/Cloudflare-hosted pieces**
   — left on their current free platforms; nothing forces you to move them
   to this VPS, and there's no benefit to doing so right now.
+- **Oli-Locator's real app (`lead-gen`) is not deployed anywhere yet.**
+  It's a separate Vercel-hosted app (serverless functions + optional
+  Vercel KV) that cannot run as static files on this VPS or on GitHub
+  Pages — see `oli-locator/README-INTEGRATION.md` for the real, step-by-
+  step Vercel deployment instructions (separate from this VPS entirely).
+  Until you deploy it and set the real URL in
+  `oli-locator/account/index.html`'s `OLI_LOCATOR_APP_URL` constant,
+  Oli-Locator customers see an honest "not deployed yet" message instead
+  of a working app after they log in — this is a real product gap to
+  close before actively selling this specific tool, not just this one.
 - **Multi-admin / team access** — deliberately not supported anywhere in
   this stack per your requirement that you're the only admin. If that
   changes later, it's a real follow-up, not a config flag.
