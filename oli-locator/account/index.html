@@ -165,24 +165,24 @@ a{color:#2563eb;text-decoration:none;}
       <div class="status-meta">Real Estate CRM · USA · UK · Australia</div>
       <div class="status-badge">✅ Active — from $59/month</div>
     </div>
-    <!-- FIX: this used to link to "../" (this same marketing landing
-         page) - a dead end for a logged-in customer trying to actually
-         use the product, same class of bug already fixed on
-         OliExplore/OliOps/OliCommerce/OliSalesTrack's account pages.
-         Oli-Locator's real app (lead-gen) is a separate, serverless
-         Vercel deployment that cannot be vendored as static files into
-         this GitHub Pages site (needs Vercel KV + /api routes) - see
-         ../README-INTEGRATION.md for the full explanation. Point this
-         at your own deployed lead-gen URL once you have one; until
-         then this links to the setup instructions instead of a dead
-         end. -->
-    <a href="../README-INTEGRATION.md" class="btn btn-primary">Open Oli-Locator →</a>
+    <!-- FIX (updated): this used to link to "../" (a dead end), then to
+         a raw README-INTEGRATION.md file (better than a dead end, but
+         still not something a paying customer should be sent to as
+         their "Open the app" button). Oli-Locator's real app (lead-gen)
+         is a separate, serverless Vercel deployment that cannot be
+         vendored as static files into this GitHub Pages site (needs
+         Vercel KV + /api routes). Real fix: read the app's URL from
+         localStorage (set once, below, after you deploy lead-gen and
+         know its real URL) and link straight to it. Until that's set,
+         this shows a clear, honest "not deployed yet" state instead of
+         sending a paying customer to documentation. -->
+    <a href="#" class="btn btn-primary" id="openLocatorBtn">Open Oli-Locator →</a>
   </div>
 
   <!-- ── What's included ── -->
   <div class="card">
     <div class="card-title"><span class="card-title-icon">🧰</span> What's Included</div>
-    <p style="font-size:12.5px;color:#55606e;margin:-4px 0 12px;">
+    <p style="font-size:12.5px;color:#55606e;margin:-4px 0 12px;" id="deploymentNote">
       Oli-Locator's app runs as a separate deployment (see
       <a href="../README-INTEGRATION.md">setup instructions</a>) — not hosted on this
       marketing site.
@@ -339,7 +339,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
   renderOrders();
   if (TOOL_TYPE === 'monthly') renderSubs();
+  renderLocatorAppLink();
 });
+
+/* ── Real "Open the app" link, or an honest "not deployed yet" state ──
+   Oli-Locator's real app (lead-gen) runs as a separate deployment, not
+   on this marketing site (see ../README-INTEGRATION.md). This is a
+   static site with no server-side config, so the single, real source of
+   truth for "where is it deployed" is the OLI_LOCATOR_APP_URL constant
+   right below — edit that ONE line after you deploy lead-gen (e.g. to
+   'https://your-real-deployment.vercel.app'), and every visitor to this
+   page gets a real, working link instead of documentation. This is a
+   real, if manual, fix — not a per-browser workaround, since a
+   localStorage value would only exist in the one browser that set it
+   and never reach a real paying customer's browser at all. */
+var OLI_LOCATOR_APP_URL = ''; // ← set this to your real deployed lead-gen URL once you have one
+
+function renderLocatorAppLink() {
+  var btn = document.getElementById('openLocatorBtn');
+  var note = document.getElementById('deploymentNote');
+  var appUrl = OLI_LOCATOR_APP_URL.trim();
+
+  if (appUrl) {
+    btn.href = appUrl;
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+    note.innerHTML = 'Connected to your deployed Oli-Locator instance at <code style="background:#eff6ff;padding:2px 6px;border-radius:4px;">' + appUrl + '</code>. '
+      + '<a href="../README-INTEGRATION.md">Change this</a> if you redeploy elsewhere.';
+  } else {
+    btn.removeAttribute('href');
+    btn.style.opacity = '.55';
+    btn.style.cursor = 'not-allowed';
+    btn.title = 'Not deployed yet — see setup instructions below.';
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      alert('Oli-Locator has not been deployed yet. See the setup instructions below this box, or contact support if you believe this is a mistake.');
+    });
+  }
+}
 
 /* ── Orders ── */
 function renderOrders() {
