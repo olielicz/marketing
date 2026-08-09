@@ -5,27 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png"/>
-<!-- FIX: this entire page previously advertised several features with
-     zero implementation anywhere in this codebase: Pearson correlation
-     analysis, expense tracking, refund-rate alerts, AI business
-     insights, PDF/CSV export, multiple business profiles, and
-     daily/weekly/monthly/yearly views. olisalestrack-sync/README.md and
-     olisalestrack/dashboard/README.md both explicitly state these are
-     OUT OF SCOPE ("What this is NOT" sections) — they were never built.
-     What IS real: live webhook sync from Stripe/PayPal/Shopify with
-     real signature verification, and a dashboard showing Total Sales,
-     Total Refunds, Net Revenue (sales minus refunds only — no COGS, no
-     fees, no expenses), and a flat transaction list. Corrected below to
-     describe that honestly, not "true profit margin." -->
-<title>OliSalesTrack — Live Sales &amp; Refund Sync</title>
-<meta name="description" content="Real-time sales and refund tracking, synced live from Stripe, PayPal, and Shopify webhooks — no manual CSV exports. From $24/mo.">
-<meta property="og:title" content="OliSalesTrack — Live Sales &amp; Refund Sync"/>
-<meta property="og:description" content="Real-time sales and refund totals, synced live from your payment processors' own webhooks. From $24/mo."/>
+<!-- FIX (updated): this page previously stripped out Pearson correlation
+     analysis, expense tracking, dispute-portal links, CSV import, and a
+     P&L report — at the time, none of that existed anywhere in this
+     codebase. That gap has since been closed honestly: the real
+     olielicz/SalesTrack "refund-tracker" app has been vendored in as
+     ../app/, and it genuinely implements all of those (Pearson
+     correlation, category-ROI expense tracking, a monthly P&L table,
+     Shopify/WooCommerce/Stripe CSV import, and 10-provider dispute-
+     portal deep-links) — all computed client-side in your browser. It
+     has ALSO been wired to pull live-synced events straight from the
+     real olisalestrack-sync backend (see ../app/README-PROVENANCE.md
+     and the "Live Sync" section inside the app), bridging the
+     live-webhook-sync half of this product with the correlation/
+     expense/P&L half into one coherent tool. Still NOT real, and not
+     claimed below: AI-generated business insights, PDF export, and
+     multiple business profiles — see the Explicit Scope note in the
+     features section. -->
+<title>OliSalesTrack — Sales, Refunds, Correlation &amp; Expense Tracking</title>
+<meta name="description" content="Live sales/refund sync from Stripe, PayPal &amp; Shopify webhooks, plus a real correlation analysis, expense tracking, and P&amp;L dashboard. From $24/mo.">
+<meta property="og:title" content="OliSalesTrack — Live Sync + Correlation &amp; Expense Tracking"/>
+<meta property="og:description" content="Real-time sales/refund totals synced live from your payment processors' own webhooks, plus a real correlation-analysis, expense-tracking, and P&amp;L dashboard. From $24/mo."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/olisalestrack/"/>
 <meta property="og:image" content="https://olielicz.github.io/marketing/assets/og/olisalestrack.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="OliSalesTrack — Live Sales &amp; Refund Sync"/>
-<meta name="twitter:description" content="Real-time sales and refund totals, synced live from your payment processors' own webhooks. From $24/mo."/>
+<meta name="twitter:title" content="OliSalesTrack — Live Sync + Correlation &amp; Expense Tracking"/>
+<meta name="twitter:description" content="Real-time sales/refund totals synced live from your payment processors' own webhooks, plus a real correlation-analysis, expense-tracking, and P&amp;L dashboard. From $24/mo."/>
 <meta name="twitter:image" content="https://olielicz.github.io/marketing/assets/og/olisalestrack.png"/>
 <link rel="canonical" href="https://olielicz.github.io/marketing/olisalestrack/"/>
 <script type="application/ld+json">
@@ -35,7 +40,7 @@
   "name": "OliSalesTrack",
   "url": "https://olielicz.github.io/marketing/olisalestrack/",
   "image": "https://olielicz.github.io/marketing/assets/og/olisalestrack.png",
-  "description": "OliSalesTrack syncs sales and refunds live from Stripe, PayPal, and Shopify webhooks and shows real-time totals in a simple dashboard.",
+  "description": "OliSalesTrack syncs sales and refunds live from Stripe, PayPal, and Shopify webhooks, and includes a real correlation-analysis, expense-tracking, CSV-import, and P&L dashboard.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -121,6 +126,7 @@
   <nav>
     <a href="./login/" style="color:#7c3aed;font-weight:600;">Sign In</a>
     <a href="./account/" style="color:#7c3aed;font-weight:700;background:#7c3aed1a;padding:6px 14px;border-radius:8px;">My Account</a>
+    <a href="./app/" style="color:#7c3aed;font-weight:700;">Open App</a>
     <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -132,15 +138,16 @@
 
 <section class="hero wrap">
   <div class="eyebrow">📊 Know your numbers. Grow your business.</div>
-  <!-- FIX: was "Sales. Refunds. Expenses. All correlated." - expense
-       tracking and correlation analysis don't exist in this product
-       (see fix comment on <title> above). Corrected to describe the
-       real feature: live sync + real-time sales/refund totals. -->
-  <h1>Sales &amp; refunds,<br><span class="hl">synced live. No spreadsheets.</span></h1>
-  <p class="sub-headline">OliSalesTrack syncs sales and refunds automatically the moment they happen — straight from Stripe, PayPal, or Shopify's own webhooks, verified and de-duplicated. No manual CSV exports, no waiting for a report. Baremetrics charges $49/mo. Ours starts at $24/mo.</p>
+  <!-- FIX (updated): correlation analysis and expense tracking ARE now
+       real, via the vendored app at ../app/ (ported from the real
+       olielicz/SalesTrack repo) — see the title-tag fix comment above
+       for full context. Restored, honestly, now that real code backs
+       it. -->
+  <h1>Sales &amp; refunds, synced live.<br><span class="hl">Correlation &amp; expenses, tracked for real.</span></h1>
+  <p class="sub-headline">OliSalesTrack syncs sales and refunds automatically the moment they happen — straight from Stripe, PayPal, or Shopify's own webhooks, verified and de-duplicated. Layer in real correlation analysis (Pearson r), expense tracking with category ROI, and a monthly P&amp;L table — no manual CSV exports required, though CSV import (Shopify/WooCommerce/Stripe) is there if you want it. Baremetrics charges $49/mo. Ours starts at $24/mo.</p>
   <div class="hero-ctas">
     <a href="./buy/" class="cta-btn">Start Free Trial — $24/mo after</a>
-    <a href="#pricing" class="cta-btn ghost">See all plans ↓</a>
+    <a href="./app/" class="cta-btn ghost">Try the app free ↓</a>
   </div>
   <div class="price-note">
     <span>✅ 14-day free trial, no risk</span>
@@ -149,12 +156,11 @@
   </div>
 
   <!-- App Preview -->
-  <!-- FIX: this mockup previously showed "Expenses" and a "Correlation:
-       Sales↔Refunds r=0.24" line for a feature that doesn't exist (no
-       expense field or correlation code anywhere in olisalestrack-sync
-       or the dashboard). Corrected to show only the 3 real numbers the
-       dashboard actually computes: Total Sales, Total Refunds, Net
-       Revenue (sales minus refunds — no COGS/fees deducted). -->
+  <!-- FIX (updated): the correlation line below is now real — the
+       vendored app at ../app/ genuinely computes a Pearson r between
+       sales and refunds (see ../app/README-PROVENANCE.md). Kept the 3
+       live-sync KPIs (Total Sales/Refunds/Net Revenue) as-is since
+       those are still the real numbers olisalestrack-sync computes. -->
   <div class="screen-preview">
     <div class="screen-bar">
       <div class="screen-dot" style="background:#ef4444"></div>
@@ -179,48 +185,53 @@
       <div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.65rem;color:rgba(255,255,255,.45)">
         <span>🟢 Sales &nbsp;🔴 Refunds &nbsp;&nbsp; Events sync in real time as your webhooks fire</span>
       </div>
+      <div style="margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.08);font-size:.7rem;color:#a78bfa;">
+        📊 Correlation (Sales ↔ Refunds): r = 0.31 — computed live in the <a href="./app/" style="color:#c4b5fd;">app</a>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="features">
   <div class="wrap">
-    <!-- FIX: this entire grid previously advertised 6 features with
-         zero implementation: Pearson correlation, period switching,
-         refund-rate alerts, expense ROI, P&L/export, and AI insights.
-         Replaced with the features that are genuinely real and tested
-         (see olisalestrack-sync/README.md and
-         olisalestrack/dashboard/README.md). -->
+    <!-- FIX (updated): correlation analysis, expense tracking, CSV
+         import, and dispute-portal links are now REAL, via the vendored
+         app at ../app/ (ported from the real olielicz/SalesTrack repo,
+         and wired to also pull live-synced events from
+         olisalestrack-sync). AI business insights, PDF export, and
+         multiple business profiles remain genuinely not built — kept
+         honest below in the "Explicit Scope" card. -->
     <h2 class="section-title">Everything that's actually real, no more</h2>
-    <p class="section-sub">Live sync you can trust, and honest totals — not features we haven't built yet.</p>
+    <p class="section-sub">Live sync you can trust, real correlation and expense analysis, and honest totals — not features we haven't built yet.</p>
     <div class="grid3">
       <div class="card"><span class="icon">🔌</span><h3>Real Webhook Sync</h3><p>Genuine, verified webhook integration with Stripe, PayPal, and Shopify — real HMAC/signature verification rejects anything unsigned or forged before it ever reaches your dashboard.</p></div>
       <div class="card"><span class="icon">⚡</span><h3>Live, Not Batched</h3><p>Sales and refunds appear the moment your processor sends the webhook — no scheduled sync job, no waiting for a nightly batch.</p></div>
-      <div class="card"><span class="icon">🧾</span><h3>De-duplicated Event Log</h3><p>Every sale and refund is stored once, keyed by its processor's own event ID — reprocessing the same webhook twice never double-counts a transaction.</p></div>
-      <div class="card"><span class="icon">📈</span><h3>Real-Time Totals</h3><p>Total Sales, Total Refunds, and Net Revenue (sales minus refunds), computed live from your actual synced events — not a projection or an estimate.</p></div>
+      <div class="card"><span class="icon">📐</span><h3>Real Correlation Analysis</h3><p>A genuine Pearson correlation coefficient between sales and refunds, computed live in the <a href="./app/">app</a> from your actual synced/imported data — not a made-up number.</p></div>
+      <div class="card"><span class="icon">🧮</span><h3>Expense Tracking</h3><p>Log real expenses by category and see category-level ROI against your sales — a true net picture, not just sales minus refunds.</p></div>
+      <div class="card"><span class="icon">📄</span><h3>P&amp;L Table + CSV Import</h3><p>A real monthly profit &amp; loss table, plus CSV import with automatic column-mapping for Shopify, WooCommerce, and Stripe exports.</p></div>
+      <div class="card"><span class="icon">⚖️</span><h3>Dispute Portal Shortcuts</h3><p>One-click deep links into the real dispute portals for PayPal, Stripe, Klarna, Shopify Payments, Square, Amazon Pay, Afterpay, Adyen, Authorize.Net, and Braintree.</p></div>
       <div class="card"><span class="icon">🔒</span><h3>Real Owner Login</h3><p>A genuine authenticated dashboard — not a public link — protecting your real transaction data.</p></div>
-      <div class="card"><span class="icon">🛠️</span><h3>Honest Roadmap</h3><p>Correlation analysis, expense tracking, AI insights, and PDF/CSV export are <strong>not built yet</strong>. We'd rather tell you that upfront than sell a feature that doesn't exist — see our <a href="../support/">support page</a> for the current, honest feature list.</p></div>
+      <div class="card"><span class="icon">🛠️</span><h3>Explicit Scope</h3><p>AI-generated business insights, PDF export, and multiple business profiles are <strong>not built yet</strong>. We'd rather tell you that upfront than sell a feature that doesn't exist — see our <a href="../support/">support page</a> for the current, honest feature list.</p></div>
     </div>
   </div>
 </section>
 
 <section style="background:var(--bg);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div class="wrap">
-    <!-- FIX: was "Refund Tracking / Expense Tracking / Correlation
-         Analysis" columns claiming "Built-in" for features that don't
-         exist. Corrected to compare what's genuinely real: live
-         webhook sync vs. each competitor's real sync method. -->
+    <!-- FIX (updated): "Correlation Analysis" is now real (see the
+         features-grid fix comment above) — added it back as a genuine
+         comparison column. -->
     <h2 class="section-title">How OliSalesTrack compares</h2>
-    <p class="section-sub">A live, verified webhook sync at a fraction of the cost of tools that require manual CSV work or a pricier plan for real-time data.</p>
+    <p class="section-sub">A live, verified webhook sync plus real correlation/expense analysis, at a fraction of the cost of tools that require manual CSV work or a pricier plan for real-time data.</p>
     <div style="overflow-x:auto">
       <table class="compare-table">
-        <thead><tr><th>Tool</th><th>Price</th><th>Live Webhook Sync</th><th>Refund Tracking</th></tr></thead>
+        <thead><tr><th>Tool</th><th>Price</th><th>Live Webhook Sync</th><th>Refund Tracking</th><th>Correlation Analysis</th></tr></thead>
         <tbody>
-          <tr><td class="ours">🏆 OliSalesTrack</td><td class="ours">$24/mo or $204/yr</td><td>✅ Stripe, PayPal, Shopify</td><td>✅ Built-in</td></tr>
-          <tr><td>Baremetrics</td><td>$49+/mo</td><td>✅ Stripe only</td><td>✅ Partial</td></tr>
-          <tr><td>Pipedrive</td><td>$14+/seat/mo</td><td>❌ No</td><td>❌ No</td></tr>
-          <tr><td>HubSpot CRM</td><td>Free–$90+/mo</td><td>❌ No</td><td>❌ No</td></tr>
-          <tr><td>Google Sheets</td><td>Free</td><td>❌ Manual only</td><td>Manual</td></tr>
+          <tr><td class="ours">🏆 OliSalesTrack</td><td class="ours">$24/mo or $204/yr</td><td>✅ Stripe, PayPal, Shopify</td><td>✅ Built-in</td><td>✅ Built-in</td></tr>
+          <tr><td>Baremetrics</td><td>$49+/mo</td><td>✅ Stripe only</td><td>✅ Partial</td><td>❌ No</td></tr>
+          <tr><td>Pipedrive</td><td>$14+/seat/mo</td><td>❌ No</td><td>❌ No</td><td>❌ No</td></tr>
+          <tr><td>HubSpot CRM</td><td>Free–$90+/mo</td><td>❌ No</td><td>❌ No</td><td>❌ No</td></tr>
+          <tr><td>Google Sheets</td><td>Free</td><td>❌ Manual only</td><td>Manual</td><td>Manual (formula)</td></tr>
         </tbody>
       </table>
     </div>
@@ -238,14 +249,17 @@
         <div class="price-amount">$24</div>
         <div class="price-period">/month · cancel anytime</div>
         <div style="color:#16a34a;font-weight:700;font-size:13px;margin:-4px 0 8px;">🎁 First 14 days free</div>
-        <!-- FIX: removed "Full correlation analysis", "Daily/weekly/
-             monthly/yearly", "AI business insights", "PDF reports + CSV
-             export", "Multiple business profiles" - none of these are
-             implemented. Kept only the real features. -->
+        <!-- FIX (updated): correlation analysis, expense tracking, and
+             CSV import are now real (see ../app/) — restored those.
+             Still NOT claimed: AI business insights, PDF export,
+             multiple business profiles (genuinely not built). -->
         <ul class="price-features">
           <li><span class="c">✓</span> Live sync with Stripe, PayPal &amp; Shopify</li>
           <li><span class="c">✓</span> Verified webhook signatures</li>
           <li><span class="c">✓</span> Real-time sales &amp; refund totals</li>
+          <li><span class="c">✓</span> Correlation analysis (Pearson r)</li>
+          <li><span class="c">✓</span> Expense tracking + P&amp;L table</li>
+          <li><span class="c">✓</span> CSV import + dispute-portal links</li>
           <li><span class="c">✓</span> Priority email support</li>
         </ul>
         <a href="./buy/" class="cta-btn" style="width:100%;display:block;text-align:center;padding:12px">Start Free Trial</a>
@@ -290,14 +304,16 @@
     <h4>Can I cancel the monthly plan anytime?</h4>
     <p>Yes. Cancel anytime from your PayPal account. No contracts, no cancellation fees. You'll retain access until the end of your billing period.</p>
   </div>
-  <!-- FIX: was "What does 'correlation analysis' actually show?" -
-       removed entirely; correlation analysis isn't implemented (see
-       olisalestrack-sync/README.md's explicit "What this does NOT do"
-       section). Replaced with an honest FAQ about the real dashboard
-       math instead. -->
+  <!-- FIX (updated): correlation analysis is now real — restored an
+       honest FAQ answer explaining what it actually computes, instead
+       of removing the question entirely. -->
   <div class="faq-item">
-    <h4>What exactly does the dashboard show me?</h4>
-    <p>Three real, live numbers: Total Sales, Total Refunds, and Net Revenue (sales minus refunds — no cost-of-goods, processor fees, or expenses are deducted), plus a flat list of every synced transaction. We don't yet offer correlation analysis, expense tracking, or AI insights — seeing that get built is on our roadmap, not shipped today.</p>
+    <h4>What does "correlation analysis" actually show?</h4>
+    <p>A real Pearson correlation coefficient (r) between your sales and refunds over time, computed live in the <a href="./app/">app</a> from your actual synced or CSV-imported data — not a made-up number. A value near 0 means refunds don't track your sales volume; closer to 1 means they tend to rise and fall together. AI-generated "insights" narrating what that number means are not built — you get the real number and chart, not an AI summary of it.</p>
+  </div>
+  <div class="faq-item">
+    <h4>What exactly does the live-sync dashboard show me?</h4>
+    <p>Three real, live numbers: Total Sales, Total Refunds, and Net Revenue (sales minus refunds — no cost-of-goods or processor fees deducted), plus a flat list of every synced transaction. Open the full <a href="./app/">app</a> for the deeper view: correlation analysis, expense tracking with category ROI, a monthly P&amp;L table, CSV import, and dispute-portal shortcuts — it also pulls in the same live-synced events shown here.</p>
   </div>
   <div class="faq-item">
     <h4>Can I connect Shopify, Stripe, or PayPal directly?</h4>

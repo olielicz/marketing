@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1f4a"/>
+      <stop offset="100%" stop-color="#07091a"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" x2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="profit" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#0e9f6e"/>
+    </linearGradient>
+    <linearGradient id="sales" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="220" height="720" fill="rgba(7,11,26,0.85)"/>
+  <line x1="220" y1="0" x2="220" y2="720" stroke="rgba(255,255,255,0.05)"/>
+  <g font-size="13" fill="#fff">
+    <rect x="20" y="22" width="36" height="36" rx="8" fill="url(#brand)"/>
+    <text x="64" y="40" font-weight="700">Refund Tracker</text>
+    <text x="64" y="56" font-size="9" fill="rgba(255,255,255,0.4)" letter-spacing="2">V1 · LOCAL</text>
+  </g>
+  <g font-size="13">
+    <rect x="14" y="100" width="192" height="34" rx="8" fill="rgba(99,102,241,0.18)" stroke="rgba(99,102,241,0.35)"/>
+    <text x="38" y="121" fill="#fff">⌂ Dashboard</text>
+    <text x="38" y="158" fill="rgba(255,255,255,0.7)">↺ Refunds</text>
+    <text x="38" y="195" fill="rgba(255,255,255,0.7)">$ Sales</text>
+    <text x="38" y="232" fill="rgba(255,255,255,0.7)">▼ Expenses</text>
+    <text x="38" y="269" fill="rgba(255,255,255,0.7)">⚖ Disputes</text>
+    <text x="38" y="306" fill="rgba(255,255,255,0.7)">⇪ Import</text>
+    <text x="38" y="343" fill="rgba(255,255,255,0.7)">⚙ Settings</text>
+  </g>
+
+  <!-- Top bar -->
+  <line x1="220" y1="60" x2="1200" y2="60" stroke="rgba(255,255,255,0.05)"/>
+  <text x="248" y="38" font-size="18" font-weight="700" fill="#fff">Dashboard</text>
+  <rect x="980" y="14" width="180" height="32" rx="8" fill="rgba(18,23,49,0.7)" stroke="rgba(255,255,255,0.1)"/>
+  <text x="996" y="35" font-size="12" fill="rgba(255,255,255,0.7)">📅 June 2026</text>
+  <text x="1140" y="35" font-size="11" fill="rgba(255,255,255,0.4)" text-anchor="end">USD</text>
+
+  <!-- KPI cards -->
+  <g>
+    <rect x="244" y="86" width="220" height="92" rx="14" fill="#121731" stroke="rgba(255,255,255,0.05)"/>
+    <text x="260" y="108" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.5)">GROSS SALES</text>
+    <text x="260" y="148" font-size="26" font-weight="700" fill="#fff">$48,210</text>
+    <text x="260" y="166" font-size="11" fill="rgba(255,255,255,0.5)">this month</text>
+    <text x="442" y="106" font-size="14" fill="rgba(255,255,255,0.3)">$</text>
+
+    <rect x="478" y="86" width="220" height="92" rx="14" fill="#121731" stroke="rgba(255,255,255,0.05)"/>
+    <text x="494" y="108" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.5)">REFUNDS</text>
+    <text x="494" y="148" font-size="26" font-weight="700" fill="#f87171">$3,420</text>
+    <text x="494" y="166" font-size="11" fill="rgba(255,255,255,0.5)">14 refund(s) · 7.1% of sales</text>
+    <text x="676" y="106" font-size="14" fill="rgba(255,255,255,0.3)">↺</text>
+
+    <rect x="712" y="86" width="220" height="92" rx="14" fill="#121731" stroke="rgba(255,255,255,0.05)"/>
+    <text x="728" y="108" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.5)">EXPENSES</text>
+    <text x="728" y="148" font-size="26" font-weight="700" fill="#fbbf24">$12,840</text>
+    <text x="728" y="166" font-size="11" fill="rgba(255,255,255,0.5)">26.6% of sales</text>
+    <text x="910" y="106" font-size="14" fill="rgba(255,255,255,0.3)">▼</text>
+
+    <rect x="946" y="86" width="220" height="92" rx="14" fill="#121731" stroke="rgba(255,255,255,0.05)"/>
+    <text x="962" y="108" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.5)">NET PROFIT</text>
+    <text x="962" y="148" font-size="26" font-weight="700" fill="#34d399">$31,950</text>
+    <text x="962" y="166" font-size="11" fill="rgba(255,255,255,0.5)">66.3% margin</text>
+    <text x="1144" y="106" font-size="14" fill="rgba(255,255,255,0.3)">✦</text>
+  </g>
+
+  <!-- Trend chart -->
+  <g>
+    <rect x="244" y="196" width="922" height="240" rx="14" fill="rgba(11,15,29,0.7)" stroke="rgba(255,255,255,0.05)"/>
+    <text x="260" y="222" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.6)">12-MONTH TREND</text>
+    <!-- 12 grouped bars -->
+    <g transform="translate(270, 250)">
+      <!-- generate 12 month groups inline -->
+      <g transform="translate(0,0)">
+        <!-- Jul -->
+        <rect x="0"  y="40" width="22" height="120" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="120" width="10" height="40" rx="3" fill="#f87171"/>
+        <rect x="36" y="100" width="10" height="60" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="80" width="4" height="80" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Jul 25</text>
+      </g>
+      <g transform="translate(74,0)">
+        <rect x="0"  y="20" width="22" height="140" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="125" width="10" height="35" rx="3" fill="#f87171"/>
+        <rect x="36" y="100" width="10" height="60" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="60" width="4" height="100" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Aug 25</text>
+      </g>
+      <g transform="translate(148,0)">
+        <rect x="0"  y="50" width="22" height="110" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="130" width="10" height="30" rx="3" fill="#f87171"/>
+        <rect x="36" y="105" width="10" height="55" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="90" width="4" height="70" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Sep 25</text>
+      </g>
+      <g transform="translate(222,0)">
+        <rect x="0"  y="30" width="22" height="130" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="118" width="10" height="42" rx="3" fill="#f87171"/>
+        <rect x="36" y="92" width="10" height="68" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="70" width="4" height="90" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Oct 25</text>
+      </g>
+      <g transform="translate(296,0)">
+        <rect x="0"  y="10" width="22" height="150" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="128" width="10" height="32" rx="3" fill="#f87171"/>
+        <rect x="36" y="98" width="10" height="62" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="56" width="4" height="104" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Nov 25</text>
+      </g>
+      <g transform="translate(370,0)">
+        <rect x="0"  y="0" width="22" height="160" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="120" width="10" height="40" rx="3" fill="#f87171"/>
+        <rect x="36" y="92" width="10" height="68" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="48" width="4" height="112" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Dec 25</text>
+      </g>
+      <g transform="translate(444,0)">
+        <rect x="0"  y="35" width="22" height="125" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="124" width="10" height="36" rx="3" fill="#f87171"/>
+        <rect x="36" y="103" width="10" height="57" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="76" width="4" height="84" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Jan 26</text>
+      </g>
+      <g transform="translate(518,0)">
+        <rect x="0"  y="25" width="22" height="135" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="120" width="10" height="40" rx="3" fill="#f87171"/>
+        <rect x="36" y="98" width="10" height="62" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="64" width="4" height="96" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Feb 26</text>
+      </g>
+      <g transform="translate(592,0)">
+        <rect x="0"  y="15" width="22" height="145" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="118" width="10" height="42" rx="3" fill="#f87171"/>
+        <rect x="36" y="94" width="10" height="66" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="56" width="4" height="104" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Mar 26</text>
+      </g>
+      <g transform="translate(666,0)">
+        <rect x="0"  y="20" width="22" height="140" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="118" width="10" height="42" rx="3" fill="#f87171"/>
+        <rect x="36" y="92" width="10" height="68" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="58" width="4" height="102" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">Apr 26</text>
+      </g>
+      <g transform="translate(740,0)">
+        <rect x="0"  y="10" width="22" height="150" rx="3" fill="url(#sales)"/>
+        <rect x="24" y="116" width="10" height="44" rx="3" fill="#f87171"/>
+        <rect x="36" y="90" width="10" height="70" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="50" width="4" height="110" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle">May 26</text>
+      </g>
+      <g transform="translate(814,0)">
+        <rect x="0"  y="5" width="22" height="155" rx="3" fill="url(#sales)" opacity="0.95"/>
+        <rect x="24" y="115" width="10" height="45" rx="3" fill="#f87171"/>
+        <rect x="36" y="88" width="10" height="72" rx="3" fill="#fbbf24"/>
+        <rect x="48" y="44" width="4" height="116" rx="2" fill="url(#profit)"/>
+        <text x="26" y="180" font-size="9" fill="rgba(255,255,255,0.5)" text-anchor="middle" font-weight="700">Jun 26</text>
+      </g>
+    </g>
+    <!-- legend -->
+    <g transform="translate(260, 410)" font-size="10" fill="rgba(255,255,255,0.55)">
+      <rect x="0"  y="-8" width="10" height="10" rx="2" fill="url(#sales)"/>   <text x="14" y="0">Sales</text>
+      <rect x="60" y="-8" width="10" height="10" rx="2" fill="#f87171"/>      <text x="74" y="0">Refunds</text>
+      <rect x="135" y="-8" width="10" height="10" rx="2" fill="#fbbf24"/>     <text x="149" y="0">Expenses</text>
+      <rect x="210" y="-8" width="10" height="10" rx="2" fill="url(#profit)"/><text x="224" y="0">Profit</text>
+    </g>
+  </g>
+
+  <!-- Bottom row: comparison cards -->
+  <g>
+    <rect x="244" y="456" width="455" height="244" rx="14" fill="rgba(11,15,29,0.7)" stroke="rgba(255,255,255,0.05)"/>
+    <text x="260" y="482" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.6)">REFUNDS VS PROFIT</text>
+    <g transform="translate(260, 502)" font-size="11">
+      <text x="0" y="22" fill="rgba(255,255,255,0.7)">June 2026</text>
+      <rect x="120" y="10" width="40" height="14" rx="3" fill="#f87171"/>
+      <rect x="120" y="28" width="200" height="14" rx="3" fill="#34d399"/>
+      <text x="166" y="22" font-size="10" fill="rgba(255,255,255,0.65)">$3,420</text>
+      <text x="326" y="40" font-size="10" fill="rgba(255,255,255,0.65)">$31,950</text>
+
+      <text x="0" y="78" fill="rgba(255,255,255,0.7)">May 2026</text>
+      <rect x="120" y="66" width="48" height="14" rx="3" fill="#f87171"/>
+      <rect x="120" y="84" width="220" height="14" rx="3" fill="#34d399"/>
+
+      <text x="0" y="134" fill="rgba(255,255,255,0.7)">April 2026</text>
+      <rect x="120" y="122" width="50" height="14" rx="3" fill="#f87171"/>
+      <rect x="120" y="140" width="195" height="14" rx="3" fill="#34d399"/>
+
+      <text x="0" y="190" fill="rgba(255,255,255,0.7)">March 2026</text>
+      <rect x="120" y="178" width="58" height="14" rx="3" fill="#f87171"/>
+      <rect x="120" y="196" width="180" height="14" rx="3" fill="#34d399"/>
+    </g>
+
+    <rect x="711" y="456" width="455" height="244" rx="14" fill="rgba(11,15,29,0.7)" stroke="rgba(255,255,255,0.05)"/>
+    <text x="727" y="482" font-size="10" letter-spacing="3" fill="rgba(255,255,255,0.6)">PROFIT VS EXPENSES</text>
+    <g transform="translate(727, 502)" font-size="11">
+      <text x="0" y="22" fill="rgba(255,255,255,0.7)">June 2026</text>
+      <rect x="120" y="10" width="220" height="14" rx="3" fill="#34d399"/>
+      <rect x="120" y="28" width="100" height="14" rx="3" fill="#fbbf24"/>
+
+      <text x="0" y="78" fill="rgba(255,255,255,0.7)">May 2026</text>
+      <rect x="120" y="66" width="240" height="14" rx="3" fill="#34d399"/>
+      <rect x="120" y="84" width="105" height="14" rx="3" fill="#fbbf24"/>
+
+      <text x="0" y="134" fill="rgba(255,255,255,0.7)">April 2026</text>
+      <rect x="120" y="122" width="200" height="14" rx="3" fill="#34d399"/>
+      <rect x="120" y="140" width="115" height="14" rx="3" fill="#fbbf24"/>
+
+      <text x="0" y="190" fill="rgba(255,255,255,0.7)">March 2026</text>
+      <rect x="120" y="178" width="190" height="14" rx="3" fill="#34d399"/>
+      <rect x="120" y="196" width="120" height="14" rx="3" fill="#fbbf24"/>
+    </g>
+  </g>
+</svg>

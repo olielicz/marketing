@@ -1,0 +1,25 @@
+{
+  "name": "OliSalesTrack",
+  "short_name": "OliSalesTrack",
+  "description": "Track sales, refunds, expenses and profit with real-time correlation analysis. Know exactly what's driving your numbers.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#0b0f1d",
+  "theme_color": "#6366f1",
+  "categories": ["finance", "business", "productivity"],
+  "lang": "en",
+  "icons": [
+    { "src": "icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-maskable.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Add refund",     "url": "./#refunds?add=1",  "description": "Quickly log a new refund" },
+    { "name": "Add sale",       "url": "./#sales?add=1",    "description": "Quickly log a new sale" },
+    { "name": "Add expense",    "url": "./#expenses?add=1", "description": "Quickly log a new expense" },
+    { "name": "Disputes",       "url": "./#disputes",       "description": "Open dispute portals" }
+  ]
+}

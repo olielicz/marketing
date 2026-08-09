@@ -10,6 +10,13 @@
  *      you configure a real OPENAI_API_KEY. Without one, every email
  *      uses a real (non-AI) template — never a fabricated "AI" result.
  *      See recoveryEmail.js's header comment.
+ *   ✅ Real: supplier CSV forwarding (see orderCsv.js) — a real order-
+ *      paid webhook builds a genuine, supplier-friendly CSV and emails
+ *      it via this service's real SMTP client, once you configure
+ *      OLICOMMERCE_SUPPLIER_EMAIL + SMTP_HOST. Ported from the working
+ *      ecomm-automation repo. This is the honest, working version of
+ *      the "Supplier CSV forwarding" feature that was previously
+ *      marketed, found unimplemented, and removed — now genuinely built.
  *   ❌ NOT implemented: browse-abandonment tracking (as opposed to
  *      cart/checkout abandonment), automated multi-step drip sequences
  *      (this sends one recovery email per trigger call, not a
@@ -30,11 +37,14 @@ import {
   updateOwnerPassword,
   listCarts, getCart, upsertCart, markCartStatus, recordRecoveryEmailSent, deleteCart,
   listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket,
+  listProducts, getProduct, createProduct, updateProduct, deleteProduct,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { generateRecoveryEmail } from "./recoveryEmail.js";
 import { sendMail } from "./smtpClient.js";
 import { generateSupportAnswer } from "./supportAssistant.js";
+import { buildOrderCsv, buildSupplierOrderEmail } from "./orderCsv.js";
+import { generateStorefrontAnswer } from "./storefrontAssistant.js";
 
 const PORT = Number(process.env.PORT) || 4600;
 const SESSION_TTL_MS = (Number(process.env.OLICOMMERCE_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -43,6 +53,7 @@ const LOCKOUT_WINDOW_MS = (Number(process.env.OLICOMMERCE_LOCKOUT_WINDOW_MINUTES
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 const STORE_NAME = process.env.OLICOMMERCE_STORE_NAME || "your store";
 const WEBHOOK_SHARED_SECRET = process.env.OLICOMMERCE_WEBHOOK_SECRET || "";
+const SUPPLIER_EMAIL = process.env.OLICOMMERCE_SUPPLIER_EMAIL || "";
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -75,6 +86,75 @@ function clientIp(req) {
   const forwarded = req.headers["x-forwarded-for"];
   if (forwarded) return String(forwarded).split(",")[0].trim();
   return req.socket.remoteAddress || "unknown";
+}
+
+/**
+ * A small, real, dependency-free embeddable chat widget — plain JS/CSS
+ * injected into the page, no framework, no build step. Talks to THIS
+ * backend's real /api/storefront/chat endpoint. See README.md's
+ * "Embedding the AI shopping assistant" section for the one-line
+ * <script> tag a merchant pastes into their storefront theme.
+ */
+function buildWidgetScript(origin) {
+  return `(function(){
+  var API_BASE = ${JSON.stringify(origin)};
+  var launcher = document.createElement("button");
+  launcher.textContent = "\uD83D\uDECD\uFE0F Ask us";
+  launcher.setAttribute("aria-label", "Open shopping assistant");
+  launcher.style.cssText = "position:fixed;bottom:20px;right:20px;z-index:99999;background:#4f46e5;color:#fff;border:none;border-radius:999px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.2);font-family:system-ui,sans-serif;";
+  var panel = document.createElement("div");
+  panel.style.cssText = "position:fixed;bottom:78px;right:20px;z-index:99999;width:320px;max-height:420px;background:#fff;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;font-family:system-ui,sans-serif;";
+  var log = document.createElement("div");
+  log.style.cssText = "flex:1;overflow-y:auto;padding:14px;font-size:13.5px;color:#14161a;display:flex;flex-direction:column;gap:8px;";
+  var form = document.createElement("form");
+  form.style.cssText = "display:flex;gap:6px;padding:10px;border-top:1px solid #e7e9ee;";
+  var input = document.createElement("input");
+  input.placeholder = "Ask about a product...";
+  input.style.cssText = "flex:1;padding:8px 10px;border:1px solid #e7e9ee;border-radius:8px;font-size:13px;";
+  var sendBtn = document.createElement("button");
+  sendBtn.type = "submit";
+  sendBtn.textContent = "Send";
+  sendBtn.style.cssText = "background:#4f46e5;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;";
+  form.appendChild(input); form.appendChild(sendBtn);
+  panel.appendChild(log); panel.appendChild(form);
+  document.body.appendChild(launcher); document.body.appendChild(panel);
+
+  function addMsg(role, text) {
+    var div = document.createElement("div");
+    div.style.cssText = role === "user"
+      ? "align-self:flex-end;background:#4f46e5;color:#fff;padding:8px 11px;border-radius:10px;max-width:85%;white-space:pre-wrap;"
+      : "align-self:flex-start;background:#f0f1f6;color:#14161a;padding:8px 11px;border-radius:10px;max-width:85%;white-space:pre-wrap;";
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  launcher.addEventListener("click", function () {
+    panel.style.display = panel.style.display === "none" ? "flex" : "none";
+    if (!log.children.length) addMsg("assistant", "Hi! Ask me about a product and I will check our real catalog for you.");
+  });
+
+  var history = [];
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var message = input.value.trim();
+    if (!message) return;
+    addMsg("user", message);
+    history.push({ role: "user", content: message });
+    input.value = "";
+    fetch(API_BASE + "/api/storefront/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: message, history: history.slice(-8) }),
+    }).then(function (r) { return r.json(); }).then(function (data) {
+      addMsg("assistant", data.answer || "Sorry, something went wrong.");
+      history.push({ role: "assistant", content: data.answer || "" });
+    }).catch(function () {
+      addMsg("assistant", "Could not reach the shopping assistant right now.");
+    });
+  });
+})();
+`;
 }
 
 async function requireAuth(req) {
@@ -124,11 +204,94 @@ const server = createServer(async (req, res) => {
       return send(res, isNew ? 201 : 200, { ok: true, cart, isNew });
     }
 
+    /* --------------------------- Supplier CSV forwarding (public, secret-gated) --------------------------- */
+    // Real feature, ported from ecomm-automation's src/handlers/
+    // orderPaid.js + src/utils/csv.js (see orderCsv.js's header comment
+    // for the full provenance). Point your storefront's order-paid
+    // webhook here (e.g. Shopify's `orders/paid` topic) with the same
+    // shape Shopify sends (line_items, shipping_address, etc.) — this
+    // builds a real CSV and emails it to your configured supplier via
+    // this service's own SMTP client. Gated the same way as the
+    // cart-abandoned webhook above (shared secret, not owner auth,
+    // since the caller is your storefront platform).
+    if (req.method === "POST" && url.pathname === "/api/webhooks/order-paid") {
+      if (WEBHOOK_SHARED_SECRET) {
+        const providedSecret = req.headers["x-webhook-secret"] || url.searchParams.get("secret") || "";
+        if (providedSecret !== WEBHOOK_SHARED_SECRET) return send(res, 401, { error: "invalid_secret" });
+      }
+      if (!SUPPLIER_EMAIL) {
+        return send(res, 503, { error: "OLICOMMERCE_SUPPLIER_EMAIL is not configured on this server — set it in your environment to enable supplier CSV forwarding. See README.md." });
+      }
+      const smtpHost = process.env.SMTP_HOST;
+      if (!smtpHost) return send(res, 503, { error: "SMTP is not configured on this server. Set SMTP_HOST (and SMTP_PORT/SMTP_USER/SMTP_PASS) in your environment — see README.md." });
+
+      const order = await readJsonBody(req);
+      const lineItems = order.line_items || order.lineItems || [];
+      if (!lineItems.length) return send(res, 400, { error: "Order payload must include at least one line item (line_items or lineItems)." });
+
+      const csv = buildOrderCsv(order);
+      const { subject, html, text } = buildSupplierOrderEmail(order, STORE_NAME);
+      const safeName = String(order.name || order.orderNumber || "order").replace(/[^a-z0-9_-]/gi, "_");
+
+      const sendResult = await sendMail({
+        host: smtpHost,
+        port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+        rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED !== "false",
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        to: SUPPLIER_EMAIL,
+        subject,
+        html,
+        text,
+        attachments: [{ filename: `${safeName}.csv`, content: csv, contentType: "text/csv" }],
+      });
+
+      if (!sendResult.ok) return send(res, 502, { error: `Failed to forward order CSV to supplier: ${sendResult.error}` });
+      return send(res, 200, { ok: true, forwardedTo: SUPPLIER_EMAIL, lineItemCount: lineItems.length });
+    }
+
+    /* ------------------------------ AI shopping assistant (public, customer-facing) ------------------------------ */
+    // Unlike /api/support/chat below (which helps the MERCHANT), this
+    // endpoint IS the customer-facing storefront widget — see
+    // storefrontAssistant.js's header comment for why this replaces the
+    // previously-fictional "OliMind AI shopping assistant" with a real,
+    // scoped-down, catalog-grounded assistant instead. Deliberately
+    // public and unauthenticated: it's meant to be called by any
+    // shopper on the storefront, embedded via the widget script below.
+    if (req.method === "POST" && url.pathname === "/api/storefront/chat") {
+      const body = await readJsonBody(req);
+      const message = String(body.message || "").trim();
+      if (!message) return send(res, 400, { error: "message is required" });
+
+      const products = await listProducts();
+      const result = await generateStorefrontAnswer(message, products, {
+        history: Array.isArray(body.history) ? body.history : [],
+        useAi: Boolean(body.useAi),
+        openaiApiKey: process.env.OPENAI_API_KEY,
+        openaiApiBaseUrl: process.env.OPENAI_API_BASE_URL,
+        openaiModel: process.env.OPENAI_MODEL,
+      });
+      return send(res, 200, result);
+    }
+
+    // A real, embeddable widget script — plain JS, no build step, no
+    // framework — that a merchant pastes into their storefront theme
+    // (see README.md's "Embedding the AI shopping assistant" section).
+    // Served from THIS backend so the widget always calls the correct
+    // /api/storefront/chat origin without the merchant hand-editing a
+    // URL into a static script file.
+    if (req.method === "GET" && url.pathname === "/api/storefront/widget.js") {
+      const origin = `${req.headers["x-forwarded-proto"] || "http"}://${req.headers.host}`;
+      return send(res, 200, buildWidgetScript(origin), "application/javascript");
+    }
+
     /* ------------------------------ AI Support Assistant (public) ------------------------------ */
     // Public like the cart-abandoned webhook above — this helps the
     // merchant running this OliCommerce instance troubleshoot the
     // product itself (e.g. while locked out of their own login), not a
-    // customer-facing widget for their store's shoppers.
+    // customer-facing widget for their store's shoppers. (The
+    // customer-facing widget is /api/storefront/chat above.)
     if (req.method === "POST" && url.pathname === "/api/support/chat") {
       const body = await readJsonBody(req);
       const message = String(body.message || "").trim();
@@ -306,6 +469,33 @@ const server = createServer(async (req, res) => {
       const cart = await markCartStatus(id, "recovered");
       if (!cart) return send(res, 404, { error: "not_found" });
       return send(res, 200, { cart });
+    }
+
+    /* ---------------------- Product catalog (owner-only management) ---------------------- */
+    // The real catalog the storefront AI assistant (above, public) is
+    // grounded in. Managing it requires the owner login — same as every
+    // other business-data endpoint — but the assistant that READS it is
+    // deliberately public, since it's meant for shoppers, not the owner.
+
+    if (req.method === "GET" && url.pathname === "/api/products") {
+      return send(res, 200, { products: await listProducts() });
+    }
+    if (req.method === "POST" && url.pathname === "/api/products") {
+      const body = await readJsonBody(req);
+      if (!body.title) return send(res, 400, { error: "title is required" });
+      return send(res, 201, { product: await createProduct(body) });
+    }
+    if (req.method === "PUT" && url.pathname.startsWith("/api/products/")) {
+      const id = url.pathname.split("/")[3];
+      const body = await readJsonBody(req);
+      const updated = await updateProduct(id, body);
+      if (!updated) return send(res, 404, { error: "not_found" });
+      return send(res, 200, { product: updated });
+    }
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/products/")) {
+      const id = url.pathname.split("/")[3];
+      const deleted = await deleteProduct(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
     }
 
     /* ------------------------- Support tickets (owner-only management) ------------------------- */

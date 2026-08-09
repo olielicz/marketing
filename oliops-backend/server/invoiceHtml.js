@@ -80,6 +80,7 @@ export function renderInvoiceHtml(invoice, businessInfo) {
     <tbody>${rows}</tbody>
   </table>
   <div class="totals">
+    ${invoice.subtotalCents !== undefined && invoice.taxCents ? `<div>Subtotal: ${formatMoney(invoice.subtotalCents)}</div><div>Tax (${invoice.taxRatePct}%): ${formatMoney(invoice.taxCents)}</div>` : ""}
     <div class="grand">Total: ${formatMoney(invoice.totalCents)}</div>
   </div>
   ${invoice.notes ? `<div class="notes"><strong>Notes:</strong> ${escapeHtml(invoice.notes)}</div>` : ""}

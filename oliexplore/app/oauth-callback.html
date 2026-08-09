@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Connecting… — OliExplore</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: grid; place-items: center; height: 100vh; margin: 0;
+      background: #0b0b0d; color: #f5f5f6;
+    }
+    .box { text-align: center; max-width: 320px; padding: 24px; }
+    .spinner {
+      width: 28px; height: 28px; margin: 0 auto 16px;
+      border: 3px solid rgba(255,255,255,.15); border-top-color: #fff;
+      border-radius: 50%; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { font-size: 13.5px; color: #b8b8bc; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="spinner"></div>
+    <p id="msg">Finishing sign-in… this window will close automatically.</p>
+  </div>
+  <script>
+    /* This page is the OAuth redirect_uri target. It reads the ?code /
+       ?state / ?error params the platform appended after the user
+       authorized (or denied) access, relays them to the opener window
+       via postMessage, then closes itself. No tokens ever touch this
+       page — only the short-lived authorization code. */
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const payload = {
+        source: "oliexplore-oauth",
+        code: params.get("code"),
+        state: params.get("state"),
+        error: params.get("error"),
+        error_description: params.get("error_description"),
+      };
+      if (window.opener) {
+        window.opener.postMessage(payload, window.location.origin);
+        document.getElementById("msg").textContent = payload.error
+          ? "Something went wrong. You can close this window."
+          : "Signed in. Closing this window…";
+        setTimeout(() => window.close(), 600);
+      } else {
+        document.getElementById("msg").textContent =
+          "This page should be opened by OliExplore during sign-in. You can close it.";
+      }
+    })();
+  </script>
+</body>
+</html>

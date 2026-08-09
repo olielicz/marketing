@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OliExplore — Social Media Studio</title>
+  <meta name="description" content="OliExplore — collect, recycle, and publish your social posts across every platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+</head>
+<body>
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand__mark" aria-hidden="true">O</div>
+      <div class="brand__text">
+        <span class="brand__name">OliExplore</span>
+        <span class="brand__tag">Social Studio</span>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Main">
+      <button class="nav__item is-active" data-view="library">
+        <span class="nav__icon">▢</span> Content Library
+      </button>
+      <button class="nav__item" data-view="recycled">
+        <span class="nav__icon">↻</span> Recycled
+      </button>
+      <button class="nav__item" data-view="published">
+        <span class="nav__icon">✓</span> Published
+      </button>
+      <button class="nav__item" data-view="connections">
+        <span class="nav__icon">⌁</span> Connections
+      </button>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="btn btn--light btn--block" id="connectAccountsBtn">
+        <span>⌁</span> Connect Accounts
+      </button>
+      <button class="btn btn--ghost btn--block" id="collectBtn">
+        <span>⤓</span> Collect New Posts
+      </button>
+      <button class="btn btn--ghost btn--block" id="settingsBtn">
+        <span>⚙</span> Live API Setup
+      </button>
+      <p class="sidebar__hint">Pulls latest posts from connected accounts.</p>
+      <p class="sidebar__hint"><a href="../" style="color:inherit;">← Back to OliExplore site</a></p>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="icon-btn topbar__menu" id="menuToggle" aria-label="Toggle menu">≡</button>
+
+      <div class="search" id="searchWrap">
+        <span class="search__icon" aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          id="searchInput"
+          class="search__input"
+          placeholder="Search posts by keyword, hashtag, or platform…"
+          autocomplete="off"
+          aria-label="Search posts"
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="searchSuggest"
+          aria-autocomplete="list"
+        />
+        <button class="search__clear" id="searchClear" aria-label="Clear search" hidden>×</button>
+        <div class="search-suggest" id="searchSuggest" role="listbox" hidden></div>
+      </div>
+
+      <div class="topbar__actions">
+        <button class="btn btn--primary" id="publishAllBtn">
+          <span>⇪</span> Publish to All
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="stats" id="stats" aria-label="Overview"></section>
+
+    <!-- Filters -->
+    <section class="toolbar">
+      <div class="chips" id="platformChips" role="tablist" aria-label="Filter by platform"></div>
+      <div class="toolbar__right">
+        <label class="select">
+          <span class="select__label">Sort</span>
+          <select id="sortSelect">
+            <option value="recent">Most recent</option>
+            <option value="engagement">Top engagement</option>
+            <option value="recycled">Recycled first</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <!-- Content view -->
+    <section class="content">
+      <div class="grid" id="postGrid" aria-live="polite"></div>
+      <div class="empty" id="emptyState" hidden>
+        <div class="empty__mark">⌕</div>
+        <h2 class="empty__title">No posts found</h2>
+        <p class="empty__text" id="emptyText">Try a different keyword or collect new posts.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ EDITOR DRAWER ============ -->
+  <div class="drawer" id="editorDrawer" aria-hidden="true">
+    <div class="drawer__scrim" data-close-editor></div>
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <header class="drawer__head">
+        <h2 id="editorTitle" class="drawer__title">Edit & Recycle</h2>
+        <button class="icon-btn" data-close-editor aria-label="Close editor">×</button>
+      </header>
+      <div class="drawer__body" id="editorBody"><!-- injected by editor.js --></div>
+    </div>
+  </div>
+
+  <!-- ============ PUBLISH MODAL ============ -->
+  <div class="modal" id="publishModal" aria-hidden="true">
+    <div class="modal__scrim" data-close-publish></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
+      <header class="modal__head">
+        <h2 id="publishTitle" class="modal__title">Publish to all platforms</h2>
+        <button class="icon-btn" data-close-publish aria-label="Close">×</button>
+      </header>
+      <div class="modal__body" id="publishBody"></div>
+    </div>
+  </div>
+
+  <!-- ============ CONNECT / LOGIN MODAL ============ -->
+  <div class="modal" id="connectModal" aria-hidden="true">
+    <div class="modal__scrim" data-close-connect></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="connectTitle">
+      <header class="modal__head">
+        <h2 id="connectTitle" class="modal__title">Connect account</h2>
+        <button class="icon-btn" data-close-connect aria-label="Close">×</button>
+      </header>
+      <div class="modal__body" id="connectBody"></div>
+    </div>
+  </div>
+
+  <!-- ============ LIVE API SETTINGS MODAL ============ -->
+  <div class="modal" id="settingsModal" aria-hidden="true">
+    <div class="modal__scrim" data-close-settings></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <header class="modal__head">
+        <h2 id="settingsTitle" class="modal__title">Live API Setup</h2>
+        <button class="icon-btn" data-close-settings aria-label="Close">×</button>
+      </header>
+      <div class="modal__body" id="settingsBody"></div>
+    </div>
+  </div>
+
+  <!-- ============ TOASTS ============ -->
+  <div class="toasts" id="toasts" aria-live="assertive"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

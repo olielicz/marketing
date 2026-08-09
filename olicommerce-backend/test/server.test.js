@@ -212,3 +212,69 @@ test("support ticket management endpoints require owner auth", async () => {
   const res = await request("GET", "/api/support/tickets");
   assert.equal(res.status, 401);
 });
+
+
+test("order-paid webhook fails clearly when supplier email is not configured", async () => {
+  // OLICOMMERCE_SUPPLIER_EMAIL is read once at module-load time in
+  // server/index.js (same pattern as OLICOMMERCE_WEBHOOK_SECRET — see
+  // webhookSecret.test.js's header comment), so it's genuinely unset in
+  // THIS already-imported server instance — the real, intended test of
+  // the unconfigured-server code path. Tests that need it actually SET
+  // live in orderPaidWebhook.test.js's own isolated process instead.
+  const res = await request("POST", "/api/webhooks/order-paid", { body: { name: "#9001", line_items: [{ sku: "X", title: "Widget", quantity: 1, price: "9.99" }] } });
+  assert.equal(res.status, 503);
+  assert.match(res.body.error, /OLICOMMERCE_SUPPLIER_EMAIL/);
+});
+
+
+
+test("product catalog management requires owner auth", async () => {
+  const res = await request("GET", "/api/products");
+  assert.equal(res.status, 401);
+});
+
+test("product catalog lifecycle: create, list, update, delete", async () => {
+  const created = await request("POST", "/api/products", { token: ownerToken, body: { title: "Green Hoodie", description: "Cozy fleece hoodie.", priceCents: 4500, tags: ["hoodie", "green"] } });
+  assert.equal(created.status, 201);
+  const id = created.body.product.id;
+
+  const listed = await request("GET", "/api/products", { token: ownerToken });
+  assert.equal(listed.status, 200);
+  assert.ok(listed.body.products.some((p) => p.id === id));
+
+  const updated = await request("PUT", `/api/products/${id}`, { token: ownerToken, body: { priceCents: 4000 } });
+  assert.equal(updated.status, 200);
+  assert.equal(updated.body.product.priceCents, 4000);
+
+  const deleted = await request("DELETE", `/api/products/${id}`, { token: ownerToken });
+  assert.equal(deleted.status, 200);
+});
+
+test("storefront AI shopping assistant is public and answers only from the real catalog", async () => {
+  const created = await request("POST", "/api/products", { token: ownerToken, body: { title: "Purple Scarf", description: "Soft knit scarf.", priceCents: 1999, tags: ["scarf", "winter"] } });
+  const productId = created.body.product.id;
+
+  try {
+    const res = await request("POST", "/api/storefront/chat", { body: { message: "do you have a scarf" } });
+    assert.equal(res.status, 200);
+    assert.equal(res.body.source, "catalog");
+    assert.equal(res.body.confident, true);
+    assert.match(res.body.answer, /Purple Scarf/);
+    assert.match(res.body.answer, /\$19\.99/);
+  } finally {
+    await request("DELETE", `/api/products/${productId}`, { token: ownerToken });
+  }
+});
+
+test("storefront AI shopping assistant is honest when the catalog is empty or has no match", async () => {
+  const res = await request("POST", "/api/storefront/chat", { body: { message: "do you sell spaceships" } });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.confident, false);
+  assert.equal(res.body.recommendedProducts.length, 0);
+});
+
+test("storefront widget script is served as real, embeddable JavaScript", async () => {
+  const res = await request("GET", "/api/storefront/widget.js");
+  assert.equal(res.status, 200);
+  assert.match(res.body, /api\/storefront\/chat/);
+});
