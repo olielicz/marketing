@@ -82,55 +82,75 @@ its backend) has to be deployed separately.
      rather than doing it now, since it touches the shared linking
      pattern other tools might want too.
 
-## Corrected: no Australia support
+## Australia support — now real (previously flagged as missing)
 
-While investigating this integration, the real `lead-gen` codebase
-(`assets/js/config.js`'s `LL.config.countries`) was checked directly: it
-defines **only `US` and `UK`** — there is no Australia entry in the
-config, city/postcode datasets, or UI anywhere in the repo. This
-marketing site previously claimed "USA, UK, and Australia" coverage
-across `index.html`, `buy/`, `account/`, `login/`, `vs-follow-up-boss/`,
-and the root `marketing/index.html` tile — a marketed feature with no
-real implementation, the mirror image of the "removed real features"
-problem elsewhere in this repo, but the same honesty rule applies. All
-six of those references have been corrected to "USA & UK" in this pass.
-If Australia coverage is added to `lead-gen` in the future (its own
-`countries` config, plus AU city/postcode data), restore the claim then
-— not before.
+An earlier pass found that `lead-gen`'s codebase only defined `US` and
+`UK` (`assets/js/config.js`'s `LL.config.countries`) and corrected this
+marketing site's "USA, UK, and Australia" claim down to "USA & UK" since
+Australia had no real implementation at the time.
 
-## Billing/subscription status — needs your own verification
+That gap has since been closed for real, in
+[`olielicz/lead-gen` PR #20](https://github.com/olielicz/lead-gen/pull/20):
+`LL.config.countries.AU`, a real `LL.currencySymbol()`/`currencyCode()`
+system (replacing scattered `country === "UK" ? "£" : "$"` ternaries with
+no AU case), 15 real Australian cities with genuine Australia Post
+postcode-prefix matching, real AUD price ranges, AU-conventional rental
+terminology (rent quoted "pw" per Australian real-estate convention, not
+"/mo"), AU street-name generators, and a third country-toggle button
+everywhere the US/UK ones already exist. This marketing site's "USA, UK,
+and Australia" claim has been restored across `index.html`, `buy/`,
+`account/`, `login/`, `vs-follow-up-boss/`, and the root
+`marketing/index.html` tile, now honestly backed by real code —
+**contingent on PR #20 being merged and deployed** to your live `lead-gen`
+instance (see step 1 above). If you haven't deployed that PR yet, your
+live site will still only show US/UK until you do.
 
-There are two documents in this repo that describe Oli-Locator's billing
-readiness differently, and this integration pass could not fully
-reconcile them without direct access to the current `lead-gen` Vercel
-deployment:
+## Billing/subscription status — now real (previously an open item)
 
-- **`../PRE-LAUNCH-CHECKLIST.txt`** (older, repo-wide checklist) describes
-  Oli-Locator's billing/subscription enforcement as essentially unwired.
-- **`lead-gen/README.md`** (the app's own, more detailed and more
-  recently written docs) describes real, working pieces: a seeded owner
-  account driven by env vars (no hardcoded credentials — a past incident
-  where a real password was hardcoded in client-side code has already
-  been fixed and is documented in the README with a permanent-compromise
-  warning), a real forgot-password / change-password flow backed by
-  signed, single-use tokens, and scrypt-hashed password storage. It also
-  explicitly states, in its own words, that **"the demo gate is
-  client-side UX only"** and that production use still needs a real IdP
-  (Auth0/Firebase/Supabase/Cognito) and server-side payment enforcement
-  (Stripe or RevenueCat) wired in — i.e., accounts and auth are real, but
-  *subscription-gating tied to actual payment* is explicitly flagged by
-  the app's own maintainers as not production-hardened yet.
+An earlier pass found two documents describing Oli-Locator's billing
+readiness differently and couldn't reconcile them without directly
+patching the code: `PRE-LAUNCH-CHECKLIST.txt` described billing as
+essentially unwired, while `lead-gen/README.md` described real accounts/
+auth but explicitly flagged *payment-verified subscription gating* as
+not production-hardened — "the demo gate is client-side UX only."
 
-**What this means concretely:** logging in, changing your password, and
-resetting a forgotten password against a real deployed `lead-gen`
-instance are real, working, tested flows. Whether a customer who *hasn't
-paid* can be reliably blocked from the Pro Dashboard in a live deployment
-depends on how (or whether) you've since wired in real payment
-enforcement server-side — the README says this explicitly still needs
-doing, and this marketing-repo pass has no way to check the live
-Vercel deployment's actual current state from here. **Before selling
-subscriptions to Oli-Locator, verify directly against your own deployed
-instance** (e.g. try accessing dashboard data via `/api/leads/opt-in`
-with no valid session and confirm it's actually rejected) rather than
-trusting either document at face value — they disagree, and only a check
-against the live deployment can settle which is current.
+That gap has since been closed for real, also in
+[`olielicz/lead-gen` PR #20](https://github.com/olielicz/lead-gen/pull/20):
+
+- Every new account now gets a **real, server-side-enforced 7-day trial**
+  (`subscriptionStatus: "trialing"` + a real `trialEndsAt` timestamp) —
+  not an unlimited "trial" with no actual expiry, which is what existed
+  before.
+- `GET /api/leads` and `GET /api/properties` — both the Vercel functions
+  and the local Express server — now call `requireActiveSubscription()`,
+  which checks this **real, stored status server-side** on every request.
+  A valid session token alone is no longer sufficient once a trial
+  genuinely expires; previously, these endpoints had **no server-side
+  auth check at all**, confirmed by testing.
+- Real **Stripe Checkout** session creation and real **Stripe webhook
+  signature verification** (`lib/billing.js`) turn `subscriptionStatus`
+  into `"active"` only from a genuine, cryptographically-verified Stripe
+  event — never a client-side flag.
+
+**What this means concretely, once you deploy PR #20 and configure
+Stripe** (see `lead-gen/README.md`'s "Real billing enforcement" section
+for the exact env vars): a customer who hasn't paid and whose trial has
+expired is genuinely blocked from `/api/leads` and `/api/properties` at
+the API layer, not just hidden by client-side UI. Two things remain
+outside this fix's scope, and are documented as such in `lead-gen`'s own
+README:
+1. **Native iOS/Android app-store billing** needs a separate RevenueCat +
+   StoreKit/Play Billing integration — Stripe alone doesn't cover mobile
+   in-app purchase flows.
+2. **This has not been tested against a live Stripe account** in this
+   pass (no network access to Stripe's API from this environment) — the
+   webhook signature verification and trial-expiry logic were verified
+   with a direct Node test harness exercising the real cryptographic and
+   date-math code paths, but you should still run a real test purchase
+   against your own Stripe test-mode account before going live, the same
+   way you'd test any new payment integration.
+
+**Before selling subscriptions to Oli-Locator:** merge and deploy
+`lead-gen` PR #20, configure the `STRIPE_*` environment variables, add
+your webhook endpoint in the Stripe Dashboard, and run one real test
+checkout end-to-end against your own Stripe test-mode account.
