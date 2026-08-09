@@ -163,25 +163,32 @@ a{color:#7c3aed;text-decoration:none;}
       <div class="status-meta">Sales · Refunds · Expenses Tracker</div>
       <div class="status-badge">✅ Active — $24/mo or $204/yr</div>
     </div>
-    <!-- FIX: this used to link to "../" (the marketing landing page) —
-         a dead end for a logged-in customer trying to actually use the
-         product. Now links to the real dashboard (see
-         ../dashboard/README.md for what it does and how to set it up). -->
-    <a href="../dashboard/" class="btn btn-primary">Open OliSalesTrack Dashboard →</a>
+    <!-- FIX: now links to the real, full app (correlation analysis,
+         expense tracking, dispute portal, CSV/live-sync import - see
+         ../app/README-PROVENANCE.md), vendored from the real
+         olielicz/SalesTrack repo. The "quick-view" live-sync-only
+         dashboard is still available too, linked below. -->
+    <a href="../app/" class="btn btn-primary">Open OliSalesTrack →</a>
   </div>
 
   <!-- ── What's included ── -->
   <div class="card">
     <div class="card-title"><span class="card-title-icon">🧰</span> What's Included</div>
-    <!-- FIX: removed unimplemented features (expense tracking, period
-         views, correlation analysis, AI insights, PDF reports) - see
-         ../index.html's fix comments and ../../olisalestrack-sync/
-         README.md's explicit "What this does NOT do" section. -->
+    <!-- FIX: restored the full feature list, now that real code backs
+         every claim (see ../app/README-PROVENANCE.md) - correlation
+         analysis, expense tracking, and dispute-portal links are
+         genuinely implemented in the vendored app, not aspirational. -->
     <ul class="feature-list" id="featureList">
       <li>Live sales + refund sync (Stripe, PayPal, Shopify)</li>
-      <li>Verified webhook signatures</li>
-      <li>Real-time sales &amp; refund totals</li>
+      <li>Correlation analysis (Pearson r)</li>
+      <li>Sales, refund &amp; expense tracking</li>
+      <li>CSV import (Shopify, WooCommerce, Stripe)</li>
+      <li>Dispute portal quick-links (10 providers)</li>
     </ul>
+    <p style="font-size:12.5px;color:#55606e;margin-top:10px;">
+      Want just a fast, read-only view of your live-synced totals?
+      <a href="../dashboard/">Open the quick-view dashboard →</a>
+    </p>
   </div>
 
   <!-- ── Profile + Password grid ── -->

@@ -1,0 +1,21 @@
+# Cloudflare Worker config for the OliExplore live proxy.
+# Deploy with: npx wrangler deploy   (run from inside /server)
+# See ../LIVE_SETUP.md for the full walkthrough.
+
+name = "oliexplore-proxy"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Set this to your GitHub Pages origin once deployed, e.g.
+# "https://olielicz.github.io" (no trailing slash, no path).
+# Using "*" works for testing but allows any site to call your proxy.
+[vars]
+ALLOWED_ORIGIN = "*"
+
+# Client secrets are NOT set here — they must never be committed to git.
+# After creating the worker, set each one with:
+#   npx wrangler secret put META_CLIENT_SECRET
+#   npx wrangler secret put X_CLIENT_SECRET
+#   npx wrangler secret put TIKTOK_CLIENT_SECRET
+#   npx wrangler secret put THREADS_CLIENT_SECRET
+# (only set the ones for platforms you're actually enabling)

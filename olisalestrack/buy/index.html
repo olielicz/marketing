@@ -109,11 +109,11 @@ footer a{color:var(--sub);}
 <main class="wrap">
   <div style="margin-bottom:24px;">
     <h1 class="page-title">Choose Your Plan</h1>
-    <!-- FIX: was "Sales + Refunds + Expenses Tracker with Correlation
-         Analysis" - expense tracking and correlation analysis aren't
-         implemented (see olisalestrack/index.html's fix comments for
-         full context). -->
-    <p class="page-sub">Live Sales &amp; Refund Sync</p>
+    <!-- FIX (updated): expense tracking and correlation analysis are now
+         real, via the vendored app at ../app/ (see
+         olisalestrack/index.html's fix comments for full context).
+         Restored the fuller description. -->
+    <p class="page-sub">Live Sales &amp; Refund Sync + Correlation &amp; Expense Tracking</p>
     <div class="toggle-wrap">
       <span>Monthly</span>
       <label class="toggle-switch">
@@ -143,14 +143,18 @@ footer a{color:var(--sub);}
       <div class="line"><span id="sumPlan">Pro</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
       <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$24/mo</span></div>
-      <!-- FIX: removed 5 unimplemented feature bullets (period views,
-           correlation analysis, AI insights, PDF/CSV export, multiple
-           business profiles) - see olisalestrack/index.html's fix
-           comments for the full explanation. Kept only real features. -->
+      <!-- FIX (updated): correlation analysis, expense tracking, and
+           CSV import are now real (see olisalestrack/index.html's fix
+           comments) - restored those bullets. AI insights, PDF export,
+           and multiple business profiles remain genuinely not built,
+           so they're still not listed here. -->
       <ul class="included">
       <li>Live sales + refund sync (Stripe, PayPal, Shopify)</li>
       <li>Verified webhook signatures</li>
       <li>Real-time sales &amp; refund totals</li>
+      <li>Correlation analysis (Pearson r)</li>
+      <li>Expense tracking + monthly P&amp;L table</li>
+      <li>CSV import + dispute-portal links</li>
       <li>Priority email support</li>
       </ul>
     </div>

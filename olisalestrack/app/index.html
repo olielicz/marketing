@@ -1,0 +1,1548 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Refunds" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg" />
+    <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+    <title>OliSalesTrack — Sales, Refunds &amp; Expense Tracker with Correlation Analysis</title>
+
+    <!-- Tailwind via Play CDN. For production / Capacitor / Tauri builds,
+         swap this for a precompiled tailwind.css per docs/CAPACITOR.md. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: { 950: '#070b1a', 900: '#0b0f1d', 800: '#121731', 700: '#1b2147', 600: '#283058' },
+              brand: { DEFAULT: '#6366f1', soft: '#a5b4fc', deep: '#3730a3' },
+              cyan2: '#22d3ee',
+              good: '#34d399',
+              warn: '#fbbf24',
+              bad:  '#f87171',
+            },
+            fontFamily: {
+              sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root { color-scheme: dark; }
+      html, body, #app { height: 100%; }
+      body { background:
+        radial-gradient(ellipse at 20% 10%, #1a1f4a 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 90%, #2a0b3a 0%, transparent 60%),
+        #07091a;
+        color: #e7ecff;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+      .scroll-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+      input, select, textarea { color-scheme: dark; }
+      [type='date']::-webkit-calendar-picker-indicator { filter: invert(0.8); }
+      .glass { backdrop-filter: blur(8px); }
+      @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Boot error fallback (shown only if the module script fails to start) -->
+    <div id="boot-error" style="display:none;position:fixed;inset:0;background:#0b0f1d;color:#fff;font-family:monospace;padding:24px;overflow:auto">
+      <h2 style="color:#f87171;margin:0 0 12px">Failed to load OliSalesTrack</h2>
+      <p style="color:#94a3b8;margin:0 0 12px">If you opened the file directly from disk, make sure your browser allows ES modules from <code>file://</code>, or host it on a static server (see README.md). Error details:</p>
+      <pre id="boot-error-msg" style="white-space:pre-wrap;background:#0a0f24;border:1px solid #1f2a52;padding:12px;border-radius:8px"></pre>
+    </div>
+
+    <script type="module">
+    'use strict';
+
+    /* =====================================================================
+     * OliSalesTrack — single-file PWA
+     * Stack: React 18 + htm (no JSX build step) + Tailwind Play CDN
+     * Storage: localStorage (JSON, ~5MB room — enough for thousands of rows)
+     * Persistence layer is isolated in `Store` so swapping for IndexedDB or
+     * a real backend later is a small change.
+     * =================================================================== */
+
+    let React, ReactDOM, htm;
+    try {
+      React    = (await import('https://esm.sh/react@18.3.1')).default;
+      ReactDOM = (await import('https://esm.sh/react-dom@18.3.1/client')).default;
+      htm      = (await import('https://esm.sh/htm@3.1.1')).default;
+    } catch (err) {
+      document.getElementById('boot-error-msg').textContent = err.stack || String(err);
+      document.getElementById('boot-error').style.display = 'block';
+      throw err;
+    }
+
+    const { useState, useEffect, useReducer, useMemo, useRef, useCallback, createContext, useContext } = React;
+    const html = htm.bind(React.createElement);
+
+    /* ===================================================================
+     * Constants
+     * ================================================================= */
+
+    const PROVIDERS = [
+      { id: 'paypal',    name: 'PayPal',                 color: '#003087', text: '#fff', icon: 'PP', dispute: 'https://www.paypal.com/disputes/',                  desc: 'Resolution Center — open and respond to buyer claims and chargebacks.' },
+      { id: 'stripe',    name: 'Stripe',                 color: '#635bff', text: '#fff', icon: 'S',  dispute: 'https://dashboard.stripe.com/disputes',             desc: 'Stripe Dashboard — Disputes tab. Submit evidence within the deadline.' },
+      { id: 'klarna',    name: 'Klarna',                 color: '#FFA8CD', text: '#0a0a0a', icon: 'K', dispute: 'https://merchants.klarna.com/',                   desc: 'Klarna Merchant Portal → Disputes. Counter consumer complaints.' },
+      { id: 'shopify',   name: 'Shopify Payments',       color: '#5E8E3E', text: '#fff', icon: 'Sh', dispute: 'https://admin.shopify.com',                         desc: 'Shopify Admin → Finance → Payouts → Disputes (or the Order page).' },
+      { id: 'square',    name: 'Square',                 color: '#0a0a0a', text: '#fff', icon: 'Sq', dispute: 'https://squareup.com/dashboard/disputes',          desc: 'Square Disputes Dashboard — submit evidence and track outcomes.' },
+      { id: 'amazonpay', name: 'Amazon Pay',             color: '#FF9900', text: '#0a0a0a', icon: 'A', dispute: 'https://sellercentral.amazon.com',                desc: 'Seller Central → Payments → A-to-z Guarantee / Chargebacks.' },
+      { id: 'afterpay',  name: 'Afterpay / Clearpay',    color: '#B2FCE4', text: '#0a0a0a', icon: 'Af', dispute: 'https://merchant.afterpay.com',                  desc: 'Afterpay Merchant Portal — Disputes section.' },
+      { id: 'adyen',     name: 'Adyen',                  color: '#0abf53', text: '#fff', icon: 'Ay', dispute: 'https://ca-live.adyen.com/ca/ca/disputes/showList.shtml', desc: 'Adyen Customer Area → Risk → Disputes.' },
+      { id: 'authnet',   name: 'Authorize.Net',          color: '#005ea2', text: '#fff', icon: 'AN', dispute: 'https://account.authorize.net/',                   desc: 'Authorize.Net Merchant Interface → Tools → Chargeback Management.' },
+      { id: 'braintree', name: 'Braintree',              color: '#3a3a3a', text: '#fff', icon: 'Bt', dispute: 'https://www.braintreegateway.com/login',           desc: 'Braintree Control Panel → Disputes.' },
+    ];
+
+    const EXPENSE_CATEGORIES = [
+      'Inventory', 'Shipping', 'Ads / Marketing', 'Software / SaaS',
+      'Payment fees', 'Returns / Refund fees', 'Salaries', 'Office / Rent',
+      'Taxes', 'Other',
+    ];
+
+    const REFUND_REASONS = [
+      'Customer changed mind', 'Wrong item', 'Damaged in shipping', 'Defective product',
+      'Late delivery', 'Did not match description', 'Chargeback', 'Other',
+    ];
+
+    const REFUND_STATUSES = ['Pending', 'Refunded', 'Disputed', 'Won', 'Lost'];
+
+    const PLATFORMS = ['Shopify', 'WooCommerce', 'Etsy', 'Amazon', 'eBay', 'BigCommerce', 'Magento', 'Wix', 'Custom'];
+
+    const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'PHP', 'JPY', 'INR', 'BRL', 'MXN', 'NZD', 'SGD', 'HKD', 'CHF', 'SEK'];
+
+    /* ===================================================================
+     * State + persistence
+     * ================================================================= */
+
+    const STORAGE_KEY = 'olisalestrack:v2';
+
+    const defaultState = () => ({
+      sales:    [],
+      refunds:  [],
+      expenses: [],
+      settings: {
+        currency: 'USD',
+        shopifyDomain: '',
+        // Tokens are intentionally NOT auto-stored to keep secrets out of localStorage
+        // unless the user explicitly opts in via Settings.
+        rememberToken: false,
+      },
+    });
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return defaultState();
+        const parsed = JSON.parse(raw);
+        return { ...defaultState(), ...parsed, settings: { ...defaultState().settings, ...(parsed.settings || {}) } };
+      } catch { return defaultState(); }
+    }
+    function saveState(state) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn('save failed', e); }
+    }
+
+    function reducer(state, action) {
+      switch (action.type) {
+        case 'init':       return action.state || defaultState();
+        case 'add':        return { ...state, [action.collection]: [action.item, ...state[action.collection]] };
+        case 'update':     return { ...state, [action.collection]: state[action.collection].map(x => x.id === action.item.id ? action.item : x) };
+        case 'delete':     return { ...state, [action.collection]: state[action.collection].filter(x => x.id !== action.id) };
+        case 'bulk-add':   return { ...state, [action.collection]: [...action.items, ...state[action.collection]] };
+        case 'set-settings': return { ...state, settings: { ...state.settings, ...action.settings } };
+        case 'wipe':       return defaultState();
+        default:           return state;
+      }
+    }
+
+    /* ===================================================================
+     * Utility: ids, dates, money, csv
+     * ================================================================= */
+
+    const uid = () => 'r' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+    const todayISO = () => new Date().toISOString().slice(0, 10);
+    const monthKey = (iso) => (iso || '').slice(0, 7);
+    const sum = (arr, key = 'amount') => arr.reduce((s, x) => s + (Number(x[key]) || 0), 0);
+    const byMonth = (items, ym) => items.filter(x => monthKey(x.date) === ym);
+    const fmtMonth = (ym) => {
+      if (!ym) return '';
+      const [y, m] = ym.split('-').map(Number);
+      const d = new Date(Date.UTC(y, m - 1, 1));
+      return d.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+    };
+    const fmtMonthShort = (ym) => {
+      const [y, m] = ym.split('-').map(Number);
+      return new Date(Date.UTC(y, m - 1, 1)).toLocaleString(undefined, { month: 'short' }) + ' ' + String(y).slice(-2);
+    };
+    const fmtMoney = (n, cur = 'USD') => {
+      try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 2 }).format(n || 0); }
+      catch { return (n || 0).toFixed(2) + ' ' + cur; }
+    };
+    const fmtPct = (n) => (Math.round((n || 0) * 1000) / 10) + '%';
+
+    function lastNMonths(n, anchor = new Date()) {
+      const out = [];
+      for (let i = n - 1; i >= 0; i--) {
+        const d = new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() - i, 1));
+        out.push(d.toISOString().slice(0, 7));
+      }
+      return out;
+    }
+
+    /* Tiny RFC4180-ish CSV parser */
+    function parseCSV(text) {
+      const lines = String(text).replace(/^\ufeff/, '').split(/\r?\n/);
+      if (!lines.length) return { headers: [], rows: [] };
+      const headers = parseCSVLine(lines[0]).map(h => h.trim());
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const cells = parseCSVLine(lines[i]);
+        const row = {};
+        headers.forEach((h, j) => { row[h] = cells[j] !== undefined ? cells[j] : ''; });
+        rows.push(row);
+      }
+      return { headers, rows };
+    }
+    function parseCSVLine(line) {
+      const out = [];
+      let cur = '', q = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (q) {
+          if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+          else if (c === '"') q = false;
+          else cur += c;
+        } else {
+          if (c === ',') { out.push(cur); cur = ''; }
+          else if (c === '"') q = true;
+          else cur += c;
+        }
+      }
+      out.push(cur);
+      return out;
+    }
+
+    /* Aggregations */
+    function totalsForMonth(state, ym) {
+      const sales    = byMonth(state.sales,    ym);
+      const refunds  = byMonth(state.refunds,  ym);
+      const expenses = byMonth(state.expenses, ym);
+      const grossSales    = sum(sales);
+      const totalRefunds  = sum(refunds);
+      const totalExpenses = sum(expenses);
+      const netRevenue    = grossSales - totalRefunds;
+      const profit        = netRevenue - totalExpenses;
+      return {
+        sales, refunds, expenses,
+        grossSales, totalRefunds, totalExpenses, netRevenue, profit,
+        refundRate: grossSales ? totalRefunds / grossSales : 0,
+        profitMargin: grossSales ? profit / grossSales : 0,
+        expenseRatio: grossSales ? totalExpenses / grossSales : 0,
+      };
+    }
+
+    function trendForMonths(state, months) {
+      return months.map(ym => {
+        const t = totalsForMonth(state, ym);
+        return {
+          ym,
+          label: fmtMonthShort(ym),
+          sales: t.grossSales,
+          refunds: t.totalRefunds,
+          expenses: t.totalExpenses,
+          profit: t.profit,
+        };
+      });
+    }
+
+    function groupBy(arr, key) {
+      const m = new Map();
+      for (const x of arr) {
+        const k = x[key] || 'Other';
+        m.set(k, (m.get(k) || 0) + (Number(x.amount) || 0));
+      }
+      return [...m.entries()].sort((a, b) => b[1] - a[1]).map(([label, value]) => ({ label, value }));
+    }
+
+    /* ===================================================================
+     * Reusable UI primitives
+     * ================================================================= */
+
+    const cls = (...xs) => xs.filter(Boolean).join(' ');
+
+    function Card({ className, children, title, action }) {
+      return html`
+        <section class=${cls('rounded-2xl border border-white/5 bg-ink-900/70 glass shadow-xl shadow-black/30 p-5', className)}>
+          ${(title || action) && html`
+            <div class="flex items-center justify-between mb-4">
+              ${title && html`<h2 class="text-sm uppercase tracking-[0.18em] text-white/60 font-semibold">${title}</h2>`}
+              ${action}
+            </div>`}
+          ${children}
+        </section>`;
+    }
+
+    function KPI({ label, value, sub, tone, icon }) {
+      const toneCls = tone === 'good' ? 'text-good' : tone === 'bad' ? 'text-bad' : tone === 'warn' ? 'text-warn' : 'text-white';
+      return html`
+        <div class="rounded-2xl border border-white/5 bg-gradient-to-br from-ink-800 to-ink-900 p-5 shadow-lg shadow-black/30">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] uppercase tracking-[0.22em] text-white/50">${label}</span>
+            ${icon && html`<span class="text-xl text-white/30">${icon}</span>`}
+          </div>
+          <div class=${cls('mt-2 text-3xl font-bold tracking-tight', toneCls)}>${value}</div>
+          ${sub && html`<div class="mt-1 text-xs text-white/50">${sub}</div>`}
+        </div>`;
+    }
+
+    function Button({ children, onClick, type = 'button', tone = 'primary', size = 'md', as = 'button', href, className, ...rest }) {
+      const tones = {
+        primary: 'bg-brand text-white hover:brightness-110 shadow-lg shadow-brand/30',
+        ghost:   'bg-white/5 text-white hover:bg-white/10 border border-white/10',
+        danger:  'bg-bad/90 text-white hover:bg-bad',
+        good:    'bg-good/90 text-ink-950 hover:bg-good',
+      };
+      const sizes = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm', lg: 'px-5 py-3 text-base' };
+      const C = as === 'a' ? 'a' : 'button';
+      return html`
+        <${C} type=${C === 'button' ? type : undefined} href=${href} target=${as === 'a' ? '_blank' : undefined} rel=${as === 'a' ? 'noopener noreferrer' : undefined}
+              onClick=${onClick}
+              class=${cls('inline-flex items-center gap-2 rounded-lg font-semibold transition tracking-wide', tones[tone], sizes[size], className)}
+              ...${rest}>
+          ${children}
+        <//>`;
+    }
+
+    function Field({ label, hint, children }) {
+      return html`
+        <label class="block">
+          <span class="block text-xs uppercase tracking-[0.18em] text-white/60 mb-1">${label}</span>
+          ${children}
+          ${hint && html`<span class="block text-[11px] text-white/40 mt-1">${hint}</span>`}
+        </label>`;
+    }
+
+    function Input({ value, onInput, ...rest }) {
+      return html`<input value=${value ?? ''} onInput=${e => onInput && onInput(e.target.value)}
+        class="w-full bg-ink-800/70 border border-white/10 focus:border-brand rounded-lg px-3 py-2 text-sm outline-none transition" ...${rest}/>`;
+    }
+    function Select({ value, onChange, children, ...rest }) {
+      return html`<select value=${value} onChange=${e => onChange && onChange(e.target.value)}
+        class="w-full bg-ink-800/70 border border-white/10 focus:border-brand rounded-lg px-3 py-2 text-sm outline-none transition" ...${rest}>${children}</select>`;
+    }
+    function Textarea({ value, onInput, ...rest }) {
+      return html`<textarea value=${value ?? ''} onInput=${e => onInput && onInput(e.target.value)}
+        class="w-full bg-ink-800/70 border border-white/10 focus:border-brand rounded-lg px-3 py-2 text-sm outline-none transition" ...${rest}/>`;
+    }
+
+    function Modal({ open, onClose, title, children, footer, wide }) {
+      useEffect(() => {
+        if (!open) return;
+        const onKey = (e) => { if (e.key === 'Escape') onClose && onClose(); };
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+      }, [open, onClose]);
+      if (!open) return null;
+      return html`
+        <div class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm" onClick=${onClose}>
+          <div class=${cls('relative w-full sm:rounded-2xl rounded-t-2xl bg-ink-900 border border-white/10 shadow-2xl', wide ? 'sm:max-w-2xl' : 'sm:max-w-md')}
+               onClick=${(e) => e.stopPropagation()}>
+            <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
+              <h3 class="text-base font-semibold tracking-wide">${title}</h3>
+              <button class="text-white/40 hover:text-white" onClick=${onClose} aria-label="Close">✕</button>
+            </div>
+            <div class="px-5 py-4 max-h-[70vh] overflow-auto scroll-thin">${children}</div>
+            ${footer && html`<div class="px-5 py-4 border-t border-white/5 flex justify-end gap-2">${footer}</div>`}
+          </div>
+        </div>`;
+    }
+
+    /* ===================================================================
+     * Charts (hand-rolled SVG, no chart lib)
+     * ================================================================= */
+
+    function StackedBarTrend({ data, currency, height = 220 }) {
+      const max = Math.max(1, ...data.map(d => Math.max(d.sales, d.refunds + d.expenses, d.profit < 0 ? -d.profit : d.profit)));
+      const w = 800;
+      const barW = (w - 40) / data.length - 6;
+      const scale = (v) => (v / max) * (height - 40);
+      return html`
+        <svg viewBox=${`0 0 ${w} ${height}`} class="w-full">
+          <defs>
+            <linearGradient id="gSales" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#6366f1"/>
+            </linearGradient>
+            <linearGradient id="gProfit" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#0e9f6e"/>
+            </linearGradient>
+          </defs>
+          ${data.map((d, i) => {
+            const x = 30 + i * (barW + 6);
+            const yBase = height - 24;
+            const hSales    = scale(d.sales);
+            const hRefunds  = scale(d.refunds);
+            const hExpenses = scale(d.expenses);
+            const hProfit   = scale(Math.max(0, d.profit));
+            return html`
+              <g key=${d.ym}>
+                <rect x=${x}            y=${yBase - hSales}    width=${barW * 0.45} height=${hSales}    rx="3" fill="url(#gSales)"/>
+                <rect x=${x + barW*0.5} y=${yBase - hRefunds}  width=${barW * 0.20} height=${hRefunds}  rx="3" fill="#f87171"/>
+                <rect x=${x + barW*0.72}y=${yBase - hExpenses} width=${barW * 0.20} height=${hExpenses} rx="3" fill="#fbbf24"/>
+                <rect x=${x + barW*0.94}y=${yBase - hProfit}   width=${Math.max(2, barW * 0.06)} height=${hProfit}   rx="2" fill="url(#gProfit)"/>
+                <text x=${x + barW / 2} y=${height - 6} text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.55)">${d.label}</text>
+              </g>`;
+          })}
+        </svg>`;
+    }
+
+    function CompareBars({ rows, height = 220 }) {
+      const max = Math.max(1, ...rows.flatMap(r => [r.a, r.b]));
+      const w = 800;
+      const rowH = (height - 20) / rows.length;
+      return html`
+        <svg viewBox=${`0 0 ${w} ${height}`} class="w-full">
+          ${rows.map((r, i) => {
+            const y = 8 + i * rowH;
+            const cx = 200;
+            const lenA = (r.a / max) * (w - cx - 30);
+            const lenB = (r.b / max) * (w - cx - 30);
+            return html`
+              <g key=${i}>
+                <text x="20" y=${y + rowH * 0.38} font-size="11" fill="rgba(255,255,255,0.7)">${r.label}</text>
+                <rect x=${cx} y=${y + 3}                 width=${Math.max(1, lenA)} height=${rowH * 0.35} rx="3" fill=${r.colorA || '#6366f1'}/>
+                <rect x=${cx} y=${y + 3 + rowH * 0.42}   width=${Math.max(1, lenB)} height=${rowH * 0.35} rx="3" fill=${r.colorB || '#34d399'}/>
+                <text x=${cx + lenA + 6} y=${y + rowH * 0.32} font-size="10" fill="rgba(255,255,255,0.65)">${r.aLabel}</text>
+                <text x=${cx + lenB + 6} y=${y + rowH * 0.74} font-size="10" fill="rgba(255,255,255,0.65)">${r.bLabel}</text>
+              </g>`;
+          })}
+        </svg>`;
+    }
+
+    function HBarList({ items, total, currency, color = '#6366f1' }) {
+      const max = Math.max(1, ...items.map(x => x.value));
+      return html`
+        <ul class="space-y-2">
+          ${items.length === 0 && html`<li class="text-sm text-white/40">No data this month.</li>`}
+          ${items.map((it, i) => html`
+            <li class="space-y-1" key=${i}>
+              <div class="flex items-baseline justify-between text-xs">
+                <span class="text-white/80">${it.label}</span>
+                <span class="font-mono text-white/60">${fmtMoney(it.value, currency)}</span>
+              </div>
+              <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+                <div class="h-full rounded-full" style=${{ width: ((it.value / max) * 100) + '%', background: color }}></div>
+              </div>
+            </li>`)}
+        </ul>`;
+    }
+
+    /* ===================================================================
+     * Pages
+     * ================================================================= */
+
+    function Dashboard({ state, dispatch, month, setMonth }) {
+      const t = useMemo(() => totalsForMonth(state, month), [state, month]);
+      const months = useMemo(() => lastNMonths(12, new Date(month + '-15')), [month]);
+      const trend = useMemo(() => trendForMonths(state, months), [state, months]);
+      const cur = state.settings.currency;
+
+      const expenseByCat = useMemo(() => groupBy(t.expenses, 'category'), [t.expenses]);
+      const refundsByProvider = useMemo(() => groupBy(t.refunds, 'provider'), [t.refunds]);
+
+      return html`
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            <${KPI} label="Gross sales"   value=${fmtMoney(t.grossSales, cur)}    sub="this month" icon="$"/>
+            <${KPI} label="Refunds"        value=${fmtMoney(t.totalRefunds, cur)}  tone="bad"  sub=${`${t.refunds.length} refund(s) · ${fmtPct(t.refundRate)} of sales`} icon="↺"/>
+            <${KPI} label="Expenses"       value=${fmtMoney(t.totalExpenses, cur)} tone="warn" sub=${fmtPct(t.expenseRatio) + ' of sales'} icon="▼"/>
+            <${KPI} label="Net profit"     value=${fmtMoney(t.profit, cur)}        tone=${t.profit >= 0 ? 'good' : 'bad'} sub=${fmtPct(t.profitMargin) + ' margin'} icon="✦"/>
+          </div>
+
+          <${Card} title="12-month trend">
+            <${StackedBarTrend} data=${trend} currency=${cur}/>
+            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-white/55">
+              <span><span class="inline-block w-3 h-3 rounded-sm align-middle mr-1" style=${{background:'url(#gSales)', backgroundColor:'#6366f1'}}></span>Sales</span>
+              <span><span class="inline-block w-3 h-3 rounded-sm align-middle mr-1 bg-bad"></span>Refunds</span>
+              <span><span class="inline-block w-3 h-3 rounded-sm align-middle mr-1 bg-warn"></span>Expenses</span>
+              <span><span class="inline-block w-3 h-3 rounded-sm align-middle mr-1 bg-good"></span>Profit</span>
+            </div>
+          </Card>
+
+          <div class="grid lg:grid-cols-2 gap-5">
+            <${Card} title="Refunds vs profit">
+              <${CompareBars} rows=${[
+                { label: fmtMonth(month), aLabel: fmtMoney(t.totalRefunds, cur), bLabel: fmtMoney(t.profit, cur), a: t.totalRefunds, b: Math.max(0, t.profit), colorA: '#f87171', colorB: '#34d399' },
+                ...trend.slice(-4, -1).map(d => ({ label: d.label, aLabel: fmtMoney(d.refunds, cur), bLabel: fmtMoney(d.profit, cur), a: d.refunds, b: Math.max(0, d.profit), colorA: '#f87171', colorB: '#34d399' })),
+              ]}/>
+            </Card>
+            <${Card} title="Profit vs expenses">
+              <${CompareBars} rows=${[
+                { label: fmtMonth(month), aLabel: fmtMoney(t.profit, cur), bLabel: fmtMoney(t.totalExpenses, cur), a: Math.max(0, t.profit), b: t.totalExpenses, colorA: '#34d399', colorB: '#fbbf24' },
+                ...trend.slice(-4, -1).map(d => ({ label: d.label, aLabel: fmtMoney(d.profit, cur), bLabel: fmtMoney(d.expenses, cur), a: Math.max(0, d.profit), b: d.expenses, colorA: '#34d399', colorB: '#fbbf24' })),
+              ]}/>
+            </Card>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-5">
+            <${Card} title="Top expense categories">
+              <${HBarList} items=${expenseByCat.slice(0, 8)} total=${t.totalExpenses} currency=${cur} color="#fbbf24"/>
+            </Card>
+            <${Card} title="Refunds by provider">
+              <${HBarList} items=${refundsByProvider.slice(0, 8)} total=${t.totalRefunds} currency=${cur} color="#f87171"/>
+            </Card>
+          </div>
+        </div>`;
+    }
+
+    /* ----- Refunds ------------------------------------------------- */
+
+    function RefundsPage({ state, dispatch, month, requestAdd }) {
+      const [editing, setEditing] = useState(null);
+      const [filter, setFilter] = useState({ provider: '', status: '' });
+      const cur = state.settings.currency;
+
+      useEffect(() => { if (requestAdd) setEditing(blankRefund()); }, [requestAdd]);
+
+      const monthRefunds = useMemo(() => byMonth(state.refunds, month)
+        .filter(r => !filter.provider || r.provider === filter.provider)
+        .filter(r => !filter.status || r.status === filter.status)
+        .sort((a, b) => b.date.localeCompare(a.date)), [state.refunds, month, filter]);
+
+      const total = sum(monthRefunds);
+
+      function save(item) {
+        if (!item.id) {
+          dispatch({ type: 'add', collection: 'refunds', item: { ...item, id: uid() } });
+        } else {
+          dispatch({ type: 'update', collection: 'refunds', item });
+        }
+        setEditing(null);
+      }
+      function remove(id) {
+        if (confirm('Delete this refund?')) dispatch({ type: 'delete', collection: 'refunds', id });
+      }
+
+      return html`
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center gap-2 justify-between">
+            <div class="flex flex-wrap items-center gap-2">
+              <${Select} value=${filter.provider} onChange=${(v) => setFilter(f => ({...f, provider: v}))}>
+                <option value="">All providers</option>
+                ${PROVIDERS.map(p => html`<option key=${p.id} value=${p.name}>${p.name}</option>`)}
+              <//>
+              <${Select} value=${filter.status} onChange=${(v) => setFilter(f => ({...f, status: v}))}>
+                <option value="">Any status</option>
+                ${REFUND_STATUSES.map(s => html`<option key=${s} value=${s}>${s}</option>`)}
+              <//>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-white/50">${monthRefunds.length} refund(s) · <span class="text-bad font-mono">${fmtMoney(total, cur)}</span></span>
+              <${Button} onClick=${() => setEditing(blankRefund())}>+ Add refund<//>
+            </div>
+          </div>
+
+          <${Card} className="p-0">
+            <div class="overflow-auto scroll-thin">
+              <table class="w-full text-sm">
+                <thead class="text-left text-xs uppercase tracking-[0.18em] text-white/50">
+                  <tr><th class="px-4 py-3">Date</th><th class="px-4 py-3">Order</th><th class="px-4 py-3">Provider</th><th class="px-4 py-3">Reason</th><th class="px-4 py-3">Status</th><th class="px-4 py-3 text-right">Amount</th><th class="px-4 py-3"></th></tr>
+                </thead>
+                <tbody>
+                  ${monthRefunds.length === 0 && html`
+                    <tr><td colspan="7" class="px-4 py-10 text-center text-white/40">No refunds for ${fmtMonth(month)}. Click "+ Add refund" to log one.</td></tr>`}
+                  ${monthRefunds.map(r => html`
+                    <tr key=${r.id} class="border-t border-white/5 hover:bg-white/5">
+                      <td class="px-4 py-3 font-mono text-white/70">${r.date}</td>
+                      <td class="px-4 py-3">${r.externalId || '—'}<div class="text-xs text-white/40">${r.platform || ''}</div></td>
+                      <td class="px-4 py-3"><${ProviderPill} name=${r.provider}/></td>
+                      <td class="px-4 py-3 text-white/70">${r.reason || '—'}</td>
+                      <td class="px-4 py-3"><${StatusPill} value=${r.status}/></td>
+                      <td class="px-4 py-3 text-right font-mono text-bad">${fmtMoney(r.amount, cur)}</td>
+                      <td class="px-4 py-3 text-right">
+                        <${RowActions} onEdit=${() => setEditing(r)} onDelete=${() => remove(r.id)} disputeUrl=${disputeUrlFor(r.provider)}/>
+                      </td>
+                    </tr>`)}
+                </tbody>
+              </table>
+            </div>
+          <//>
+
+          <${RefundForm} item=${editing} onClose=${() => setEditing(null)} onSave=${save}/>
+        </div>`;
+    }
+
+    function blankRefund() {
+      return { id: '', date: todayISO(), amount: 0, currency: 'USD', platform: 'Shopify', provider: 'Stripe', externalId: '', reason: 'Customer changed mind', status: 'Refunded', notes: '' };
+    }
+
+    function ProviderPill({ name }) {
+      const p = PROVIDERS.find(x => x.name === name);
+      const c = p ? p.color : '#475569';
+      const t = p ? p.text : '#fff';
+      return html`<span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-md" style=${{ background: c + '33', color: t === '#fff' ? '#fff' : '#1e293b', border: '1px solid ' + c + '55' }}>
+        <span class="w-1.5 h-1.5 rounded-full" style=${{ background: c }}></span>${name || '—'}
+      </span>`;
+    }
+    function StatusPill({ value }) {
+      const colors = { Pending: 'text-warn bg-warn/10 border-warn/30', Refunded: 'text-bad bg-bad/10 border-bad/30', Disputed: 'text-cyan2 bg-cyan2/10 border-cyan2/30', Won: 'text-good bg-good/10 border-good/30', Lost: 'text-bad bg-bad/10 border-bad/30' };
+      return html`<span class=${cls('inline-block text-xs font-semibold px-2 py-0.5 rounded-md border', colors[value] || 'text-white/60 bg-white/5 border-white/10')}>${value || '—'}</span>`;
+    }
+    function disputeUrlFor(name) {
+      const p = PROVIDERS.find(x => x.name === name);
+      return p ? p.dispute : null;
+    }
+    function RowActions({ onEdit, onDelete, disputeUrl }) {
+      return html`
+        <div class="flex justify-end gap-1">
+          ${disputeUrl && html`<${Button} as="a" href=${disputeUrl} size="sm" tone="ghost" title="File dispute">⚖️ Dispute<//>`}
+          <${Button} size="sm" tone="ghost" onClick=${onEdit} title="Edit">✎<//>
+          <${Button} size="sm" tone="ghost" onClick=${onDelete} title="Delete">🗑<//>
+        </div>`;
+    }
+
+    function RefundForm({ item, onClose, onSave }) {
+      const [draft, setDraft] = useState(item || null);
+      useEffect(() => setDraft(item || null), [item]);
+      if (!draft) return null;
+      const set = (k, v) => setDraft(d => ({ ...d, [k]: v }));
+      return html`
+        <${Modal} open=${true} onClose=${onClose} title=${draft.id ? 'Edit refund' : 'New refund'} wide
+          footer=${html`
+            <${Button} tone="ghost" onClick=${onClose}>Cancel<//>
+            <${Button} onClick=${() => onSave({ ...draft, amount: Number(draft.amount) })}>${draft.id ? 'Save changes' : 'Add refund'}<//>
+          `}>
+          <div class="grid grid-cols-2 gap-4">
+            <${Field} label="Date"><${Input} type="date" value=${draft.date} onInput=${(v) => set('date', v)}/></Field>
+            <${Field} label="Amount" hint="Positive number — the customer's refund total."><${Input} type="number" step="0.01" min="0" value=${draft.amount} onInput=${(v) => set('amount', v)}/></Field>
+            <${Field} label="Platform">
+              <${Select} value=${draft.platform} onChange=${(v) => set('platform', v)}>${PLATFORMS.map(p => html`<option key=${p} value=${p}>${p}</option>`)}<//>
+            </Field>
+            <${Field} label="Payment provider">
+              <${Select} value=${draft.provider} onChange=${(v) => set('provider', v)}>${PROVIDERS.map(p => html`<option key=${p.id} value=${p.name}>${p.name}</option>`)}<//>
+            </Field>
+            <${Field} label="Order / reference"><${Input} value=${draft.externalId} onInput=${(v) => set('externalId', v)} placeholder="#1023"/></Field>
+            <${Field} label="Reason">
+              <${Select} value=${draft.reason} onChange=${(v) => set('reason', v)}>${REFUND_REASONS.map(r => html`<option key=${r} value=${r}>${r}</option>`)}<//>
+            </Field>
+            <${Field} label="Status">
+              <${Select} value=${draft.status} onChange=${(v) => set('status', v)}>${REFUND_STATUSES.map(s => html`<option key=${s} value=${s}>${s}</option>`)}<//>
+            </Field>
+            <div class="col-span-2">
+              <${Field} label="Notes"><${Textarea} rows="3" value=${draft.notes} onInput=${(v) => set('notes', v)} placeholder="Internal notes, evidence pointers, customer messages…"/></Field>
+            </div>
+          </div>
+        <//>`;
+    }
+
+    /* ----- Sales --------------------------------------------------- */
+
+    function SalesPage({ state, dispatch, month, requestAdd }) {
+      const [editing, setEditing] = useState(null);
+      const cur = state.settings.currency;
+
+      useEffect(() => { if (requestAdd) setEditing(blankSale()); }, [requestAdd]);
+
+      const monthSales = useMemo(() => byMonth(state.sales, month).sort((a, b) => b.date.localeCompare(a.date)), [state.sales, month]);
+      const total = sum(monthSales);
+
+      function save(item) {
+        if (!item.id) dispatch({ type: 'add', collection: 'sales', item: { ...item, id: uid() } });
+        else dispatch({ type: 'update', collection: 'sales', item });
+        setEditing(null);
+      }
+      function remove(id) {
+        if (confirm('Delete this sale?')) dispatch({ type: 'delete', collection: 'sales', id });
+      }
+
+      return html`
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-white/50">${monthSales.length} sale(s) · <span class="text-cyan2 font-mono">${fmtMoney(total, cur)}</span></span>
+            <${Button} onClick=${() => setEditing(blankSale())}>+ Add sale<//>
+          </div>
+          <${Card} className="p-0">
+            <div class="overflow-auto scroll-thin">
+              <table class="w-full text-sm">
+                <thead class="text-left text-xs uppercase tracking-[0.18em] text-white/50">
+                  <tr><th class="px-4 py-3">Date</th><th class="px-4 py-3">Order</th><th class="px-4 py-3">Customer</th><th class="px-4 py-3">Platform</th><th class="px-4 py-3 text-right">Amount</th><th class="px-4 py-3"></th></tr>
+                </thead>
+                <tbody>
+                  ${monthSales.length === 0 && html`<tr><td colspan="6" class="px-4 py-10 text-center text-white/40">No sales recorded for ${fmtMonth(month)}.</td></tr>`}
+                  ${monthSales.map(s => html`
+                    <tr key=${s.id} class="border-t border-white/5 hover:bg-white/5">
+                      <td class="px-4 py-3 font-mono text-white/70">${s.date}</td>
+                      <td class="px-4 py-3">${s.externalId || '—'}</td>
+                      <td class="px-4 py-3 text-white/70">${s.customer || '—'}</td>
+                      <td class="px-4 py-3"><span class="text-xs px-2 py-0.5 rounded-md bg-white/5 border border-white/10">${s.platform || '—'}</span></td>
+                      <td class="px-4 py-3 text-right font-mono text-cyan2">${fmtMoney(s.amount, cur)}</td>
+                      <td class="px-4 py-3 text-right">
+                        <${Button} size="sm" tone="ghost" onClick=${() => setEditing(s)}>✎<//>
+                        <${Button} size="sm" tone="ghost" onClick=${() => remove(s.id)}>🗑<//>
+                      </td>
+                    </tr>`)}
+                </tbody>
+              </table>
+            </div>
+          <//>
+          <${SaleForm} item=${editing} onClose=${() => setEditing(null)} onSave=${save}/>
+        </div>`;
+    }
+    function blankSale() {
+      return { id: '', date: todayISO(), amount: 0, currency: 'USD', platform: 'Shopify', externalId: '', customer: '', notes: '' };
+    }
+    function SaleForm({ item, onClose, onSave }) {
+      const [draft, setDraft] = useState(item);
+      useEffect(() => setDraft(item || null), [item]);
+      if (!draft) return null;
+      const set = (k, v) => setDraft(d => ({ ...d, [k]: v }));
+      return html`
+        <${Modal} open=${true} onClose=${onClose} title=${draft.id ? 'Edit sale' : 'New sale'} wide
+          footer=${html`
+            <${Button} tone="ghost" onClick=${onClose}>Cancel<//>
+            <${Button} onClick=${() => onSave({ ...draft, amount: Number(draft.amount) })}>${draft.id ? 'Save' : 'Add sale'}<//>`}>
+          <div class="grid grid-cols-2 gap-4">
+            <${Field} label="Date"><${Input} type="date" value=${draft.date} onInput=${(v) => set('date', v)}/></Field>
+            <${Field} label="Amount" hint="Subtotal or total — pick one and stay consistent."><${Input} type="number" step="0.01" min="0" value=${draft.amount} onInput=${(v) => set('amount', v)}/></Field>
+            <${Field} label="Platform"><${Select} value=${draft.platform} onChange=${(v) => set('platform', v)}>${PLATFORMS.map(p => html`<option key=${p} value=${p}>${p}</option>`)}<//></Field>
+            <${Field} label="Order / reference"><${Input} value=${draft.externalId} onInput=${(v) => set('externalId', v)} placeholder="#1023"/></Field>
+            <div class="col-span-2"><${Field} label="Customer"><${Input} value=${draft.customer} onInput=${(v) => set('customer', v)} placeholder="jane@example.com"/></Field></div>
+            <div class="col-span-2"><${Field} label="Notes"><${Textarea} rows="2" value=${draft.notes} onInput=${(v) => set('notes', v)}/></Field></div>
+          </div>
+        <//>`;
+    }
+
+    /* ----- Expenses ------------------------------------------------ */
+
+    function ExpensesPage({ state, dispatch, month, requestAdd }) {
+      const [editing, setEditing] = useState(null);
+      const cur = state.settings.currency;
+
+      useEffect(() => { if (requestAdd) setEditing(blankExpense()); }, [requestAdd]);
+
+      const monthExp = useMemo(() => byMonth(state.expenses, month).sort((a, b) => b.date.localeCompare(a.date)), [state.expenses, month]);
+      const total = sum(monthExp);
+
+      function save(item) {
+        if (!item.id) dispatch({ type: 'add', collection: 'expenses', item: { ...item, id: uid() } });
+        else dispatch({ type: 'update', collection: 'expenses', item });
+        setEditing(null);
+      }
+      function remove(id) {
+        if (confirm('Delete this expense?')) dispatch({ type: 'delete', collection: 'expenses', id });
+      }
+
+      return html`
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-white/50">${monthExp.length} expense(s) · <span class="text-warn font-mono">${fmtMoney(total, cur)}</span></span>
+            <${Button} onClick=${() => setEditing(blankExpense())}>+ Add expense<//>
+          </div>
+          <${Card} className="p-0">
+            <div class="overflow-auto scroll-thin">
+              <table class="w-full text-sm">
+                <thead class="text-left text-xs uppercase tracking-[0.18em] text-white/50">
+                  <tr><th class="px-4 py-3">Date</th><th class="px-4 py-3">Description</th><th class="px-4 py-3">Category</th><th class="px-4 py-3 text-right">Amount</th><th class="px-4 py-3"></th></tr>
+                </thead>
+                <tbody>
+                  ${monthExp.length === 0 && html`<tr><td colspan="5" class="px-4 py-10 text-center text-white/40">No expenses recorded for ${fmtMonth(month)}.</td></tr>`}
+                  ${monthExp.map(s => html`
+                    <tr key=${s.id} class="border-t border-white/5 hover:bg-white/5">
+                      <td class="px-4 py-3 font-mono text-white/70">${s.date}</td>
+                      <td class="px-4 py-3">${s.description || '—'}</td>
+                      <td class="px-4 py-3"><span class="text-xs px-2 py-0.5 rounded-md bg-warn/10 border border-warn/30 text-warn">${s.category}</span></td>
+                      <td class="px-4 py-3 text-right font-mono text-warn">${fmtMoney(s.amount, cur)}</td>
+                      <td class="px-4 py-3 text-right">
+                        <${Button} size="sm" tone="ghost" onClick=${() => setEditing(s)}>✎<//>
+                        <${Button} size="sm" tone="ghost" onClick=${() => remove(s.id)}>🗑<//>
+                      </td>
+                    </tr>`)}
+                </tbody>
+              </table>
+            </div>
+          <//>
+          <${ExpenseForm} item=${editing} onClose=${() => setEditing(null)} onSave=${save}/>
+        </div>`;
+    }
+    function blankExpense() {
+      return { id: '', date: todayISO(), amount: 0, currency: 'USD', category: 'Ads / Marketing', description: '', notes: '' };
+    }
+    function ExpenseForm({ item, onClose, onSave }) {
+      const [draft, setDraft] = useState(item);
+      useEffect(() => setDraft(item || null), [item]);
+      if (!draft) return null;
+      const set = (k, v) => setDraft(d => ({ ...d, [k]: v }));
+      return html`
+        <${Modal} open=${true} onClose=${onClose} title=${draft.id ? 'Edit expense' : 'New expense'} wide
+          footer=${html`
+            <${Button} tone="ghost" onClick=${onClose}>Cancel<//>
+            <${Button} onClick=${() => onSave({ ...draft, amount: Number(draft.amount) })}>${draft.id ? 'Save' : 'Add expense'}<//>`}>
+          <div class="grid grid-cols-2 gap-4">
+            <${Field} label="Date"><${Input} type="date" value=${draft.date} onInput=${(v) => set('date', v)}/></Field>
+            <${Field} label="Amount"><${Input} type="number" step="0.01" min="0" value=${draft.amount} onInput=${(v) => set('amount', v)}/></Field>
+            <div class="col-span-2"><${Field} label="Description"><${Input} value=${draft.description} onInput=${(v) => set('description', v)} placeholder="Meta ads — June"/></Field></div>
+            <div class="col-span-2"><${Field} label="Category">
+              <${Select} value=${draft.category} onChange=${(v) => set('category', v)}>${EXPENSE_CATEGORIES.map(c => html`<option key=${c} value=${c}>${c}</option>`)}<//>
+            </Field></div>
+            <div class="col-span-2"><${Field} label="Notes"><${Textarea} rows="2" value=${draft.notes} onInput=${(v) => set('notes', v)}/></Field></div>
+          </div>
+        <//>`;
+    }
+
+    /* ----- Disputes ------------------------------------------------ */
+
+    function DisputesPage({ state }) {
+      const counts = useMemo(() => {
+        const m = new Map();
+        for (const r of state.refunds) {
+          if (r.status === 'Disputed' || r.status === 'Won' || r.status === 'Lost') {
+            const k = r.provider || 'Other';
+            m.set(k, (m.get(k) || 0) + 1);
+          }
+        }
+        return m;
+      }, [state.refunds]);
+
+      return html`
+        <div class="space-y-4">
+          <${Card} title="What this page does">
+            <p class="text-sm text-white/70 leading-relaxed">
+              Each card opens that processor's dispute portal in a new tab. Filing the
+              dispute itself happens on the processor's site — there's no public API
+              to submit dispute evidence from a third-party app for any of these
+              providers. Use this page as your fast-launch hub. Mark refunds as
+              <span class="text-cyan2">Disputed</span> in the Refunds page to keep
+              your records aligned.
+            </p>
+          <//>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            ${PROVIDERS.map(p => html`
+              <a key=${p.id} href=${p.dispute} target="_blank" rel="noopener noreferrer"
+                 class="group block rounded-2xl border border-white/5 bg-ink-900/70 p-5 hover:border-white/20 hover:bg-ink-800 transition shadow-lg shadow-black/30">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold tracking-tight"
+                         style=${{ background: p.color, color: p.text }}>${p.icon}</div>
+                    <div>
+                      <div class="font-semibold">${p.name}</div>
+                      <div class="text-xs text-white/40">${counts.get(p.name) || 0} dispute(s) tracked</div>
+                    </div>
+                  </div>
+                  <span class="text-white/30 group-hover:text-white/70 transition">↗</span>
+                </div>
+                <p class="mt-3 text-sm text-white/60 leading-relaxed">${p.desc}</p>
+              </a>`)}
+          </div>
+        </div>`;
+    }
+
+    /* ----- Import -------------------------------------------------- */
+
+    function ImportPage({ state, dispatch }) {
+      const [parsed, setParsed] = useState(null);
+      const [mapping, setMapping] = useState({ kind: 'sales', date: '', amount: '', externalId: '', notes: '', platform: 'Shopify' });
+      const [error, setError] = useState('');
+
+      function onFile(e) {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          try {
+            const csv = parseCSV(r.result);
+            setParsed(csv);
+            setError('');
+            // Try to auto-map common Shopify columns
+            const heuristics = {
+              date: ['Created at', 'Created At', 'Date', 'Order Date'],
+              amount: ['Total', 'Net Total', 'Amount', 'Subtotal'],
+              externalId: ['Name', 'Order Name', 'Order ID', 'Order'],
+              notes: ['Notes', 'Note'],
+            };
+            const auto = {};
+            for (const [k, candidates] of Object.entries(heuristics)) {
+              const found = candidates.find(c => csv.headers.includes(c));
+              if (found) auto[k] = found;
+            }
+            setMapping(m => ({ ...m, ...auto }));
+          } catch (err) {
+            setError(String(err.message || err));
+          }
+        };
+        r.readAsText(f);
+      }
+
+      function runImport() {
+        if (!parsed) return;
+        const items = [];
+        for (const row of parsed.rows) {
+          const dateRaw = row[mapping.date] || '';
+          const date = (new Date(dateRaw)).toISOString().slice(0, 10);
+          if (Number.isNaN(new Date(dateRaw).getTime())) continue;
+          const amt = parseFloat(String(row[mapping.amount] || '0').replace(/[^0-9.\-]/g, ''));
+          if (!amt) continue;
+          const item = {
+            id: uid(),
+            date,
+            amount: amt,
+            currency: state.settings.currency,
+            platform: mapping.platform,
+            externalId: row[mapping.externalId] || '',
+            notes: row[mapping.notes] || '',
+          };
+          if (mapping.kind === 'sales') {
+            item.customer = row['Email'] || row['Customer'] || '';
+            items.push(item);
+          } else if (mapping.kind === 'refunds') {
+            item.provider = 'Stripe';
+            item.reason = 'Other';
+            item.status = 'Refunded';
+            items.push(item);
+          } else if (mapping.kind === 'expenses') {
+            item.category = 'Other';
+            item.description = row[mapping.notes] || row[mapping.externalId] || 'Imported expense';
+            items.push(item);
+          }
+        }
+        if (!items.length) { alert('Nothing imported — check that Date and Amount columns are mapped correctly.'); return; }
+        dispatch({ type: 'bulk-add', collection: mapping.kind, items });
+        alert(`Imported ${items.length} ${mapping.kind}.`);
+        setParsed(null);
+      }
+
+      return html`
+        <div class="space-y-4">
+          <${Card} title="Import from CSV">
+            <p class="text-sm text-white/70 mb-4">
+              Drop a CSV from Shopify, WooCommerce, Stripe, or any payment processor that exports orders.
+              Map the relevant columns below — the importer auto-detects common Shopify column names.
+              For Shopify, export <span class="text-cyan2">Orders</span> from your admin
+              (<span class="font-mono text-xs">Admin → Orders → Export</span>) and upload the file here.
+            </p>
+            <input type="file" accept=".csv,text/csv" onChange=${onFile}
+                   class="block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-brand file:text-white file:font-semibold file:cursor-pointer"/>
+            ${error && html`<p class="text-sm text-bad mt-2">${error}</p>`}
+          <//>
+
+          ${parsed && html`
+            <${Card} title=${`Map columns (${parsed.rows.length} rows detected)`}>
+              <div class="grid grid-cols-2 gap-4">
+                <${Field} label="Import as">
+                  <${Select} value=${mapping.kind} onChange=${(v) => setMapping(m => ({...m, kind: v}))}>
+                    <option value="sales">Sales</option>
+                    <option value="refunds">Refunds</option>
+                    <option value="expenses">Expenses</option>
+                  <//>
+                </Field>
+                <${Field} label="Platform">
+                  <${Select} value=${mapping.platform} onChange=${(v) => setMapping(m => ({...m, platform: v}))}>${PLATFORMS.map(p => html`<option key=${p} value=${p}>${p}</option>`)}<//>
+                </Field>
+                <${Field} label="Date column">
+                  <${Select} value=${mapping.date} onChange=${(v) => setMapping(m => ({...m, date: v}))}>
+                    <option value="">— select —</option>
+                    ${parsed.headers.map(h => html`<option key=${h} value=${h}>${h}</option>`)}
+                  <//>
+                </Field>
+                <${Field} label="Amount column">
+                  <${Select} value=${mapping.amount} onChange=${(v) => setMapping(m => ({...m, amount: v}))}>
+                    <option value="">— select —</option>
+                    ${parsed.headers.map(h => html`<option key=${h} value=${h}>${h}</option>`)}
+                  <//>
+                </Field>
+                <${Field} label="Order / reference column (optional)">
+                  <${Select} value=${mapping.externalId} onChange=${(v) => setMapping(m => ({...m, externalId: v}))}>
+                    <option value="">—</option>
+                    ${parsed.headers.map(h => html`<option key=${h} value=${h}>${h}</option>`)}
+                  <//>
+                </Field>
+                <${Field} label="Notes column (optional)">
+                  <${Select} value=${mapping.notes} onChange=${(v) => setMapping(m => ({...m, notes: v}))}>
+                    <option value="">—</option>
+                    ${parsed.headers.map(h => html`<option key=${h} value=${h}>${h}</option>`)}
+                  <//>
+                </Field>
+              </div>
+
+              <div class="mt-5 flex gap-2 justify-end">
+                <${Button} tone="ghost" onClick=${() => setParsed(null)}>Cancel<//>
+                <${Button} onClick=${runImport} tone="good">Import ${parsed.rows.length} row(s)<//>
+              </div>
+
+              <h3 class="mt-6 text-xs uppercase tracking-[0.18em] text-white/50 mb-2">Preview (first 5 rows)</h3>
+              <div class="overflow-auto scroll-thin border border-white/5 rounded-lg">
+                <table class="w-full text-xs">
+                  <thead class="text-white/50 bg-ink-800"><tr>${parsed.headers.slice(0, 8).map(h => html`<th key=${h} class="px-2 py-1.5 text-left">${h}</th>`)}</tr></thead>
+                  <tbody>
+                    ${parsed.rows.slice(0, 5).map((r, i) => html`<tr key=${i} class="border-t border-white/5">${parsed.headers.slice(0, 8).map(h => html`<td key=${h} class="px-2 py-1.5 text-white/70 font-mono">${String(r[h] || '').slice(0, 24)}</td>`)}</tr>`)}
+                  </tbody>
+                </table>
+              </div>
+            <//>`}
+
+          <${Card} title="Live Shopify connection">
+            <p class="text-sm text-white/70 leading-relaxed">
+              Direct Shopify Admin API access from this app would expose your access token in
+              the browser — Shopify's OAuth flow requires a server. The recommended path is:
+            </p>
+            <ol class="text-sm text-white/70 list-decimal pl-5 mt-3 space-y-1">
+              <li>Stand up a tiny backend (Cloudflare Worker, Vercel function, or a Node server) that holds the Admin API token securely.</li>
+              <li>Expose two endpoints: <code class="text-cyan2">GET /orders?since=…</code> and <code class="text-cyan2">GET /refunds?since=…</code>.</li>
+              <li>Configure the URL in Settings → Integrations once that backend is live.</li>
+            </ol>
+            <p class="text-sm text-white/50 mt-3">For now, the CSV importer above ingests your Shopify orders export in seconds.</p>
+          <//>
+        </div>`;
+    }
+
+    /* ===================================================================
+     * Live Sync bridge — real olisalestrack-sync integration
+     * ===================================================================
+     * FIX / NEW: connects this app's real correlation-analysis/expense/
+     * P&L features to OliSalesTrack's OTHER real feature (live, signature-
+     * verified webhook sync from Stripe/PayPal/Shopify — see
+     * ../../olisalestrack-sync/README.md) instead of leaving them as two
+     * disconnected products. Pulls canonical events from a running
+     * olisalestrack-sync deployment (GET /api/events, Bearer-token
+     * protected via admin-auth — same login already used by
+     * ../dashboard/) and imports them as real `sales`/`refunds` records
+     * here, alongside the existing CSV-import path. Nothing is invented:
+     * every imported record's amount/date/provider comes directly from
+     * the sync server's own signature-verified webhook data.
+     * ================================================================= */
+    const LIVE_SYNC_CONFIG_KEY = 'olisalestrack:livesync:v1';
+
+    function loadLiveSyncConfig() {
+      try { return JSON.parse(localStorage.getItem(LIVE_SYNC_CONFIG_KEY)) || { adminAuthUrl: '', syncUrl: '', token: '' }; }
+      catch { return { adminAuthUrl: '', syncUrl: '', token: '' }; }
+    }
+    function saveLiveSyncConfig(cfg) {
+      localStorage.setItem(LIVE_SYNC_CONFIG_KEY, JSON.stringify(cfg));
+    }
+
+    /** Maps olisalestrack-sync's canonical event shape into this app's sale/refund record shape. */
+    function syncEventToRecord(event) {
+      const dateIso = String(event.occurredAt || '').slice(0, 10) || todayISO();
+      const base = {
+        id: 'sync:' + event.id, // stable, de-dup-safe id, prefixed to avoid colliding with locally-created records
+        date: dateIso,
+        amount: (Number(event.amountCents) || 0) / 100,
+        currency: String(event.currency || 'usd').toUpperCase(),
+        platform: event.provider ? event.provider[0].toUpperCase() + event.provider.slice(1) : 'Custom',
+        externalId: event.description || '',
+        notes: 'Imported from live sync',
+      };
+      if (event.type === 'refund') {
+        return { ...base, provider: base.platform, reason: 'Other', status: 'Refunded' };
+      }
+      return { ...base, customer: '' };
+    }
+
+    function LiveSyncSection({ state, dispatch }) {
+      const [cfg, setCfg] = useState(loadLiveSyncConfig());
+      const [status, setStatus] = useState('');
+      const [busy, setBusy] = useState(false);
+
+      function set(k, v) { setCfg(c => ({ ...c, [k]: v })); }
+      function save() { saveLiveSyncConfig(cfg); setStatus('Saved.'); }
+
+      async function signIn() {
+        setBusy(true); setStatus('');
+        try {
+          const u = prompt('Admin-auth username/email:');
+          const p = prompt('Admin-auth password:');
+          if (!u || !p) { setBusy(false); return; }
+          const res = await fetch(normalizeBaseUrlLS(cfg.adminAuthUrl) + '/api/login', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p }),
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || 'Sign-in failed.');
+          const next = { ...cfg, token: data.token };
+          setCfg(next); saveLiveSyncConfig(next);
+          setStatus('✅ Signed in to admin-auth.');
+        } catch (err) {
+          setStatus('❌ ' + err.message);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function syncNow() {
+        setBusy(true); setStatus('');
+        try {
+          if (!cfg.syncUrl || !cfg.token) throw new Error('Set the sync server URL and sign in first.');
+          const res = await fetch(normalizeBaseUrlLS(cfg.syncUrl) + '/api/events', {
+            headers: { Authorization: `Bearer ${cfg.token}` },
+          });
+          if (res.status === 401) throw new Error('Session expired or invalid — sign in again.');
+          if (!res.ok) throw new Error(`Sync server returned HTTP ${res.status}`);
+          const data = await res.json();
+          const events = data.events || [];
+
+          const existingIds = new Set([...state.sales, ...state.refunds].map(r => r.id));
+          const newSales = [], newRefunds = [];
+          for (const ev of events) {
+            const rec = syncEventToRecord(ev);
+            if (existingIds.has(rec.id)) continue; // already imported — de-dup on the sync server's own event id
+            if (ev.type === 'sale') newSales.push(rec);
+            else if (ev.type === 'refund') newRefunds.push(rec);
+          }
+          if (newSales.length) dispatch({ type: 'bulk-add', collection: 'sales', items: newSales });
+          if (newRefunds.length) dispatch({ type: 'bulk-add', collection: 'refunds', items: newRefunds });
+          setStatus(`✅ Synced: ${newSales.length} new sale(s), ${newRefunds.length} new refund(s) (${events.length - newSales.length - newRefunds.length} already imported).`);
+        } catch (err) {
+          setStatus('❌ ' + err.message);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      return html`
+        <${Card} title="Live sync (Stripe / PayPal / Shopify)">
+          <p class="text-sm text-white/70 leading-relaxed mb-3">
+            Pull real, signature-verified sales and refunds directly from your
+            <span class="text-cyan2">olisalestrack-sync</span> deployment — no CSV export
+            needed. This is the same live sync used by the
+            <a href="../dashboard/" class="text-cyan2 underline">quick-view dashboard</a>, imported here so
+            correlation analysis, expense ROI, and P&amp;L reports run against your real,
+            up-to-the-minute transaction history.
+          </p>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <${Field} label="Admin-auth URL"><${Input} value=${cfg.adminAuthUrl} onInput=${(v) => set('adminAuthUrl', v)} placeholder="https://your-admin-auth.example.com"/></Field>
+            <${Field} label="Sync server URL"><${Input} value=${cfg.syncUrl} onInput=${(v) => set('syncUrl', v)} placeholder="https://your-olisalestrack-sync.example.com"/></Field>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <${Button} tone="ghost" onClick=${save}>Save URLs<//>
+            <${Button} tone="ghost" onClick=${signIn} disabled=${busy}>${cfg.token ? '✅ Signed in — re-sign in' : 'Sign in'}<//>
+            <${Button} onClick=${syncNow} disabled=${busy || !cfg.token} tone="good">${busy ? 'Syncing…' : '⇩ Sync now'}<//>
+          </div>
+          ${status && html`<p class="text-sm mt-3 text-white/70">${status}</p>`}
+        <//>`;
+    }
+    function normalizeBaseUrlLS(url) { return String(url || '').trim().replace(/\/$/, ''); }
+
+    /* ----- Settings ------------------------------------------------ */
+
+    function SettingsPage({ state, dispatch, installable, onInstall }) {
+      const fileRef = useRef(null);
+
+      function exportJSON() {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `olisalestrack-backup-${todayISO()}.json`;
+        a.click();
+      }
+      function importJSON(e) {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          try {
+            const obj = JSON.parse(r.result);
+            if (!obj.sales || !obj.refunds || !obj.expenses) throw new Error('not a refund-tracker backup');
+            dispatch({ type: 'init', state: obj });
+            alert('Backup restored.');
+          } catch (err) { alert('Import failed: ' + err.message); }
+        };
+        r.readAsText(f);
+      }
+
+      return html`
+        <div class="space-y-4 max-w-2xl">
+          <${Card} title="General">
+            <div class="grid grid-cols-2 gap-4">
+              <${Field} label="Display currency">
+                <${Select} value=${state.settings.currency} onChange=${(v) => dispatch({ type: 'set-settings', settings: { currency: v } })}>
+                  ${CURRENCIES.map(c => html`<option key=${c} value=${c}>${c}</option>`)}
+                <//>
+              </Field>
+            </div>
+          <//>
+
+          <${LiveSyncSection} state=${state} dispatch=${dispatch}/>
+
+          <${Card} title="Install as app">
+            <p class="text-sm text-white/70 leading-relaxed">
+              This is a Progressive Web App. On Windows/Android Chrome or Edge, click the install button below
+              when available. On iPhone/iPad, open in Safari then <span class="text-cyan2">Share → Add to Home Screen</span>.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <${Button} onClick=${onInstall} disabled=${!installable} tone=${installable ? 'good' : 'ghost'}>${installable ? 'Install OliSalesTrack' : 'Install prompt unavailable'}<//>
+              <${Button} as="a" href="https://web.dev/learn/pwa/installation/" tone="ghost">How install works ↗<//>
+            </div>
+          <//>
+
+          <${Card} title="Backup &amp; restore">
+            <p class="text-sm text-white/70">All data is stored locally in your browser. Back it up regularly.</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <${Button} onClick=${exportJSON}>Download JSON backup<//>
+              <${Button} tone="ghost" onClick=${() => fileRef.current?.click()}>Restore from JSON<//>
+              <input ref=${fileRef} type="file" accept="application/json" class="hidden" onChange=${importJSON}/>
+            </div>
+          <//>
+
+          <${Card} title="Danger zone">
+            <p class="text-sm text-white/60">Wipe all sales, refunds, expenses, and settings. This cannot be undone.</p>
+            <${Button} className="mt-3" tone="danger" onClick=${() => { if (confirm('Wipe ALL data? This cannot be undone.')) dispatch({ type: 'wipe' }); }}>Wipe all data<//>
+          <//>
+        </div>`;
+    }
+
+    /* ===================================================================
+     * Correlations Page — Sales, Refunds, Expenses Correlation Analysis
+     * ================================================================= */
+
+    function pearson(xs, ys) {
+      if (!xs.length || xs.length !== ys.length) return 0;
+      const n = xs.length, mx = xs.reduce((a,b)=>a+b,0)/n, my = ys.reduce((a,b)=>a+b,0)/n;
+      const num = xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0);
+      const dx = Math.sqrt(xs.reduce((s,x)=>s+(x-mx)**2,0));
+      const dy = Math.sqrt(ys.reduce((s,y)=>s+(y-my)**2,0));
+      return (!dx||!dy)?0:num/(dx*dy);
+    }
+
+    function corrLabel(r) {
+      const a=Math.abs(r);
+      if(a>=0.7) return r>0?'Strong Positive ↗':'Strong Negative ↘';
+      if(a>=0.4) return r>0?'Moderate Positive':'Moderate Negative';
+      if(a>=0.1) return 'Weak';
+      return 'No Correlation';
+    }
+
+    function buildMonthTimeSeries(state, months) {
+      return months.map(ym => {
+        const t = totalsForMonth(state, ym);
+        return { ym, label: fmtMonthShort(ym), sales: t.grossSales, refunds: t.totalRefunds, expenses: t.totalExpenses, profit: t.profit, refundRate: t.refundRate };
+      });
+    }
+
+    function CorrelationsPage({ state, month }) {
+      const months = useMemo(() => lastNMonths(12, new Date(month + '-15')), [month]);
+      const ts = useMemo(() => buildMonthTimeSeries(state, months), [state, months]);
+      const cur = state.settings.currency;
+
+      const salesArr    = ts.map(d => d.sales);
+      const refundsArr  = ts.map(d => d.refunds);
+      const expensesArr = ts.map(d => d.expenses);
+      const profitArr   = ts.map(d => d.profit);
+      const rateArr     = ts.map(d => d.refundRate * 100);
+
+      const r1 = pearson(salesArr, refundsArr);
+      const r2 = pearson(salesArr, expensesArr);
+      const r3 = pearson(refundsArr, profitArr);
+      const r4 = pearson(expensesArr, salesArr);
+
+      const pairs = [
+        { label: 'Sales ↔ Refunds',   r: r1, a: salesArr,    b: refundsArr,  colorA: '#6366f1', colorB: '#f87171',
+          insight: Math.abs(r1)>0.5 ? (r1>0?'⚠️ Higher sales days reliably generate more refunds. Investigate product quality or fulfilment on peak days.':'📉 Unusual: sales and refunds move inversely.') : '✅ Refund volume is largely independent of sales spikes — a healthy sign.' },
+        { label: 'Sales ↔ Expenses',  r: r2, a: expensesArr, b: salesArr,    colorA: '#fbbf24', colorB: '#22d3ee',
+          insight: r2>0.4?'💡 Spending is positively correlated with revenue — your ad/ops costs are working. Consider increasing high-ROI expense categories.':r2<-0.2?'⚠️ Expenses are rising while sales are falling. Audit your cost structure urgently.':'─ Weak correlation between spending and sales. Some cost categories may not be generating returns.' },
+        { label: 'Refunds ↔ Profit',  r: r3, a: refundsArr,  b: profitArr,   colorA: '#f87171', colorB: '#34d399',
+          insight: r3<-0.4?'🔴 Refunds are strongly eroding your profit. Each refund spike directly causes a profit dip.':Math.abs(r3)<0.2?'🟢 Refunds have limited impact on overall profit — your margins absorb them well.':'⚠️ Moderate correlation between refunds and profit loss. Watch refund rate closely.' },
+        { label: 'Expenses → Revenue', r: r4, a: expensesArr, b: salesArr,    colorA: '#fbbf24', colorB: '#6366f1',
+          insight: r4>0.6?'🚀 Strong return on spend. Every dollar invested is meaningfully correlated with revenue growth.':r4<0?'❌ Spending is not generating proportional returns. Review your expense allocation immediately.':'📊 Moderate expense ROI. Check which categories drive the most revenue in the breakdown below.' },
+      ];
+
+      function CorrCard({ pair }) {
+        const abs = Math.abs(pair.r);
+        const tone = pair.r > 0.4 ? 'text-good' : pair.r < -0.4 ? 'text-bad' : 'text-warn';
+        return html`
+          <${Card} className="space-y-3">
+            <div class="font-semibold text-sm">${pair.label}</div>
+            <div class="flex items-center gap-3">
+              <div class=${`text-4xl font-bold font-mono tracking-tight ${tone}`}>${pair.r.toFixed(2)}</div>
+              <div>
+                <div class=${`text-xs font-bold uppercase tracking-widest ${tone}`}>${corrLabel(pair.r)}</div>
+                <div class="mt-1 h-2 w-36 rounded-full bg-white/5 overflow-hidden">
+                  <div class="h-full rounded-full transition-all" style=${{ width: (abs * 100) + '%', background: pair.r >= 0 ? '#34d399' : '#f87171' }}></div>
+                </div>
+              </div>
+            </div>
+            <p class="text-sm text-white/60 leading-relaxed">${pair.insight}</p>
+          <//>`
+      }
+
+      function MicroChart({ aData, bData, aColor, bColor, height = 100 }) {
+        const all = [...aData, ...bData];
+        const maxV = Math.max(1, ...all.map(Math.abs));
+        const w = 600, barW = (w - 20) / aData.length - 4;
+        const scl = v => (Math.abs(v) / maxV) * (height - 16);
+        return html`
+          <svg viewBox=${`0 0 ${w} ${height}`} class="w-full">
+            ${aData.map((a, i) => {
+              const bx = 10 + i * (barW + 4);
+              const ha = scl(a), hb = scl(bData[i]);
+              const yBase = height - 8;
+              return html`
+                <g key=${i}>
+                  <rect x=${bx}               y=${yBase-ha} width=${barW*0.45} height=${ha} rx="2" fill=${aColor + '99'}/>
+                  <rect x=${bx+barW*0.5}      y=${yBase-hb} width=${barW*0.45} height=${hb} rx="2" fill=${bColor + '99'}/>
+                </g>`;
+            })}
+          </svg>`;
+      }
+
+      return html`
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            ${pairs.map(p => html`<${CorrCard} key=${p.label} pair=${p}/>`)}
+          </div>
+
+          <${Card} title="Sales vs Refund Rate — 12-month overlay">
+            <p class="text-xs text-white/50 mb-3">Bars: Sales (cyan) vs Refund Rate % (red). A rising red bar alongside rising cyan = healthy refund management.</p>
+            <${MicroChart} aData=${salesArr} bData=${rateArr} aColor="#22d3ee" bColor="#f87171" height=${140}/>
+            <div class="mt-2 flex gap-4 text-xs text-white/50">
+              <span>■ Sales ($)</span>
+              <span style="color:#f87171">■ Refund Rate (%)</span>
+            </div>
+          <//>
+
+          <div class="grid lg:grid-cols-2 gap-5">
+            <${Card} title="Sales vs Expenses — ROI view">
+              <p class="text-xs text-white/50 mb-3">Yellow = Expenses, Cyan = Sales they generated. Tall cyan bars relative to yellow = good ROI.</p>
+              <${MicroChart} aData=${expensesArr} bData=${salesArr} aColor="#fbbf24" bColor="#22d3ee" height=${120}/>
+            <//>
+            <${Card} title="Refunds vs Net Profit — erosion view">
+              <p class="text-xs text-white/50 mb-3">Red = Refunds, Green = Net Profit. Spikes in red that shrink green confirm refund damage.</p>
+              <${MicroChart} aData=${refundsArr} bData=${profitArr.map(p=>Math.max(0,p))} aColor="#f87171" bColor="#34d399" height=${120}/>
+            <//>
+          </div>
+
+          <${Card} title="Monthly Summary Table">
+            <div class="overflow-auto scroll-thin">
+              <table class="w-full text-xs">
+                <thead class="text-white/40 text-left uppercase tracking-widest">
+                  <tr><th class="pb-2">Month</th><th class="pb-2">Sales</th><th class="pb-2">Refunds</th><th class="pb-2">Refund %</th><th class="pb-2">Expenses</th><th class="pb-2">Profit</th><th class="pb-2">Margin</th></tr>
+                </thead>
+                <tbody>
+                  ${ts.slice().reverse().map(d => html`
+                    <tr key=${d.ym} class="border-t border-white/5">
+                      <td class="py-2 font-mono">${d.label}</td>
+                      <td class="py-2 text-cyan2 font-mono">${fmtMoney(d.sales, cur)}</td>
+                      <td class="py-2 text-bad font-mono">${fmtMoney(d.refunds, cur)}</td>
+                      <td class=${`py-2 font-mono ${d.refundRate>0.1?'text-bad':d.refundRate>0.05?'text-warn':'text-good'}`}>${fmtPct(d.refundRate)}</td>
+                      <td class="py-2 text-warn font-mono">${fmtMoney(d.expenses, cur)}</td>
+                      <td class=${`py-2 font-mono ${d.profit>=0?'text-good':'text-bad'}`}>${fmtMoney(d.profit, cur)}</td>
+                      <td class="py-2 text-white/60">${d.sales>0?fmtPct(d.profit/d.sales):'—'}</td>
+                    </tr>`)}
+                </tbody>
+              </table>
+            </div>
+          <//>
+        </div>`;
+    }
+
+    /* ===================================================================
+     * Upgrade Page
+     * ================================================================= */
+
+    function UpgradePage() {
+      return html`
+        <div class="space-y-5 max-w-2xl">
+          <!-- FIX: the upstream version of this page advertised a $19/mo
+               "Pro" tier and a $149 lifetime tier gating "AI business
+               insights," "PDF report generation," and "multiple business
+               profiles" behind a paywall - none of those three features
+               exist anywhere in this app's code, and this deployment's
+               real, single subscription tier is $24/mo (see
+               ../buy/index.html), not $19/mo or a lifetime option.
+               Corrected to describe what's actually true: every feature
+               in this app (including correlation analysis) already
+               works with your one real OliSalesTrack subscription -
+               there's no separate upsell tier to buy. -->
+          <${Card}>
+            <div class="text-center py-4">
+              <div class="text-4xl mb-3">✅</div>
+              <h2 class="text-xl font-bold mb-2">You already have full access</h2>
+              <p class="text-sm text-white/60 mb-5">
+                Correlation analysis, refund/expense tracking, dispute portal links, and CSV/live-sync
+                import — every feature in this app is included with your one OliSalesTrack subscription.
+                There's no separate "Pro" tier to unlock.
+              </p>
+              <div class="rounded-xl border border-white/10 p-5 text-left max-w-sm mx-auto">
+                <div class="text-xl font-bold">$24/mo <span class="text-sm text-white/50">or $204/yr</span></div>
+                <div class="text-xs text-white/50 mb-3">OliSalesTrack — single plan, everything included</div>
+                <ul class="text-xs text-white/70 space-y-1.5 mb-4">
+                  <li>✅ Correlation analysis (Pearson r)</li>
+                  <li>✅ Sales, refunds &amp; expense tracking</li>
+                  <li>✅ Live sync from Stripe/PayPal/Shopify</li>
+                  <li>✅ CSV import (Shopify/WooCommerce/Stripe)</li>
+                  <li>✅ Dispute portal quick-links (10 providers)</li>
+                </ul>
+                <${Button} as="a" href="../buy/" tone="primary" className="w-full justify-center">Manage Subscription →<//>
+              </div>
+              <p class="text-xs text-white/40 mt-4">Not subscribed yet, or need to change your plan? <a href="../buy/" class="text-cyan2 underline">See pricing →</a></p>
+            </div>
+          <//>
+        </div>`;
+    }
+
+    /* ===================================================================
+     * Layout / shell
+     * ================================================================= */
+
+    const NAV = [
+      { id: 'dashboard',    label: 'Dashboard',    icon: '⌂' },
+      { id: 'correlations', label: 'Correlations', icon: '🔗' },
+      { id: 'refunds',      label: 'Refunds',      icon: '↺' },
+      { id: 'sales',        label: 'Sales',        icon: '$' },
+      { id: 'expenses',     label: 'Expenses',     icon: '▼' },
+      { id: 'disputes',     label: 'Disputes',     icon: '⚖' },
+      { id: 'import',       label: 'Import',       icon: '⇪' },
+      { id: 'upgrade',      label: 'Upgrade',      icon: '⭐' },
+      { id: 'settings',     label: 'Settings',     icon: '⚙' },
+    ];
+
+    function Sidebar({ page, onNavigate }) {
+      return html`
+        <aside class="hidden md:flex flex-col w-56 shrink-0 border-r border-white/5 bg-ink-950/80 glass">
+          <div class="p-5 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand to-cyan2 flex items-center justify-center font-bold text-white text-sm">$↺</div>
+            <div>
+              <div class="text-sm font-bold tracking-wide">OliSalesTrack</div>
+              <div class="text-[10px] uppercase tracking-[0.18em] text-white/40">v2 · local</div>
+            </div>
+          </div>
+          <nav class="px-3 pb-3 space-y-1">
+            ${NAV.map(n => html`
+              <button key=${n.id} onClick=${() => onNavigate(n.id)} class=${cls('w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition',
+                  page === n.id ? 'bg-brand/15 text-white border border-brand/30' : 'text-white/70 hover:bg-white/5')}>
+                <span class="w-5 text-center text-base">${n.icon}</span><span>${n.label}</span>
+              </button>`)}
+          </nav>
+        </aside>`;
+    }
+
+    function MobileNav({ page, onNavigate }) {
+      return html`
+        <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 border-t border-white/10 bg-ink-950/95 glass flex">
+          ${NAV.slice(0, 6).map(n => html`
+            <button key=${n.id} onClick=${() => onNavigate(n.id)} class=${cls('flex-1 py-2 flex flex-col items-center gap-1 text-[10px] uppercase tracking-[0.18em]',
+                page === n.id ? 'text-white' : 'text-white/50')}>
+              <span class="text-base">${n.icon}</span><span>${n.label}</span>
+            </button>`)}
+        </nav>`;
+    }
+
+    function TopBar({ page, month, setMonth, currency, onSettings }) {
+      const titles = NAV.reduce((m, n) => (m[n.id] = n.label, m), {});
+      return html`
+        <header class="flex items-center gap-3 px-4 sm:px-6 py-3 border-b border-white/5 bg-ink-950/60 glass">
+          <h1 class="text-lg font-bold tracking-tight">${titles[page] || ''}</h1>
+          <div class="ml-auto flex items-center gap-2">
+            <${Input} type="month" value=${month} onInput=${setMonth} className="w-44"/>
+            <span class="text-xs text-white/40 hidden sm:inline">${currency}</span>
+          </div>
+        </header>`;
+    }
+
+    /* ===================================================================
+     * App root
+     * ================================================================= */
+
+    function App() {
+      const [state, dispatch] = useReducer(reducer, null, loadState);
+      useEffect(() => { saveState(state); }, [state]);
+
+      const initialHash = (location.hash || '#dashboard').slice(1);
+      const [page, setPageRaw] = useState(initialHash.split('?')[0] || 'dashboard');
+      const [requestAdd, setRequestAdd] = useState(0);
+
+      const setPage = (p) => {
+        setPageRaw(p);
+        history.replaceState(null, '', '#' + p);
+      };
+
+      // Honor #refunds?add=1 etc. from manifest shortcuts
+      useEffect(() => {
+        const raw = (location.hash || '').slice(1);
+        const [p, q] = raw.split('?');
+        if (p) setPageRaw(p);
+        if (q && q.includes('add=1')) setRequestAdd(x => x + 1);
+        const onHash = () => {
+          const h = (location.hash || '').slice(1);
+          const [pp, qq] = h.split('?');
+          if (pp) setPageRaw(pp);
+          if (qq && qq.includes('add=1')) setRequestAdd(x => x + 1);
+        };
+        window.addEventListener('hashchange', onHash);
+        return () => window.removeEventListener('hashchange', onHash);
+      }, []);
+
+      const [month, setMonth] = useState(todayISO().slice(0, 7));
+
+      // PWA install prompt capture
+      const [installPrompt, setInstallPrompt] = useState(null);
+      useEffect(() => {
+        const onBeforeInstall = (e) => { e.preventDefault(); setInstallPrompt(e); };
+        window.addEventListener('beforeinstallprompt', onBeforeInstall);
+        return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+      }, []);
+      const installable = !!installPrompt;
+      const onInstall = async () => {
+        if (!installPrompt) return;
+        installPrompt.prompt();
+        await installPrompt.userChoice;
+        setInstallPrompt(null);
+      };
+
+      const cur = state.settings.currency;
+      const consumeRequestAdd = page; // re-trigger requestAdd whenever page changes
+
+      let body;
+      switch (page) {
+        case 'correlations': body = html`<${CorrelationsPage} state=${state} month=${month}/>`; break;
+        case 'refunds':  body = html`<${RefundsPage}  state=${state} dispatch=${dispatch} month=${month} requestAdd=${requestAdd}/>`; break;
+        case 'sales':    body = html`<${SalesPage}    state=${state} dispatch=${dispatch} month=${month} requestAdd=${requestAdd}/>`; break;
+        case 'expenses': body = html`<${ExpensesPage} state=${state} dispatch=${dispatch} month=${month} requestAdd=${requestAdd}/>`; break;
+        case 'disputes': body = html`<${DisputesPage} state=${state}/>`; break;
+        case 'import':   body = html`<${ImportPage}   state=${state} dispatch=${dispatch}/>`; break;
+        case 'upgrade':  body = html`<${UpgradePage}/>`; break;
+        case 'settings': body = html`<${SettingsPage} state=${state} dispatch=${dispatch} installable=${installable} onInstall=${onInstall}/>`; break;
+        default:         body = html`<${Dashboard}    state=${state} dispatch=${dispatch} month=${month} setMonth=${setMonth}/>`;
+      }
+
+      return html`
+        <div class="h-full flex">
+          <${Sidebar} page=${page} onNavigate=${setPage}/>
+          <div class="flex-1 flex flex-col min-w-0">
+            <${TopBar} page=${page} month=${month} setMonth=${setMonth} currency=${cur}/>
+            <main class="flex-1 overflow-auto scroll-thin px-4 sm:px-6 py-5 pb-24 md:pb-5">${body}</main>
+          </div>
+          <${MobileNav} page=${page} onNavigate=${setPage}/>
+        </div>`;
+    }
+
+    /* ===================================================================
+     * Bootstrap + service worker
+     * ================================================================= */
+
+    try {
+      const root = ReactDOM.createRoot(document.getElementById('app'));
+      root.render(html`<${App}/>`);
+    } catch (err) {
+      document.getElementById('boot-error-msg').textContent = err.stack || String(err);
+      document.getElementById('boot-error').style.display = 'block';
+      throw err;
+    }
+
+    if ('serviceWorker' in navigator && (location.protocol === 'http:' || location.protocol === 'https:')) {
+      navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('SW registration failed', err));
+    }
+    </script>
+  </body>
+</html>
