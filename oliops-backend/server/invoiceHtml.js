@@ -11,19 +11,34 @@ function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-function formatMoney(cents) {
-  return `$${(cents / 100).toFixed(2)}`;
+// ⚠️ FIX: this previously hardcoded "$" regardless of the business's
+// real currency — a genuine bug a Philippine-business customer caught
+// (every invoice showed "$591,200.00" instead of a peso amount, or vice
+// versa for a non-USD business). Now uses the real ISO 4217 currency
+// code from tax settings (see store.js's getTaxSettings(), defaults to
+// "USD" but genuinely supports GBP/EUR/AUD/PHP/CAD/JPY/etc. — any code
+// Intl.NumberFormat recognizes) via the standard Intl.NumberFormat
+// currency formatter — the same approach already used in
+// olicommerce-backend/server/recoveryEmail.js, applied here too so both
+// services are consistent.
+function formatMoney(cents, currency) {
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD" }).format((cents || 0) / 100);
+  } catch {
+    return `${currency || "USD"} ${((cents || 0) / 100).toFixed(2)}`;
+  }
 }
 
 export function renderInvoiceHtml(invoice, businessInfo) {
+  const currency = businessInfo?.currency || "USD";
   const rows = invoice.items
     .map(
       (item) => `
     <tr>
       <td>${escapeHtml(item.description)}</td>
       <td style="text-align:center;">${item.quantity}</td>
-      <td style="text-align:right;">${formatMoney(item.unitPriceCents)}</td>
-      <td style="text-align:right;">${formatMoney(item.quantity * item.unitPriceCents)}</td>
+      <td style="text-align:right;">${formatMoney(item.unitPriceCents, currency)}</td>
+      <td style="text-align:right;">${formatMoney(item.quantity * item.unitPriceCents, currency)}</td>
     </tr>`
     )
     .join("");
@@ -80,8 +95,8 @@ export function renderInvoiceHtml(invoice, businessInfo) {
     <tbody>${rows}</tbody>
   </table>
   <div class="totals">
-    ${invoice.subtotalCents !== undefined && invoice.taxCents ? `<div>Subtotal: ${formatMoney(invoice.subtotalCents)}</div><div>Tax (${invoice.taxRatePct}%): ${formatMoney(invoice.taxCents)}</div>` : ""}
-    <div class="grand">Total: ${formatMoney(invoice.totalCents)}</div>
+    ${invoice.subtotalCents !== undefined && invoice.taxCents ? `<div>Subtotal: ${formatMoney(invoice.subtotalCents, currency)}</div><div>Tax (${invoice.taxRatePct}%): ${formatMoney(invoice.taxCents, currency)}</div>` : ""}
+    <div class="grand">Total: ${formatMoney(invoice.totalCents, currency)}</div>
   </div>
   ${invoice.notes ? `<div class="notes"><strong>Notes:</strong> ${escapeHtml(invoice.notes)}</div>` : ""}
 </body>

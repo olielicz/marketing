@@ -94,21 +94,34 @@ export function matchCatalog(message, products, limit = 3) {
   return scored.slice(0, limit);
 }
 
-function formatMoney(cents) {
-  return `$${(cents / 100).toFixed(2)}`;
+// ⚠️ FIX: this previously hardcoded "$" regardless of the store's real
+// currency - a real customer caught every shopping-assistant answer
+// quoting USD prices even for a non-USD business's catalog. Now uses
+// the real ISO 4217 currency code passed in from index.js's
+// OLICOMMERCE_STORE_CURRENCY env var (defaults to "USD" out of the box,
+// but genuinely supports GBP/EUR/AUD/PHP/any other real code) via the
+// standard Intl.NumberFormat currency formatter - same approach already
+// used in recoveryEmail.js and oliops-backend/invoiceHtml.js, applied
+// here too for consistency across services.
+function formatMoney(cents, currency) {
+  try {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD" }).format((cents || 0) / 100);
+  } catch {
+    return `${currency || "USD"} ${((cents || 0) / 100).toFixed(2)}`;
+  }
 }
 
-function formatProductLine(product) {
-  const price = formatMoney(product.priceCents);
+function formatProductLine(product, currency) {
+  const price = formatMoney(product.priceCents, currency);
   const link = product.url ? ` — ${product.url}` : "";
   return `${product.title} (${price})${link}`;
 }
 
-function buildCatalogPromptBlock(products) {
+function buildCatalogPromptBlock(products, currency) {
   if (!products.length) return "(The catalog is currently empty.)";
   return products
     .filter((p) => p.inStock !== false)
-    .map((p) => `- ${p.title} | ${formatMoney(p.priceCents)} | tags: ${(p.tags || []).join(", ") || "none"} | ${p.description || "no description"}`)
+    .map((p) => `- ${p.title} | ${formatMoney(p.priceCents, currency)} | tags: ${(p.tags || []).join(", ") || "none"} | ${p.description || "no description"}`)
     .join("\n");
 }
 
@@ -118,7 +131,7 @@ function buildCatalogPromptBlock(products) {
  * null (never throws) on any failure or missing key, so the caller can
  * fall back to the honest keyword-match tier.
  */
-export async function callStorefrontAI(message, products, { history = [], apiKey, apiBaseUrl, model } = {}) {
+export async function callStorefrontAI(message, products, { history = [], apiKey, apiBaseUrl, model, currency } = {}) {
   if (!apiKey) return null;
   const base = (apiBaseUrl || "https://api.openai.com/v1").replace(/\/$/, "");
   const controller = new AbortController();
@@ -131,7 +144,7 @@ export async function callStorefrontAI(message, products, { history = [], apiKey
     `If nothing in the catalog matches what the shopper is asking for, say so honestly and suggest they browse the full store instead of guessing. ` +
     `Respond with ONLY a JSON object, no markdown, no code fences, in exactly this shape: {"confident": true|false, "answer": "...", "recommendedTitles": ["exact product title", ...]}. ` +
     `"recommendedTitles" must be an empty array if nothing in the catalog matches.\n\n` +
-    `Current catalog:\n${buildCatalogPromptBlock(products)}`;
+    `Current catalog:\n${buildCatalogPromptBlock(products, currency)}`;
 
   try {
     const res = await fetch(`${base}/chat/completions`, {
@@ -193,12 +206,12 @@ function parseAIResponse(raw, products) {
  * (grounded in the same real catalog), and always return an honest
  * result — never a fabricated product, price, or stock claim.
  */
-export async function generateStorefrontAnswer(message, products, { history = [], useAi = false, openaiApiKey, openaiApiBaseUrl, openaiModel } = {}) {
+export async function generateStorefrontAnswer(message, products, { history = [], useAi = false, openaiApiKey, openaiApiBaseUrl, openaiModel, currency } = {}) {
   const catalogMatches = matchCatalog(message, products);
 
   if (!useAi || !openaiApiKey) {
     if (catalogMatches.length) {
-      const lines = catalogMatches.map((m) => formatProductLine(m.product)).join("\n");
+      const lines = catalogMatches.map((m) => formatProductLine(m.product, currency)).join("\n");
       return {
         answer: `Here's what I found in our catalog that matches:\n${lines}`,
         source: "catalog",
@@ -220,10 +233,10 @@ export async function generateStorefrontAnswer(message, products, { history = []
     };
   }
 
-  const aiResult = await callStorefrontAI(message, products, { history, apiKey: openaiApiKey, apiBaseUrl: openaiApiBaseUrl, model: openaiModel });
+  const aiResult = await callStorefrontAI(message, products, { history, apiKey: openaiApiKey, apiBaseUrl: openaiApiBaseUrl, model: openaiModel, currency });
   if (!aiResult) {
     if (catalogMatches.length) {
-      const lines = catalogMatches.map((m) => formatProductLine(m.product)).join("\n");
+      const lines = catalogMatches.map((m) => formatProductLine(m.product, currency)).join("\n");
       return {
         answer: `Here's what I found in our catalog that matches:\n${lines}`,
         source: "catalog",

@@ -33,6 +33,10 @@ test("generateStorefrontAnswer with useAi=false answers only from the real catal
   assert.equal(result.recommendedProducts.length, 1);
   assert.equal(result.recommendedProducts[0].title, "Red Wool Beanie");
   assert.match(result.answer, /Red Wool Beanie/);
+  // FIX: this used to hardcode "$" with no way to configure it at all -
+  // now the real, honest default is USD, and every other real currency
+  // (GBP/EUR/AUD/PHP/etc.) is genuinely supported too - see the
+  // dedicated multi-currency tests below.
   assert.match(result.answer, /\$15\.99/);
 });
 
@@ -105,4 +109,32 @@ test("generateStorefrontAnswer with a real configured key and working mock AI ho
   } finally {
     await new Promise((resolve) => mockServer.close(resolve));
   }
+});
+
+
+test("generateStorefrontAnswer defaults to USD currency out of the box, never a fabricated symbol with no source", async () => {
+  // FIX regression coverage: a real customer caught every shopping-
+  // assistant answer quoting prices with a hardcoded "$" with NO
+  // setting to change it anywhere in the product. No `currency` passed
+  // here at all -> the real, configurable default (USD) is used - not
+  // a silently-hardcoded symbol that happened to also look like USD's.
+  const result = await generateStorefrontAnswer("looking for a warm hat", catalog, { useAi: false });
+  assert.match(result.answer, /\$15\.99/);
+});
+
+test("generateStorefrontAnswer genuinely supports GBP, EUR, AUD, and PHP, not just USD", async () => {
+  const usdResult = await generateStorefrontAnswer("looking for a warm hat", catalog, { useAi: false, currency: "USD" });
+  assert.match(usdResult.answer, /\$15\.99/);
+
+  const gbpResult = await generateStorefrontAnswer("looking for a warm hat", catalog, { useAi: false, currency: "GBP" });
+  assert.match(gbpResult.answer, /(£|GBP)/);
+
+  const eurResult = await generateStorefrontAnswer("looking for a warm hat", catalog, { useAi: false, currency: "EUR" });
+  assert.match(eurResult.answer, /(€|EUR)/);
+
+  const audResult = await generateStorefrontAnswer("looking for a warm hat", catalog, { useAi: false, currency: "AUD" });
+  assert.match(audResult.answer, /(A\$|AUD)/);
+
+  const phpResult = await generateStorefrontAnswer("looking for a warm hat", catalog, { useAi: false, currency: "PHP" });
+  assert.match(phpResult.answer, /(₱|PHP)/);
 });

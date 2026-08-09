@@ -260,6 +260,11 @@ test("storefront AI shopping assistant is public and answers only from the real 
     assert.equal(res.body.source, "catalog");
     assert.equal(res.body.confident, true);
     assert.match(res.body.answer, /Purple Scarf/);
+    // FIX: this used to hardcode "$" with no way to configure it - now
+    // this real /api/storefront/chat route passes OLICOMMERCE_STORE_CURRENCY
+    // (default "USD" out of the box, but genuinely configurable to
+    // GBP/EUR/AUD/PHP/etc.) through to formatMoney() - see
+    // storefrontAssistant.test.js's dedicated multi-currency tests.
     assert.match(res.body.answer, /\$19\.99/);
   } finally {
     await request("DELETE", `/api/products/${productId}`, { token: ownerToken });

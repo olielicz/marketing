@@ -563,20 +563,47 @@ export async function deleteExpense(id) {
 // supportAssistant.js's "never claim AI was used unless it genuinely
 // was": never claim a real tax rate was applied unless a human actually
 // set that rate.
+// ⚠️ FIX: a real Philippine-business customer found every printable
+// invoice showing a hardcoded "$" regardless of the business's actual
+// currency (confirmed: invoiceHtml.js's formatMoney() had "$" baked in
+// with no setting to change it anywhere in the product). Added a real,
+// owner-configurable `currency` field here (ISO 4217 code, e.g. "USD",
+// "GBP", "EUR", "AUD", "PHP") that invoiceHtml.js now reads via
+// getTaxSettings() and formats with the real Intl.NumberFormat currency
+// formatter — not another hardcoded symbol. Every ISO 4217 code
+// Intl.NumberFormat supports works here (USD/GBP/EUR/AUD/PHP/CAD/JPY/
+// etc.) — this is genuinely NOT limited to USD, it's simply the
+// out-of-the-box default until an owner configures their own via
+// PUT /api/tax-settings {"currency":"GBP"} (or whichever code applies).
+const TAX_SETTINGS_DEFAULTS = { taxName: "Tax", taxNumber: "", defaultRatePct: 0, defaultWithholdingRatePct: 0, employerName: "", employerTaxId: "", currency: "USD" };
+
 export async function getTaxSettings() {
   const db = readDb();
-  return db.taxSettings || { taxName: "Tax", taxNumber: "", defaultRatePct: 0, defaultWithholdingRatePct: 0, employerName: "", employerTaxId: "" };
+  return { ...TAX_SETTINGS_DEFAULTS, ...(db.taxSettings || {}) };
 }
 
 export async function updateTaxSettings(patch) {
   const db = readDb();
-  const current = db.taxSettings || { taxName: "Tax", taxNumber: "", defaultRatePct: 0, defaultWithholdingRatePct: 0, employerName: "", employerTaxId: "" };
+  const current = { ...TAX_SETTINGS_DEFAULTS, ...(db.taxSettings || {}) };
   const next = { ...current };
   if (patch.taxName !== undefined) next.taxName = String(patch.taxName).trim() || "Tax";
   if (patch.taxNumber !== undefined) next.taxNumber = String(patch.taxNumber).trim();
   if (patch.defaultRatePct !== undefined) {
     const rate = Number(patch.defaultRatePct);
     next.defaultRatePct = Number.isFinite(rate) && rate >= 0 ? rate : 0;
+  }
+  // Real ISO 4217 currency code (PHP, USD, EUR, GBP, AUD, ...) - validated
+  // against Intl.NumberFormat itself so an invalid code is rejected with a
+  // clear error instead of silently breaking every invoice's currency
+  // formatting later.
+  if (patch.currency !== undefined) {
+    const code = String(patch.currency).trim().toUpperCase();
+    try {
+      new Intl.NumberFormat("en-US", { style: "currency", currency: code });
+      next.currency = code;
+    } catch {
+      throw new Error(`"${code}" is not a valid ISO 4217 currency code (e.g. PHP, USD, EUR, GBP, AUD).`);
+    }
   }
   // Real, owner-configured default payroll withholding rate — same
   // honesty principle as defaultRatePct above: this app never guesses a

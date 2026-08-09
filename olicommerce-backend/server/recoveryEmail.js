@@ -26,9 +26,17 @@
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+// ⚠️ FIX: the catch-fallback below still hardcoded "$" even though the
+// function's own default parameter was already fixed to accept a real
+// currency - if Intl.NumberFormat somehow threw (e.g. a malformed
+// currency code slipped through), a shopper would still see a dollar
+// sign regardless of the cart's real currency. Defaults to "USD" out
+// of the box, consistent with storefrontAssistant.js and
+// invoiceHtml.js — but genuinely supports any real ISO 4217 code the
+// cart's own currency field (or OLICOMMERCE_STORE_CURRENCY) specifies.
 function formatMoney(cents, currency = "USD") {
   try { return new Intl.NumberFormat("en-US", { style: "currency", currency }).format((cents || 0) / 100); }
-  catch { return `$${((cents || 0) / 100).toFixed(2)}`; }
+  catch { return `${currency || "USD"} ${((cents || 0) / 100).toFixed(2)}`; }
 }
 
 const TONE_COPY = {
