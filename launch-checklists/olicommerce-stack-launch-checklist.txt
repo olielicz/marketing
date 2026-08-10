@@ -1,6 +1,6 @@
 OLICOMMERCE STACK — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
-Contact email: workitlikeapr01@gmail.com
+Contact email: YOUR_SUPPORT_GMAIL_ADDRESS
 Product: OliCommerce Stack (Shopify Cart Recovery + AI Shopping Assistant)
 Price: Subscription — Basic $29/mo or $264/yr, Growth $49/mo or $444/yr, Scale $89/mo or $804/yr — up to 5 device activations per license
 Repos bundled: ecomm-automation, project-2 (OliMind)
@@ -13,7 +13,7 @@ STEP 1 — GET THE CODE READY
 ============================================================
 [ ] 1.1 Confirm ecomm-automation and project-2 both run locally without errors
         (cd into each repo, npm install, npm test — all should pass)
-[ ] 1.2 Confirm each repo has a LICENSE file (MIT)
+[ ] 1.2 Confirm each repo has a LICENSE file (proprietary, all-rights-reserved — moved off MIT)
 [ ] 1.3 Set up a real Shopify development store (free, via partners.shopify.com) to test
         the webhook integration end to end before your first real customer connects their store
 [ ] 1.4 Confirm ecomm-automation's webhook endpoints (order-paid, cart-abandoned) work
@@ -84,7 +84,7 @@ STEP 5 — EMAIL (waitlist + delivery)
 [ ] 5.5 Automation -> Create a workflow -> Trigger: "contact added to OliCommerce Waitlist" ->
         load the 5 emails from email-sequence-olicommerce-stack.md with noted delays
 [ ] 5.6 Turn the workflow ON
-[ ] 5.7 Confirm workitlikeapr01@gmail.com is the inbox you check for buyer replies and
+[ ] 5.7 Confirm YOUR_SUPPORT_GMAIL_ADDRESS is the inbox you check for buyer replies and
         contact-page submissions (first contact-form submission triggers a one-time
         FormSubmit.co confirmation email — click "Confirm" once)
 
@@ -118,4 +118,4 @@ STEP 8 — GO LIVE
         are fully live and tested
 [ ] 8.3 Announce it — you're live.
 
-Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.
+Questions or stuck on any step? Email YOUR_SUPPORT_GMAIL_ADDRESS or use the /contact/ page.

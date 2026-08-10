@@ -4,7 +4,7 @@
   "private": true,
   "description": "Self-hosted serial-code activation server shared by OliOps, OliCommerce, OliFlow, and OliExplore. Zero npm dependencies.",
   "type": "module",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=18"
   },

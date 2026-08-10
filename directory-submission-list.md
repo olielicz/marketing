@@ -36,7 +36,10 @@ Do this in one batch (Day 4), ~2–3 hours total. Every listing below is free to
 
 **OliCommerce Stack** — Shopify Community forums (community.shopify.com); r/shopify, r/ecommerce
 
-**OliFlow Engine** — r/nocode, r/automation; "open source Zapier alternative" roundup articles (email authors requesting inclusion)
+<!-- FIX: OliFlow moved from MIT to a proprietary license - "open
+     source Zapier alternative" no longer accurately describes it.
+     Corrected the outreach framing below to "self-hosted" instead. -->
+**OliFlow Engine** — r/nocode, r/automation; "self-hosted Zapier alternative" roundup articles (email authors requesting inclusion)
 
 **OliExplore** — r/socialmedia, r/marketing, r/smallbusiness; social-media-tool roundup blogs; "Repurpose.io alternative" framing works well on Tier 1 sites
 

@@ -163,13 +163,18 @@
 
 <section class="wrap" id="contact">
   <h2>11. Contact</h2>
-  <p>Questions about this policy or a rights request? <a href="../contact/">Contact us</a> and select "Security &amp; privacy" as the topic, or email <strong>workitlikeapr01@gmail.com</strong> directly.</p>
+  <!-- FIX: masked-email pass - removed the raw address from this page's
+       source; data-oli-email-link is populated with the real mailto:
+       href/text at runtime by ../shared/contact-email.js (see
+       ../FORMSUBMIT_SETUP.md). -->
+  <p>Questions about this policy or a rights request? <a href="../contact/">Contact us</a> and select "Security &amp; privacy" as the topic, or email <strong><a data-oli-email-link href="#" rel="nofollow"></a></strong> directly.</p>
 </section>
 
 <footer class="oli-footer"><div class="wrap">
   💎 Oli Tools · <a href="../security/">Security</a> · <a href="../terms/">Terms</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
 </div></footer>
 
+<script src="../shared/contact-email.js"></script>
 <script src="../shared/cookie-consent.js"></script>
 
 

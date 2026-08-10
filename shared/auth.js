@@ -10,11 +10,21 @@
  *
  * ── EMAILJS SETUP (free, 5 minutes) ──────────────────────────────────────
  * 1. https://www.emailjs.com → Sign up free (200 emails/month free)
- * 2. Add service: Gmail → connect workitlikeapr01@gmail.com
+ * 2. Add service: Gmail → connect your support inbox (see
+ *    ../shared/contact-email.js for the masked address this file reads
+ *    from — it's no longer hardcoded here in plaintext)
  * 3. Create templates: oli_welcome, oli_renewal, oli_reset
  *    (full copy-paste template HTML for all 3 lives in
  *    EMAILJS-TEMPLATES.md at the repo root — NOT README.md)
  * 4. Copy Public Key + Service ID → paste in EMAILJS_CONFIG below
+ *
+ * FIX (masked-email pass): this file previously hardcoded the real
+ * support address as a plaintext literal in 3 places (passed as the
+ * support_email template param for welcome/renewal/reset emails). It
+ * now reads that address from window.OliContact (shared/contact-email.js)
+ * at call time instead — see that file for why. Load order matters: any
+ * page using auth.js must load shared/contact-email.js first (both
+ * scripts already ship together on every login/account page).
  * ─────────────────────────────────────────────────────────────────────────
  */
 
@@ -35,10 +45,15 @@
      (lowest) tier; each tool's buy/ page has the full tier breakdown. */
   var TOOLS = {
     'oliops': {
+      /* FIX: color/bg updated to the shared black+red brand palette
+         (../shared/theme.css) instead of 6 unrelated per-tool colors -
+         these fields aren't referenced elsewhere today, but keeping
+         them accurate avoids reintroducing a stale value if something
+         starts reading them later. */
       name:      'OliOps Suite',
       icon:      '💼',
-      color:     '#4f46e5',
-      bg:        '#eef2ff',
+      color:     '#ff3b4e',
+      bg:        '#fdecee',
       loginUrl:  '/oliops/login/',
       accountUrl:'/oliops/account/',
       toolUrl:   '/oliops/',
@@ -49,8 +64,8 @@
     'olicommerce': {
       name:      'OliCommerce Stack',
       icon:      '🛒',
-      color:     '#059669',
-      bg:        '#ecfdf5',
+      color:     '#e11d2e',
+      bg:        '#fdecee',
       loginUrl:  '/olicommerce/login/',
       accountUrl:'/olicommerce/account/',
       toolUrl:   '/olicommerce/',
@@ -61,8 +76,8 @@
     'oliflow': {
       name:      'OliFlow Automation Engine',
       icon:      '⚙️',
-      color:     '#ea580c',
-      bg:        '#fff7ed',
+      color:     '#c21526',
+      bg:        '#fdecee',
       loginUrl:  '/oliflow/login/',
       accountUrl:'/oliflow/account/',
       toolUrl:   '/oliflow/',
@@ -73,8 +88,8 @@
     'oliexplore': {
       name:      'OliExplore',
       icon:      '🧭',
-      color:     '#0d9488',
-      bg:        '#f0fdfa',
+      color:     '#a10e1f',
+      bg:        '#fdecee',
       loginUrl:  '/oliexplore/login/',
       accountUrl:'/oliexplore/account/',
       toolUrl:   '/oliexplore/',
@@ -83,22 +98,29 @@
       tagline:   'Social Media Studio — Collect, Recycle & Publish',
     },
     'oli-locator': {
+      /* FIX: was icon '🏡' / price '$59/mo or $516/yr' / tagline "Real
+         Estate CRM" - all stale from before Oli-Locator's real-estate
+         feature was removed (see oli-locator/index.html's fix comments).
+         This dict feeds real welcome/renewal-reminder emails sent to
+         paying customers via EmailJS, so the stale values weren't just
+         a display bug - they'd have been emailed to real customers.
+         Corrected to match the real buy-page tiers (Starter $29/mo). */
       name:      'Oli-Locator',
-      icon:      '🏡',
-      color:     '#2563eb',
-      bg:        '#eff6ff',
+      icon:      '🛠️',
+      color:     '#e11d2e',
+      bg:        '#fdecee',
       loginUrl:  '/oli-locator/login/',
       accountUrl:'/oli-locator/account/',
       toolUrl:   '/oli-locator/',
-      price:     '$59/mo or $516/yr',
+      price:     '$29/mo or $290/yr',
       type:      'monthly',
-      tagline:   'Real Estate CRM — USA, UK & Australia',
+      tagline:   'Home-Improvement Lead Finder — USA, UK & Australia',
     },
     'olisalestrack': {
       name:      'OliSalesTrack',
       icon:      '📊',
-      color:     '#7c3aed',
-      bg:        '#f5f3ff',
+      color:     '#6e0913',
+      bg:        '#fdecee',
       loginUrl:  '/olisalestrack/login/',
       accountUrl:'/olisalestrack/account/',
       toolUrl:   '/olisalestrack/',
@@ -293,7 +315,7 @@
         login_url:      params.loginUrl,
         order_ref:      params.orderRef,
         is_new_user:    params.isNewUser ? 'yes' : 'no',
-        support_email:  'workitlikeapr01@gmail.com',
+        support_email:  getSupportEmailForTemplate(),
       }).then(function () {
         console.log('[OliAuth] Welcome email sent to', params.toEmail);
       }).catch(function (err) {
@@ -320,7 +342,7 @@
         amount:       amount,
         cancel_url:   'https://www.paypal.com/myaccount/autopay/',
         login_url:    getAbsoluteUrl(tool.loginUrl),
-        support_email:'workitlikeapr01@gmail.com',
+        support_email:getSupportEmailForTemplate(),
       });
     });
   }
@@ -339,7 +361,7 @@
         to_name:       user.name || email.split('@')[0],
         tool_name:     tool.name,
         reset_url:     resetUrl,
-        support_email: 'workitlikeapr01@gmail.com',
+        support_email: getSupportEmailForTemplate(),
       });
     });
   }
@@ -481,6 +503,21 @@
     if (!path) return window.location.origin;
     if (path.startsWith('http')) return path;
     return window.location.origin + path;
+  }
+
+  /* FIX (masked-email pass): reads the real support address from
+     window.OliContact (shared/contact-email.js) instead of a hardcoded
+     plaintext literal. Falls back to a placeholder ONLY if that script
+     wasn't loaded on this page (it should be — every login/account page
+     ships it alongside auth.js), so a missing include fails loudly in
+     the sent email rather than silently reintroducing a hardcoded
+     address here. */
+  function getSupportEmailForTemplate() {
+    if (window.OliContact && typeof window.OliContact.getSupportEmail === 'function') {
+      return window.OliContact.getSupportEmail();
+    }
+    console.warn('[OliAuth] shared/contact-email.js was not loaded — add it alongside auth.js.');
+    return 'support-email-not-configured';
   }
 
   function toRelative(absolutePath) {

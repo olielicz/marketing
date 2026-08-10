@@ -4,7 +4,7 @@
   "private": true,
   "description": "Live webhook sync service for OliSalesTrack — receives Stripe, PayPal, and Shopify webhooks, normalizes them into sale/refund records, and exposes a pull API for the OliSalesTrack app. Replaces the CSV-only import path with real-time sync. Zero npm dependencies.",
   "type": "module",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=18"
   },

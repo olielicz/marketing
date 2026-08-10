@@ -67,7 +67,7 @@
   <div class="badge-row" style="justify-content:center;">
     <span class="badge">🔐 Scrypt password hashing</span>
     <span class="badge">🔍 Zero secrets found in any repo (audited)</span>
-    <span class="badge">📖 Open-source core (MIT)</span>
+    <span class="badge">🔒 Proprietary, licensed software</span>
     <span class="badge">🚫 No data sold, ever</span>
   </div>
 </section>
@@ -85,7 +85,10 @@
     <li><strong>Passwords are never stored in plain text.</strong> Every product that has user accounts (OliOps/OliCRM, OliCompute, OliFlow, Oli-Locator's backend, project-2/OliMind) hashes passwords with <code>scrypt</code> (a memory-hard, industry-standard algorithm) or <code>bcrypt</code>, each with a unique per-user salt.</li>
     <li><strong>Session tokens use timing-safe comparison.</strong> Login sessions are verified using constant-time comparison (<code>crypto.timingSafeEqual</code>), which protects against timing-attack side channels.</li>
     <li><strong>We manually audited every repo for leaked secrets</strong> — API keys, private keys, hardcoded credentials — before any tool was made available. None were found in the current codebases. (One historical issue was found and fixed — see "Past incident, disclosed" below. We're including it because hiding it would undercut everything else on this page.)</li>
-    <li><strong>Core code is open-source (MIT licensed).</strong> You — or a security professional you hire — can read exactly how each tool handles your data, rather than trusting a black box.</li>
+    <!-- FIX: was "Core code is open-source (MIT licensed)" - all Oli
+         tools switched from MIT to a proprietary, all-rights-reserved
+         license (see each repo's LICENSE file). Corrected below. -->
+    <li><strong>Code review on request.</strong> The software is proprietary and not published for public redistribution, but if you're doing security due diligence before buying, we can arrange a read-only review of the relevant code under a simple confidentiality agreement — <a href="../contact/">contact us</a> to set that up.</li>
     <li><strong>We do not sell customer data.</strong> Not to advertisers, not to data brokers, not to anyone. See the Privacy Policy for exactly what we do collect and why.</li>
   </ul>
 </section>
@@ -141,7 +144,11 @@
   <h2>Responsible disclosure</h2>
   <p>If you find a security issue in any Oli tool, please report it privately before disclosing publicly, so we have a chance to fix it first:</p>
   <ul class="check">
-    <li>Email <strong>workitlikeapr01@gmail.com</strong>, or use the <a href="../contact/">Contact page</a> and select "Security &amp; privacy"</li>
+    <!-- FIX: masked-email pass - removed the raw address from this
+         page's source; data-oli-email-link is populated with the real
+         mailto: href/text at runtime by ../shared/contact-email.js (see
+         ../FORMSUBMIT_SETUP.md). -->
+    <li>Email <strong><a data-oli-email-link href="#" rel="nofollow"></a></strong>, or use the <a href="../contact/">Contact page</a> and select "Security &amp; privacy"</li>
     <li>Include which tool, what you found, and steps to reproduce if possible</li>
     <li>We aim to acknowledge reports within 3 business days</li>
   </ul>
@@ -156,6 +163,7 @@
   💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
 </div></footer>
 
+<script src="../shared/contact-email.js"></script>
 <script src="../shared/cookie-consent.js"></script>
 
 

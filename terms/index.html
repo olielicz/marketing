@@ -61,7 +61,7 @@
     <a href="#acceptable-use">4. Acceptable use</a>
     <a href="#availability">5. Availability &amp; uptime</a>
     <a href="#liability">6. Limitation of liability</a>
-    <a href="#opensource">7. Open-source components</a>
+    <a href="#license-scope">7. Proprietary software — no redistribution</a>
     <a href="#termination">8. Termination</a>
     <a href="#changes">9. Changes to these terms</a>
     <a href="#law">10. Governing law</a>
@@ -83,8 +83,17 @@
 <section class="wrap" id="devices">
   <h2>2. The 5-device limit, explained</h2>
   <p>Each subscription (OliOps, OliCommerce, OliFlow, OliExplore) includes one serial code, activatable on up to 5 devices at a time while your subscription is active. You can deactivate an old device yourself at any time to free up a slot for a new one — no need to contact us for routine device swaps. See each product's FAQ or the <a href="../support/">Support &amp; Troubleshooting</a> page for how.</p>
+  <!-- FIX: was "because the underlying code...is open-source (MIT
+       licensed), the device limit is enforced in good faith" - all Oli
+       tools switched from MIT to a proprietary, all-rights-reserved
+       license (see each repo's LICENSE file), so this no longer
+       describes the real licensing basis. Kept the same honest
+       disclosure that device-limit enforcement isn't unbreakable
+       copy-protection (that's still true - a self-hosted app has no
+       way to enforce a hard device cap against a determined user), just
+       corrected the reason given. -->
   <div class="card">
-    <p style="margin:0;"><strong>Honest note on enforcement:</strong> because the underlying code for these tools is open-source (MIT licensed), the device limit is enforced in good faith, not through unbreakable copy-protection. We're trusting our customers to license fairly, the same way most small independent software makers do. Deliberately circumventing the device limit isn't something we can technically prevent 100% of the time, but it is a breach of these Terms and may result in license revocation.</p>
+    <p style="margin:0;"><strong>Honest note on enforcement:</strong> the device limit is enforced in good faith, not through unbreakable copy-protection — a self-hosted application has no way to technically guarantee a hard device cap against a determined user. We're trusting our customers to license fairly, the same way most small independent software makers do. The underlying code is proprietary and licensed, not open-source; deliberately circumventing the device limit, or copying/redistributing the software outside your license, is a breach of these Terms (see Section 7) and may result in license revocation and legal action.</p>
   </div>
 </section>
 
@@ -119,9 +128,16 @@
   <p>Self-hosted tools are provided "as is." We provide the software; you are responsible for how you configure, secure, and operate it on your own infrastructure — see the <a href="../security/">Security page</a> for what's on you vs. what's built in.</p>
 </section>
 
-<section class="wrap" id="opensource">
-  <h2>7. Open-source components</h2>
-  <p>The core code of OliOps Suite, OliCommerce Stack, OliFlow Engine, and OliExplore is released under the MIT License. Your purchase pays for the packaged, ready-to-run build, updates, and support — not an exclusive license to code that is otherwise freely readable. See each product's repository LICENSE file for the exact terms of the underlying open-source license, which take precedence over these Terms for anything specifically covered by the MIT License (e.g. your right to read, modify, and self-host the code).</p>
+<!-- FIX: this section previously described the core code of 4 tools as
+     MIT-licensed, granting purchasers a right to read/modify/self-host
+     the underlying source. All Oli tools have since moved to a
+     proprietary, all-rights-reserved license (see each repo's LICENSE
+     file) — rewritten below to describe the real licensing terms
+     instead of a stale open-source claim. -->
+<section class="wrap" id="license-scope">
+  <h2>7. Proprietary software — no redistribution or reverse-engineering</h2>
+  <p>OliOps Suite, OliCommerce Stack, OliFlow Engine, OliExplore, Oli-Locator, and OliSalesTrack are proprietary, all-rights-reserved software. Your purchase grants you a limited, non-exclusive, non-transferable license to run the packaged software for your own business use, for as long as your subscription is active — it does not grant you ownership of the code, a right to redistribute it, or a right to use it to build a competing product. See the LICENSE file included with each self-hosted tool for the exact terms.</p>
+  <p>Specifically, you may not, without our prior written permission: copy or redistribute the software in whole or in part; reverse-engineer, decompile, or disassemble it; remove or alter copyright/proprietary notices; or use it (or any derivative of it) to build a competing product or service.</p>
 </section>
 
 <section class="wrap" id="termination">
@@ -141,13 +157,18 @@
 
 <section class="wrap" id="contact">
   <h2>11. Contact</h2>
-  <p>Questions about these Terms? <a href="../contact/">Contact us</a> or email <strong>workitlikeapr01@gmail.com</strong> directly.</p>
+  <!-- FIX: masked-email pass - removed the raw address from this page's
+       source; data-oli-email-link is populated with the real mailto:
+       href/text at runtime by ../shared/contact-email.js (see
+       ../FORMSUBMIT_SETUP.md). -->
+  <p>Questions about these Terms? <a href="../contact/">Contact us</a> or email <strong><a data-oli-email-link href="#" rel="nofollow"></a></strong> directly.</p>
 </section>
 
 <footer class="oli-footer"><div class="wrap">
   💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../security/">Security</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
 </div></footer>
 
+<script src="../shared/contact-email.js"></script>
 <script src="../shared/cookie-consent.js"></script>
 
 

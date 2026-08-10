@@ -1,6 +1,6 @@
 OLI-LOCATOR — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
-Contact email: workitlikeapr01@gmail.com
+Contact email: YOUR_SUPPORT_GMAIL_ADDRESS
 Product: Oli-Locator (hosted home-improvement lead-generation tool — leads, inbox, call center)
 Price: Subscription — Starter $29/mo or $290/yr, Pro $79/mo or $790/yr, Agency $199/mo or $1990/yr — hosted SaaS, no device cap (login-based)
 Repo: lead-gen
@@ -122,7 +122,7 @@ STEP 6 — EMAIL (demo requests + delivery)
         personal walkthrough first?"), swap in your real embed code
 [ ] 6.4 This form is for demo requests, not a drip sequence — set up a simple notification
         so you see new demo requests promptly (Brevo can email you on new list signups)
-[ ] 6.5 Confirm workitlikeapr01@gmail.com is the inbox you check for demo requests and
+[ ] 6.5 Confirm YOUR_SUPPORT_GMAIL_ADDRESS is the inbox you check for demo requests and
         contact-page submissions (first submission triggers a one-time FormSubmit.co
         confirmation email — click "Confirm" once)
 
@@ -158,4 +158,4 @@ STEP 9 — GO LIVE
         are fully live and tested
 [ ] 9.3 Announce it — you're live.
 
-Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.
+Questions or stuck on any step? Email YOUR_SUPPORT_GMAIL_ADDRESS or use the /contact/ page.

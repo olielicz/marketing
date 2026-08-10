@@ -60,45 +60,85 @@
   <h1>We read every message</h1>
   <p class="sub">Billing question, something's broken, a security concern, or you just want to talk before buying — pick the right channel below or use the form and we'll route it internally. Oli Tools is a product line by <strong>WorkItLikeAPro</strong>.</p>
   <p id="sent-banner" style="display:none; margin-top:18px;"><span style="background:var(--good-wash); color:#047857; font-weight:700; padding:10px 18px; border-radius:8px; display:inline-block;">✅ Message sent — thanks, we'll get back to you soon.</span></p>
+  <p id="tool-context-banner" style="display:none; margin-top:14px; font-size:13.5px; color:var(--sub);"></p>
   <script>
     if (window.location.search.includes('sent=1')) {
       document.getElementById('sent-banner').style.display = 'block';
     }
+    /* FIX: pre-select the "Which tool is this about?" dropdown when a
+       visitor arrives via a tool-specific "Contact Us" link, e.g.
+       ../contact/?tool=oliflow — instead of always defaulting to the
+       first option regardless of which page sent them here.
+       BUG FIX: this originally ran immediately, but the <select
+       id="ct-product"> lives further down the page and didn't exist in
+       the DOM yet at this point in parsing — querying for it here
+       always returned null, so the pre-select silently did nothing.
+       Deferred to DOMContentLoaded so the form has actually rendered. */
+    document.addEventListener('DOMContentLoaded', function () {
+      var toolKey = new URLSearchParams(window.location.search).get('tool');
+      if (!toolKey) return;
+      var select = document.getElementById('ct-product');
+      var banner = document.getElementById('tool-context-banner');
+      if (!select) return;
+      var matched = select.querySelector('option[data-tool-key="' + toolKey + '"]');
+      if (matched) {
+        matched.selected = true;
+        if (banner) {
+          banner.textContent = '📌 Pre-filled for ' + matched.textContent + ' — change the dropdown below if that\'s not right.';
+          banner.style.display = 'block';
+        }
+      }
+    });
   </script>
+  <!-- FIX: the contact links/form below need ../shared/contact-email.js
+       to run (it fills in the real mailto: links and form action= at
+       runtime, so the address isn't stored as plaintext in this file —
+       see FORMSUBMIT_SETUP.md). If JavaScript is disabled, show a
+       fallback instead of a silently broken form. -->
+  <noscript>
+    <p class="sub" style="margin-top:18px;color:var(--bad);">This page needs JavaScript enabled to load our contact details securely. Please enable JavaScript, or reach out via any of our product pages' social links.</p>
+  </noscript>
 </section>
 
 <section class="wrap">
   <div class="grid">
     <div class="routes">
+      <!-- FIX: masked-email pass - the real support address is no longer
+           written as plaintext in this file. Each <a data-oli-email-link>
+           below is populated with the real mailto: href + visible text at
+           runtime by ../shared/contact-email.js, so the address never
+           appears in this page's static HTML source. See
+           ../FORMSUBMIT_SETUP.md for the one-time step that also removes
+           it from that JS file's own source. -->
       <div class="route-card">
         <span class="icon">🛠️</span>
         <h3>Technical support</h3>
         <p>Something's not working, setup help, or a bug report. Check the <a href="../support/">Troubleshooting Guide</a> first — most issues are covered there and you'll get a faster answer.</p>
-        <span class="email">workitlikeapr01@gmail.com</span>
+        <a class="email" data-oli-email-link href="#" rel="nofollow"></a>
       </div>
       <div class="route-card">
         <span class="icon">💳</span>
         <h3>Billing &amp; licensing</h3>
         <p>Refunds, receipts, moving your license to a new device, or payment issues.</p>
-        <span class="email">workitlikeapr01@gmail.com</span>
+        <a class="email" data-oli-email-link href="#" rel="nofollow"></a>
       </div>
       <div class="route-card">
         <span class="icon">🔒</span>
         <h3>Security &amp; privacy</h3>
         <p>Report a security issue (see our <a href="../security/">responsible disclosure process</a>) or a data/privacy request under GDPR.</p>
-        <span class="email">workitlikeapr01@gmail.com</span>
+        <a class="email" data-oli-email-link href="#" rel="nofollow"></a>
       </div>
       <div class="route-card">
         <span class="icon">🤝</span>
         <h3>Partnerships &amp; press</h3>
         <p>Reseller inquiries, integration partnerships, or media requests.</p>
-        <span class="email">workitlikeapr01@gmail.com</span>
+        <a class="email" data-oli-email-link href="#" rel="nofollow"></a>
       </div>
       <div class="route-card">
         <span class="icon">💬</span>
         <h3>Pre-sale questions</h3>
         <p>Not sure which tool fits, or have a question before buying? Ask away — no pressure, no sales calls required.</p>
-        <span class="email">workitlikeapr01@gmail.com</span>
+        <a class="email" data-oli-email-link href="#" rel="nofollow"></a>
       </div>
     </div>
 
@@ -109,9 +149,16 @@
       <!--
         This form uses FormSubmit.co — a free, no-backend form-to-email service. No account,
         no API key, and no code needed on your end. How it works:
-        1. The form POSTs directly to https://formsubmit.co/workitlikeapr01@gmail.com
+        1. FIX (masked-email pass): the form's action= is no longer a
+           hardcoded plaintext email. ../shared/contact-email.js sets
+           real action="https://formsubmit.co/<address-or-hash>" at
+           runtime via the data-oli-contact-form attribute below, so the
+           address doesn't appear in this file's static source. See
+           ../FORMSUBMIT_SETUP.md for the one-time step to upgrade this
+           to FormSubmit's hash-based endpoint, which removes the real
+           address from the repo entirely.
         2. The FIRST time anyone submits this form, FormSubmit.co sends a one-time confirmation
-           email to workitlikeapr01@gmail.com — click "Confirm" in that email once, and every
+           email to the configured inbox — click "Confirm" in that email once, and every
            submission after that is delivered straight to the inbox automatically.
         3. _subject sets the email subject line; _template=table formats the fields as a clean
            table instead of raw text; _captcha=false skips their optional captcha step (turn it
@@ -119,7 +166,7 @@
            friendly confirmation page after submitting instead of FormSubmit's default page.
         4. Docs / more options: https://formsubmit.co/
       -->
-      <form id="oli-contact-form" method="POST" action="https://formsubmit.co/workitlikeapr01@gmail.com">
+      <form id="oli-contact-form" data-oli-contact-form method="POST" action="#">
         <input type="hidden" name="_subject" value="New message from Oli Tools contact page">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
@@ -136,13 +183,17 @@
         <input type="email" id="ct-email" name="_replyto" placeholder="you@company.com" required>
 
         <label for="ct-product">Which tool is this about?</label>
+        <!-- FIX: added data-tool-key on each option so a landing page's
+             "Contact Us" link (e.g. ../contact/?tool=oliflow) can
+             pre-select the right product instead of always defaulting
+             to the first option — see the pre-select script below. -->
         <select id="ct-product" name="Product">
-          <option value="OliOps Suite">OliOps Suite</option>
-          <option value="OliCommerce Stack">OliCommerce Stack</option>
-          <option value="OliFlow Automation Engine">OliFlow Automation Engine</option>
-          <option value="OliExplore">OliExplore</option>
-          <option value="Oli-Locator">Oli-Locator</option>
-          <option value="OliSalesTrack">OliSalesTrack</option>
+          <option value="OliOps Suite" data-tool-key="oliops">OliOps Suite</option>
+          <option value="OliCommerce Stack" data-tool-key="olicommerce">OliCommerce Stack</option>
+          <option value="OliFlow Automation Engine" data-tool-key="oliflow">OliFlow Automation Engine</option>
+          <option value="OliExplore" data-tool-key="oliexplore">OliExplore</option>
+          <option value="Oli-Locator" data-tool-key="oli-locator">Oli-Locator</option>
+          <option value="OliSalesTrack" data-tool-key="olisalestrack">OliSalesTrack</option>
           <option value="Not sure / general question">Not sure / general question</option>
         </select>
 
@@ -170,6 +221,7 @@
   💎 Oli Tools by WorkItLikeAPro · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../security/">Security</a> · <a href="../support/">Support</a> · <a href="../">All Tools</a>
 </div></footer>
 
+<script src="../shared/contact-email.js"></script>
 <script src="../shared/cookie-consent.js"></script>
 
 

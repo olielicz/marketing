@@ -5,7 +5,7 @@
   "keywords": [
     "n8n-community-node-package"
   ],
-  "license": "MIT",
+  "license": "UNLICENSED",
   "homepage": "https://github.com/olielicz/marketing/tree/main/integration-server/n8n-node",
   "author": {
     "name": "olielicz"
