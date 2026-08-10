@@ -1,3 +1,10 @@
+
+> **STATUS: DONE.** `FORMSUBMIT_HASH` in `shared/contact-email.js` is now
+> set, so the contact form's `action=` URL uses the hash instead of the
+> raw email. The steps below are kept for reference / in case the hash
+> ever needs to be regenerated (e.g. if the FormSubmit form is
+> deactivated or recreated).
+
 # One-time setup: fully masking the contact-form destination
 
 The contact form (`contact/index.html`) and every "email us" link across the
