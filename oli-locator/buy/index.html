@@ -3,26 +3,30 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Subscribe — Oli-Locator</title>
-<meta name="description" content="Subscribe to Oli-Locator. 59/month or 516/year. Secure checkout via Paddle and PayPal."/>
+<meta name="description" content="Subscribe to Oli-Locator. From $29/month. Secure checkout via Stripe and PayPal."/>
 <meta name="robots" content="noindex"/>
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<link rel="stylesheet" href="../../shared/theme.css">
 <style>
-:root{--ink:#14161a;--sub:#55606e;--bg:#fafafa;--card:#fff;--line:#e7e9ee;
-  --accent:#2563eb;--accent2:#0891b2;--good:#16a34a;--bad:#dc2626;}
+/* FIX: retheme pass - color tokens now come from ../../shared/theme.css
+   (one black+red design system shared across all 6 tools) instead of
+   this page's own blue/cyan :root block. See that file's header
+   comment for the rationale. */
 *{box-sizing:border-box;}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;}
-a{color:var(--accent);}
 .wrap{max-width:900px;margin:0 auto;padding:0 24px;}
-header.nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0;}
-.logo{font-weight:800;font-size:20px;}
-nav a{margin-left:20px;color:var(--sub);text-decoration:none;font-size:14px;font-weight:600;}
+header.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;
+  background:rgba(13,14,18,0.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-dark);}
+header.nav .logo{color:#fff;}
+header.nav nav a{color:var(--sub-invert);}
+header.nav nav a:hover{color:#fff;}
 main{padding:40px 0 80px;}
 .page-title{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:0 0 8px;}
 .page-sub{color:var(--sub);font-size:15px;margin:0 0 28px;}
 /* Toggle */
 .toggle-wrap{display:flex;align-items:center;gap:12px;margin-bottom:28px;
-  background:#f4f2ff;border-radius:12px;padding:8px 14px;width:fit-content;}
+  background:var(--accent-wash);border-radius:12px;padding:8px 14px;width:fit-content;}
 .toggle-wrap span{font-weight:600;font-size:.9rem;}
 .toggle-switch{position:relative;width:46px;height:26px;cursor:pointer;}
 .toggle-switch input{opacity:0;width:0;height:0;}
@@ -79,26 +83,24 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
 .pay-btn{display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:13px;border-radius:10px;font-weight:700;font-size:15px;
   text-decoration:none;margin-bottom:10px;border:none;cursor:pointer;}
-.pay-btn.paddle{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.pay-btn.paddle{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:var(--glow-red-soft);}
 .pay-btn.paddle:hover{opacity:.92;}
 .pay-btn.stripe{background:linear-gradient(135deg,#635bff,#4338ca);color:#fff;}
 .pay-btn.stripe:hover{opacity:.92;}
 .paypal-wrap{margin-bottom:12px;min-height:48px;}
-.success-box{display:none;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;
+.success-box{display:none;background:var(--good-wash);border:1px solid #6ee7b7;border-radius:10px;
   padding:14px;text-align:center;font-size:13.5px;color:#047857;margin-bottom:10px;}
 .cancel-note,.error-note{display:none;border-radius:8px;padding:9px 12px;font-size:13px;margin-top:6px;}
 .cancel-note{background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;}
-.error-note{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+.error-note{background:#fef2f2;border:1px solid #fecaca;color:var(--bad);}
 .trust-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
   font-size:11.5px;color:var(--sub);margin-top:14px;}
 .pay-note{font-size:12px;color:var(--sub);text-align:center;margin-top:12px;line-height:1.5;}
-footer{text-align:center;padding:40px 0;color:var(--sub);font-size:13px;}
-footer a{color:var(--sub);}
 </style>
 </head>
 <body>
 <header class="wrap nav">
-  <div class="logo">🏡 Oli-Locator</div>
+  <div class="logo">🛠️ Oli-Locator</div>
   <nav>
     <a href="../">← Back to Oli-Locator</a>
     <a href="../../">All Oli Tools</a>
@@ -107,50 +109,60 @@ footer a{color:var(--sub);}
 <main class="wrap">
   <div style="margin-bottom:24px;">
     <h1 class="page-title">Choose Your Plan</h1>
-    <!-- FIX (updated): real AU support now exists in lead-gen (see
-         ../index.html's fix comment for full context) - restored. -->
-    <p class="page-sub">Real Estate CRM — USA, UK &amp; Australia</p>
+    <!-- FIX: this page previously marketed a "Real Estate CRM" with
+         "Solo Agent"/"Team" plan names. The real-estate feature has
+         been removed from the underlying app entirely — Oli-Locator is
+         now a home-improvement lead-generation tool. Plan names/prices
+         below now match lead-gen/pricing.html's real Starter/Pro/Agency
+         tiers exactly, instead of a separate, disconnected set of names
+         and prices that don't correspond to anything the real app
+         actually offers. -->
+    <p class="page-sub">Home-Improvement Lead Finder — USA, UK &amp; Australia</p>
     <div class="toggle-wrap">
       <span>Monthly</span>
       <label class="toggle-switch">
         <input type="checkbox" id="billingToggle"/>
         <span class="toggle-slider"></span>
       </label>
-      <span>Yearly <span class="save-badge">Save 27%</span></span>
+      <span>Yearly <span class="save-badge">Save ~17%</span></span>
     </div>
   </div>
 
   <!-- Plan selector -->
   <div class="plans-grid" id="plansGrid">
-    <div class="plan-card selected" data-idx="0" onclick="selectPlan(0)">
-
-      <div class="pop-tag">⭐ Most Popular</div>
-      <div class="plan-name">Solo Agent</div>
-      <div class="plan-price-monthly">$59<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
-      <div class="plan-price-yearly" style="display:none">$516<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
-      <div class="plan-period" id="period-0">$<span class="pm">59</span>/month · <span class="py" style="display:none">$516/yr = $<span>43</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For independent agents & small teams</div>
+    <div class="plan-card" data-idx="0" onclick="selectPlan(0)">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price-monthly">$29<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$290<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-0">$<span class="pm">29</span>/month · <span class="py" style="display:none">$290/yr = $<span>24</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">For solo trades testing the waters — 1 country</div>
     </div>
-    <div class="plan-card " data-idx="1" onclick="selectPlan(1)">
-
-      <div class="plan-name">Team</div>
-      <div class="plan-price-monthly">$119<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
-      <div class="plan-price-yearly" style="display:none">$1068<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
-      <div class="plan-period" id="period-1">$<span class="pm">119</span>/month · <span class="py" style="display:none">$1068/yr = $<span>89</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For brokerages with up to 10 agents</div>
+    <div class="plan-card selected" data-idx="1" onclick="selectPlan(1)">
+      <div class="pop-tag">⭐ Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price-monthly">$79<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$790<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-1">$<span class="pm">79</span>/month · <span class="py" style="display:none">$790/yr = $<span>66</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">For busy contractors — all 3 countries, unlimited search</div>
+    </div>
+    <div class="plan-card " data-idx="2" onclick="selectPlan(2)">
+      <div class="plan-name">Agency</div>
+      <div class="plan-price-monthly">$199<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$1990<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-2">$<span class="pm">199</span>/month · <span class="py" style="display:none">$1990/yr = $<span>166</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">For teams &amp; lead resellers — up to 10 seats + API</div>
     </div>
   </div>
 
   <div class="grid">
     <!-- Summary -->
     <div class="summary-card">
-      <div class="line"><span id="sumPlan">Solo Agent</span><span id="sumBilling">billed monthly</span></div>
+      <div class="line"><span id="sumPlan">Pro</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
-      <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$59/mo</span></div>
+      <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$79/mo</span></div>
       <ul class="included">
-      <li>Property search — USA, UK &amp; Australia</li>
-      <li>Lead generation + opt-in forms</li>
-      <li>Unified inbox (all conversations)</li>
+      <li>Lead generation across 11 trades — USA, UK &amp; Australia</li>
+      <li>Opt-in "Request a Quote" Inbox + saved searches</li>
       <li>Call center — use your own phone app</li>
       <li>Unlimited devices (login-based)</li>
       <li>Cancel anytime, no contract</li>
@@ -161,7 +173,7 @@ footer a{color:var(--sub);}
     <!-- Payment -->
     <div class="pay-card">
       <h2>Pay securely</h2>
-      <div class="due-now" id="dueNow" style="color:var(--accent);">$59<span style="font-size:1rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="due-now" id="dueNow" style="color:var(--accent);">$79<span style="font-size:1rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="email-field">
         <label for="buyerEmail">Your Email Address</label>
         <input type="email" id="buyerEmail" placeholder="you@company.com" required
@@ -181,31 +193,31 @@ footer a{color:var(--sub);}
           🎉 <strong>Payment successful!</strong> Login details are being sent to your email.
           Reference: <strong id="paypal-ref-id"></strong>
           <div style="margin-top:10px;">
-            <a href="../login/" style="display:inline-block;background:linear-gradient(135deg,#2563eb,#0891b2);color:#fff;text-decoration:none;padding:9px 20px;border-radius:8px;font-weight:700;font-size:13.5px;">Sign In to Your Account →</a>
+            <a href="../login/" style="display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;padding:9px 20px;border-radius:8px;font-weight:700;font-size:13.5px;">Sign In to Your Account →</a>
           </div>
         </div>
         <div id="paypal-cancel-note" class="cancel-note">Payment cancelled. No charge was made.</div>
         <div id="paypal-error-note" class="error-note">⚠️ Payment error. Please try again or <a href="../../contact/">contact support</a>.</div>
       </div>
-      <div class="pay-note">All major cards, digital wallets & PayPal accepted. First 14 days free — you won't be charged until the trial ends.</div>
+      <div class="pay-note">All major cards, digital wallets &amp; PayPal accepted. First 7 days free — you won't be charged until the trial ends.</div>
       <div class="trust-row">
         <span>🔒 256-bit SSL</span>
-        <span>🎁 14-day free trial</span>
+        <span>🎁 7-day free trial</span>
         <span>❌ Cancel anytime</span>
       </div>
     </div>
   </div>
 
   <div style="max-width:600px;margin:24px auto 0;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:13px;color:#92400e;">
-    <strong>💡 vs competitors:</strong> Follow Up Boss at $69–$499/mo (CRM only, no leads or calling included)
+    <strong>💡 vs competitors:</strong> Angi Leads charges ~$300/yr membership + $15–$85+ per individual lead (many pros spend $300–$2,500/mo); Thumbtack averages $20–$60 per lead. Oli-Locator is flat-rate — no per-lead charges, ever.
   </div>
 </main>
 
-<footer class="wrap">
-  🏡 Oli-Locator — WorkItLikeAPro ·
+<footer class="oli-footer"><div class="wrap">
+  🛠️ Oli-Locator — WorkItLikeAPro ·
   <a href="../../privacy/">Privacy</a> · <a href="../../terms/">Terms</a> ·
   <a href="../../contact/">Support</a> · <a href="../../">All Tools</a>
-</footer>
+</div></footer>
 
 <script src="../../shared/auth.js"></script>
 <script src="../../shared/paypal-sdk.js"></script>
@@ -220,13 +232,17 @@ footer a{color:var(--sub);}
 // and shared/paypal-sdk.js's PRICE_IDS/PLAN_IDS[toolKey] tier keys
 // exactly) so the correct-amount fix below can tell the SDKs exactly
 // which tier x billing-period the customer has selected.
+// FIX (updated): tier names/prices now match lead-gen/pricing.html's
+// real Starter/Pro/Agency plans exactly, since the previous "Solo
+// Agent"/"Team" real-estate-framed tiers no longer correspond to
+// anything the real app offers.
 const TOOL_KEY = 'oli-locator';
-const PLANS = [{"key":"solo-agent","name":"Solo Agent","mo":"59","yr":"516","yr_mo":"43"},{"key":"team","name":"Team","mo":"119","yr":"1068","yr_mo":"89"}];
-let selectedPlan = 0;
+const PLANS = [{"key":"starter","name":"Starter","mo":"29","yr":"290","yr_mo":"24"},{"key":"pro","name":"Pro","mo":"79","yr":"790","yr_mo":"66"},{"key":"agency","name":"Agency","mo":"199","yr":"1990","yr_mo":"166"}];
+let selectedPlan = 1;
 let isYearly = false;
 
 // See oliops/buy/index.html's comment on this same line.
-window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: PLANS[0].key, period: 'monthly' };
+window.OliSelectedPlan = { toolKey: TOOL_KEY, tierKey: PLANS[1].key, period: 'monthly' };
 
 // Select plan
 function selectPlan(idx) {
@@ -253,7 +269,7 @@ function updateSummary() {
   document.getElementById('sumBilling').textContent = isYearly ? `${plan.yr}/yr (${plan.yr_mo}/mo)` : `${plan.mo}/mo`;
   document.getElementById('sumCycle').textContent = cycleLabel;
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
-  document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
+  document.getElementById('sumLabel').textContent = 'Due today (7-day free trial)';
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
 
   // FIX: see oliops/buy/index.html's comment on this same fix - this is
@@ -268,11 +284,11 @@ function updateSummary() {
 document.addEventListener('DOMContentLoaded', () => {
   // FIX: read an optional ?plan= query param, same as oliops/olicommerce/
   // oliflow's buy pages, so a future landing-page link tied to a
-  // specific tier (e.g. "?plan=team") preselects the right card instead
-  // of always defaulting to index 0.
-  const PLAN_QUERY_TO_INDEX = { 'solo-agent': 0, 'team': 1 };
+  // specific tier (e.g. "?plan=agency") preselects the right card
+  // instead of always defaulting to the same index.
+  const PLAN_QUERY_TO_INDEX = { 'starter': 0, 'pro': 1, 'agency': 2 };
   const requestedPlan = new URLSearchParams(location.search).get('plan');
-  const initialIdx = PLAN_QUERY_TO_INDEX.hasOwnProperty(requestedPlan) ? PLAN_QUERY_TO_INDEX[requestedPlan] : 0;
+  const initialIdx = PLAN_QUERY_TO_INDEX.hasOwnProperty(requestedPlan) ? PLAN_QUERY_TO_INDEX[requestedPlan] : 1;
   selectPlan(initialIdx);
   // FIX: removed a redundant addEventListener('click', ...) here on top
   // of each .plan-card's existing inline onclick="selectPlan(idx)"

@@ -47,6 +47,12 @@ export function resolveTemplate(template, context) {
     if (path === "date") return context.date;
     if (path === "workflow_id") return context.workflowId ?? "";
     if (path === "execution_id") return context.executionId ?? "";
+    // Real (not decorative) support for the "loop" node's per-iteration
+    // index — see handlers/logicNodes.js's runLoopNode(), which sets
+    // context.index for each item it processes. Absent outside a loop
+    // iteration (undefined), matching every other "unknown path" case
+    // below rather than silently returning 0.
+    if (path === "index" && context.index !== undefined) return String(context.index);
 
     if (path.startsWith("trigger.")) {
       const value = getPath(context.trigger, path.slice("trigger.".length));
@@ -101,6 +107,38 @@ export function resolveTemplateDeep(value, context) {
     return out;
   }
   return value;
+}
+
+/**
+ * Node types with no dedicated config-panel UI in the frontend (see
+ * oliflow/app/index.html's renderCpSettings() `default:` case) get a
+ * generic "Configuration (JSON)" textarea instead, saved as
+ * node.config.json (a JSON STRING, since saveNodeConfig() just copies
+ * every cp-* input's raw .value). Every new node type added in this pass
+ * uses that same generic fallback (no new frontend config panel was
+ * built for each of the 37 new types individually — that would be a
+ * much larger frontend change). This helper makes every new handler
+ * tolerant of BOTH shapes: a real structured config object (e.g. if a
+ * future dedicated panel is added, or a workflow JSON is authored/
+ * imported directly with a proper object), or today's generic
+ * `{ json: '{"...": "..."}' }` string fallback — never crashes on
+ * invalid JSON, just falls back to an empty object so a handler's own
+ * field-specific validation can produce an honest, specific error
+ * instead of an opaque parse exception.
+ */
+export function normalizeNodeConfig(config) {
+  if (!config) return {};
+  if (typeof config.json === "string" && config.json.trim()) {
+    try {
+      const parsed = JSON.parse(config.json);
+      if (parsed && typeof parsed === "object") return { ...config, ...parsed };
+    } catch {
+      // Invalid JSON in the fallback textarea — fall through and let the
+      // caller's own required-field checks produce a specific, honest
+      // error rather than throwing here.
+    }
+  }
+  return config;
 }
 
 export function buildBaseContext({ workflowId, executionId, trigger, vars, nodeOutputsByLabel }) {

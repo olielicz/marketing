@@ -5,18 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust & Security Center — Oli Tools</title>
 <meta name="description" content="How Oli Tools handles security, data protection, and GDPR compliance across OliOps Suite, OliCommerce Stack, OliFlow Engine, OliExplore, and Oli-Locator — explained honestly, with no overclaiming.">
+<link rel="stylesheet" href="../shared/theme.css">
 <style>
-  :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --accent:#4f46e5; --good:#16a34a; --warn:#d97706; }
+  /* FIX: retheme pass - color tokens now come from ../shared/theme.css
+     (one black+red design system shared across all 6 tools + root
+     pages) instead of this page's own indigo :root block. See that
+     file's header comment for the rationale. */
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.65; -webkit-font-smoothing:antialiased; }
-  a { color: var(--accent); }
   .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
-  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
-  .logo { font-weight:800; font-size:20px; }
-  nav a { margin-left:20px; color: var(--sub); text-decoration: none; font-size: 14px; font-weight: 600; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; position:sticky; top:0; z-index:60; background:rgba(13,14,18,0.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-dark); }
+  .logo { font-weight:800; font-size:20px; color:#fff; }
+  nav a { margin-left:20px; color: var(--sub-invert); text-decoration: none; font-size: 14px; font-weight: 600; }
+  nav a:hover { color:#fff; }
   .hero { padding: 56px 0 24px; text-align:center; }
-  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#eef2ff; color:#3730a3; font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:20px; }
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--accent-wash); color:var(--accent-dark); font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:20px; }
   h1 { font-size: 40px; margin: 0 0 14px; letter-spacing:-0.02em; }
   .sub { color: var(--sub); font-size: 17px; max-width: 640px; margin: 0 auto; }
   section { padding: 36px 0; border-top: 1px solid var(--line); }
@@ -32,14 +36,12 @@
   ul.check li:before { content: "✓"; position: absolute; left: 0; color: var(--good); font-weight: 800; }
   ul.cross { list-style: none; padding: 0; margin: 0; }
   ul.cross li { padding: 8px 0; padding-left: 28px; position: relative; }
-  ul.cross li:before { content: "✕"; position: absolute; left: 0; color: #dc2626; font-weight: 800; }
+  ul.cross li:before { content: "✕"; position: absolute; left: 0; color: var(--bad); font-weight: 800; }
   table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14.5px; }
   th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); }
   th { background: #f4f4f6; font-weight: 700; }
   .badge-row { display:flex; gap:10px; flex-wrap:wrap; margin: 20px 0; }
   .badge { background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; }
-  footer { text-align: center; padding: 40px 0; color: var(--sub); font-size: 13px; }
-  footer a { color: var(--sub); margin: 0 8px; }
 </style>
 
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
@@ -54,7 +56,7 @@
     <a href="../privacy/">Privacy</a>
     <a href="../support/">Support</a>
     <a href="../contact/">Contact</a>
-    <a href="../login/" style="color:#4f46e5;font-weight:700;font-size:14px;">Sign In</a>
+    <a href="../login/" style="color:#ffb3ba;font-weight:700;font-size:14px;">Sign In</a>
   </nav>
 </header>
 
@@ -150,9 +152,9 @@
   <p>Every product page has its own FAQ covering device licensing and payment security. For anything not covered there or here, <a href="../contact/">contact us</a> — security/privacy questions are one of the categories you can flag directly.</p>
 </section>
 
-<footer class="wrap">
+<footer class="oli-footer"><div class="wrap">
   💎 Oli Tools · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
-</footer>
+</div></footer>
 
 <script src="../shared/cookie-consent.js"></script>
 

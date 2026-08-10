@@ -97,9 +97,9 @@
             "@type": "SoftwareApplication",
             "name": "Oli-Locator",
             "url": "https://olielicz.github.io/marketing/oli-locator/",
-            "description": "Real estate CRM for solo agents — USA, UK & Australia. From $59/month.",
+            "description": "Home-improvement lead finder — USA, UK & Australia. From $29/month.",
             "applicationCategory": "BusinessApplication",
-            "offers": { "@type": "Offer", "price": "59", "priceCurrency": "USD", "billingIncrement": "month" }
+            "offers": { "@type": "Offer", "price": "29", "priceCurrency": "USD", "billingIncrement": "month" }
           }
         },
         {
@@ -118,20 +118,27 @@
   ]
 }
 </script>
+<link rel="stylesheet" href="shared/theme.css">
 <style>
-  :root { --ink:#0f1115; --sub:#5a6472; --bg:#fafafa; --card:#fff; --line:#e7e9ee; }
+  /* FIX: retheme pass - color tokens now come from shared/theme.css (one
+     black+red design system shared across all 6 tools + this root
+     index) instead of this page's own near-black-only :root block with
+     6 different per-tile accent colors (indigo/green/orange/teal/blue/
+     purple). Tiles below now use a single red family, in 6 distinguishable
+     shades, instead of 6 unrelated hues - see the header comment in
+     shared/theme.css for the full rationale. */
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
   a { color: inherit; text-decoration: none; }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; }
-  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; position:sticky; top:0; z-index:60; background:rgba(13,14,18,0.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-dark); }
+  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; color:#fff; }
   .hero { padding: 72px 0 56px; text-align:center; position:relative; overflow:hidden; }
-  .hero:before { content:""; position:absolute; top:-200px; left:50%; transform:translateX(-50%); width:1000px; height:560px; background:radial-gradient(ellipse at center, rgba(124,58,237,0.10), transparent 70%); pointer-events:none; }
-  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#f4f2ff; color:#5b21b6; font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:24px; border:1px solid #e2d9fb; }
-  h1 { font-size:50px; line-height:1.12; margin:0 0 18px; letter-spacing:-0.025em; font-weight:800; }
-  .sub-headline { font-size:19px; color:var(--sub); max-width:640px; margin:0 auto; }
+  .hero-surface { position:relative; overflow:hidden; padding-bottom:1px; }
+  .hero-surface:before { content:""; position:absolute; top:-200px; left:50%; transform:translateX(-50%); width:1000px; height:560px; background:radial-gradient(ellipse at center, rgba(225,29,46,0.26), transparent 70%); pointer-events:none; }
+  h1 { font-size:50px; line-height:1.12; margin:0 0 18px; letter-spacing:-0.025em; font-weight:800; color:#fff; }
+  .sub-headline { font-size:19px; color:var(--sub-invert); max-width:640px; margin:0 auto; }
   section { padding: 20px 0 72px; }
   .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
   @media (max-width: 960px) { .grid { grid-template-columns: repeat(2, 1fr); } }
@@ -140,26 +147,28 @@
     display: block; background: var(--card); border: 1px solid var(--line); border-radius: 18px;
     padding: 30px; transition: transform .18s, box-shadow .18s; position: relative; overflow: hidden;
   }
-  .tile:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -16px rgba(15,17,21,0.15); }
+  .tile:hover { transform: translateY(-5px); box-shadow: var(--shadow-card-hover); }
   .tile .gem { font-size: 30px; margin-bottom: 16px; display:block; }
   .tile h2 { font-size: 20px; margin: 0 0 8px; letter-spacing: -0.01em; }
   .tile p.tag { color: var(--sub); font-size: 14.5px; margin: 0 0 18px; min-height: 44px; }
   .tile .price { font-weight: 800; font-size: 15px; display:flex; align-items:center; gap: 8px; }
   .tile .price .arrow { transition: transform .15s; }
   .tile:hover .price .arrow { transform: translateX(4px); }
-  .tile.ops { border-top: 4px solid #4f46e5; }
-  .tile.ops .price { color: #4f46e5; }
-  .tile.commerce { border-top: 4px solid #059669; }
-  .tile.commerce .price { color: #059669; }
-  .tile.flow { border-top: 4px solid #ea580c; }
-  .tile.flow .price { color: #ea580c; }
-  .tile.explore { border-top: 4px solid #0d9488; }
-  .tile.explore .price { color: #0d9488; }
-  .tile.locator { border-top: 4px solid #2563eb; }
-  .tile.locator .price { color: #2563eb; }
-  .tile.salestrack { border-top: 4px solid #7c3aed; }
-  .tile.salestrack .price { color: #7c3aed; }
-  footer { text-align:center; padding: 40px 0; color: var(--sub); font-size: 13px; }
+  /* Six shades within the red/black brand family, bright-to-dark, so
+     each tile is still visually distinguishable at a glance without
+     reintroducing six unrelated hues. */
+  .tile.ops { border-top: 4px solid #ff3b4e; }
+  .tile.ops .price { color: #e11d2e; }
+  .tile.commerce { border-top: 4px solid #e11d2e; }
+  .tile.commerce .price { color: #c21526; }
+  .tile.flow { border-top: 4px solid #c21526; }
+  .tile.flow .price { color: #a10e1f; }
+  .tile.explore { border-top: 4px solid #a10e1f; }
+  .tile.explore .price { color: #8f0c1a; }
+  .tile.locator { border-top: 4px solid #8f0c1a; }
+  .tile.locator .price { color: #6e0913; }
+  .tile.salestrack { border-top: 4px solid #6e0913; }
+  .tile.salestrack .price { color: #4d0710; }
 </style>
 
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
@@ -167,24 +176,26 @@
 </head>
 <body>
 
+<div class="oli-dark-surface hero-surface">
 <header class="wrap nav">
   <div class="logo">💎 Oli Tools</div>
   <nav style="display:flex; gap:16px; align-items:center;">
-    <a href="#tools">Features</a>
-    <a href="#pricing">Pricing</a>
-    <a href="./contact/" style="font-weight:700;">Contact Us</a>
-    <a href="./security/">Security</a>
-    <a href="./support/">Support</a>
-    <a href="./login/" style="color:#4f46e5;font-weight:700;">Sign In</a>
-    <a href="./account/" style="background:#4f46e5;color:#fff!important;font-size:13px;font-weight:700;padding:7px 15px;border-radius:8px;text-decoration:none;">My Account</a>
+    <a href="#tools" style="color:var(--sub-invert);">Features</a>
+    <a href="#pricing" style="color:var(--sub-invert);">Pricing</a>
+    <a href="./contact/" style="font-weight:700;color:var(--sub-invert);">Contact Us</a>
+    <a href="./security/" style="color:var(--sub-invert);">Security</a>
+    <a href="./support/" style="color:var(--sub-invert);">Support</a>
+    <a href="./login/" style="color:#ffb3ba;font-weight:700;">Sign In</a>
+    <a href="./account/" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff!important;font-size:13px;font-weight:700;padding:7px 15px;border-radius:8px;text-decoration:none;box-shadow:var(--glow-red-soft);">My Account</a>
   </nav>
 </header>
 
 <section class="hero wrap">
   <div class="eyebrow">💎 6 tools. Each one cheaper than the competition — on a subscription that makes sense.</div>
-  <h1>Small tools. Sharp problems.<br>Real business gems.</h1>
+  <h1>Small tools. Sharp problems.<br><span class="hl">Real business gems.</span></h1>
   <p class="sub-headline">Every tool below solves one expensive, everyday business headache — priced significantly lower than established competitors. Monthly or annual subscriptions, cancel anytime. No task limits, no lifetime-deal uncertainty. Pick the one built for you.</p>
 </section>
+</div>
 
 <section class="wrap">
   <div class="grid">
@@ -213,13 +224,15 @@
       <div class="price">$27/mo or $252/yr <span class="arrow">→</span></div>
     </a>
     <a class="tile locator" href="./oli-locator/">
-      <span class="gem">💎</span>
+      <span class="gem">🛠️</span>
       <h2>Oli-Locator</h2>
-      <!-- FIX (updated): real AU support now exists in lead-gen (see
-           oli-locator/index.html's fix comment for full context) -
-           restored. -->
-      <p class="tag">Leads, property search (USA/UK/Australia), inbox, and call center. Follow Up Boss starts at $69/mo for CRM alone.</p>
-      <div class="price">$59/mo or $516/yr <span class="arrow">→</span></div>
+      <!-- FIX: this tile previously described Oli-Locator as a
+           real-estate CRM with property search. The real-estate feature
+           has been removed entirely from the underlying app - Oli-Locator
+           is now a home-improvement lead-generation tool (cleaning, pest
+           control, renovation, roofing, and more), covering USA/UK/AU. -->
+      <p class="tag">Home-improvement leads (USA/UK/Australia), inbox, and call center — flat rate, no per-lead fees. Angi Leads charges $15-$85+ per lead.</p>
+      <div class="price">$29/mo or $290/yr <span class="arrow">→</span></div>
     </a>
     <a class="tile salestrack" href="./olisalestrack/">
       <span class="gem">📊</span>
@@ -230,16 +243,16 @@
   </div>
 </section>
 
-<footer class="wrap">
+<footer class="oli-footer"><div class="wrap">
   💎 Oli Tools — a product portfolio by <strong>WorkItLikeAPro</strong>. MIT-licensed core tools where noted.
   <div style="margin-top:10px;">
-    <a href="./security/" style="color:var(--sub); margin:0 8px;">Security</a> ·
-    <a href="./privacy/" style="color:var(--sub); margin:0 8px;">Privacy</a> ·
-    <a href="./terms/" style="color:var(--sub); margin:0 8px;">Terms</a> ·
-    <a href="./support/" style="color:var(--sub); margin:0 8px;">Support</a> ·
-    <a href="./contact/" style="color:var(--sub); margin:0 8px;">Contact</a>
+    <a href="./security/" style="margin:0 8px;">Security</a> ·
+    <a href="./privacy/" style="margin:0 8px;">Privacy</a> ·
+    <a href="./terms/" style="margin:0 8px;">Terms</a> ·
+    <a href="./support/" style="margin:0 8px;">Support</a> ·
+    <a href="./contact/" style="margin:0 8px;">Contact</a>
   </div>
-</footer>
+</div></footer>
 
 <script src="./shared/cookie-consent.js"></script>
 

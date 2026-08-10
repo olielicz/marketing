@@ -1,0 +1,176 @@
+/* ============================================================
+   Oli Tools — shared design system (black + red, professional)
+   ============================================================
+   Single source of truth for the visual identity across all 6
+   tools + the root marketing site. Previously every page (25
+   HTML files) hardcoded its own :root block with a different
+   accent color per tool (indigo, green, orange, teal, blue,
+   purple) and dozens of duplicated inline hex values — this file
+   replaces that with one deliberate, cohesive brand: a premium
+   dark hero/nav/footer treatment with a refined red accent,
+   set against clean, readable light content sections (the same
+   pattern used by Stripe/Linear/Vercel-style SaaS marketing
+   sites) rather than a loud, all-red page that would read as
+   aggressive rather than professional.
+
+   Usage: <link rel="stylesheet" href="../shared/theme.css"> (or
+   "../../shared/theme.css" from a buy/login/account page's
+   deeper nesting) BEFORE a page's own <style> block, so the
+   page's own rules can still add page-specific layout without
+   needing to redeclare color tokens.
+   ============================================================ */
+
+:root {
+  /* Core neutrals */
+  --ink: #0d0e12;          /* near-black text/hero background */
+  --ink-soft: #16181d;     /* secondary dark surface (cards on dark bg) */
+  --sub: #5a6472;          /* secondary/body text on light backgrounds */
+  --sub-invert: #a8adb8;   /* secondary text on dark backgrounds */
+  --bg: #fafafa;           /* page background (light sections) */
+  --card: #ffffff;         /* card background (light sections) */
+  --line: #e7e9ee;         /* light hairline borders */
+  --line-dark: rgba(255,255,255,0.08); /* hairline borders on dark bg */
+
+  /* Brand accent — a deep, confident red (not a pure/aggressive
+     red) paired with black for gradients and glow effects. */
+  --accent: #e11d2e;       /* primary red */
+  --accent2: #a10e1f;      /* deep red, gradient end / hover */
+  --accent-bright: #ff3b4e; /* brighter red for glows/highlights on dark bg */
+  --accent-dark: #8f0c1a;  /* darkest red, active/pressed states */
+  --accent-wash: #fdecee;  /* very light red tint, for badges/highlights on light bg */
+
+  /* Status colors — kept as universal UX convention (green=good,
+     red=bad) rather than forced into the brand palette, since
+     overriding "success = green" would hurt usability more than
+     it would help brand consistency. */
+  --good: #16a34a;
+  --good-wash: #ecfdf3;
+  --bad: #dc2626;
+  --warn: #d97706;
+
+  /* Elevation / effects */
+  --shadow-card: 0 1px 3px rgba(13,14,18,0.06);
+  --shadow-card-hover: 0 20px 40px -16px rgba(13,14,18,0.16);
+  --glow-red: 0 0 0 1px rgba(225,29,46,0.15), 0 18px 40px -12px rgba(225,29,46,0.45);
+  --glow-red-soft: 0 8px 24px -8px rgba(225,29,46,0.35);
+
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+/* ------------------------------------------------------------
+   Base
+------------------------------------------------------------ */
+.oli-theme, body {
+  color: var(--ink);
+  background: var(--bg);
+}
+.oli-theme a, body a { color: var(--accent); }
+.oli-theme a:hover, body a:hover { color: var(--accent2); }
+
+/* ------------------------------------------------------------
+   Dark hero / nav / footer surface — the "black" half of the
+   brand. Used for the top nav bar, hero section, and footer, so
+   every page opens and closes on the same premium dark note
+   regardless of which tool it is.
+------------------------------------------------------------ */
+.oli-dark-surface {
+  background: radial-gradient(120% 140% at 15% -10%, rgba(225,29,46,0.20), transparent 55%),
+              radial-gradient(100% 120% at 100% 0%, rgba(161,14,31,0.16), transparent 50%),
+              linear-gradient(180deg, #0d0e12 0%, #14161b 100%);
+  color: #f5f5f7;
+}
+.oli-dark-surface .sub, .oli-dark-surface p { color: var(--sub-invert); }
+.oli-dark-surface a { color: #ffb3ba; }
+
+/* Nav (dark, sticky) */
+.oli-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0; position: sticky; top: 0; z-index: 60;
+  background: rgba(13,14,18,0.82); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line-dark);
+}
+.oli-nav .logo { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: #fff; display: flex; align-items: center; gap: 8px; }
+.oli-nav .logo span { color: var(--accent-bright); }
+.oli-nav nav a { margin-left: 22px; color: var(--sub-invert); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .15s; }
+.oli-nav nav a:hover { color: #fff; }
+.oli-nav nav a.all-tools { color: var(--accent-bright); }
+.oli-nav nav a.buy-now {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff !important; padding: 9px 18px; border-radius: var(--radius-sm);
+  box-shadow: var(--glow-red-soft);
+}
+.oli-nav nav a.buy-now:hover { filter: brightness(1.08); }
+
+/* Primary CTA button — red gradient with a real glow, the
+   signature "fancy" touch used across every tool's hero/pricing. */
+.cta-btn {
+  display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff !important; padding: 15px 28px; border-radius: 11px;
+  font-weight: 700; text-decoration: none; font-size: 15.5px; border: none; cursor: pointer;
+  box-shadow: var(--glow-red);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.cta-btn:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 0 0 1px rgba(225,29,46,0.2), 0 26px 48px -14px rgba(225,29,46,0.55); }
+.cta-btn.ghost {
+  background: transparent; border: 1.5px solid rgba(255,255,255,0.22); color: #fff !important; box-shadow: none;
+}
+.cta-btn.ghost:hover { background: rgba(255,255,255,0.06); transform: none; }
+.cta-btn.on-light { box-shadow: var(--glow-red-soft); }
+.cta-btn.on-light.ghost { border: 1.5px solid var(--line); color: var(--ink) !important; }
+.cta-btn.on-light.ghost:hover { background: var(--accent-wash); }
+
+/* Eyebrow pill (hero badge) */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(225,29,46,0.14); color: #ff8f98;
+  font-size: 13.5px; font-weight: 700; padding: 8px 16px; border-radius: 999px;
+  margin-bottom: 22px; border: 1px solid rgba(225,29,46,0.28);
+}
+.eyebrow.on-light { background: var(--accent-wash); color: var(--accent2); border-color: #fbd0d5; }
+
+/* Gradient headline highlight */
+.hl {
+  background: linear-gradient(135deg, #ff5a63, var(--accent));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ------------------------------------------------------------
+   Light content sections — cards, pricing, FAQ. Kept bright and
+   clean for readability; red only appears as an accent (borders,
+   icons, checkmarks-on-hover, the featured-plan card) rather than
+   as the dominant fill, matching the "touch of red" brief.
+------------------------------------------------------------ */
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); border-color: #f6c9cd; }
+.card .icon { font-size: 30px; margin-bottom: 14px; display: block; }
+
+.price-card.featured {
+  border: 2px solid var(--accent); background: linear-gradient(165deg, #fff, var(--accent-wash));
+  box-shadow: var(--glow-red-soft);
+}
+.price-card .tag {
+  background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff;
+}
+
+/* Section backgrounds sometimes need a dark "banner" mid-page
+   (feature callouts, comparisons) — reuse the same dark surface
+   token so those moments feel intentional, not randomly colored. */
+.dark-banner {
+  background: linear-gradient(160deg, #14161b, #0d0e12);
+  color: #fff; border-radius: 20px; padding: 44px;
+}
+.dark-banner .sub, .dark-banner p { color: var(--sub-invert); }
+
+/* Checkmarks / good indicators stay green (universal convention);
+   red is reserved for brand chrome, not repurposed for "success". */
+.check-good::before { content: "✓ "; color: var(--good); font-weight: 800; }
+
+footer.oli-footer {
+  background: var(--ink); color: var(--sub-invert); text-align: center; padding: 44px 0; font-size: 13px;
+}
+footer.oli-footer a { color: var(--sub-invert); }
+footer.oli-footer a:hover { color: #fff; }

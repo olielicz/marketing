@@ -5,50 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Account — Oli-Locator</title>
 <meta name="robots" content="noindex,nofollow"/>
+<link rel="stylesheet" href="../../shared/theme.css">
 <style>
+/* FIX: retheme pass - color tokens now come from ../../shared/theme.css
+   (one black+red design system shared across all 6 tools) instead of
+   this page's own hardcoded blue/cyan hex values (this page had no
+   :root layer at all before). See that file's header comment for the
+   rationale. */
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#f4f4f8;min-height:100vh;color:#14161a;-webkit-font-smoothing:antialiased;}
-a{color:#2563eb;text-decoration:none;}
+  background:#f4f4f8;min-height:100vh;color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;}
 
 /* ── Topbar ── */
-.topbar{background:#fff;border-bottom:1px solid #e7e9ee;height:60px;
+.topbar{background:#fff;border-bottom:1px solid var(--line);height:60px;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 24px;position:sticky;top:0;z-index:50;
   box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .topbar-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
 .topbar-icon{width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,#2563eb,#0891b2);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   display:flex;align-items:center;justify-content:center;font-size:16px;}
 .topbar-right{display:flex;align-items:center;gap:12px;}
-.topbar-email{font-size:13px;color:#55606e;max-width:190px;
+.topbar-email{font-size:13px;color:var(--sub);max-width:190px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-logout{background:transparent;border:1.5px solid #e7e9ee;
+.btn-logout{background:transparent;border:1.5px solid var(--line);
   border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;
-  cursor:pointer;color:#55606e;transition:all .2s;}
-.btn-logout:hover{border-color:#dc2626;color:#dc2626;}
+  cursor:pointer;color:var(--sub);transition:all .2s;}
+.btn-logout:hover{border-color:var(--bad);color:var(--bad);}
 
 /* ── Layout ── */
 .page{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
 .page-heading{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
-.page-sub{color:#55606e;font-size:14.5px;margin-bottom:24px;}
+.page-sub{color:var(--sub);font-size:14.5px;margin-bottom:24px;}
 
 /* ── Status banner ── */
-.status-banner{background:linear-gradient(135deg,#eff6ff,#2563eb12);
-  border:1px solid #bfdbfe;border-radius:14px;padding:18px 22px;
+.status-banner{background:linear-gradient(135deg,var(--accent-wash),#fff);
+  border:1px solid #fbd0d5;border-radius:14px;padding:18px 22px;
   margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 .status-icon{font-size:32px;}
 .status-title{font-weight:800;font-size:15px;margin-bottom:2px;}
-.status-meta{font-size:13px;color:#55606e;}
+.status-meta{font-size:13px;color:var(--sub);}
 .status-badge{display:inline-flex;align-items:center;gap:5px;
-  background:#2563eb18;color:#2563eb;border-radius:100px;
+  background:var(--accent-wash);color:var(--accent-dark);border-radius:100px;
   padding:4px 12px;font-size:12px;font-weight:700;margin-top:6px;}
 
 /* ── Cards ── */
-.card{background:#fff;border:1px solid #e7e9ee;border-radius:16px;
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;
   padding:22px;margin-bottom:18px;}
-.card-title{font-size:14px;font-weight:700;color:#14161a;
+.card-title{font-size:14px;font-weight:700;color:var(--ink);
   margin-bottom:16px;display:flex;align-items:center;gap:7px;}
 .card-title-icon{font-size:17px;}
 
@@ -59,36 +65,36 @@ a{color:#2563eb;text-decoration:none;}
 /* ── Features list ── */
 .feature-list{list-style:none;}
 .feature-list li{padding:8px 0;border-bottom:1px solid #f4f4f8;
-  font-size:14px;color:#55606e;display:flex;align-items:center;gap:8px;}
+  font-size:14px;color:var(--sub);display:flex;align-items:center;gap:8px;}
 .feature-list li:last-child{border:none;}
-.feature-list li::before{content:"✓";color:#2563eb;font-weight:800;}
+.feature-list li::before{content:"✓";color:var(--good);font-weight:800;}
 
 /* ── Form fields ── */
-.form-label{display:block;font-size:12px;font-weight:700;color:#55606e;
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--sub);
   margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
-.form-input{width:100%;padding:10px 13px;border:1.5px solid #e7e9ee;
-  border-radius:9px;font-size:14px;font-family:inherit;color:#14161a;
+.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--line);
+  border-radius:9px;font-size:14px;font-family:inherit;color:var(--ink);
   background:#fff;margin-bottom:13px;transition:border .2s;}
-.form-input:focus{border-color:#2563eb;outline:none;
-  box-shadow:0 0 0 3px #eff6ff;}
-.form-input[readonly]{background:#f9f9fc;cursor:default;color:#55606e;}
+.form-input:focus{border-color:var(--accent);outline:none;
+  box-shadow:0 0 0 3px var(--accent-wash);}
+.form-input[readonly]{background:#f9f9fc;cursor:default;color:var(--sub);}
 .pwd-wrap{position:relative;margin-bottom:13px;}
 .pwd-wrap .form-input{margin-bottom:0;padding-right:42px;}
 .pwd-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;color:#55606e;font-size:15px;}
-.pwd-reqs{font-size:12px;color:#55606e;margin-top:3px;margin-bottom:11px;
+  background:none;border:none;cursor:pointer;color:var(--sub);font-size:15px;}
+.pwd-reqs{font-size:12px;color:var(--sub);margin-top:3px;margin-bottom:11px;
   display:flex;gap:10px;flex-wrap:wrap;}
-.pwd-reqs span.met{color:#16a34a;}
+.pwd-reqs span.met{color:var(--good);}
 
 /* ── Buttons ── */
 .btn{padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:700;
   cursor:pointer;border:none;transition:all .2s;}
-.btn-primary{background:linear-gradient(135deg,#2563eb,#0891b2);color:#fff;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
 .btn-primary:hover{opacity:.9;transform:translateY(-1px);}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.btn-secondary{background:transparent;border:1.5px solid #e7e9ee;color:#55606e;}
-.btn-secondary:hover{border-color:#2563eb;color:#2563eb;}
-.btn-danger{background:transparent;border:1.5px solid #fecaca;color:#dc2626;}
+.btn-secondary{background:transparent;border:1.5px solid var(--line);color:var(--sub);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:transparent;border:1.5px solid #fecaca;color:var(--bad);}
 .btn-danger:hover{background:#fef2f2;}
 .btn-sm{padding:7px 14px;font-size:13px;}
 
@@ -96,27 +102,27 @@ a{color:#2563eb;text-decoration:none;}
 .alert{padding:10px 13px;border-radius:9px;font-size:13px;
   margin-bottom:12px;display:none;}
 .alert.show{display:block;}
-.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;}
-.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+.alert-success{background:var(--good-wash);border:1px solid #bbf7d0;color:var(--good);}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:var(--bad);}
 
 /* ── Orders table ── */
 .orders-table{width:100%;border-collapse:collapse;font-size:13px;}
 .orders-table th{text-align:left;padding:8px 10px;font-size:11px;
-  text-transform:uppercase;letter-spacing:.05em;color:#55606e;
-  border-bottom:1px solid #e7e9ee;}
+  text-transform:uppercase;letter-spacing:.05em;color:var(--sub);
+  border-bottom:1px solid var(--line);}
 .orders-table td{padding:10px;border-bottom:1px solid #f4f4f8;}
 .orders-table tr:last-child td{border:none;}
 .badge{display:inline-flex;align-items:center;border-radius:100px;
   padding:2px 8px;font-size:11px;font-weight:700;}
-.badge-active{background:#ecfdf5;color:#16a34a;}
-.badge-sub{background:#eff6ff;color:#2563eb;}
+.badge-active{background:var(--good-wash);color:var(--good);}
+.badge-sub{background:var(--accent-wash);color:var(--accent-dark);}
 
 /* ── Subscription info ── */
 .sub-row{display:flex;align-items:center;justify-content:space-between;
   padding:12px 0;border-bottom:1px solid #f4f4f8;flex-wrap:wrap;gap:10px;}
 .sub-row:last-child{border:none;}
 .sub-name{font-weight:600;font-size:14px;}
-.sub-detail{font-size:12px;color:#55606e;margin-top:2px;}
+.sub-detail{font-size:12px;color:var(--sub);margin-top:2px;}
 
 /* ── Spinner ── */
 .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
@@ -125,11 +131,11 @@ a{color:#2563eb;text-decoration:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── Support box ── */
-.support-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;
+.support-box{background:var(--accent-wash);border:1px solid #fbd0d5;border-radius:12px;
   padding:16px 18px;display:flex;align-items:center;justify-content:space-between;
   flex-wrap:wrap;gap:12px;}
-.support-text{font-size:13.5px;color:#55606e;}
-.support-text strong{color:#14161a;}
+.support-text{font-size:13.5px;color:var(--sub);}
+.support-text strong{color:var(--ink);}
 </style>
 
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
@@ -140,7 +146,7 @@ a{color:#2563eb;text-decoration:none;}
 <!-- ── Topbar ── -->
 <header class="topbar">
   <div class="topbar-brand">
-    <div class="topbar-icon">🏡</div>
+    <div class="topbar-icon">🛠️</div>
     <span>Oli-Locator</span>
   </div>
   <div class="topbar-right">
@@ -157,13 +163,15 @@ a{color:#2563eb;text-decoration:none;}
 
   <!-- ── Status banner ── -->
   <div class="status-banner">
-    <div class="status-icon">🏡</div>
+    <div class="status-icon">🛠️</div>
     <div style="flex:1">
       <div class="status-title">Oli-Locator</div>
-      <!-- FIX (updated): real AU support now exists in lead-gen (see
-           ../index.html's fix comment) - restored. -->
-      <div class="status-meta">Real Estate CRM · USA · UK · Australia</div>
-      <div class="status-badge">✅ Active — from $59/month</div>
+      <!-- FIX: this page previously described Oli-Locator as a "Real
+           Estate CRM" - the real-estate feature has been removed from
+           the underlying app entirely. Oli-Locator is now a
+           home-improvement lead-generation tool. -->
+      <div class="status-meta">Home-Improvement Lead Finder · USA · UK · Australia</div>
+      <div class="status-badge">✅ Active — from $29/month</div>
     </div>
     <!-- FIX (updated): this used to link to "../" (a dead end), then to
          a raw README-INTEGRATION.md file (better than a dead end, but
@@ -188,9 +196,9 @@ a{color:#2563eb;text-decoration:none;}
       marketing site.
     </p>
     <ul class="feature-list" id="featureList">
-      <li>Property search (USA, UK &amp; Australia)</li>
-      <li>Lead generation &amp; CRM</li>
-      <li>Unified inbox</li>
+      <li>Home-improvement lead generation — 11 trades, USA, UK &amp; Australia</li>
+      <li>Opt-in "Request a Quote" Inbox</li>
+      <li>Saved searches &amp; CSV export</li>
       <li>Call center — use your own phone app</li>
     </ul>
   </div>
@@ -284,13 +292,13 @@ a{color:#2563eb;text-decoration:none;}
     <div class="sub-row">
       <div>
         <div class="sub-name">Oli-Locator</div>
-        <div class="sub-detail" id="subDetail">From $59/month (or $516/yr) · auto-renewal</div>
+        <div class="sub-detail" id="subDetail">From $29/month (or $790/yr on Pro) · auto-renewal</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <a href="https://www.paypal.com/myaccount/autopay/" target="_blank"
            class="btn btn-secondary btn-sm">Manage in PayPal</a>
         <a href="../buy/" class="btn btn-sm"
-           style="background:#eff6ff;color:#2563eb;border:1.5px solid #bfdbfe;">
+           style="background:var(--accent-wash);color:var(--accent-dark);border:1.5px solid #fbd0d5;">
           View Plans
         </a>
       </div>
@@ -353,7 +361,27 @@ document.addEventListener('DOMContentLoaded', function() {
    real, if manual, fix — not a per-browser workaround, since a
    localStorage value would only exist in the one browser that set it
    and never reach a real paying customer's browser at all. */
-var OLI_LOCATOR_APP_URL = ''; // ← set this to your real deployed lead-gen URL once you have one
+/* FIX: this was left blank ('') indefinitely, which is honest-but-inert —
+   it correctly avoided claiming a fake connection, but it also meant
+   Oli-Locator customers had literally no way to reach the real product
+   from this account page. lead-gen (github.com/olielicz/lead-gen) is a
+   real, working app — it just needs *some* URL here. For local/self-hosted
+   runs, point this at wherever lead-gen's own static site is being served
+   (see lead-gen/README.md "Run it" section); for a public deployment,
+   replace this with your real Vercel URL (or custom domain) once deployed,
+   exactly as README-INTEGRATION.md describes. Using a relative-ish default
+   here (same host, different path) rather than a hardcoded localhost URL
+   so this keeps working after a real deployment replaces the dev server. */
+var OLI_LOCATOR_APP_URL = (function () {
+  // Local/dev default: lead-gen's own static server, run per its README
+  // ("cd lead-gen && python3 -m http.server 5100" or equivalent).
+  // Swap this whole IIFE for a single string (your real deployed URL)
+  // once lead-gen is deployed — see README-INTEGRATION.md.
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5100/';
+  }
+  return ''; // no known public lead-gen deployment yet for non-local hosts
+})();
 
 function renderLocatorAppLink() {
   var btn = document.getElementById('openLocatorBtn');
@@ -364,7 +392,7 @@ function renderLocatorAppLink() {
     btn.href = appUrl;
     btn.target = '_blank';
     btn.rel = 'noopener';
-    note.innerHTML = 'Connected to your deployed Oli-Locator instance at <code style="background:#eff6ff;padding:2px 6px;border-radius:4px;">' + appUrl + '</code>. '
+    note.innerHTML = 'Connected to your deployed Oli-Locator instance at <code style="background:var(--accent-wash);padding:2px 6px;border-radius:4px;">' + appUrl + '</code>. '
       + '<a href="../README-INTEGRATION.md">Change this</a> if you redeploy elsewhere.';
   } else {
     btn.removeAttribute('href');

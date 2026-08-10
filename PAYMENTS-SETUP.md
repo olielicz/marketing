@@ -126,7 +126,8 @@ button.
 Repeat this once per tool (6 tools), and once per tier × billing period
 within each tool (see the table in Part 2 for the exact tier list and
 amounts per tool — e.g. OliOps needs 6 Plans: Starter/Pro/Agency ×
-monthly/yearly; Oli-Locator needs 4; OliSalesTrack needs 2):
+monthly/yearly; Oli-Locator needs 6 (Starter/Pro/Agency × monthly/yearly,
+same structure as OliOps); OliSalesTrack needs 2):
 
 1. PayPal Dashboard → **Products & Plans** → **Create Product**
    - Name: e.g. `OliOps Suite`, `Oli-Locator`, `OliSalesTrack Pro`, etc.
@@ -135,17 +136,19 @@ monthly/yearly; Oli-Locator needs 4; OliSalesTrack needs 2):
      `https://olielicz.github.io/marketing/oli-locator/`
 2. Under that product, click **Create Plan** once per tier × billing
    period, e.g. for Oli-Locator:
-   - `Oli-Locator Solo Agent Monthly` → **$59.00 USD/month**
-   - `Oli-Locator Solo Agent Yearly` → **$516.00 USD/year**
-   - `Oli-Locator Team Monthly` → **$119.00 USD/month**
-   - `Oli-Locator Team Yearly` → **$1068.00 USD/year**
+   - `Oli-Locator Starter Monthly` → **$29.00 USD/month**
+   - `Oli-Locator Starter Yearly` → **$290.00 USD/year**
+   - `Oli-Locator Pro Monthly` → **$79.00 USD/month**
+   - `Oli-Locator Pro Yearly` → **$790.00 USD/year**
+   - `Oli-Locator Agency Monthly` → **$199.00 USD/month**
+   - `Oli-Locator Agency Yearly` → **$1990.00 USD/year**
    - Status: **Active** → Save each
 3. Copy each **Plan ID** (starts with `P-`)
 4. Open `shared/paypal-sdk.js` and paste each into the matching
    `PLAN_IDS[toolKey][tierKey][period]` slot. Tier keys must match the
    `key` field on that tool's buy page's `PLANS` array exactly (visible
    in the bottom `<script>` block of each `buy/index.html` — e.g.
-   `'solo-agent'` and `'team'` for Oli-Locator):
+   `'starter'`, `'pro'`, and `'agency'` for Oli-Locator):
    ```js
    var PLAN_IDS = {
      'oli-locator': {
@@ -205,7 +208,7 @@ the page.
 | OliCommerce Stack | `OliCommerce Stack` | Basic $29/mo·$264/yr, Growth $49/mo·$444/yr, Scale $89/mo·$804/yr | Recurring |
 | OliFlow Engine | `OliFlow Automation Engine` | Solo $35/mo·$312/yr, Pro $59/mo·$528/yr, Business $99/mo·$888/yr | Recurring |
 | OliExplore | `OliExplore` | Creator $27/mo·$252/yr, Team $49/mo·$468/yr, Agency $89/mo·$828/yr | Recurring |
-| Oli-Locator | `Oli-Locator` | Solo Agent $59/mo·$516/yr, Team $119/mo·$1068/yr | Recurring |
+| Oli-Locator | `Oli-Locator` | Starter $29/mo·$290/yr, Pro $79/mo·$790/yr, Agency $199/mo·$1990/yr | Recurring |
 | OliSalesTrack | `OliSalesTrack Pro` | Pro $24/mo·$204/yr (single tier) | Recurring |
 
 1. Paddle Dashboard → **Catalog → Products** → **Create Product** (one per tool)
@@ -425,8 +428,8 @@ PayPal Subscriptions and Paddle's recurring billing charge the customer's card a
 | OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
 | OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
 | OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
-| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
-| Oli-Locator | $59/mo or $516/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
+| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
+| Oli-Locator | $29/mo or $290/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
 | OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
 
 

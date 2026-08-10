@@ -96,13 +96,20 @@ test("respond_webhook's output is surfaced as respondWith on the overall result"
   assert.deepEqual(result.respondWith, { statusCode: 201, body: { received: true } });
 });
 
-test("an unimplemented node type (e.g. openai, slack) is reported honestly and does NOT halt execution", async () => {
+test("an unimplemented node type (e.g. sub_workflow) is reported honestly and does NOT halt execution", async () => {
+  // openai/slack/stripe/etc. all got real implementations in a later
+  // pass (see executor.js's IMPLEMENTED_TYPES and README.md's updated
+  // coverage table) — "sub_workflow" is the one node type from the
+  // frontend's NODE_LIBRARY that's still genuinely unimplemented (it
+  // needs re-entrant subgraph execution this executor doesn't have),
+  // so it's the honest choice to exercise this "unimplemented but
+  // doesn't halt the run" behavior now.
   const wf = {
     id: "wf4",
     nodes: [
       { id: "n1", type: "webhook" },
-      { id: "n2", type: "openai", config: { prompt: "hello" } },
-      { id: "n3", type: "log", config: { message: "after openai" } },
+      { id: "n2", type: "sub_workflow", config: {} },
+      { id: "n3", type: "log", config: { message: "after sub_workflow" } },
     ],
     connections: [
       { fromId: "n1", toId: "n2" },
