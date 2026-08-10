@@ -6,8 +6,8 @@
  * (the owner) deploy yourself:
  *
  *   1. admin-auth   — handles login/session (see /admin-auth)
- *   2. olisalestrack-sync — the real Stripe/PayPal/Shopify event store
- *      (see /olisalestrack-sync)
+ *   2. olisalestrack-sync — the real Stripe/PayPal/Shopify/WooCommerce/
+ *      Amazon event store (see /olisalestrack-sync)
  *
  * This file deliberately does NOT ship with either URL hardcoded to a
  * live server, because this is a self-hosted, single-tenant product —
@@ -179,6 +179,25 @@ function formatMoney(cents, currency) {
   }
 }
 
+// Maps olisalestrack-sync's canonical paymentMethod vocabulary (see
+// olisalestrack-sync/server/normalize.js) to a short, human-readable label.
+// Falls back to escaping+showing whatever raw string was sent for a value
+// this dashboard doesn't yet recognize, rather than hiding it.
+const PAYMENT_METHOD_LABELS = {
+  card: '💳 Card',
+  paypal_balance: '🅿️ PayPal balance',
+  klarna: 'Klarna',
+  apple_pay: '🍎 Apple Pay',
+  google_pay: '🔵 Google Pay',
+  amazon_pay: '📦 Amazon Pay',
+  other: 'Other',
+  unknown: '—',
+};
+function formatPaymentMethod(method) {
+  if (!method) return '—';
+  return PAYMENT_METHOD_LABELS[method] || escapeHtml(method);
+}
+
 async function loadEvents() {
   const session = loadSession();
   const cfg = loadConfig();
@@ -253,6 +272,7 @@ function renderEvents() {
       <td>${new Date(e.occurredAt).toLocaleString()}</td>
       <td><span class="badge ${e.type}">${e.type === 'sale' ? '💰 Sale' : '↩ Refund'}</span></td>
       <td><span class="provider-pill">${escapeHtml(e.provider)}</span></td>
+      <td>${formatPaymentMethod(e.paymentMethod)}</td>
       <td>${escapeHtml(e.description || '')}</td>
       <td style="text-align:right; font-weight:700;">${e.type === 'refund' ? '−' : ''}${formatMoney(e.amountCents, e.currency)}</td>
     </tr>

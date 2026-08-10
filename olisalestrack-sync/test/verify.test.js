@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
-import { verifyStripeSignature, verifyShopifySignature } from "../server/verify.js";
+import { verifyStripeSignature, verifyShopifySignature, verifyWooCommerceSignature } from "../server/verify.js";
 
 test("verifyStripeSignature accepts a correctly-signed payload", () => {
   const secret = "whsec_test";
@@ -53,4 +53,24 @@ test("verifyShopifySignature rejects a tampered payload", () => {
 
 test("verifyShopifySignature rejects when secret is missing", () => {
   assert.equal(verifyShopifySignature("{}", "abc", ""), false);
+});
+
+test("verifyWooCommerceSignature accepts a correctly-signed payload", () => {
+  const secret = "wc_test_secret";
+  const rawBody = JSON.stringify({ id: 501 });
+  const signature = createHmac("sha256", secret).update(rawBody, "utf8").digest("base64");
+
+  assert.equal(verifyWooCommerceSignature(rawBody, signature, secret), true);
+});
+
+test("verifyWooCommerceSignature rejects a tampered payload", () => {
+  const secret = "wc_test_secret";
+  const rawBody = JSON.stringify({ id: 501 });
+  const signature = createHmac("sha256", secret).update(rawBody, "utf8").digest("base64");
+
+  assert.equal(verifyWooCommerceSignature(JSON.stringify({ id: 502 }), signature, secret), false);
+});
+
+test("verifyWooCommerceSignature rejects when secret is missing", () => {
+  assert.equal(verifyWooCommerceSignature("{}", "abc", ""), false);
 });
