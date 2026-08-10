@@ -56,17 +56,29 @@ Honest comparison table for all 6 products, based on the same 2026 competitor re
 
 ---
 
-## 5. Oli-Locator vs. Follow Up Boss / kvCORE / LionDesk
+## 5. Oli-Locator vs. Angi Leads / Thumbtack / Bark.com
 
-| | **Oli-Locator** | **Follow Up Boss** | **kvCORE / LionDesk** |
-|---|---|---|---|
-| **Price** | $59/mo or $516/yr (Solo Agent) | $58-69/mo solo tier (CRM only); $416-499/mo for 10-user teams | $25-50/mo entry tiers |
-| **Pros** | ✅ Bundles CRM + lead gen + inbox + call center in one price<br>✅ Free demo account, no signup required to try<br>✅ Bring-your-own calling app — use whatever phone/VoIP service you already have, no lock-in<br>✅ Includes more than Follow Up Boss's CRM-only entry tier at a comparable price | ✅ Best-in-class reputation — used by 41 of the top 50 highest-volume US teams<br>✅ 250+ integrations, very mature product<br>✅ Strong team-accountability features for larger teams | ✅ kvCORE bundles an IDX website + CRM, useful if you need a public-facing site too<br>✅ LionDesk includes built-in video email and AI lead follow-up<br>✅ Generally cheaper entry point than Follow Up Boss |
-| **Cons** | ❌ Smaller integration ecosystem than 250+-integration incumbents<br>❌ Newer product, fewer large-team references yet<br>❌ Calling/texting still requires a separate app (by design — see "pros") | ❌ CRM only — lead gen, website, and calling are separate costs/tools<br>❌ Pricing scales steeply for teams (10 users = $416-499/mo)<br>❌ Calling/texting requires their own paid add-on ($33-39/user/mo) unless on Pro/Platform tiers | ❌ kvCORE/BoldTrail pricing isn't fully public — often requires a sales call<br>❌ Team/brokerage features may be more than a solo agent needs<br>❌ LionDesk's ongoing product support/roadmap has been less certain since past ownership changes |
+<!-- FIX: this section previously compared Oli-Locator against
+     real-estate CRMs (Follow Up Boss/kvCORE/LionDesk) and cited a
+     "$59/mo Solo Agent" tier and a "Team tier ($119/mo)" — both leftover
+     from Oli-Locator's pre-pivot positioning as a real-estate tool. The
+     real-estate feature was removed from the app entirely; Oli-Locator
+     is a home-improvement lead-generation tool now, and the correct
+     competitor set (already used consistently on the landing page,
+     pricing-comparison.html, and vs-lead-marketplaces/) is the
+     pay-per-lead marketplaces below. Also fixed the dead-link claim: the
+     real comparison page lives at oli-locator/vs-lead-marketplaces/, not
+     oli-locator/vs-follow-up-boss/ (which doesn't exist and 404s). -->
 
-**Bottom line:** For a solo agent or very small team, Oli-Locator's bundled $59/mo (or $516/yr) is competitive with Follow Up Boss's CRM-only entry tier while including more (lead gen, inbox, call center) and never locking you into one calling app. Larger teams needing deep integrations or established enterprise reputation may still prefer Follow Up Boss; multi-agent teams can move up to Oli-Locator's Team tier ($119/mo or $1068/yr).
+| | **Oli-Locator** | **Angi Leads** | **Thumbtack** | **Bark.com** |
+|---|---|---|---|---|
+| **Price** | $29/mo (Starter), $79/mo (Pro), $199/mo (Agency) — flat rate | ~$25/mo membership + $15-85/lead | $0 signup + $20-60/lead | Credit packs, ~$1.65/credit |
+| **Pros** | ✅ Flat monthly rate — no per-lead fees, ever<br>✅ Bundles lead gen + opt-in inbox + call center in one price<br>✅ Bring-your-own calling app — no forced VoIP subscription<br>✅ Covers USA, UK &amp; Australia in one product | ✅ Large, established homeowner-facing marketplace<br>✅ High search-intent traffic<br>✅ Masks homeowner phone numbers by default (privacy/compliance feature) | ✅ No membership fee, pay only for leads you accept<br>✅ Large marketplace reach across many trades | ✅ Low-cost entry via credit packs<br>✅ UK &amp; US coverage |
+| **Cons** | ❌ Smaller brand recognition than 15+ year incumbents<br>❌ Newer product, fewer large-account references yet<br>❌ No phone-number masking on the opt-in inbox yet (a real gap vs. Angi — see `FINAL-REVIEW-AND-COMPETITOR-GAP-ANALYSIS.md`) | ❌ Per-lead fees scale directly with volume — a busy month costs more, not less<br>❌ Realistic all-in cost at 15-20 leads/mo: $250-1,725/mo<br>❌ No built-in call center | ❌ Per-lead fees stack up the same way, forever<br>❌ Realistic all-in cost at 15-20 leads/mo: $300-1,200/mo<br>❌ No built-in call center or inbox | ❌ Credit-based pricing is easy to burn through unpredictably<br>❌ Realistic all-in cost at 15-20 leads/mo: $25-660/mo depending on trade/region |
 
-**Sourced, public-facing version:** a full line-by-line comparison with cited sources (including Follow Up Boss's separately-priced Calling add-on, which isn't in their headline price) is published at `oli-locator/vs-follow-up-boss/index.html` — linked directly from the Oli-Locator landing page.
+**Bottom line:** At realistic volume (15-20 leads/month), Oli-Locator's flat $29-79/mo beats every named pay-per-lead competitor's all-in monthly cost by a wide margin — because none of them charge a flat rate; all three bill per lead. The one legitimate feature gap is Angi's default phone-number masking on inbound leads, which Oli-Locator doesn't yet match (tracked as a priority fix in `FINAL-REVIEW-AND-COMPETITOR-GAP-ANALYSIS.md`).
+
+**Sourced, public-facing version:** a full line-by-line comparison with cited sources is published at `oli-locator/vs-lead-marketplaces/index.html` — now linked directly from the Oli-Locator landing page.
 
 ---
 
@@ -78,7 +90,7 @@ Honest tracking of which competitive disadvantages have been addressed vs. remai
 |---|---|
 | OliSalesTrack: CSV-only, no live API sync | ✅ **Fixed** — `olisalestrack-sync/` now provides live Stripe/PayPal/Shopify webhook sync (see its README) |
 | OliFlow/OliCommerce: smaller integration ecosystem than Zapier/Klaviyo | ✅ **Mitigated** — both tools now document a Zapier/Make webhook bridge, giving indirect access to their much larger app directories |
-| Oli-Locator: no sourced comparison vs. Follow Up Boss | ✅ **Fixed** — `oli-locator/vs-follow-up-boss/index.html` publishes a full, cited cost/feature breakdown |
+| Oli-Locator: no sourced comparison vs. pay-per-lead marketplaces | ✅ **Fixed** — `oli-locator/vs-lead-marketplaces/index.html` publishes a full, cited cost/feature breakdown vs. Angi Leads/Thumbtack/Bark.com, now linked directly from the Oli-Locator landing page |
 | No 14-day trial (pay-then-refund friction) | ✅ **Fixed** — all 6 tools now offer a 14-day free trial before first charge |
 | Fabricated "illustrative" testimonials | ✅ **Fixed** — replaced with honest, non-attributed product-benefit copy + a real-review request CTA |
 | OliFlow: no native mobile app | 🟡 **Partially mitigated** — the app is now an installable PWA (Add to Home Screen, works offline for the app shell); still not a native App Store/Play Store listing |

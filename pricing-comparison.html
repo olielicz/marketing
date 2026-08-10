@@ -11,9 +11,16 @@
             box-sizing: border-box;
         }
         
+        /* FIX: retheme pass — this page previously used its own
+           purple/violet (#667eea/#764ba2) gradient palette, completely
+           disconnected from the black+red brand (shared/theme.css) used
+           by every other page on the site. Swapped every occurrence of
+           that palette below to the same red family (#e11d2e/#a10e1f)
+           used everywhere else, so this page no longer looks like it
+           belongs to a different product. */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1c22 0%, #0d0e12 100%);
             min-height: 100vh;
             padding: 40px 20px;
         }
@@ -69,7 +76,7 @@
         
         .tab-btn.active {
             background: white;
-            color: #667eea;
+            color: #e11d2e;
             border-color: white;
         }
         
@@ -119,7 +126,7 @@
         }
         
         .table-header .table-cell:first-child {
-            color: #667eea;
+            color: #e11d2e;
         }
         
         .table-body {
@@ -144,7 +151,7 @@
         }
         
         .table-row.highlight {
-            background: #f0f4ff;
+            background: #fdecee;
         }
         
         .table-row .table-cell {
@@ -165,7 +172,7 @@
         }
         
         .price {
-            color: #667eea;
+            color: #e11d2e;
             font-weight: 700;
             font-size: 1.2em;
         }
@@ -204,7 +211,7 @@
         
         .summary-box {
             background: white;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #e11d2e;
             padding: 25px;
             border-radius: 8px;
             margin-bottom: 30px;
@@ -212,7 +219,7 @@
         }
         
         .summary-box h3 {
-            color: #667eea;
+            color: #e11d2e;
             margin-bottom: 12px;
             font-size: 1.3em;
         }
@@ -224,7 +231,7 @@
         
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e11d2e 0%, #a10e1f 100%);
             color: white;
             padding: 14px 32px;
             border-radius: 8px;
@@ -239,7 +246,7 @@
         
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 20px rgba(225, 29, 46, 0.4);
         }
         
         .legend {
@@ -284,7 +291,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e11d2e 0%, #a10e1f 100%);
             color: white;
             border-radius: 6px;
             font-weight: 700;
@@ -338,7 +345,7 @@
                 <h3>OliOps Suite: CRM + Invoicing + Payroll + Support</h3>
                 <p><strong>Our pricing:</strong> $39-119/mo | <strong>Competitor stack total:</strong> $168-540+/mo</p>
                 <p><strong>Your savings:</strong> 60-80% cheaper by bundling instead of buying tools separately</p>
-                <button class="cta-button">Start Free Trial →</button>
+                <a class="cta-button" href="oliops/buy/">Start Free Trial →</a>
             </div>
             
             <div class="comparison-table">
@@ -420,7 +427,7 @@
                 <h3>OliCommerce Stack: Cart Recovery + AI Assistant</h3>
                 <p><strong>Our pricing:</strong> $29-59/mo | <strong>Competitor stack total:</strong> $50-100+/mo</p>
                 <p><strong>Your savings:</strong> 40-70% cheaper with flat pricing (no per-contact scaling)</p>
-                <button class="cta-button">Start Free Trial →</button>
+                <a class="cta-button" href="olicommerce/buy/">Start Free Trial →</a>
             </div>
             
             <div class="comparison-table">
@@ -488,7 +495,7 @@
                 <h3>OliFlow Automation Engine: Unlimited Automations, Flat Price</h3>
                 <p><strong>Our pricing:</strong> $35-99/mo | <strong>Zapier (100 workflows):</strong> $200-600+/mo</p>
                 <p><strong>Your savings:</strong> 70-85% cheaper (unlimited runs, zero metering)</p>
-                <button class="cta-button">Start Free Trial →</button>
+                <a class="cta-button" href="oliflow/buy/">Start Free Trial →</a>
             </div>
             
             <div class="comparison-table">
@@ -559,7 +566,7 @@
                 <h3>OliExplore: Social Media Collection + AI Rewrite</h3>
                 <p><strong>Our pricing:</strong> $27-49/mo | <strong>Competitor stack:</strong> $29-100+/mo</p>
                 <p><strong>Your savings:</strong> 30-60% cheaper with AI rewriting included</p>
-                <button class="cta-button">Start Free Trial →</button>
+                <a class="cta-button" href="oliexplore/buy/">Start Free Trial →</a>
             </div>
             
             <div class="comparison-table">
@@ -637,7 +644,7 @@
                 <h3>Oli-Locator: Home-Improvement Leads + Inbox + Call Center</h3>
                 <p><strong>Our pricing:</strong> $29-199/mo flat rate | <strong>Pay-per-lead platforms:</strong> $250-1,700+/mo (scales with volume)</p>
                 <p><strong>Your savings:</strong> No per-lead fees — a flat monthly rate instead of paying more as you get busier</p>
-                <button class="cta-button">Start Free Trial →</button>
+                <a class="cta-button" href="oli-locator/buy/">Start Free Trial →</a>
             </div>
             
             <div class="comparison-table">
@@ -715,7 +722,7 @@
                 <h3>OliSalesTrack: Live Revenue Tracking + Profit Analysis</h3>
                 <p><strong>Our pricing:</strong> $24/mo | <strong>Baremetrics:</strong> $49+/mo</p>
                 <p><strong>Your savings:</strong> 50-80% cheaper with live sync and correlation analysis</p>
-                <button class="cta-button">Start Free Trial →</button>
+                <a class="cta-button" href="olisalestrack/buy/">Start Free Trial →</a>
             </div>
             
             <div class="comparison-table">
@@ -808,9 +815,12 @@
         
         <div style="text-align: center; margin-top: 50px; color: white;">
             <p style="font-size: 1.1em; margin-bottom: 20px;">Ready to save 50-80% on your SaaS stack?</p>
-            <button class="cta-button" style="font-size: 1.1em; padding: 16px 40px;">
-                Compare All 6 Tools - Start Your Free Trial Today →
-            </button>
+            <a class="cta-button" style="font-size: 1.1em; padding: 16px 40px;" href="./">
+                See All 6 Tools →
+            </a>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+            <a href="./" style="color: rgba(255,255,255,0.75); font-size: 0.9em;">← Back to All Oli Tools</a>
         </div>
     </div>
     
