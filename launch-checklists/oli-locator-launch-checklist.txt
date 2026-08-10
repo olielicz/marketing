@@ -95,6 +95,11 @@ STEP 4 — PAYMENTS (Stripe + PayPal — RECURRING billing, different from the o
         now "starter"/"pro"/"agency" — see oli-locator/buy/index.html's PLANS array)
 [ ] 4.9 Test both in Stripe test mode and PayPal Sandbox before going live
 [ ] 4.10 Commit + push the updated oli-locator/buy/index.html
+[ ] 4.11 (EXTERNAL SITE, optional but quick) Turn on Apple Pay + Google Pay in Paddle
+         Dashboard -> Checkout -> Checkout settings (zero code changes needed — see
+         PAYMENTS-SETUP.md Part 2c). For PayPal, the wallet buttons already on
+         oli-locator/buy/index.html work automatically once PayPal's own account settings
+         enable them (see PAYMENTS-SETUP.md Part 1c) — test on a real Apple/Android device.
 
 ============================================================
 STEP 5 — ACCOUNT ACCESS (no serial-code licensing for this one)

@@ -12,6 +12,19 @@
  * 4. Replace YOUR_PAYPAL_CLIENT_ID_HERE below with that Client ID
  * 5. That's it — buttons render automatically on every buy page
  *
+ * APPLE PAY / GOOGLE PAY: rendered automatically via renderWalletButtons()
+ * below, IF (a) the buy page has an #applepay-button-container and/or
+ * #googlepay-button-container div (already added to every buy page — see
+ * the "Pay with Apple Pay" / "Pay with Google Pay" markup next to
+ * #paypal-button-container), AND (b) Apple Pay / Google Pay are enabled
+ * on your PayPal Business account (PayPal Dashboard → Account Settings →
+ * look for wallet payment methods; availability can vary by country/
+ * account type), AND (c) the buyer's own device/browser supports it
+ * (Apple Pay needs Safari on a supported Apple device; Google Pay needs
+ * Chrome/Android with a card saved to Google Pay). No extra code changes
+ * needed beyond what's already in this file — PayPal's own isEligible()
+ * check decides per-buyer whether to actually show either button.
+ *
  * ALL 6 TOOLS ARE MONTHLY/YEARLY SUBSCRIPTIONS (no one-time/lifetime
  * pricing), and each buy page has an on-page tier selector (Starter/Pro/
  * Agency, etc.) plus a monthly/yearly toggle. A single PayPal Subscribe
@@ -177,8 +190,12 @@
       return;
     }
 
-    // Build SDK URL
-    var sdkSrc = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + '&currency=USD';
+    // Build SDK URL. `enable-funding=applepay,googlepay` is required for
+    // the wallet buttons in renderWalletButtons() below to become
+    // eligible at all — without it, window.paypal.FUNDING.APPLEPAY /
+    // GOOGLEPAY buttons always report isEligible() === false regardless
+    // of the buyer's device/browser support.
+    var sdkSrc = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + '&currency=USD&enable-funding=applepay,googlepay';
     if (product.recurring) {
       sdkSrc += '&vault=true&intent=subscription';
     }
@@ -211,8 +228,13 @@
     var period = selection && selection.toolKey === product.key ? selection.period : null;
     var planId = tierKey && period ? resolvePlanId(product.key, tierKey, period) : null;
 
-    // Clear whatever button/notice was there before re-rendering.
+    // Clear whatever button/notice was there before re-rendering. Also
+    // clear the wallet-button containers (see renderWalletButtons below) —
+    // they need to be torn down and rebuilt on every plan change exactly
+    // like the main PayPal button, for the same reason (a rendered button
+    // is bound to one fixed Plan ID and can't be "re-pointed").
     container.innerHTML = '';
+    clearWalletContainers();
 
     if (!tierKey || !period) {
       container.innerHTML = '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;font-size:13px;color:#dc2626;">⚠️ Could not determine your selected plan. Please reselect a plan above.</div>';
@@ -223,7 +245,7 @@
       return;
     }
 
-    window.paypal.Buttons({
+    var handlers = {
       style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'subscribe', height: 48 },
       createSubscription: function(data, actions) {
         return actions.subscription.create({ plan_id: planId });
@@ -239,7 +261,66 @@
         var note = document.getElementById('paypal-cancel-note');
         if (note) { note.style.display = 'block'; setTimeout(function(){ note.style.display='none'; }, 4000); }
       }
-    }).render(container);
+    };
+
+    window.paypal.Buttons(handlers).render(container);
+
+    // ── Apple Pay / Google Pay via PayPal's own smart-button funding
+    //    sources ────────────────────────────────────────────────────────
+    // Both render through the SAME PayPal Buttons() component, just with
+    // a different `fundingSource`, and reuse the identical
+    // createSubscription/onApprove/onError/onCancel handlers above — a
+    // subscription created via the Apple Pay or Google Pay button is a
+    // completely normal PayPal subscription server-side, no special
+    // handling needed anywhere else in this codebase. Each one is only
+    // rendered when PayPal's own isEligible() check says the buyer's
+    // current browser/device/account actually supports it (Apple Pay:
+    // Safari on a supported Apple device with a card in Wallet; Google
+    // Pay: Chrome/Android with Google Pay set up) — never force-rendered
+    // to a buyer who couldn't use it. Requires Apple Pay / Google Pay to
+    // also be enabled on the PayPal Business account itself; if they
+    // aren't, isEligible() simply returns false and these are skipped
+    // silently, which is the correct/expected behavior, not a bug.
+    renderWalletButtons(handlers);
+  }
+
+  // Renders the Apple Pay and/or Google Pay button into their own
+  // containers (see each buy page's #applepay-button-container /
+  // #googlepay-button-container, right below #paypal-button-container),
+  // reusing the exact same subscription-creation handlers as the main
+  // PayPal button. Both containers are optional — pages built before this
+  // was added simply won't show a wallet button at all until the
+  // container div is added, same graceful-absence pattern as every other
+  // optional feature in this file.
+  function renderWalletButtons(handlers) {
+    var applePayContainer = document.getElementById('applepay-button-container');
+    if (applePayContainer && window.paypal.FUNDING && window.paypal.FUNDING.APPLEPAY) {
+      var applePayButtons = window.paypal.Buttons(Object.assign({}, handlers, {
+        fundingSource: window.paypal.FUNDING.APPLEPAY,
+        style: { shape: 'rect', height: 48 },
+      }));
+      if (applePayButtons.isEligible()) {
+        applePayButtons.render(applePayContainer);
+      }
+    }
+
+    var googlePayContainer = document.getElementById('googlepay-button-container');
+    if (googlePayContainer && window.paypal.FUNDING && window.paypal.FUNDING.GOOGLEPAY) {
+      var googlePayButtons = window.paypal.Buttons(Object.assign({}, handlers, {
+        fundingSource: window.paypal.FUNDING.GOOGLEPAY,
+        style: { shape: 'rect', height: 48 },
+      }));
+      if (googlePayButtons.isEligible()) {
+        googlePayButtons.render(googlePayContainer);
+      }
+    }
+  }
+
+  function clearWalletContainers() {
+    var applePayContainer = document.getElementById('applepay-button-container');
+    if (applePayContainer) applePayContainer.innerHTML = '';
+    var googlePayContainer = document.getElementById('googlepay-button-container');
+    if (googlePayContainer) googlePayContainer.innerHTML = '';
   }
 
   function showSuccess(type, id, product) {

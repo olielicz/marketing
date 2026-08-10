@@ -54,6 +54,11 @@ STEP 3 — PAYMENTS (Stripe + PayPal)
         Client ID + Plan IDs are filled in
 [ ] 3.9 Test both buttons in Stripe test mode and PayPal Sandbox before going live
 [ ] 3.10 Commit + push the updated oliflow/buy/index.html
+[ ] 3.11 (EXTERNAL SITE, optional but quick) Turn on Apple Pay + Google Pay in Paddle
+         Dashboard -> Checkout -> Checkout settings (zero code changes needed — see
+         PAYMENTS-SETUP.md Part 2c). For PayPal, the wallet buttons already on
+         oliflow/buy/index.html work automatically once PayPal's own account settings
+         enable them (see PAYMENTS-SETUP.md Part 1c) — test on a real Apple/Android device.
 
 ============================================================
 STEP 4 — LICENSING (serial codes / 5-device limit)

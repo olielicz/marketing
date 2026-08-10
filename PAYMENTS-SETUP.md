@@ -166,6 +166,39 @@ haven't configured yet, they see a clear "not yet configured, try a
 different plan" notice instead of a broken button or being charged the
 wrong amount.
 
+### Step 1c — Apple Pay & Google Pay via PayPal (no extra Plan setup needed)
+
+Every buy page already has an `#applepay-button-container` and
+`#googlepay-button-container` div right next to the PayPal button (see
+`shared/paypal-sdk.js`'s `renderWalletButtons()`). These reuse the exact
+same Plan IDs you just configured above — a subscription created via the
+Apple Pay or Google Pay button is a completely normal PayPal subscription
+server-side, so there is nothing new to create in PayPal's Products &
+Plans for this step.
+
+To turn them on:
+1. In your PayPal Business account, check whether Apple Pay / Google Pay
+   are available to you (PayPal Dashboard → look for wallet payment
+   method settings; availability can vary by country and account type —
+   as of 2026 this is broadly available for US-based Business accounts,
+   more limited elsewhere).
+2. That's it on PayPal's side — `paypal-sdk.js` already requests
+   `enable-funding=applepay,googlepay` from the JS SDK. Each button only
+   actually renders when PayPal's own `isEligible()` check confirms BOTH
+   your account supports it AND the current buyer's device/browser does
+   (Apple Pay: Safari on a supported Apple device with a card in Wallet;
+   Google Pay: Chrome/Android with a card saved to Google Pay).
+3. Test with a real Apple/Android device + Safari/Chrome — the sandbox
+   PayPal environment supports test wallet payments; see PayPal's
+   [Apple Pay](https://developer.paypal.com/apple-pay/integrate) and
+   [Google Pay](https://developer.paypal.com/google-pay/integrate)
+   integration docs if a button unexpectedly doesn't appear.
+
+Nothing to configure in `shared/paypal-sdk.js` itself for this — it's
+already wired up; the only "setup" is whatever PayPal's own account
+settings require, and having a device that's actually eligible to test
+with.
+
 ---
 
 ## Part 2 — Paddle Checkout (for all 6 tools)
@@ -236,6 +269,28 @@ Same as PayPal (Part 1b): you don't need every slot filled before
 launch. The Paddle button shows as long as at least one tier for that
 tool is configured; if a customer's specific selection isn't configured
 yet, they see a clear inline error instead of being charged incorrectly.
+
+### Step 2c — Apple Pay & Google Pay via Paddle (zero code changes)
+
+Unlike the PayPal wallet buttons above, Paddle's overlay checkout handles
+Apple Pay and Google Pay entirely on its own — there is **no code in
+this repo to touch at all** for this one:
+
+1. Paddle Dashboard → **Checkout → Checkout settings**
+2. Turn on **Apple Pay** and **Google Pay** (a couple of clicks each —
+   no separate Apple/Google developer account needed; Paddle handles the
+   merchant validation for both)
+3. Save. That's it — the exact same `Paddle.Checkout.open({...})` call
+   already in `shared/paddle-sdk.js` (unchanged) will now automatically
+   present whichever wallet is available on the buyer's device (Apple
+   Pay on Safari/iPhone/iPad/Mac; Google Pay on Chrome/Android/
+   Chromebook) alongside the regular card fields, with no `variant`
+   parameter needed for this basic behavior. If neither wallet is
+   available on a given buyer's device, checkout falls back to the
+   regular payment methods automatically.
+
+Do this in Sandbox first (Step 2, above) so you can see it working with
+Paddle's test wallet flow before flipping to Production.
 
 ### Paddle → login email after payment
 
@@ -407,12 +462,19 @@ PayPal Subscriptions and Paddle's recurring billing charge the customer's card a
    - ✅ Welcome email arrives (if EmailJS is configured)
    - ✅ Login works with temp password
    - ✅ Password change works on first login
+   - ✅ (If testing on a real Apple/Android device) the Apple Pay /
+     Google Pay button appears next to the regular PayPal button and
+     completes a subscription the same way — see Part 1c
 5. Switch back to Live Client ID
 
 ### Paddle Sandbox
 1. Paddle Dashboard has a separate **Sandbox** environment (switch via account settings)
 2. Use Paddle's test card numbers (documented in their Sandbox dashboard)
 3. Confirm end-to-end checkout flow, then switch `PADDLE_ENVIRONMENT` to `'production'` in `shared/paddle-sdk.js`
+4. If you enabled Apple Pay / Google Pay (Part 2c), open the checkout on
+   a real Apple/Android test device to confirm the wallet option appears
+   — Paddle's Sandbox supports test wallet payments the same way it
+   supports test cards
 
 ### Stripe Test Mode (whenever you activate it — not needed for launch)
 1. Stripe Dashboard has a **Test mode** toggle (top-left)
@@ -423,14 +485,20 @@ PayPal Subscriptions and Paddle's recurring billing charge the customer's card a
 
 ## Pricing Reference
 
-| Tool | Price | Billing | Buy page file | PayPal | Paddle | Stripe |
-|---|---|---|---|---|---|---|
-| OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
-| OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
-| OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription | Paddle Price | Payment Link (set up later) |
-| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
-| Oli-Locator | $29/mo or $290/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
-| OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan | Paddle Price | Payment Link (set up later) |
+| Tool | Price | Billing | Buy page file | PayPal | Apple/Google Pay (PayPal) | Paddle | Apple/Google Pay (Paddle) | Stripe |
+|---|---|---|---|---|---|---|---|---|
+| OliOps Suite | $39/mo or $348/yr | Monthly/Annual | `oliops/buy/index.html` | PayPal subscription | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+| OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+| OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+| OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+| Oli-Locator | $29/mo or $290/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+| OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+
+Apple Pay / Google Pay is available on **every** tool through both
+payment providers as of this update — see Part 1c (PayPal wallet
+buttons, requires the container divs already added to every buy page)
+and Part 2c (Paddle, a dashboard toggle with zero code changes). Neither
+requires setting up a new payment processor.
 
 
 > **Important:** if you change a price anywhere, update it in ALL the places it's baked in: the landing page, the buy page, and each actual payment platform's own record of the price (PayPal Plan, Paddle Price, and eventually the Stripe Payment Link) — changing the HTML alone does NOT change what is actually charged on any of the three.

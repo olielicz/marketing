@@ -169,6 +169,13 @@
    red is reserved for brand chrome, not repurposed for "success". */
 .check-good::before { content: "✓ "; color: var(--good); font-weight: 800; }
 
+/* Apple Pay / Google Pay wallet-button slots on buy pages (see
+   shared/paypal-sdk.js's renderWalletButtons()). Collapses to zero height
+   when empty (buyer's device doesn't support the wallet, or it isn't
+   enabled on the PayPal Business account) so there's no visible gap. */
+.wallet-btn-slot { margin-top: 8px; }
+.wallet-btn-slot:empty { margin-top: 0; }
+
 footer.oli-footer {
   background: var(--ink); color: var(--sub-invert); text-align: center; padding: 44px 0; font-size: 13px;
 }
