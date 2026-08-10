@@ -5,24 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png"/>
-<!-- FIX (updated): this page (and buy/, account/, login/,
-     vs-follow-up-boss/) previously had the "Australia" claim removed
-     because the real lead-gen codebase only defined US and UK at the
-     time. That gap has since been closed for real: lead-gen now has
-     genuine AU support (LL.config.countries.AU, real AU cities +
-     Australia Post postcode matching, AUD pricing, AU-conventional
-     rent/terminology, a real AU country toggle everywhere US/UK ones
-     exist - see lead-gen PR #20, olielicz/lead-gen). Restored the
-     3-country claim, now honestly backed by real code. -->
-<title>Oli-Locator — Real Estate CRM for Solo Agents</title>
-<meta name="description" content="Leads, property search, inbox, and call tracking in one app instead of four. Covers the USA, UK, and Australia. Built for independent agents. From $59/mo.">
-<meta property="og:title" content="Oli-Locator — Real Estate CRM for Solo Agents | USA, UK &amp; Australia"/>
-<meta property="og:description" content="Leads, property search, shared inbox, and call center in one app. $59/month or $516/year. Covers USA, UK &amp; Australia. Cheaper than Follow Up Boss."/>
+<!-- FIX: Oli-Locator previously marketed itself purely as a real-estate
+     CRM ("Property Locator" across the US/UK/AU). That feature has been
+     removed entirely from the underlying app (lead-gen) because there is
+     no free, self-serve, nationwide real-estate listings API in any of
+     the three countries — every real MLS/Rightmove/Domain feed requires
+     a signed business/licensing agreement, not something this app could
+     honestly claim to provide out of the box. Oli-Locator is now
+     positioned as what the underlying app actually, genuinely does best:
+     a home-improvement lead-generation tool (cleaning, pest control,
+     renovation, roofing, painting, plumbing, electrical, landscaping,
+     HVAC, flooring, handyman), which already has real, live country
+     coverage across the US, UK, and Australia via real connectors
+     (Adzuna Jobs API, Jobicy, first-party opt-in forms) — see
+     lead-gen/README.md. -->
+<title>Oli-Locator — Home-Improvement Lead Finder for Solo Contractors</title>
+<meta name="description" content="Find and manage home-improvement leads — cleaning, pest control, roofing, painting, and more — in one app instead of four. Covers the USA, UK, and Australia. Flat monthly rate, no per-lead fees. From $29/mo.">
+<meta property="og:title" content="Oli-Locator — Home-Improvement Lead Finder | USA, UK &amp; Australia"/>
+<meta property="og:description" content="Leads, a shared inbox, and a call center in one app. From $29/month. Covers USA, UK &amp; Australia. No per-lead fees, unlike Angi or Thumbtack."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/oli-locator/"/>
 <meta property="og:image" content="https://olielicz.github.io/marketing/assets/og/oli-locator.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Oli-Locator — Real Estate CRM for Solo Agents | USA, UK &amp; Australia"/>
-<meta name="twitter:description" content="Leads, property search, shared inbox, and call center in one app. From $59/mo. Covers USA, UK &amp; Australia."/>
+<meta name="twitter:title" content="Oli-Locator — Home-Improvement Lead Finder | USA, UK &amp; Australia"/>
+<meta name="twitter:description" content="Leads, a shared inbox, and a call center in one app. From $29/mo. Covers USA, UK &amp; Australia."/>
 <meta name="twitter:image" content="https://olielicz.github.io/marketing/assets/og/oli-locator.png"/>
 <link rel="canonical" href="https://olielicz.github.io/marketing/oli-locator/"/>
 <script type="application/ld+json">
@@ -32,54 +37,52 @@
   "name": "Oli-Locator",
   "url": "https://olielicz.github.io/marketing/oli-locator/",
   "image": "https://olielicz.github.io/marketing/assets/og/oli-locator.png",
-  "description": "Oli-Locator bundles leads, property search, a shared inbox, and call tracking into one app for independent real estate agents in the USA, UK, and Australia.",
+  "description": "Oli-Locator finds home-improvement leads (cleaning, pest control, renovation, roofing, painting and more), with a shared inbox and call center, for solo contractors and small trade businesses in the USA, UK, and Australia.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
     "@type": "AggregateOffer",
     "priceCurrency": "USD",
-    "lowPrice": "59",
-    "highPrice": "119",
-    "offerCount": "2"
+    "lowPrice": "29",
+    "highPrice": "199",
+    "offerCount": "3"
   },
   "brand": { "@type": "Organization", "name": "WorkItLikeAPro" }
 }
 </script>
 <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+<link rel="stylesheet" href="../shared/theme.css">
 <style>
-  :root { --ink:#14161a; --sub:#55606e; --accent:#2563eb; --accent2:#0891b2; --accent-dark:#1d4ed8; --bg:#fafafa; --card:#fff; --line:#e7e9ee; --good:#16a34a; }
+  /* FIX: retheme pass - color tokens now come from ../shared/theme.css
+     (one black+red design system shared across all 6 tools) instead of
+     this page's own blue/cyan :root block. See that file's header
+     comment for the rationale. */
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.6; -webkit-font-smoothing:antialiased; }
-  a { color: var(--accent); }
   .wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
-  header.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0; position:sticky; top:0; background:rgba(250,250,250,0.85); backdrop-filter:blur(8px); z-index:50; }
-  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:6px; }
-  .logo span { color:var(--accent); }
-  nav a { margin-left:26px; color:var(--sub); text-decoration:none; font-size:14px; font-weight:600; }
-  nav a:hover { color: var(--ink); }
-  nav a.all-tools { color: var(--accent); }
-  .cta-btn { display:inline-block; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff !important; padding:14px 26px; border-radius:10px; font-weight:700; text-decoration:none; font-size:15.5px; border:none; cursor:pointer; box-shadow:0 8px 20px -6px rgba(37,99,235,0.5); transition:transform .15s, box-shadow .15s; }
-  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -6px rgba(37,99,235,0.6); }
-  .cta-btn.ghost { background:transparent; border:1.5px solid var(--line); color:var(--ink) !important; box-shadow:none; }
-  .cta-btn.ghost:hover { background:#eff6ff; transform:none; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; position:sticky; top:0; z-index:60; background:rgba(13,14,18,0.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-dark); }
+  .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:6px; color:#fff; }
+  .logo span { color:var(--accent-bright); }
+  nav a { margin-left:26px; color:var(--sub-invert); text-decoration:none; font-size:14px; font-weight:600; }
+  nav a:hover { color: #fff; }
+  nav a.all-tools { color: var(--accent-bright); }
   .hero { padding:72px 0 40px; text-align:center; position:relative; overflow:hidden; }
-  .hero:before { content:""; position:absolute; top:-180px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse at center, rgba(8,145,178,0.13), transparent 70%); pointer-events:none; }
-  .eyebrow { display:inline-flex; align-items:center; gap:8px; background:#eff6ff; color:var(--accent-dark); font-size:13.5px; font-weight:700; padding:8px 16px; border-radius:999px; margin-bottom:24px; border:1px solid #bfdbfe; }
-  h1 { font-size:52px; line-height:1.1; margin:0 0 20px; letter-spacing:-0.025em; font-weight:800; }
-  h1 .hl { background:linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .sub-headline { font-size:20px; color:var(--sub); max-width:680px; margin:0 auto 36px; }
+  .hero-surface { position:relative; overflow:hidden; padding-bottom:1px; }
+  .hero-surface:before { content:""; position:absolute; top:-180px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse at center, rgba(225,29,46,0.24), transparent 70%); pointer-events:none; }
+  h1 { font-size:52px; line-height:1.1; margin:0 0 20px; letter-spacing:-0.025em; font-weight:800; color:#fff; }
+  .sub-headline { font-size:20px; color:var(--sub-invert); max-width:680px; margin:0 auto 36px; }
   .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; }
-  .price-note { font-size:13.5px; color:var(--sub); display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  .price-note { font-size:13.5px; color:var(--sub-invert); display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
   .tools-strip { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:44px; }
-  .tool-pill { background:var(--card); border:1px solid var(--line); padding:10px 18px; border-radius:999px; font-size:13.5px; font-weight:600; color:var(--sub); box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+  .tool-pill { background:rgba(255,255,255,0.06); border:1px solid var(--line-dark); padding:10px 18px; border-radius:999px; font-size:13.5px; font-weight:600; color:var(--sub-invert); }
   section { padding:64px 0; }
   .section-title { text-align:center; margin-bottom:10px; font-size:34px; letter-spacing:-0.02em; font-weight:800; }
   .section-sub { text-align:center; color:var(--sub); max-width:620px; margin:0 auto 12px; font-size:17px; }
-  .gem-banner { background:linear-gradient(135deg, #14161a, #0a2540); color:#fff; border-radius:20px; padding:44px; text-align:center; }
+  .gem-banner { background:linear-gradient(160deg, #14161b, #0d0e12); color:#fff; border-radius:20px; padding:44px; text-align:center; box-shadow: var(--glow-red-soft); }
   .gem-banner .gem-icon { font-size:40px; margin-bottom:14px; }
   .gem-banner h2 { font-size:28px; margin:0 0 12px; letter-spacing:-0.01em; }
-  .gem-banner p { color:#c9dcf2; max-width:620px; margin:0 auto; font-size:16.5px; }
+  .gem-banner p { color:var(--sub-invert); max-width:620px; margin:0 auto; font-size:16.5px; }
   .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; margin-top:40px; }
   @media (max-width:800px) { .grid2 { grid-template-columns:1fr; } h1 { font-size:34px; } .section-title { font-size:26px; } }
   .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; transition:transform .15s, box-shadow .15s; }
@@ -88,15 +91,15 @@
   .card h3 { margin:0 0 10px; font-size:18px; }
   .card p { margin:0; color:var(--sub); font-size:14.5px; }
   .pricing { text-align:center; background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
-  .price-card { max-width:460px; margin:32px auto 0; background:linear-gradient(160deg, #fff, #eff6ff); border:2px solid var(--accent); border-radius:20px; padding:40px; position:relative; box-shadow:0 24px 48px -20px rgba(37,99,235,0.22); }
-  .price-card .tag { position:absolute; top:-15px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff; font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; white-space:nowrap; }
+  .price-card { max-width:460px; margin:32px auto 0; border-radius:20px; padding:40px; position:relative; }
+  .price-card .tag { position:absolute; top:-15px; left:50%; transform:translateX(-50%); font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; white-space:nowrap; }
   .price-big { font-size:54px; font-weight:800; margin:12px 0 4px; }
   .price-big span { font-size:18px; font-weight:600; color:var(--sub); }
   .price-list { text-align:left; list-style:none; padding:0; margin:26px 0; font-size:15px; }
   .price-list li { padding:9px 0; border-bottom:1px solid var(--line); }
   .price-list li:before { content:"✓ "; color:var(--good); font-weight:800; }
-  .demo-strip { display:flex; align-items:center; justify-content:center; gap:10px; background:#ecfdf5; color:#047857; font-weight:700; font-size:14px; padding:14px 20px; border-radius:12px; margin-top:22px; }
-  .signup { background:#eff6ff; border-bottom:1px solid var(--line); }
+  .demo-strip { display:flex; align-items:center; justify-content:center; gap:10px; background:var(--good-wash); color:#047857; font-weight:700; font-size:14px; padding:14px 20px; border-radius:12px; margin-top:22px; }
+  .signup { background:var(--accent-wash); border-bottom:1px solid var(--line); }
   .signup-box { max-width:500px; margin:0 auto; text-align:center; }
   .form-row { display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; justify-content:center; }
   .form-row input[type="email"] { flex:1; min-width:240px; padding:14px 16px; border-radius:10px; border:1.5px solid var(--line); font-size:15px; }
@@ -107,16 +110,14 @@
   #sib-form .form__entry { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   #sib-form .entry__field { flex: 1; min-width: 240px; }
   #sib-form input.input { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1.5px solid var(--line); font-size: 15px; font-family: inherit !important; color: var(--ink) !important; background: #fff !important; }
-  #sib-form .sib-form-block__button { background: linear-gradient(135deg, var(--accent), var(--accent2)) !important; color: #fff !important; padding: 14px 26px !important; border-radius: 10px !important; font-weight: 700 !important; font-size: 15.5px !important; border: none !important; cursor: pointer; font-family: inherit !important; box-shadow: 0 8px 20px -6px rgba(37,99,235,0.5); white-space: nowrap; }
+  #sib-form .sib-form-block__button { background: linear-gradient(135deg, var(--accent), var(--accent2)) !important; color: #fff !important; padding: 14px 26px !important; border-radius: 10px !important; font-weight: 700 !important; font-size: 15.5px !important; border: none !important; cursor: pointer; font-family: inherit !important; box-shadow: var(--glow-red-soft); white-space: nowrap; }
   #sib-form .entry__specification { display: none; }
   #sib-form .entry__error { margin-top: 6px; }
   #error-message, #success-message { max-width: 500px; margin: 0 auto 16px; }
-  footer { text-align:center; padding:44px 0; color:var(--sub); font-size:13px; }
-  footer a { color: var(--sub); }
   .t-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
   @media (max-width: 800px) { .t-grid { grid-template-columns: 1fr; } }
   .t-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
-  .t-stars { color: #f59e0b; font-size: 15px; letter-spacing: 2px; margin-bottom: 10px; }
+  .t-stars { color: var(--warn); font-size: 15px; letter-spacing: 2px; margin-bottom: 10px; }
   .t-quote { margin: 0 0 18px; font-size: 15px; color: #33363c; line-height: 1.6; }
   .t-person { display: flex; align-items: center; gap: 12px; }
   .t-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
@@ -129,26 +130,27 @@
 </head>
 <body>
 
+<div class="oli-dark-surface hero-surface">
 <header class="wrap nav">
-  <div class="logo">💎 Oli-<span>Locator</span></div>
+  <div class="logo">🛠️ Oli-<span>Locator</span></div>
   <nav>
-    <a href="./login/" style="color:#2563eb;font-weight:600;">Sign In</a>
-    <a href="./account/" style="color:#2563eb;font-weight:700;background:#2563eb1a;padding:6px 14px;border-radius:8px;">My Account</a>
+    <a href="./login/" style="font-weight:600;">Sign In</a>
+    <a href="./account/" style="font-weight:700;background:rgba(225,29,46,0.14);padding:6px 14px;border-radius:8px;">My Account</a>
     <a href="#tools">Features</a>
     <a href="#pricing">Pricing</a>
-    <a href="../contact/" style="color:#2563eb;font-weight:700;">Contact Us</a>
+    <a href="../contact/" style="font-weight:700;">Contact Us</a>
     <a href="../security/" class="all-tools">Security</a>
     <a href="../" class="all-tools">All Oli Tools</a>
-    <a href="./buy/" style="background: var(--accent); color: #fff !important; padding: 8px 16px; border-radius: 8px;">Buy Now</a>
+    <a href="./buy/" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff !important; padding: 8px 16px; border-radius: 8px; box-shadow: var(--glow-red-soft);">Buy Now</a>
   </nav>
 </header>
 
 <section class="hero wrap">
-  <div class="eyebrow">💎 The gem solo agents have been missing</div>
-  <h1>Big teams have <span class="hl">5 tools and an assistant.</span><br>You can have one app.</h1>
-  <p class="sub-headline">Leads, property search, a shared inbox, and a call center — everything a top-producing team runs on, built into one dashboard a solo agent can actually afford and actually use.</p>
+  <div class="eyebrow">🛠️ Flat-rate leads, no per-lead surprises</div>
+  <h1>Stop paying <span class="hl">$20-$85 every time</span><br>a lead comes in.</h1>
+  <p class="sub-headline">Home-improvement leads, a shared inbox, and a call center — everything a busy trade business needs to find and work jobs, for one flat monthly rate instead of a per-lead bill that grows with your success.</p>
   <div class="hero-ctas">
-    <a href="./buy/" class="cta-btn">Subscribe Now — $59/mo</a>
+    <a href="./buy/" class="cta-btn">Subscribe Now — $29/mo</a>
     <a href="#tools" class="cta-btn ghost">See features ↓</a>
   </div>
   <div class="price-note">
@@ -157,28 +159,31 @@
     <span>✅ Free demo login, right now</span>
   </div>
   <div class="tools-strip">
-    <div class="tool-pill">📍 Property Search</div>
-    <div class="tool-pill">📇 Lead Generation</div>
-    <div class="tool-pill">📥 Shared Inbox</div>
-    <div class="tool-pill">📞 Call Center — bring any phone app</div>
+    <div class="tool-pill">🧹 Cleaning</div>
+    <div class="tool-pill">🐜 Pest Control</div>
+    <div class="tool-pill">🏗️ Renovation</div>
+    <div class="tool-pill">🏠 Roofing</div>
+    <div class="tool-pill">🎨 Painting</div>
+    <div class="tool-pill">🔧 Plumbing · Electrical · HVAC · +5 more trades</div>
     <div class="tool-pill">🇺🇸 USA</div>
     <div class="tool-pill">🇬🇧 UK</div>
     <div class="tool-pill">🇦🇺 Australia</div>
   </div>
 </section>
+</div>
 
 <section id="tools">
   <div class="wrap">
     <div class="gem-banner">
-      <div class="gem-icon">💎</div>
-      <h2>You don't need a bigger team. You need better tools.</h2>
-      <p>The gap between a solo agent and a top-producing team usually isn't hustle — it's infrastructure. Oli-Locator closes that gap: the same lead-to-close workflow big teams pay thousands for, built for one person to run alone. Covering the <strong style="color:#fff;">USA, UK, and Australia</strong>.</p>
+      <div class="gem-icon">🛠️</div>
+      <h2>Per-lead pricing punishes you for being busy. Flat pricing doesn't.</h2>
+      <p>Most lead platforms charge every single time a lead comes in — the busier you get, the more you pay. Oli-Locator is one flat monthly subscription: find and work as many leads as you want, across the <strong style="color:#fff;">USA, UK, and Australia</strong>.</p>
       <div style="display:flex; justify-content:center; gap:50px; margin-top:36px; flex-wrap:wrap; text-align:center;">
-        <div><b style="display:block; font-size:32px; font-weight:800; color:#fff;">$58-69/mo</b><span style="font-size:13px; color:#c9dcf2;">Follow Up Boss, the leading real estate CRM, solo tier</span></div>
-        <div><b style="display:block; font-size:32px; font-weight:800; color:#fff;">$25-50/mo</b><span style="font-size:13px; color:#c9dcf2;">kvCORE / LionDesk entry tiers, CRM only</span></div>
-        <div><b style="display:block; font-size:32px; font-weight:800; color:#fff;">$59/mo</b><span style="font-size:13px; color:#c9dcf2;">Oli-Locator — CRM + leads + inbox + calling, all in</span></div>
+        <div><b style="display:block; font-size:32px; font-weight:800; color:#fff;">$15-$85+</b><span style="font-size:13px; color:var(--sub-invert);">Angi Leads / Thumbtack, per individual lead</span></div>
+        <div><b style="display:block; font-size:32px; font-weight:800; color:#fff;">$300-$2,500/mo</b><span style="font-size:13px; color:var(--sub-invert);">what many pros actually spend on pay-per-lead platforms</span></div>
+        <div><b style="display:block; font-size:32px; font-weight:800; color:#fff;">$29-$79/mo</b><span style="font-size:13px; color:var(--sub-invert);">Oli-Locator — unlimited leads, flat rate, all in</span></div>
       </div>
-      <p style="margin-top:24px;"><a href="./vs-follow-up-boss/" style="color:#93c5fd;font-weight:700;text-decoration:underline;">See the full, sourced cost breakdown vs Follow Up Boss →</a></p>
+      <p style="margin-top:24px;"><a href="./vs-lead-marketplaces/" style="color:#ffb3ba;font-weight:700;text-decoration:underline;">See the full, sourced cost breakdown vs Angi, Thumbtack &amp; Bark →</a></p>
       <div style="display:flex; justify-content:center; gap:20px; margin-top:28px; flex-wrap:wrap;">
         <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:999px; padding:8px 20px; font-size:14px; font-weight:700;">🇺🇸 United States</div>
         <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:999px; padding:8px 20px; font-size:14px; font-weight:700;">🇬🇧 United Kingdom</div>
@@ -190,34 +195,34 @@
 
 <section class="problem">
   <div class="wrap">
-    <h2 class="section-title">Everything a solo agent needs to compete with big teams</h2>
+    <h2 class="section-title">Everything a solo trade business needs to find real work</h2>
     <div class="grid2">
       <div class="card">
         <span class="icon">📇</span>
-        <h3>Lead Generation</h3>
-        <p>Capture and manage leads from multiple sources in one dashboard, with opt-in forms ready to embed on your own site — so leads don't slip through the cracks between platforms.</p>
-      </div>
-      <div class="card">
-        <span class="icon">📍</span>
-        <h3>Property Locator — USA, UK & Australia</h3>
-        <p>Search and filter property listings across the <strong>United States, United Kingdom, and Australia</strong> by city, type, and category — built for both agents and their clients to use directly, cutting back-and-forth in half.</p>
+        <h3>Lead Generation — 11 trades</h3>
+        <p>Cleaning, pest control, renovation, roofing, painting, plumbing, electrical, landscaping, HVAC, flooring, and handyman. Search by city or ZIP/postcode, filter by trade, and see mapped leads with budgets, urgency, and a 0-100 lead score.</p>
       </div>
       <div class="card">
         <span class="icon">📥</span>
-        <h3>Unified Inbox</h3>
-        <p>Every lead conversation in one place — no more digging through email, texts, and a separate CRM to remember where a conversation left off.</p>
+        <h3>Request-a-Quote &amp; Inbox</h3>
+        <p>A public, homeowner-facing "Request a Quote" page captures first-party, <strong>consented</strong> leads — the cleanest, fully-compliant lead source there is — straight into your dashboard Inbox. No scraping, no cold data.</p>
       </div>
       <div class="card">
-        <span class="icon">📞</span>
+        <span class="icon">☎</span>
         <h3>Call Center — your app, your choice</h3>
-        <p>Manage and track calls with leads and clients directly inside the same app you're already using. Oli-Locator doesn't lock you into one calling service — dial through your device's default phone app, or connect any VoIP/calling app you already use or prefer.</p>
+        <p>Manage and track calls with leads directly inside the same app you're already using. Oli-Locator doesn't lock you into one calling service — dial through your device's default phone app, or connect any VoIP/calling app you already use or prefer.</p>
+      </div>
+      <div class="card">
+        <span class="icon">🌍</span>
+        <h3>Three countries, one dashboard</h3>
+        <p>Toggle between the United States, United Kingdom, and Australia — each with real local currency (USD/GBP/AUD), real city and postcode data, and real trade-appropriate job categories. No separate apps or subscriptions per market.</p>
       </div>
     </div>
 
     <div class="gem-banner" style="margin-top:40px;">
       <div class="gem-icon">📱</div>
       <h2>Use whatever phone app you already trust</h2>
-      <p>Some real estate CRMs force you into their own calling system, with its own number, its own app, and its own monthly add-on fee. Oli-Locator doesn't. Tap a lead's number and it opens straight into your device's own dialer or default calling app — so you can use your existing carrier plan, a free VoIP app, a dedicated second-line app, or whatever setup already works for your business. No forced platform, no extra calling subscription baked into the price.</p>
+      <p>Some lead platforms force you into their own calling system, with its own number, its own app, and its own monthly add-on fee. Oli-Locator doesn't. Tap a lead's number and it opens straight into your device's own dialer or default calling app — so you can use your existing carrier plan, a free VoIP app, a dedicated second-line app, or whatever setup already works for your business. No forced platform, no extra calling subscription baked into the price.</p>
     </div>
   </div>
 </section>
@@ -226,21 +231,23 @@
   <div class="wrap">
     <h2 class="section-title">Simple monthly pricing</h2>
     <p class="section-sub">Try the demo account free, right now, no signup required.</p>
-    <div class="price-card">
-      <div class="tag">AGENCY PLAN</div>
+    <div class="price-card featured">
+      <div class="tag">PRO PLAN</div>
       <div style="font-weight:700; color:var(--sub); font-size:14px; letter-spacing:0.03em; text-transform:uppercase;">Oli-Locator — Monthly</div>
-      <div class="price-was">Follow Up Boss starts at $58-69/mo for CRM alone, no lead gen or call center included — <a href="./vs-follow-up-boss/" style="text-decoration:underline;">full breakdown →</a></div>
-      <div class="price-big">$59 <span>/ month</span></div>
-      <div style="color:#16a34a;font-weight:700;font-size:14px;margin:-4px 0 8px;">🎁 First 14 days free — cancel before day 14 and pay nothing</div>
-      <div class="price-save">Still 14% cheaper than Follow Up Boss ($69/mo CRM only) — with leads, inbox and calling included</div>
+      <div class="price-was">Angi Leads charges $15-$85+ every single lead, on top of a ~$300/yr membership fee — <a href="./vs-lead-marketplaces/" style="text-decoration:underline;">full breakdown →</a></div>
+      <div class="price-big">$79 <span>/ month</span></div>
+      <div style="color:var(--good);font-weight:700;font-size:14px;margin:-4px 0 8px;">🎁 7-day free trial — cancel before it ends and pay nothing</div>
+      <div class="price-save">Unlimited lead search across all 3 countries — no per-lead charges, ever</div>
       <ul class="price-list">
         <li>Unlimited search — USA, UK &amp; Australia 🇺🇸🇬🇧🇦🇺</li>
-        <li>Lead generation + opt-in forms</li>
-        <li>Shared inbox + call center — bring your own phone app</li>
-        <li>14-day free trial, then cancel anytime, no contract</li>
+        <li>Lead generation across 11 trades + opt-in forms</li>
+        <li>Opt-in "Request a Quote" Inbox + saved searches</li>
+        <li>Call center — bring your own phone app</li>
+        <li>7-day free trial, then cancel anytime, no contract</li>
       </ul>
       <a href="./buy/" class="cta-btn" style="width:100%; text-align:center; display:block;">Start Free Trial</a>
       <div class="demo-strip">🎬 Free demo login: try it before you even start your trial</div>
+      <p style="font-size:13px;color:var(--sub);margin-top:14px;">Also available: <strong>Starter</strong> ($29/mo, 1 country) and <strong>Agency</strong> ($199/mo, up to 10 seats + API) — see the full comparison on the <a href="./buy/">buy page</a>.</p>
       <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:14px; font-size:12.5px; color:var(--sub);"><span style="border:1px solid var(--line); border-radius:6px; padding:3px 8px; font-weight:700;">Stripe</span><span style="border:1px solid var(--line); border-radius:6px; padding:3px 8px; font-weight:700;">PayPal</span><span>secure recurring billing worldwide</span></div>
     </div>
   </div>
@@ -275,7 +282,7 @@
                 <div class="form__label-row">
                   <label class="entry__label" for="EMAIL" data-required="*">Enter your email address to subscribe</label>
                   <div class="entry__field">
-                    <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" value="" placeholder="you@realty.com" data-required="true" required>
+                    <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" value="" placeholder="you@yourtradebusiness.com" data-required="true" required>
                   </div>
                 </div>
                 <label class="entry__error entry__error--primary" style="font-family:Helvetica, sans-serif; font-size:16px; text-align:left; color:#661d1d; background-color:#ffeded; border-color:#ff4949; border-radius:3px;"></label>
@@ -316,8 +323,12 @@
   <div class="wrap" style="max-width:760px;">
     <h2 class="section-title">Questions, answered honestly</h2>
     <div style="border-bottom:1px solid var(--line); padding:20px 0;">
-      <h4 style="margin:0 0 8px; font-size:16px;">Which countries does the property search cover?</h4>
-      <p style="margin:0; color:var(--sub); font-size:15px;">Oli-Locator covers property listings across the <strong>United States 🇺🇸, United Kingdom 🇬🇧, and Australia 🇦🇺</strong>. You can search by city, suburb, postcode, or region within any of the three countries. More markets are planned — contact us if you'd like to see your country added.</p>
+      <h4 style="margin:0 0 8px; font-size:16px;">Which countries and trades does this cover?</h4>
+      <p style="margin:0; color:var(--sub); font-size:15px;">Oli-Locator covers <strong>United States 🇺🇸, United Kingdom 🇬🇧, and Australia 🇦🇺</strong> — search by city, suburb, postcode, or region within any of the three countries. Leads span 11 trades: cleaning, pest control, renovation, roofing, painting, plumbing, electrical, landscaping, HVAC, flooring, and handyman. More markets and trades are planned — contact us if you'd like to see yours added.</p>
+    </div>
+    <div style="border-bottom:1px solid var(--line); padding:20px 0;">
+      <h4 style="margin:0 0 8px; font-size:16px;">Where do the leads actually come from?</h4>
+      <p style="margin:0; color:var(--sub); font-size:15px;">Three real, compliant sources: (1) your own homeowner-facing "Request a Quote" page — first-party, consented leads, the cleanest source there is; (2) live public job/demand feeds where terms of use permit it; (3) demo data for trying the app before you connect real sources. We do not scrape personal data from social media or directories — that's a real legal risk under GDPR/CCPA, not just bad practice, and we built this to avoid it entirely.</p>
     </div>
     <div style="border-bottom:1px solid var(--line); padding:20px 0;">
       <h4 style="margin:0 0 8px; font-size:16px;">Can I use my own phone/calling app?</h4>
@@ -346,17 +357,17 @@
   <div class="t-card">
     <div class="t-stars">★★★★★</div>
     <p class="t-quote">"Their real quote, verbatim, with permission."</p>
-    <div class="t-person"><div class="t-avatar">XX</div><div><p class="t-name">First name + last initial (with their OK)</p><p class="t-role">Their role/brokerage</p></div></div>
+    <div class="t-person"><div class="t-avatar">XX</div><div><p class="t-name">First name + last initial (with their OK)</p><p class="t-role">Their trade/business</p></div></div>
   </div>
 -->
 <section id="testimonials">
   <div class="wrap">
-    <h2 class="section-title">Why solo agents are switching to Oli-Locator</h2>
+    <h2 class="section-title">Why trade businesses are switching to Oli-Locator</h2>
     <p class="section-sub">We're early — here's what the product actually delivers, not invented reviews.</p>
     <div class="t-grid">
       <div class="t-card">
-        <div class="t-stars">🏡</div>
-        <p class="t-quote">CRM, lead gen, a shared inbox, and call center in one subscription — Follow Up Boss's CRM-only entry tier costs about the same and doesn't include the other three.</p>
+        <div class="t-stars">🛠️</div>
+        <p class="t-quote">Leads, a shared inbox, and call center in one flat-rate subscription — no per-lead fees like Angi Leads or Thumbtack, which can run $300-$2,500/mo for busy pros.</p>
       </div>
       <div class="t-card">
         <div class="t-stars">📞</div>
@@ -364,7 +375,7 @@
       </div>
       <div class="t-card">
         <div class="t-stars">🎬</div>
-        <p class="t-quote">Try the free demo login right now, no signup required, before you even start the 14-day trial on a real subscription.</p>
+        <p class="t-quote">Try the free demo login right now, no signup required, before you even start the 7-day trial on a real subscription.</p>
       </div>
       <div class="t-card">
         <div class="t-stars">📣</div>
@@ -374,14 +385,14 @@
   </div>
 </section>
 
-<footer class="wrap">
-  💎 Oli-Locator — a product line by WorkItLikeAPro.
+<footer class="oli-footer"><div class="wrap">
+  🛠️ Oli-Locator — a product line by WorkItLikeAPro.
   <div style="margin-top:10px;">
     <a href="../security/">Security</a> · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a> ·
     <a href="../support/">Support</a> · <a href="../contact/">Contact</a> ·
     <a href="../">All Oli Tools</a> · <a href="./buy/">Buy Now</a>
   </div>
-</footer>
+</div></footer>
 
 <script src="../shared/cookie-consent.js"></script>
 

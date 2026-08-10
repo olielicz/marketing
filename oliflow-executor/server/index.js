@@ -15,20 +15,34 @@ import { randomUUID } from "node:crypto";
 import { executeWorkflow } from "./executor.js";
 import { requireAdmin } from "./adminAuth.js";
 import { generateSupportAnswer } from "./supportAssistant.js";
-import { listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket } from "./store.js";
+import {
+  listSupportTickets,
+  getSupportTicket,
+  createSupportTicket,
+  updateSupportTicketStatus,
+  deleteSupportTicket,
+  createActiveTrigger,
+  listActiveTriggers,
+  getActiveTrigger,
+  deleteActiveTrigger,
+  getTriggerFireLog,
+  getLandingPage,
+  recordTriggerFire,
+} from "./store.js";
+import { startScheduler } from "./scheduler.js";
 
 const PORT = Number(process.env.PORT) || 4400;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 
 // Mirrors the frontend's own trigger-type detection
-// (`getNodeDef(n.type).inputs.length === 0`), restricted to trigger types
-// this executor's inbound-webhook entry point actually originates from.
-// If you add more trigger types to the frontend's NODE_LIBRARY (schedule,
-// email_trigger, form_trigger, db_trigger, api_trigger - none of which
-// have a real backend implementation yet, see README.md), add them here
-// too once they have a real handler, so getExecutionOrder() recognizes
-// them as valid starting points.
-const TRIGGER_TYPES = new Set(["webhook"]);
+// (`getNodeDef(n.type).inputs.length === 0`). All 6 trigger types the
+// frontend's NODE_LIBRARY defines now have a real backend implementation
+// — see executor.js's IMPLEMENTED_TYPES and scheduler.js for how
+// schedule/db_trigger/api_trigger actually fire a run on their own
+// (webhook/email_trigger/form_trigger fire from an inbound HTTP request
+// instead — see the /api/hooks/* and /api/triggers/*/email|form routes
+// below).
+const TRIGGER_TYPES = new Set(["webhook", "schedule", "email_trigger", "form_trigger", "db_trigger", "api_trigger"]);
 const isTriggerType = (type) => TRIGGER_TYPES.has(type);
 
 function readJsonBody(req) {
@@ -206,6 +220,103 @@ const server = createServer(async (req, res) => {
       return send(res, 200, result);
     }
 
+    /* ------------------------------ Active Triggers (schedule/db_trigger/api_trigger/email_trigger/form_trigger) ------------------------------ */
+    // These make a workflow whose ONLY trigger is one of the 5 new
+    // trigger types actually run on its own — see scheduler.js's header
+    // comment for the real (disclosed, zero-dependency) polling design
+    // behind schedule/db_trigger/api_trigger, and the dedicated
+    // email/form webhook routes further below for the other two.
+    // Registering/managing a trigger is gated behind admin auth (it can
+    // make this server poll arbitrary URLs/databases and execute
+    // arbitrary workflows on a timer — the same sensitivity as
+    // POST /api/execute itself).
+    if (req.method === "POST" && url.pathname === "/api/triggers") {
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
+      const body = await readJsonBody(req);
+      if (!TRIGGER_TYPES.has(body.type) || body.type === "webhook") {
+        return send(res, 400, { error: `type must be one of: schedule, email_trigger, form_trigger, db_trigger, api_trigger.` });
+      }
+      if (!body.workflow || !Array.isArray(body.workflow.nodes)) {
+        return send(res, 400, { error: "Request body must include a 'workflow' object with a 'nodes' array." });
+      }
+      const trigger = await createActiveTrigger({ type: body.type, workflow: body.workflow, config: body.config || {} });
+      return send(res, 201, { trigger });
+    }
+
+    if (req.method === "GET" && url.pathname === "/api/triggers") {
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
+      return send(res, 200, { triggers: await listActiveTriggers() });
+    }
+
+    if (req.method === "GET" && /^\/api\/triggers\/[^/]+\/log$/.test(url.pathname)) {
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
+      const id = url.pathname.split("/")[3];
+      return send(res, 200, { log: await getTriggerFireLog(id) });
+    }
+
+    if (req.method === "DELETE" && /^\/api\/triggers\/[^/]+$/.test(url.pathname)) {
+      if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
+      const id = url.pathname.split("/")[3];
+      const deleted = await deleteActiveTrigger(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
+    // Real inbound entry points for email_trigger/form_trigger — these
+    // fire IMMEDIATELY on request (not polled), exactly like the
+    // existing generic webhook flow, but as their own semantically
+    // distinct URL so e.g. Mailgun's inbound-parse webhook or a
+    // Formspree/Netlify Forms submission hook can target this trigger
+    // specifically. PUBLIC (no admin auth) — an inbound email/form
+    // provider can't complete an OAuth-style login dance; matches how
+    // the general webhook flow (POST /api/execute for a "webhook" node)
+    // is reached via a real per-workflow secret instead (see the
+    // workflow-level auth already documented for that flow).
+    if (req.method === "POST" && /^\/api\/triggers\/[^/]+\/(email|form)$/.test(url.pathname)) {
+      // url.pathname.split("/") on "/api/triggers/<id>/<kind>" yields
+      // ["", "api", "triggers", "<id>", "<kind>"] — indices 3 and 4.
+      const parts = url.pathname.split("/");
+      const id = parts[3];
+      const kind = parts[4];
+      const trigger = await getActiveTrigger(id);
+      if (!trigger) return send(res, 404, { error: "not_found" });
+      if (trigger.type !== `${kind}_trigger`) {
+        return send(res, 400, { error: `This trigger is registered as "${trigger.type}", not "${kind}_trigger".` });
+      }
+      const body = await readJsonBody(req);
+      const executionId = randomUUID();
+      const result = await executeWorkflow(trigger.workflow, {
+        triggerPayload: body,
+        vars: trigger.workflow.vars || {},
+        isTriggerType: (type) => type === trigger.type,
+        executionId,
+      });
+      // Recorded in the SAME real fire log GET /api/triggers/:id/log
+      // reads (see scheduler.js's recordTriggerFire) — an inbound
+      // email/form submission is a genuine "fire" of this trigger, same
+      // as a scheduler-polled one, so it belongs in the same log rather
+      // than being invisible there.
+      const anyFailed = result.nodeResults.some((r) => r.ok === false && !r.notImplemented);
+      await recordTriggerFire(id, { ok: !anyFailed, executionId });
+      if (result.respondWith) {
+        return send(res, result.respondWith.statusCode, result.respondWith.body);
+      }
+      return send(res, 200, result);
+    }
+
+    /* ------------------------------ Landing pages (landing_page node) ------------------------------ */
+    // Real, publicly-servable pages a workflow published via the
+    // "landing_page" node (see crmNodes.js's runLandingPageNode()) — see
+    // store.js's createLandingPage()/getLandingPage() for the honest,
+    // disclosed scope (one static HTML page per slug, no page builder).
+    if (req.method === "GET" && /^\/lp\/[a-z0-9-]+$/.test(url.pathname)) {
+      const slug = url.pathname.split("/")[2];
+      const page = await getLandingPage(slug);
+      if (!page) return send(res, 404, { error: "not_found" });
+      const html = page.html;
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Content-Length": Buffer.byteLength(html) });
+      return res.end(html);
+    }
+
     return send(res, 404, { error: "not_found" });
   } catch (err) {
     console.error(err);
@@ -222,6 +333,13 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   server.listen(PORT, () => {
     console.log(`OliFlow Executor Server listening on http://localhost:${PORT}`);
   });
+  // Real background polling for schedule/db_trigger/api_trigger active
+  // triggers — see scheduler.js's header comment. Not started when this
+  // module is only imported by a test file (matching the same
+  // listen()-guard pattern above), so tests control their own lifecycle
+  // and don't leave a stray interval timer running after the test
+  // process's assertions finish.
+  startScheduler();
 }
 
 export { server };

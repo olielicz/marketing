@@ -663,7 +663,7 @@ const NODE_LIBRARY = [
     category: 'Data & Transform', icon: '🔧', color: '#06b6d4',
     nodes: [
       { id:'set_fields',   label:'Set / Map Fields',   icon:'✏️', color:'#06b6d4', desc:'Set or transform field values', inputs:['input'], outputs:['output'] },
-      { id:'code',         label:'Code (JS/Python)',    icon:'💻', color:'#06b6d4', desc:'Run custom code', inputs:['input'], outputs:['output','error'] },
+      { id:'code',         label:'Code (JavaScript)',    icon:'💻', color:'#06b6d4', desc:'Run custom code', inputs:['input'], outputs:['output','error'] },
       { id:'json_parse',   label:'JSON Parse',          icon:'📦', color:'#06b6d4', desc:'Parse JSON strings', inputs:['text'], outputs:['parsed'] },
       { id:'template',     label:'Template Engine',     icon:'📄', color:'#06b6d4', desc:'Fill a template with variables', inputs:['data'], outputs:['rendered'] },
       { id:'aggregate',    label:'Aggregate / Reduce',  icon:'📊', color:'#06b6d4', desc:'Sum, count, group items', inputs:['items'], outputs:['result'] },
@@ -1245,14 +1245,26 @@ function renderCpSettings(n, def) {
         <div class="cp-field"><label>Value</label>
           <input type="text" id="cp-value" value="${cfg.value||''}" placeholder="active"/></div>`;
       break;
-    case 'code':
+    case 'code': {
+      const lang = cfg.language || 'javascript';
+      const isPython = lang === 'python';
+      const jsPlaceholder = '// Access input via $input, $vars\n// Await real outbound calls via $fetch(url)\nreturn {\n  result: $input.data\n};';
+      const pyPlaceholder = '# Access input via input, vars\n# Call real outbound requests via fetch(url)\nreturn {"result": input.get("data")}';
       html += `
         <div class="cp-field"><label>Language</label>
-          <select id="cp-lang"><option>JavaScript</option><option>Python (server)</option></select></div>
+          <select id="cp-language" onchange="onCodeLangChange()">
+            <option value="javascript" ${!isPython?'selected':''}>JavaScript</option>
+            <option value="python" ${isPython?'selected':''}>Python 3</option>
+          </select>
+          <div class="cp-hint">Both run for real on the backend (JavaScript in a sandboxed node:vm context; Python in a real, isolated python3 subprocess — see oliflow-executor/README.md's "Code node" section for exactly what each sandbox does and doesn't restrict).</div></div>
         <div class="cp-field"><label>Code</label>
-          <textarea id="cp-code" rows="8" style="font-family:monospace;font-size:12px;">${cfg.code||'// Access input via $input\n// Return your output\nreturn {\n  result: $input.data\n};'}</textarea>
-          <div class="cp-hint">Available: <code style="color:var(--accent)">$input</code>, <code style="color:var(--accent)">$vars</code>, <code style="color:var(--accent)">$fetch(url)</code></div></div>`;
+          <textarea id="cp-code" rows="8" style="font-family:monospace;font-size:12px;">${cfg.code || (isPython ? pyPlaceholder : jsPlaceholder)}</textarea>
+          <div class="cp-hint" id="cp-code-hint">${isPython
+            ? 'Available: <code style="color:var(--accent)">input</code>, <code style="color:var(--accent)">vars</code>, <code style="color:var(--accent)">fetch(url)</code> (real, but blocks private/internal addresses by default — same rule as the HTTP Request node).'
+            : 'Available: <code style="color:var(--accent)">$input</code>, <code style="color:var(--accent)">$vars</code>, <code style="color:var(--accent)">$fetch(url)</code> (real, async — <code style="color:var(--accent)">await</code> it; blocks private/internal addresses by default, same rule as the HTTP Request node).'
+          }</div></div>`;
       break;
+    }
     case 'openai':
       html += `
         <div class="cp-field"><label>Model</label>
@@ -1303,6 +1315,30 @@ function getAvailableVars(n) {
   });
   Object.keys(wf.variables || {}).forEach(k => vars.push(`{{vars.${k}}}`));
   return [...new Set(vars)].slice(0, 15);
+}
+
+function onCodeLangChange() {
+  // Re-renders this node's config panel with the new language's
+  // placeholder/hint text (see renderCpSettings()'s 'code' case) —
+  // saves the current textarea content into a temp field first so
+  // switching languages doesn't silently discard code the user already
+  // typed for the OTHER language (kept per-node, since JS and Python
+  // code for the same node are genuinely different code).
+  const wf = currentWf();
+  const n = wf.nodes.find(n => n.id === state.selectedNodeId);
+  if (!n) return;
+  const langEl = document.getElementById('cp-language');
+  const codeEl = document.getElementById('cp-code');
+  const newLang = langEl.value;
+  n.config = n.config || {};
+  // Stash whatever was in the box under the OLD language's own key so
+  // toggling back restores it, rather than showing the new language's
+  // placeholder over lost real code.
+  const oldLang = n.config.language || 'javascript';
+  n.config[`_savedCode_${oldLang}`] = codeEl.value;
+  n.config.language = newLang;
+  n.config.code = n.config[`_savedCode_${newLang}`] || '';
+  renderCpSettings(n, getNodeDef(n.type));
 }
 
 function saveNodeConfig() {

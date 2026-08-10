@@ -75,7 +75,7 @@ Fill in `.env`:
 Start it:
 
 ```bash
-node server/index.js     # listens on PORT (default 4300)
+node server/index.js     # listens on PORT (default 4700)
 ```
 
 Deploy to any free/cheap Node host already recommended elsewhere in this

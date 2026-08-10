@@ -278,8 +278,9 @@ configuration step in 2 files, unrelated to the VPS itself:
 - `shared/paddle-sdk.js` — as of this writing, only **OliOps Starter**
   has a real Paddle Price ID configured (`PRICE_IDS.oliops.starter`).
   Every other tier across all 6 tools (OliOps Pro/Agency, OliCommerce all
-  3 tiers, OliFlow all 3, OliExplore all 3, Oli-Locator both tiers,
-  OliSalesTrack) is still a placeholder `YOUR_..._PRICE_ID` string. Until
+  3 tiers, OliFlow all 3, OliExplore all 3, Oli-Locator all 3 (Starter/
+  Pro/Agency), OliSalesTrack) is still a placeholder `YOUR_..._PRICE_ID`
+  string. Until
   you create the matching Product/Price in your Paddle Dashboard and
   paste the real Price ID in, that tier's "Pay with Card" button shows a
   clear "not configured yet" notice instead of taking a real payment —

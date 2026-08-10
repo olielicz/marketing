@@ -36,23 +36,23 @@ function isPrivateHostname(hostname) {
 }
 
 /**
- * @param {object} config - { method, url, headers: string|object, body: string|object }
- * @param {object} templateContext - see templateEngine.js's buildBaseContext()
- * @returns {Promise<{ ok: true, statusCode: number, headers: object, body: string } | { ok: false, error: string }>}
+ * Exported so other node types that make outbound requests on a user's
+ * behalf — specifically the "code" node's real $fetch (see
+ * codeNode.js) — can reuse the EXACT same SSRF guard rather than
+ * re-implementing (and potentially drifting from) it. A single source
+ * of truth for "is this a private/internal address" across every
+ * outbound-request-capable node in this executor.
+ *
+ * @param {string} rawUrl
+ * @returns {{ ok: true, url: URL } | { ok: false, error: string }}
  */
-export async function runHttpRequestNode(config, templateContext) {
-  const method = (config.method || "GET").toUpperCase();
-  const rawUrl = resolveTemplateDeep(config.url || "", templateContext);
-
+export function guardOutboundUrl(rawUrl) {
   let url;
   try {
     url = new URL(rawUrl);
   } catch {
     return { ok: false, error: `"${rawUrl}" is not a valid URL.` };
   }
-
-  // Read env vars fresh on every call (not captured once at module load)
-  // so tests and runtime config changes both take effect correctly.
   const allowPrivateNetwork = process.env.OLIFLOW_ALLOW_PRIVATE_NETWORK_REQUESTS === "1";
   if (!allowPrivateNetwork && isPrivateHostname(url.hostname)) {
     return {
@@ -61,6 +61,21 @@ export async function runHttpRequestNode(config, templateContext) {
         `Set OLIFLOW_ALLOW_PRIVATE_NETWORK_REQUESTS=1 if this is intentional.`,
     };
   }
+  return { ok: true, url };
+}
+
+/**
+ * @param {object} config - { method, url, headers: string|object, body: string|object }
+ * @param {object} templateContext - see templateEngine.js's buildBaseContext()
+ * @returns {Promise<{ ok: true, statusCode: number, headers: object, body: string } | { ok: false, error: string }>}
+ */
+export async function runHttpRequestNode(config, templateContext) {
+  const method = (config.method || "GET").toUpperCase();
+  const rawUrl = resolveTemplateDeep(config.url || "", templateContext);
+
+  const guarded = guardOutboundUrl(rawUrl);
+  if (!guarded.ok) return guarded;
+  const url = guarded.url;
 
   let headers = {};
   if (config.headers) {

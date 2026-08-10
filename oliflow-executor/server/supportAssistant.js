@@ -42,9 +42,37 @@ const KNOWLEDGE_BASE = [
   {
     id: "node-type-not-implemented",
     question: "A node type isn't working / shows not implemented",
-    keywords: ["node", "not", "implemented", "openai", "slack", "stripe", "shopify", "schedule", "switch", "loop", "notion", "airtable", "twilio", "supabase", "whatsapp"],
+    keywords: ["node", "not", "implemented", "sub_workflow", "subworkflow"],
     answer:
-      "That's expected, not a bug — this executor only has real implementations for webhook (trigger), http_request, condition, delay, code, set_fields, set_variable/get_variable, log, respond_webhook, email_send, and note. Everything else (schedule, openai, slack, stripe, shopify, and about 20 other node types) is honestly reported as 'not implemented' rather than faked, because it needs real third-party OAuth/API credentials this pass didn't build. See README.md's 'Node type coverage' table for the full, current list.",
+      "48 of the 49 node types in the app's node library are now real. The one exception is sub_workflow (running an entire other workflow as a single step) — it's honestly reported as 'not implemented' because it needs re-entrant subgraph execution this executor doesn't have yet, rather than being faked. Every other node type — including openai/slack/stripe/shopify/twilio/notion/airtable/supabase/paypal/whatsapp/calendar/google_sheets and every CRM/Marketing and logic/flow node — genuinely runs real logic now. See README.md's 'Node type coverage' table for exactly what each one needs.",
+  },
+  {
+    id: "integration-node-missing-credentials",
+    question: "An integration node (Slack, Stripe, Notion, etc.) says a variable is missing",
+    keywords: ["slack_token", "stripe_secret_key", "notion_token", "airtable_token", "twilio_account_sid", "credential", "credentials", "missing", "variable"],
+    answer:
+      "Integration nodes read their real API keys/tokens from workflow VARIABLES (the app's Variables tab), never from the node's own config — same principle as email_send's SMTP credentials. Each integration has its own documented variable prefix (e.g. slack_token, stripe_secret_key, twilio_account_sid/twilio_auth_token/twilio_from) — see README.md's 'Integrations' table for the exact names each node type needs.",
+  },
+  {
+    id: "branch-not-working",
+    question: "My condition or switch node isn't routing to the right branch",
+    keywords: ["condition", "switch", "branch", "branches", "true", "false", "case", "skipped", "routing"],
+    answer:
+      "condition/switch/error_handler are real branch decisions — only the connection(s) leaving the node's matched output port (true/false, case1/case2/case3/default, or error/success) actually run; everything reached only through another port is honestly reported as skipped:true rather than running unconditionally. Check the specific port your connection is wired FROM in the workflow editor, and check the branching node's own result (matchedCase/resolvedField) in the Execution Log to see exactly what it decided.",
+  },
+  {
+    id: "scheduled-trigger-not-firing",
+    question: "My schedule/db_trigger/api_trigger workflow isn't running on its own",
+    keywords: ["schedule", "db_trigger", "api_trigger", "polling", "poll", "background", "cron", "interval"],
+    answer:
+      "Adding a schedule/db_trigger/api_trigger node to a workflow isn't enough by itself — it also needs to be registered as an Active Trigger via POST /api/triggers (a separate, real, persisted registration the background scheduler polls every 15 seconds). See README.md's 'Setting up scheduled/polling triggers' section for the exact request shape, and GET /api/triggers/:id/log to see its real fire history (or lack of one).",
+  },
+  {
+    id: "database-node-not-connecting",
+    question: "My mysql/Postgres node can't connect or auth fails",
+    keywords: ["mysql", "postgres", "postgresql", "database", "db_host", "connection", "scram", "auth"],
+    answer:
+      "Set db_host/db_user/db_pass/db_database (and db_port if non-default) as real workflow VARIABLES, and set config.engine to 'postgres' or 'mysql'. This executor's database client is real but intentionally bounded: Postgres supports trust/cleartext/MD5 auth (not SCRAM-SHA-256), MySQL supports mysql_native_password (not caching_sha2_password), and neither supports SSL/TLS connections yet — see README.md's 'Setting up database access' section for the full, current scope.",
   },
   {
     id: "http-request-blocked",

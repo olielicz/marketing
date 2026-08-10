@@ -57,14 +57,33 @@
   <body>
     <div id="app"></div>
 
-    <!-- Boot error fallback (shown only if the module script fails to start) -->
+    <!-- Boot error fallback (shown only if a dependency script fails to load) -->
     <div id="boot-error" style="display:none;position:fixed;inset:0;background:#0b0f1d;color:#fff;font-family:monospace;padding:24px;overflow:auto">
       <h2 style="color:#f87171;margin:0 0 12px">Failed to load OliSalesTrack</h2>
-      <p style="color:#94a3b8;margin:0 0 12px">If you opened the file directly from disk, make sure your browser allows ES modules from <code>file://</code>, or host it on a static server (see README.md). Error details:</p>
+      <p style="color:#94a3b8;margin:0 0 12px">One of this app's bundled scripts (React, ReactDOM, or htm — see <code>../../shared/vendor/</code>) failed to load. If you moved this file, make sure the sibling <code>shared/vendor/</code> folder from the marketing repo is still reachable at the same relative path, and that you're serving it over <code>http://</code>/<code>https://</code> rather than opening it directly via <code>file://</code>. Error details:</p>
       <pre id="boot-error-msg" style="white-space:pre-wrap;background:#0a0f24;border:1px solid #1f2a52;padding:12px;border-radius:8px"></pre>
     </div>
 
-    <script type="module">
+    <!-- FIX: previously loaded React/ReactDOM/htm live from https://esm.sh on
+         every single page load, with no fallback. That makes an app that
+         markets itself as an installable, offline-capable PWA (see the
+         service-worker registration and "Install as app" section below)
+         fail outright — "Failed to load OliSalesTrack" — for any offline
+         user, anyone behind a network policy that blocks esm.sh, or anyone
+         opening a downloaded/self-hosted copy without that exact CDN
+         reachable. These are now vendored as real static files that ship
+         with the marketing repo itself (../../shared/vendor/), so the app
+         boots with zero runtime dependency on any third-party CDN — the
+         service worker's offline promise is now actually true for the app
+         shell itself, not just its Tailwind styling. -->
+    <script src="../../shared/vendor/react.production.min.js"
+            onerror="document.getElementById('boot-error-msg').textContent='Failed to load ../../shared/vendor/react.production.min.js'; document.getElementById('boot-error').style.display='block';"></script>
+    <script src="../../shared/vendor/react-dom.production.min.js"
+            onerror="document.getElementById('boot-error-msg').textContent='Failed to load ../../shared/vendor/react-dom.production.min.js'; document.getElementById('boot-error').style.display='block';"></script>
+    <script src="../../shared/vendor/htm.js"
+            onerror="document.getElementById('boot-error-msg').textContent='Failed to load ../../shared/vendor/htm.js'; document.getElementById('boot-error').style.display='block';"></script>
+
+    <script>
     'use strict';
 
     /* =====================================================================
@@ -73,18 +92,23 @@
      * Storage: localStorage (JSON, ~5MB room — enough for thousands of rows)
      * Persistence layer is isolated in `Store` so swapping for IndexedDB or
      * a real backend later is a small change.
+     *
+     * React/ReactDOM/htm are loaded above as plain <script> tags from the
+     * vendored copies in ../../shared/vendor/ (UMD builds), so they attach
+     * to window.React / window.ReactDOM / window.htm — no CDN, no
+     * <script type="module">, no dynamic import() needed at all.
      * =================================================================== */
 
-    let React, ReactDOM, htm;
-    try {
-      React    = (await import('https://esm.sh/react@18.3.1')).default;
-      ReactDOM = (await import('https://esm.sh/react-dom@18.3.1/client')).default;
-      htm      = (await import('https://esm.sh/htm@3.1.1')).default;
-    } catch (err) {
-      document.getElementById('boot-error-msg').textContent = err.stack || String(err);
+    if (!window.React || !window.ReactDOM || !window.htm) {
+      document.getElementById('boot-error-msg').textContent =
+        'One or more of window.React / window.ReactDOM / window.htm is missing after loading ../../shared/vendor/*.js — see the <script> tags above.';
       document.getElementById('boot-error').style.display = 'block';
-      throw err;
+      throw new Error('OliSalesTrack: required vendored script(s) did not load.');
     }
+
+    const React = window.React;
+    const ReactDOM = window.ReactDOM;
+    const htm = window.htm;
 
     const { useState, useEffect, useReducer, useMemo, useRef, useCallback, createContext, useContext } = React;
     const html = htm.bind(React.createElement);

@@ -5,50 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Account — OliFlow Automation Engine</title>
 <meta name="robots" content="noindex,nofollow"/>
+<link rel="stylesheet" href="../../shared/theme.css">
 <style>
+/* FIX: retheme pass - color tokens now come from ../../shared/theme.css
+   (one black+red design system shared across all 6 tools) instead of
+   this page's own hardcoded orange/red hex values (this page had no
+   :root layer at all before). See that file's header comment for the
+   rationale. */
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#f4f4f8;min-height:100vh;color:#14161a;-webkit-font-smoothing:antialiased;}
-a{color:#ea580c;text-decoration:none;}
+  background:#f4f4f8;min-height:100vh;color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;}
 
 /* ── Topbar ── */
-.topbar{background:#fff;border-bottom:1px solid #e7e9ee;height:60px;
+.topbar{background:#fff;border-bottom:1px solid var(--line);height:60px;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 24px;position:sticky;top:0;z-index:50;
   box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .topbar-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
 .topbar-icon{width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,#ea580c,#dc2626);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   display:flex;align-items:center;justify-content:center;font-size:16px;}
 .topbar-right{display:flex;align-items:center;gap:12px;}
-.topbar-email{font-size:13px;color:#55606e;max-width:190px;
+.topbar-email{font-size:13px;color:var(--sub);max-width:190px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.btn-logout{background:transparent;border:1.5px solid #e7e9ee;
+.btn-logout{background:transparent;border:1.5px solid var(--line);
   border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;
-  cursor:pointer;color:#55606e;transition:all .2s;}
-.btn-logout:hover{border-color:#dc2626;color:#dc2626;}
+  cursor:pointer;color:var(--sub);transition:all .2s;}
+.btn-logout:hover{border-color:var(--bad);color:var(--bad);}
 
 /* ── Layout ── */
 .page{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
 .page-heading{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:4px;}
-.page-sub{color:#55606e;font-size:14.5px;margin-bottom:24px;}
+.page-sub{color:var(--sub);font-size:14.5px;margin-bottom:24px;}
 
 /* ── Status banner ── */
-.status-banner{background:linear-gradient(135deg,#fff7ed,#ea580c12);
-  border:1px solid #fed7aa;border-radius:14px;padding:18px 22px;
+.status-banner{background:linear-gradient(135deg,var(--accent-wash),#fff);
+  border:1px solid #fbd0d5;border-radius:14px;padding:18px 22px;
   margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 .status-icon{font-size:32px;}
 .status-title{font-weight:800;font-size:15px;margin-bottom:2px;}
-.status-meta{font-size:13px;color:#55606e;}
+.status-meta{font-size:13px;color:var(--sub);}
 .status-badge{display:inline-flex;align-items:center;gap:5px;
-  background:#ea580c18;color:#ea580c;border-radius:100px;
+  background:var(--accent-wash);color:var(--accent-dark);border-radius:100px;
   padding:4px 12px;font-size:12px;font-weight:700;margin-top:6px;}
 
 /* ── Cards ── */
-.card{background:#fff;border:1px solid #e7e9ee;border-radius:16px;
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;
   padding:22px;margin-bottom:18px;}
-.card-title{font-size:14px;font-weight:700;color:#14161a;
+.card-title{font-size:14px;font-weight:700;color:var(--ink);
   margin-bottom:16px;display:flex;align-items:center;gap:7px;}
 .card-title-icon{font-size:17px;}
 
@@ -59,36 +65,36 @@ a{color:#ea580c;text-decoration:none;}
 /* ── Features list ── */
 .feature-list{list-style:none;}
 .feature-list li{padding:8px 0;border-bottom:1px solid #f4f4f8;
-  font-size:14px;color:#55606e;display:flex;align-items:center;gap:8px;}
+  font-size:14px;color:var(--sub);display:flex;align-items:center;gap:8px;}
 .feature-list li:last-child{border:none;}
-.feature-list li::before{content:"✓";color:#ea580c;font-weight:800;}
+.feature-list li::before{content:"✓";color:var(--good);font-weight:800;}
 
 /* ── Form fields ── */
-.form-label{display:block;font-size:12px;font-weight:700;color:#55606e;
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--sub);
   margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
-.form-input{width:100%;padding:10px 13px;border:1.5px solid #e7e9ee;
-  border-radius:9px;font-size:14px;font-family:inherit;color:#14161a;
+.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--line);
+  border-radius:9px;font-size:14px;font-family:inherit;color:var(--ink);
   background:#fff;margin-bottom:13px;transition:border .2s;}
-.form-input:focus{border-color:#ea580c;outline:none;
-  box-shadow:0 0 0 3px #fff7ed;}
-.form-input[readonly]{background:#f9f9fc;cursor:default;color:#55606e;}
+.form-input:focus{border-color:var(--accent);outline:none;
+  box-shadow:0 0 0 3px var(--accent-wash);}
+.form-input[readonly]{background:#f9f9fc;cursor:default;color:var(--sub);}
 .pwd-wrap{position:relative;margin-bottom:13px;}
 .pwd-wrap .form-input{margin-bottom:0;padding-right:42px;}
 .pwd-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;color:#55606e;font-size:15px;}
-.pwd-reqs{font-size:12px;color:#55606e;margin-top:3px;margin-bottom:11px;
+  background:none;border:none;cursor:pointer;color:var(--sub);font-size:15px;}
+.pwd-reqs{font-size:12px;color:var(--sub);margin-top:3px;margin-bottom:11px;
   display:flex;gap:10px;flex-wrap:wrap;}
-.pwd-reqs span.met{color:#16a34a;}
+.pwd-reqs span.met{color:var(--good);}
 
 /* ── Buttons ── */
 .btn{padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:700;
   cursor:pointer;border:none;transition:all .2s;}
-.btn-primary{background:linear-gradient(135deg,#ea580c,#dc2626);color:#fff;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
 .btn-primary:hover{opacity:.9;transform:translateY(-1px);}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.btn-secondary{background:transparent;border:1.5px solid #e7e9ee;color:#55606e;}
-.btn-secondary:hover{border-color:#ea580c;color:#ea580c;}
-.btn-danger{background:transparent;border:1.5px solid #fecaca;color:#dc2626;}
+.btn-secondary{background:transparent;border:1.5px solid var(--line);color:var(--sub);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:transparent;border:1.5px solid #fecaca;color:var(--bad);}
 .btn-danger:hover{background:#fef2f2;}
 .btn-sm{padding:7px 14px;font-size:13px;}
 
@@ -96,27 +102,27 @@ a{color:#ea580c;text-decoration:none;}
 .alert{padding:10px 13px;border-radius:9px;font-size:13px;
   margin-bottom:12px;display:none;}
 .alert.show{display:block;}
-.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a;}
-.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;}
+.alert-success{background:var(--good-wash);border:1px solid #bbf7d0;color:var(--good);}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:var(--bad);}
 
 /* ── Orders table ── */
 .orders-table{width:100%;border-collapse:collapse;font-size:13px;}
 .orders-table th{text-align:left;padding:8px 10px;font-size:11px;
-  text-transform:uppercase;letter-spacing:.05em;color:#55606e;
-  border-bottom:1px solid #e7e9ee;}
+  text-transform:uppercase;letter-spacing:.05em;color:var(--sub);
+  border-bottom:1px solid var(--line);}
 .orders-table td{padding:10px;border-bottom:1px solid #f4f4f8;}
 .orders-table tr:last-child td{border:none;}
 .badge{display:inline-flex;align-items:center;border-radius:100px;
   padding:2px 8px;font-size:11px;font-weight:700;}
-.badge-active{background:#ecfdf5;color:#16a34a;}
-.badge-sub{background:#fff7ed;color:#ea580c;}
+.badge-active{background:var(--good-wash);color:var(--good);}
+.badge-sub{background:var(--accent-wash);color:var(--accent-dark);}
 
 /* ── Subscription info ── */
 .sub-row{display:flex;align-items:center;justify-content:space-between;
   padding:12px 0;border-bottom:1px solid #f4f4f8;flex-wrap:wrap;gap:10px;}
 .sub-row:last-child{border:none;}
 .sub-name{font-weight:600;font-size:14px;}
-.sub-detail{font-size:12px;color:#55606e;margin-top:2px;}
+.sub-detail{font-size:12px;color:var(--sub);margin-top:2px;}
 
 /* ── Spinner ── */
 .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
@@ -125,11 +131,11 @@ a{color:#ea580c;text-decoration:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── Support box ── */
-.support-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;
+.support-box{background:var(--accent-wash);border:1px solid #fbd0d5;border-radius:12px;
   padding:16px 18px;display:flex;align-items:center;justify-content:space-between;
   flex-wrap:wrap;gap:12px;}
-.support-text{font-size:13.5px;color:#55606e;}
-.support-text strong{color:#14161a;}
+.support-text{font-size:13.5px;color:var(--sub);}
+.support-text strong{color:var(--ink);}
 </style>
 
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
@@ -272,7 +278,7 @@ a{color:#ea580c;text-decoration:none;}
         <a href="https://www.paypal.com/myaccount/autopay/" target="_blank"
            class="btn btn-secondary btn-sm">Manage in PayPal</a>
         <a href="../buy/" class="btn btn-sm"
-           style="background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;">
+           style="background:var(--accent-wash);color:var(--accent-dark);border:1.5px solid #fbd0d5;">
           View Plans
         </a>
       </div>
