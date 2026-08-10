@@ -49,7 +49,7 @@
    * still use it). See FORMSUBMIT_SETUP.md at the repo root for the
    * exact one-time steps.
    */
-  var FORMSUBMIT_HASH = null; // e.g. 'c277d8d5f1e7209149848e390b9b5cc'
+  var FORMSUBMIT_HASH = '2d8e81984fd8772dc363c21d61443ee6';
 
   function getFormAction() {
     var target = FORMSUBMIT_HASH || getSupportEmail();
