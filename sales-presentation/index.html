@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Oli Tools — Sales Presentation for Ecommerce + Agency Owners</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+  :root {
+    --ink:#0d0e12; --sub:#8b93a3; --bg:#0d0e12; --card:#171a21; --line:#262a33;
+    --accent:#e11d2e; --accent2:#a10e1f; --bright:#ff3b4e; --good:#22c55e; --warn:#fbbf24; --white:#f5f5f7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--white); overflow: hidden; }
+  .deck { position: relative; width: 100%; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0; display: none; flex-direction: column;
+    padding: 48px 72px 150px; overflow-y: auto;
+    background: radial-gradient(120% 140% at 15% -10%, rgba(225,29,46,0.14), transparent 55%),
+                radial-gradient(100% 120% at 100% 0%, rgba(161,14,31,0.10), transparent 50%),
+                linear-gradient(180deg, #0d0e12 0%, #14161b 100%);
+  }
+  .slide.active { display: flex; }
+  .kicker { color: var(--bright); font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .slide h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .slide h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 14px; }
+  .hl { background: linear-gradient(135deg, #ff5a63, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { color: #c3c8d1; font-size: 16.5px; line-height: 1.6; max-width: 900px; }
+  .slide-num { position: absolute; bottom: 22px; right: 32px; color: #565d6b; font-size: 13px; font-weight: 600; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 20px; align-items: start; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
+  .grid6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card h3 { margin: 0 0 8px; font-size: 15.5px; font-weight: 800; }
+  .card p { margin: 0; color: #b7bcc9; font-size: 13.5px; line-height: 1.5; }
+  .shot { border-radius: 12px; border: 1px solid var(--line); overflow: hidden; box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6); background: #fff; max-height: 46vh; }
+  .shot img { width: 100%; display: block; object-fit: cover; object-position: top; }
+  .shot-caption { text-align: center; color: #8b93a3; font-size: 12.5px; margin-top: 8px; font-weight: 600; }
+  table.plan { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13.5px; }
+  table.plan th, table.plan td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  table.plan th { color: #8b93a3; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+  table.plan td { color: #d8dbe3; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; background: #ffffff10; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 700; margin: 3px 4px 3px 0; }
+  .pill.good { color: #4ade80; border-color: #16653480; }
+  .pill.warn { color: #fbbf24; border-color: #92620080; }
+  .pill.red { color: #ff8f98; border-color: rgba(225,29,46,0.35); background: rgba(225,29,46,0.12); }
+  .big-number { font-size: 56px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--accent), var(--bright)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .center { text-align: center; margin: auto; }
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .logo-title { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+  .logo-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .cta-btn { display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff !important; padding: 14px 26px; border-radius: 11px; font-weight: 700; text-decoration: none; font-size: 15px; box-shadow: 0 18px 40px -12px rgba(225,29,46,0.55); }
+
+  .nav {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 100; background: #0d0f14dd; padding: 10px 16px;
+    border-radius: 999px; border: 1px solid var(--line); backdrop-filter: blur(8px);
+  }
+  .nav button { background: #ffffff10; border: 1px solid var(--line); color: var(--white); border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .nav button:hover { background: #ffffff1c; }
+  .nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav .dots { display: flex; align-items: center; gap: 5px; padding: 0 6px; max-width: 260px; overflow-x: auto; }
+  .nav .dot { width: 6px; height: 6px; border-radius: 50%; background: #4a5063; flex-shrink: 0; }
+  .nav .dot.active { background: var(--accent); width: 18px; border-radius: 4px; }
+  .nav button.notes-toggle.on { background: var(--accent); border-color: var(--accent); }
+
+  /* "Voiceover" caption panel — stands in for the audio track since this
+     sandbox has no TTS/ffmpeg/rendering tools available. Toggle with the
+     🎙 button or the N key. Acts as live narration text, read scene-by-scene
+     as the presenter (marketing director) talks through each slide. */
+  .voiceover {
+    display: none; position: fixed; left: 0; right: 0; bottom: 0;
+    background: rgba(8,9,12,0.95); border-top: 2px solid var(--accent);
+    padding: 16px 72px 76px; z-index: 90; max-height: 34vh; overflow-y: auto;
+  }
+  .voiceover.show { display: block; }
+  .voiceover .vo-label { color: var(--bright); font-weight: 800; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .voiceover .vo-label:before { content: "🎙"; }
+  .voiceover p { margin: 0; font-size: 15px; line-height: 1.65; color: #e6e8ec; max-width: 1000px; }
+  body.notes-open .slide { padding-bottom: 260px; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- SLIDE 1 — TITLE -->
+  <section class="slide active" data-vo="Hi — thanks for making time today. I'm your marketing director for Oli Tools, and I know you run two things at once: an ecommerce store, and a marketing agency serving other clients. That's a demanding combination — you're fighting subscription sprawl on both sides of your business. Over the next few minutes I'm going to show you, live, how all six Oli tools actually work, what each one costs, and exactly which of them solve real problems for an ecommerce-and-agency owner specifically. No fluff, no vague promises — real screenshots of the real product.">
+    <div class="center">
+      <div class="logo-title" style="justify-content:center;">
+        <div class="logo-icon">💎</div>
+        <div class="kicker" style="margin:0;">Oli Tools · Sales Presentation</div>
+      </div>
+      <h1 style="font-size:50px; text-align:center;">Six Tools.<br/>One Owner. Two Businesses.<br/><span class="hl">Let's find out what actually fits.</span></h1>
+      <p class="sub center" style="margin-top:16px;">A live walkthrough of OliOps Suite, OliCommerce Stack, OliFlow Automation Engine,
+        OliExplore, Oli-Locator, and OliSalesTrack — built for an owner running <strong>an ecommerce
+        store</strong> and <strong>a marketing agency</strong> at the same time.</p>
+      <div class="badge-row" style="justify-content:center; margin-top:20px;">
+        <span class="pill red">🎙 Click "Notes" below for narration</span>
+        <span class="pill good">✓ Real screenshots, live product</span>
+        <span class="pill good">✓ Real pricing, no inflated numbers</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — HONEST PREFACE -->
+  <section class="slide" data-vo="Before I sell you anything, one honest note: I tried to build this as an actual narrated video file for you. This sandbox environment has no video rendering engine and no text-to-speech engine installed, and no general internet access to reach a cloud rendering or voice API — I checked ffmpeg, espeak, festival, piper, even a plain 'say' command, and confirmed the network is locked to an allowlist that doesn't include those services. Rather than fake it or hand you a broken file, I built this as a live, clickable presentation with real screenshots, and I'm delivering the narration to you directly, right now, in this conversation — think of this panel as the subtitles, and me talking to you in chat as the voiceover. Let's get into the six tools.">
+    <div class="kicker">One honest note before we start</div>
+    <h2>Why this is a live deck with narration, not an .mp4 file</h2>
+    <div class="grid2">
+      <div>
+        <p class="sub">I want to be straight with you: this sandbox has no video-rendering tools (ffmpeg), no
+          text-to-speech engine, and no open internet access to reach a cloud voice/render API — I checked all of
+          that before deciding how to run this pitch.</p>
+        <p class="sub" style="margin-top:14px;">So instead of a broken or fake video file, you're getting the honest
+          version: a real, clickable slide deck built from <strong style="color:#fff;">live screenshots of the actual
+          product</strong>, with a full scene-by-scene narration script — delivered to you live, in chat, in my voice
+          as your marketing director, and captioned in the panel below each slide.</p>
+      </div>
+      <div class="card">
+        <h3>🎯 What you're getting instead</h3>
+        <p>✓ A real, working slide deck (this page)<br/>
+           ✓ Live screenshots of all 6 tools' actual landing + buy pages<br/>
+           ✓ A complete narration script, scene-by-scene<br/>
+           ✓ Accurate pricing pulled directly from the live buy pages<br/>
+           ✓ Honest fit analysis for an ecommerce + agency owner specifically</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — AGENDA -->
+  <section class="slide" data-vo="Here's the plan. I'll walk you through all six tools in order, show you a live screenshot of each one's landing page and pricing page, and call out exactly what it does. Along the way I'll flag which tools are a strong fit for your ecommerce store, which are a strong fit for your agency, and which one — I'll be upfront — isn't really built for either of your two businesses. At the end I'll show you the real bundle economics and make a specific recommendation for what to actually buy.">
+    <div class="kicker">The plan for today</div>
+    <h2>Six tools, one honest walkthrough</h2>
+    <table class="plan">
+      <tr><th>#</th><th>Tool</th><th>What it replaces</th><th>Best fit for you</th></tr>
+      <tr><td>1</td><td>OliOps Suite</td><td>CRM + invoicing + payroll + support desk</td><td>Agency back-office</td></tr>
+      <tr><td>2</td><td>OliCommerce Stack</td><td>Klaviyo-style cart recovery + shopping assistant</td><td>⭐ Your ecommerce store</td></tr>
+      <tr><td>3</td><td>OliFlow Automation Engine</td><td>Zapier / Make / n8n</td><td>⭐ Your agency's client ops</td></tr>
+      <tr><td>4</td><td>OliExplore</td><td>Repurpose.io / MeetEdgar / Buffer</td><td>⭐ Your agency's social clients</td></tr>
+      <tr><td>5</td><td>Oli-Locator</td><td>Angi Leads / Thumbtack pay-per-lead</td><td>Weakest fit — I'll say why</td></tr>
+      <tr><td>6</td><td>OliSalesTrack</td><td>Baremetrics / Profitwell</td><td>⭐ Your ecommerce store</td></tr>
+    </table>
+  </section>
+
+  <!-- SLIDE 4 — OLIOPS INTRO -->
+  <section class="slide" data-vo="Let's start with OliOps Suite. This replaces four separate subscriptions you're probably already paying for across both businesses: a CRM, an invoicing tool, payroll software, and a help-desk chatbot. For your agency specifically, this is where you'd manage every client relationship, send every invoice with your own tax rate applied automatically, run payroll for your team from logged hours or salary, and let an AI assistant answer common client questions from a knowledge base before it ever reaches a human. Here's the actual landing page — this is not a mockup.">
+    <div class="kicker">Tool 1 of 6</div>
+    <h2>💎 OliOps Suite — the agency's back office in one place</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oliops-landing.png" alt="OliOps Suite landing page"/></div>
+      <div>
+        <p class="sub">A real CRM, real invoicing with an owner-configured tax rate, real payroll computed from
+          logged hours or salary, real P&amp;L / expense / aged-receivables reports, and an AI support assistant
+          that answers from a knowledge base first — with unanswered questions becoming real tickets instead of
+          being dropped.</p>
+        <div class="badge-row">
+          <span class="pill good">✓ CRM + client management</span>
+          <span class="pill good">✓ Invoicing + tax</span>
+          <span class="pill good">✓ Payroll + P&amp;L reports</span>
+          <span class="pill good">✓ AI support assistant</span>
+        </div>
+        <p class="sub" style="margin-top:12px; font-size:13.5px;">Honest limit: payroll computes what's owed
+          from hours/salary — it does not handle tax withholding or filing. Pair it with a real payroll provider
+          for that part.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 — OLIOPS PRICING -->
+  <section class="slide" data-vo="Pricing is simple: thirty-nine dollars a month or three hundred forty-eight dollars a year for the Starter plan, which covers all four tools and up to five devices. There's a Pro tier at sixty-nine a month and an Agency tier at one nineteen a month for higher device limits — which, given you're running an agency with a team, is worth a look. Compare that to paying separately for a CRM, invoicing app, payroll tool, and a chatbot — that stack typically runs seventeen hundred to four thousand dollars a year. This is a real, live checkout page, not a placeholder.">
+    <div class="kicker">Tool 1 of 6 — Pricing</div>
+    <h2>OliOps Suite — real checkout, real pricing</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oliops-buy.png" alt="OliOps Suite buy page"/></div>
+      <div>
+        <table class="plan">
+          <tr><th>Plan</th><th>Price</th><th>Devices</th></tr>
+          <tr><td>Starter</td><td>$39/mo · $348/yr</td><td>5</td></tr>
+          <tr><td>Pro</td><td>$69/mo</td><td>higher limit</td></tr>
+          <tr><td>Agency</td><td>$119/mo</td><td>highest limit</td></tr>
+        </table>
+        <p class="sub" style="margin-top:14px;">Comparable separate stack (CRM + invoicing + payroll + AI chatbot):
+          <strong style="color:#fff;">~$1,740–$4,020/year</strong>. OliOps Starter: <strong style="color:#fff;">$348/year</strong>.</p>
+        <div class="badge-row"><span class="pill red">Best fit: your agency's back office</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 — OLICOMMERCE INTRO -->
+  <section class="slide" data-vo="Now this next one — OliCommerce Stack — is the one I'd put at the very top of your list for the ecommerce store. This tool exists to win back money you're already losing today: abandoned carts. Every ecommerce owner loses a meaningful chunk of revenue to shoppers who add to cart and vanish. OliCommerce automatically follows up on those abandoned carts, and on the Pro tier, on browse abandonment too — people who looked but never even added to cart. It also includes an AI rewrite engine with five different tones, so your recovery emails don't all sound the same generic template every other store uses.">
+    <div class="kicker">Tool 2 of 6</div>
+    <h2>💎 OliCommerce Stack — recover the sales you're already losing</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/olicommerce-landing.png" alt="OliCommerce Stack landing page"/></div>
+      <div>
+        <p class="sub">Abandoned cart recovery, an AI shopping assistant for your storefront, browse-abandonment
+          recovery (Pro tier), an AI rewrite engine with 5 tones for recovery messaging, and flat pricing with
+          no per-contact scaling — unlike most email tools in this category.</p>
+        <div class="badge-row">
+          <span class="pill good">✓ Cart recovery</span>
+          <span class="pill good">✓ AI shopping assistant</span>
+          <span class="pill good">✓ AI rewrite, 5 tones</span>
+          <span class="pill good">✓ Flat pricing, no contact scaling</span>
+        </div>
+        <div class="badge-row"><span class="pill red">⭐ Best fit: your ecommerce store, directly</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 — OLICOMMERCE PRICING -->
+  <section class="slide" data-vo="Pricing starts at twenty-nine dollars a month, or two hundred sixty-four a year. Compare that to Klaviyo, which starts around twenty dollars a month but scales up with your contact list — so as your store grows, so does that bill. OliCommerce doesn't do that. For a store your size, this pays for itself the moment it recovers even one or two carts a month that you'd have otherwise lost completely.">
+    <div class="kicker">Tool 2 of 6 — Pricing</div>
+    <h2>OliCommerce Stack — flat rate, no contact-scaling surprises</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/olicommerce-buy.png" alt="OliCommerce Stack buy page"/></div>
+      <div>
+        <table class="plan">
+          <tr><th>Plan</th><th>Price</th></tr>
+          <tr><td>Basic</td><td>$29/mo · $264/yr</td></tr>
+          <tr><td>Higher tier</td><td>up to $59/mo</td></tr>
+        </table>
+        <p class="sub" style="margin-top:14px;">Klaviyo starts near $20/mo but scales with your contact list —
+          at 10K contacts that's typically $600–$1,200+/year. OliCommerce stays flat at
+          <strong style="color:#fff;">$264/year</strong> regardless of list size.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 — OLIFLOW INTRO -->
+  <section class="slide" data-vo="OliFlow Automation Engine is the second tool I'd point you to for your agency. If you're managing multiple client accounts, you're almost certainly running some combination of Zapier, Make, or n8n to move data between tools — and those bills scale with usage, which gets expensive fast once you're running workflows for several clients at once. OliFlow gives you unlimited workflow runs at a flat price, a self-hosted option so client data stays under your control, and seven prebuilt CRM adapter templates to get client automations running quickly.">
+    <div class="kicker">Tool 3 of 6</div>
+    <h2>💎 OliFlow Automation Engine — Zapier without the usage bill</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oliflow-landing.png" alt="OliFlow landing page"/></div>
+      <div>
+        <p class="sub">A visual workflow builder with 48 nodes, unlimited automation runs (no metering), a
+          self-hosted option for full data control, 7 prebuilt CRM adapter templates, and documented
+          Zapier/Make bridge support for migrating existing automations.</p>
+        <div class="badge-row">
+          <span class="pill good">✓ Unlimited runs</span>
+          <span class="pill good">✓ Self-hosted option</span>
+          <span class="pill good">✓ 7 CRM adapters</span>
+          <span class="pill good">✓ Price locked, no usage scaling</span>
+        </div>
+        <div class="badge-row"><span class="pill red">⭐ Best fit: running automations across multiple agency clients</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 — OLIFLOW PRICING -->
+  <section class="slide" data-vo="Thirty-five dollars a month, or three hundred twelve a year, for unlimited runs. Compare that to Zapier Professional, which starts around twenty dollars a month but meters your usage after 750 tasks — for an agency running a hundred workflows a month across clients, Zapier realistically costs two hundred to six hundred dollars a month. n8n Cloud has a two-hundred-forty-dollar monthly minimum. OliFlow's whole point is that your price doesn't move no matter how many client workflows you're running.">
+    <div class="kicker">Tool 3 of 6 — Pricing</div>
+    <h2>OliFlow — unlimited automations, one flat price</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oliflow-buy.png" alt="OliFlow buy page"/></div>
+      <div>
+        <table class="plan">
+          <tr><th>Plan</th><th>Price</th></tr>
+          <tr><td>Solo</td><td>$35/mo · $312/yr</td></tr>
+          <tr><td>Higher tier</td><td>up to $99/mo</td></tr>
+        </table>
+        <p class="sub" style="margin-top:14px;">At ~100 workflows/month: Zapier runs $200–$600+/mo, Make runs
+          $100–$400+/mo, n8n Cloud has a $240/mo minimum. OliFlow: <strong style="color:#fff;">$35/mo flat</strong>,
+          unlimited.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 — OLIEXPLORE INTRO -->
+  <section class="slide" data-vo="If your agency handles social media for any of your clients — and most agencies do, even if it's not the core service — OliExplore is built for exactly that. It connects to real social accounts, collects the best-performing posts, rewrites them into fresh variations across five different tones using AI, and republishes across every connected platform at once. One important note on trust here: OliExplore never sees or stores a client's actual social media password — every connection goes through that platform's own official login screen, and OliExplore only holds the access token they approve, which they can revoke anytime.">
+    <div class="kicker">Tool 4 of 6</div>
+    <h2>🧭 OliExplore — social media recycling for every client account</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oliexplore-landing.png" alt="OliExplore landing page"/></div>
+      <div>
+        <p class="sub">Collects your best posts from real connected accounts, rewrites them with an AI engine
+          across 5 tones, and cross-publishes to every major platform at once. Includes 5 connected accounts on
+          the Creator tier and a live Trend Radar feed of trending audio/formats.</p>
+        <div class="badge-row">
+          <span class="pill good">✓ Real account collection</span>
+          <span class="pill good">✓ AI rewrite, 5 tones</span>
+          <span class="pill good">✓ Cross-platform publishing</span>
+          <span class="pill good">✓ OAuth only — never sees client passwords</span>
+        </div>
+        <div class="badge-row"><span class="pill red">⭐ Best fit: agency social media management for clients</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 — OLIEXPLORE PRICING -->
+  <section class="slide" data-vo="Twenty-seven dollars a month, or two hundred fifty-two a year, for 5 connected accounts. Repurpose.io starts at thirty-five a month and doesn't publish to your own accounts the way OliExplore does. MeetEdgar is about thirty a month but caps you at fewer usable accounts on entry tiers. For an agency juggling several client social accounts, this is meaningfully cheaper per account than the alternatives.">
+    <div class="kicker">Tool 4 of 6 — Pricing</div>
+    <h2>OliExplore — cheaper per account than Repurpose.io or MeetEdgar</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oliexplore-buy.png" alt="OliExplore buy page"/></div>
+      <div>
+        <table class="plan">
+          <tr><th>Plan</th><th>Price</th><th>Accounts</th></tr>
+          <tr><td>Creator</td><td>$27/mo · $252/yr</td><td>5</td></tr>
+          <tr><td>Higher tier</td><td>up to $49/mo</td><td>more</td></tr>
+        </table>
+        <p class="sub" style="margin-top:14px;">Repurpose.io: $35/mo, 3 accounts. MeetEdgar: $29.99/mo.
+          OliExplore: <strong style="color:#fff;">$27/mo, 5 accounts</strong>, with AI rewriting included at
+          every tier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — OLI-LOCATOR INTRO — HONEST WEAK FIT -->
+  <section class="slide" data-vo="Now, I want to be straight with you on this one rather than force a fit that isn't there. Oli-Locator is a home-improvement lead-generation tool — it finds and manages leads for contractors: cleaning, pest control, renovation, roofing, that kind of trade work, across the US, UK, and Australia. It's a genuinely good product, with a flat monthly rate instead of the per-lead fees Angi Leads or Thumbtack charge — but unless you or your agency have a home-improvement client who needs lead generation specifically, this isn't a tool I'd push on you today. I'd rather tell you that plainly than oversell it.">
+    <div class="kicker">Tool 5 of 6 — honestly, the weakest fit for you</div>
+    <h2>🛠️ Oli-Locator — a great tool, but for a different buyer</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/oli-locator-landing.png" alt="Oli-Locator landing page"/></div>
+      <div>
+        <p class="sub">Home-improvement lead generation (cleaning, pest control, renovation, roofing, etc.)
+          across USA/UK/Australia, with an opt-in inbox and a built-in call center/dialer — flat monthly rate
+          instead of Angi Leads/Thumbtack's $15–$85+ per-lead fees.</p>
+        <div class="badge-row">
+          <span class="pill good">✓ Flat rate, no per-lead fees</span>
+          <span class="pill good">✓ Built-in call center</span>
+          <span class="pill warn">Built for home-improvement contractors specifically</span>
+        </div>
+        <p class="sub" style="margin-top:12px;"><strong style="color:#fff;">Honest take:</strong> unless you or an
+          agency client works in home-improvement lead generation, skip this one for now. I'm not going to
+          manufacture a reason you need it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 13 — OLISALESTRACK INTRO -->
+  <section class="slide" data-vo="Last product, and this one goes right back to your ecommerce store. OliSalesTrack answers a question most store owners genuinely don't have a clean answer to: what's my real profit, right now, after refunds and expenses — not just top-line revenue. It syncs live with Stripe, PayPal, and Shopify, tracks your expenses, and has a feature I haven't seen matched anywhere else at this price: refund-to-revenue correlation analysis, which helps you spot patterns in what's actually being returned and why.">
+    <div class="kicker">Tool 6 of 6</div>
+    <h2>📊 OliSalesTrack — know your real margin, not just your revenue</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/olisalestrack-landing.png" alt="OliSalesTrack landing page"/></div>
+      <div>
+        <p class="sub">Live sync with Stripe, PayPal, and Shopify. Real expense tracking. A P&amp;L dashboard.
+          Annual forecasting on the Pro tier. And a genuinely unique refund-to-revenue correlation analysis
+          feature none of the mainstream competitors offer.</p>
+        <div class="badge-row">
+          <span class="pill good">✓ Live Stripe/PayPal/Shopify sync</span>
+          <span class="pill good">✓ Expense tracking</span>
+          <span class="pill good">✓ Refund correlation — unique</span>
+          <span class="pill good">✓ P&amp;L + annual forecast</span>
+        </div>
+        <div class="badge-row"><span class="pill red">⭐ Best fit: your ecommerce store's real profit picture</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14 — OLISALESTRACK PRICING -->
+  <section class="slide" data-vo="Twenty-four dollars a month — that's it, one tier, called Pro. Two hundred four dollars if you pay annually. Baremetrics, the closest comparable tool, starts at forty-nine dollars a month and doesn't have the refund correlation feature at all. This is one of the easiest yeses in the whole lineup for a store owner who wants to actually know their numbers.">
+    <div class="kicker">Tool 6 of 6 — Pricing</div>
+    <h2>OliSalesTrack — the cheapest, most direct yes in this lineup</h2>
+    <div class="grid2">
+      <div class="shot"><img src="images/olisalestrack-buy.png" alt="OliSalesTrack buy page"/></div>
+      <div>
+        <table class="plan">
+          <tr><th>Plan</th><th>Price</th></tr>
+          <tr><td>Pro (only tier)</td><td>$24/mo · $204/yr</td></tr>
+        </table>
+        <p class="sub" style="margin-top:14px;">Baremetrics: $49+/mo, no refund correlation feature.
+          OliSalesTrack: <strong style="color:#fff;">$24/mo</strong>, with it included.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 15 — RECOMMENDATION FOR THEIR SPECIFIC BUSINESS -->
+  <section class="slide" data-vo="So here's my actual recommendation, tailored to you specifically — not a generic pitch for all six. For your ecommerce store: OliCommerce Stack to stop losing carts, and OliSalesTrack to finally see your real margin. For your agency: OliOps Suite to run your client back office, OliFlow to automate client workflows without a usage bill, and OliExplore if you touch social media for any client. That's five of the six tools with a direct, provable use case in your business today. Oli-Locator, I'd leave on the shelf unless a home-improvement client shows up.">
+    <div class="kicker">The recommendation — tailored to you</div>
+    <h2>Five of six tools have a direct use case in your business today</h2>
+    <div class="grid2">
+      <div class="card" style="border-color:#8f0c1a;">
+        <h3>🛒 For your ecommerce store</h3>
+        <p><strong style="color:#fff;">OliCommerce Stack</strong> — stop losing carts, right now.<br/>
+        <strong style="color:#fff;">OliSalesTrack</strong> — see your real profit margin, not just revenue.</p>
+      </div>
+      <div class="card" style="border-color:#8f0c1a;">
+        <h3>🏢 For your agency</h3>
+        <p><strong style="color:#fff;">OliOps Suite</strong> — one back office for clients, invoicing, payroll.<br/>
+        <strong style="color:#fff;">OliFlow</strong> — automate client workflows without a metered bill.<br/>
+        <strong style="color:#fff;">OliExplore</strong> — social media management for clients.</p>
+      </div>
+    </div>
+    <div class="badge-row" style="margin-top:16px;"><span class="pill warn">Oli-Locator — skip unless you land a home-improvement client</span></div>
+  </section>
+
+  <!-- SLIDE 16 — BUNDLE ECONOMICS -->
+  <section class="slide" data-vo="Let's talk real numbers. If you bought all five recommended tools monthly, that's roughly one hundred fifty-four dollars a month combined. Annually, it's about fourteen hundred forty dollars a year for your entire back office, your entire client automation stack, your cart recovery, your profit tracking, and your social media management — combined. The equivalent separate-tool stack for just the OliOps-replaced pieces alone runs seventeen hundred to four thousand a year. You're not choosing between free and paid — you're choosing between one consolidated bill and five or six scattered ones that almost certainly cost more.">
+    <div class="kicker">The real numbers</div>
+    <h2>What the recommended 5-tool stack actually costs</h2>
+    <table class="plan">
+      <tr><th>Tool</th><th>Monthly</th><th>Annual</th></tr>
+      <tr><td>OliCommerce Stack</td><td>$29</td><td>$264</td></tr>
+      <tr><td>OliSalesTrack</td><td>$24</td><td>$204</td></tr>
+      <tr><td>OliOps Suite (Starter)</td><td>$39</td><td>$348</td></tr>
+      <tr><td>OliFlow (Solo)</td><td>$35</td><td>$312</td></tr>
+      <tr><td>OliExplore (Creator)</td><td>$27</td><td>$252</td></tr>
+      <tr style="font-weight:800;color:#fff;"><td>Total</td><td>$154/mo</td><td>$1,380/yr</td></tr>
+    </table>
+    <p class="sub" style="margin-top:14px;">For comparison: OliOps alone replaces a stack that typically runs
+      $1,740–$4,020/year on its own. Five consolidated tools, one dashboard each, no per-seat or per-contact
+      scaling surprises on any of them.</p>
+  </section>
+
+  <!-- SLIDE 17 — TRUST / SECURITY -->
+  <section class="slide" data-vo="One more thing before the close, because you should know this either way: every Oli tool now runs on a proprietary, all-rights-reserved license — nobody can legally copy, redistribute, or resell the code. Passwords are hashed with scrypt, never stored in plain text. We manually audited every repository for leaked secrets before making any tool available, and we disclose the one historical issue we found and fixed rather than hiding it. Every tool also has a working contact form that reaches our real inbox — the address itself is masked in the page source specifically so it can't be scraped by spam bots, but a message you send through that form reaches a real person, not a black hole.">
+    <div class="kicker">Before we close — trust &amp; security</div>
+    <h2>What's actually true, not just reassuring-sounding</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>🔒 Proprietary &amp; protected</h3>
+        <p>Every Oli repository now ships under an all-rights-reserved license — no MIT, no open redistribution.
+          Nobody can legally copy, fork, or resell the code.</p>
+      </div>
+      <div class="card">
+        <h3>🔐 Real security practices</h3>
+        <p>Scrypt password hashing, timing-safe session comparisons, and a manual secrets audit across every
+          repo — with the one historical issue we found disclosed openly, not hidden.</p>
+      </div>
+      <div class="card">
+        <h3>📬 Contact forms, masked email</h3>
+        <p>Every tool has a working contact form routed to a real inbox. The destination address is masked in
+          the page source (populated at runtime) specifically to block scraping — not to dodge you.</p>
+      </div>
+      <div class="card">
+        <h3>🛡️ Honest, not overselling</h3>
+        <p>No SOC 2 claim we can't back up, no "bank-level security" filler language. Full detail at
+          <code>/security/</code> on the live site.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 18 — CLOSING CTA -->
+  <section class="slide" data-vo="So here's where I land, as your marketing director: your ecommerce store is losing money right now to abandoned carts it isn't recovering, and you don't have a clean picture of your actual margin. Your agency is running client automations and social accounts through tools that get more expensive every time you add a client. Five Oli tools solve both of those problems today, for about a hundred fifty-four dollars a month combined — less than what one of those problems alone typically costs to solve with mainstream tools. Every product page has a real Buy Now button and a real fourteen-day free trial. My honest recommendation: start with OliCommerce Stack and OliSalesTrack this week for the store, and OliFlow for the agency — those three have the fastest, most obvious payback. Ready to get started?">
+    <div class="center">
+      <div class="kicker" style="text-align:center;">Let's close this out</div>
+      <h1 style="text-align:center;">Your store is losing carts.<br/>Your agency is paying per-seat.<br/><span class="hl">Let's fix both, this week.</span></h1>
+      <p class="sub center" style="margin-top:14px;">Start with OliCommerce Stack + OliSalesTrack for your store, and
+        OliFlow for your agency — the three with the fastest, most obvious payback. Every tool has a real
+        14-day free trial and a live Buy Now button. No lock-in, cancel anytime.</p>
+      <div class="badge-row" style="justify-content:center; margin-top:20px;">
+        <span class="pill good">✓ 14-day free trial on every tool</span>
+        <span class="pill good">✓ Real Stripe/PayPal checkout</span>
+        <span class="pill good">✓ Cancel anytime</span>
+      </div>
+      <div style="margin-top:26px;">
+        <a class="cta-btn" href="../olicommerce/buy/" target="_blank" rel="noopener">Start with OliCommerce →</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="voiceover" id="voiceover">
+  <div class="vo-label">Presenter narration — read live, in-character, by your marketing director</div>
+  <p id="voText"></p>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" onclick="go(-1)">← Prev</button>
+  <button id="notesBtn" class="notes-toggle" onclick="toggleNotes()">🎙 Notes</button>
+  <div class="dots" id="dots"></div>
+  <button id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+  var slides = document.querySelectorAll('.slide');
+  var current = 0;
+  var notesOn = false;
+  var dotsEl = document.getElementById('dots');
+  slides.forEach(function(_, i) {
+    var d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+  var dots = dotsEl.querySelectorAll('.dot');
+
+  function updateVoiceover() {
+    var vo = slides[current].getAttribute('data-vo') || '';
+    document.getElementById('voText').textContent = vo;
+  }
+  function render() {
+    slides.forEach(function(s, i) { s.classList.toggle('active', i === current); });
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === current); });
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === slides.length - 1;
+    updateVoiceover();
+  }
+  function go(delta) {
+    var next = current + delta;
+    if (next < 0 || next >= slides.length) return;
+    current = next;
+    render();
+  }
+  function toggleNotes() {
+    notesOn = !notesOn;
+    document.getElementById('voiceover').classList.toggle('show', notesOn);
+    document.getElementById('notesBtn').classList.toggle('on', notesOn);
+    document.body.classList.toggle('notes-open', notesOn);
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+    if (e.key === 'n' || e.key === 'N') toggleNotes();
+  });
+  render();
+</script>
+
+</body>
+</html>
