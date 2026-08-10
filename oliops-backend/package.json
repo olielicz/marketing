@@ -4,7 +4,7 @@
   "private": true,
   "description": "Self-hosted OliOps backend: real CRM (contacts, tasks) and real invoicing. Zero npm dependencies.",
   "type": "module",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": { "node": ">=18" },
   "scripts": {
     "start": "node server/index.js",

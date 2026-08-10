@@ -29,9 +29,11 @@ customers about that:
 - ✅ It gives you a clean, professional "enter your serial code" activation flow, and lets a customer move
   their license to a new machine themselves (deactivate old device, activate new one) without emailing you.
 - ❌ It does **not** stop a technically sophisticated user from reading the source (all 4 products are
-  self-hosted and, per their existing LICENSE files, MIT-licensed) and patching out the license check
-  entirely. Nothing short of proprietary compiled binaries with server-side execution can fully prevent
-  that, and none of these products work that way.
+  self-hosted, and — despite now being proprietary/all-rights-reserved rather than MIT-licensed — a
+  determined user with local file access can still read the running code) and patching out the license
+  check entirely. Nothing short of proprietary compiled binaries with server-side execution can fully
+  prevent that, and none of these products work that way. The proprietary license does make unauthorized
+  copying/redistribution a clear legal violation, though — it just isn't a technical enforcement mechanism.
 
 This tradeoff is completely normal for indie/self-hosted software — most small dev-tool and LTD products on
 AppSumo, Gumroad, etc. use exactly this level of enforcement. It's about setting a fair, visible line, not

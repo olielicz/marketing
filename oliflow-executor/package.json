@@ -4,7 +4,7 @@
   "private": true,
   "description": "Real backend workflow executor for OliFlow. Runs the node types that don't require third-party OAuth credentials (webhook, http_request, condition, delay, code, set_fields, variables, log, respond_webhook, email via SMTP) for real, and returns an honest 'not implemented' result (never fake success) for node types that still need real third-party API keys. Zero npm dependencies.",
   "type": "module",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=18"
   },

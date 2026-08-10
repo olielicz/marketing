@@ -1,4 +1,18 @@
 User-agent: *
 Allow: /
 
+# FIX: block crawling/indexing of internal planning docs (launch
+# checklists, growth-plan slides, integration-layer working docs, etc.)
+# that are committed to this public repo for our own reference but were
+# never meant to be indexed as public pages. Customer-facing tool pages
+# (landing/buy/login/account for all 6 tools, plus privacy/terms/
+# security/support/contact) remain fully crawlable above.
+Disallow: /launch-checklists/
+Disallow: /growth-plan-slides/
+Disallow: /*.md$
+Disallow: /*.txt$
+Disallow: /*.yaml$
+Disallow: /nginx/
+Disallow: /ecosystem.config.cjs
+
 Sitemap: https://olielicz.github.io/marketing/sitemap.xml

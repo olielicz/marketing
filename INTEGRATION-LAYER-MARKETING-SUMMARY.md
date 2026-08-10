@@ -121,7 +121,10 @@ SAVINGS:      50-60%
 > "Want full control? Deploy n8n + Oli on your servers. 100% data privacy, zero vendor lock-in."
 
 **Message to enterprises:**
-- "Fully open source (Zapier integration)"
+<!-- FIX: OliFlow moved from MIT to a proprietary license - "fully open
+     source" no longer applies to Oli itself (n8n, referenced above,
+     genuinely is open source and that framing is fine to keep for it). -->
+- "Self-hosted, on your own infrastructure (n8n integration available)"
 - "No data leaves your infrastructure"
 - "Your compliance officer will love it"
 - "SOC 2? ISO 27001? We've got you"

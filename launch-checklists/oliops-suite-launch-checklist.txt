@@ -1,6 +1,6 @@
 OLIOPS SUITE — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
-Contact email: workitlikeapr01@gmail.com
+Contact email: YOUR_SUPPORT_GMAIL_ADDRESS
 Product: OliOps Suite (CRM + Invoicing/Payroll + Accounting + AI Support)
 Price: Subscription — Starter $39/mo or $348/yr, Pro $69/mo or $612/yr, Agency $119/mo or $1068/yr — up to 5 device activations per license
 Repos bundled: OliCRM, OliCompute, automate-CSR
@@ -13,9 +13,9 @@ STEP 1 — GET THE CODE READY
 ============================================================
 [ ] 1.1 Confirm OliCRM, OliCompute, and automate-CSR all run locally without errors
         (cd into each repo, npm install, npm test — all should pass)
-[ ] 1.2 Confirm each repo has a LICENSE file (MIT) — already done, verify it's still there
+[ ] 1.2 Confirm each repo has a LICENSE file (proprietary, all-rights-reserved — moved off MIT) — already done, verify it's still there
 [ ] 1.3 Confirm OliCompute/SECURITY.md exists and reads correctly — already written,
-        just double check the responsible-disclosure email now says workitlikeapr01@gmail.com
+        just double check the responsible-disclosure email now says YOUR_SUPPORT_GMAIL_ADDRESS
         (if it still says a placeholder domain, update it before publishing)
 [ ] 1.4 Decide where OliOps Suite itself will run for customers: self-hosted only, or also
         offer the optional $19/mo managed-hosting tier mentioned on the landing page.
@@ -101,7 +101,7 @@ STEP 5 — EMAIL (waitlist + delivery)
 [ ] 5.6 Automation -> Create a workflow -> Trigger: "contact added to OliOps Waitlist" ->
         load the 5 emails from email-sequence-oliops-suite.md with the delays noted in that file
 [ ] 5.7 Turn the workflow ON
-[ ] 5.8 Confirm workitlikeapr01@gmail.com is the email you check for buyer replies and
+[ ] 5.8 Confirm YOUR_SUPPORT_GMAIL_ADDRESS is the email you check for buyer replies and
         contact-page submissions (see contact/index.html — first submission through that
         form triggers a one-time FormSubmit.co confirmation email; click "Confirm" once)
 
@@ -114,7 +114,7 @@ STEP 6 — TRUST PAGES (already built, just verify)
         - terms/index.html: [Insert your jurisdiction here before publishing] (section 10)
         - privacy/index.html and terms/index.html: [insert date before publishing] (top of page)
 [ ] 6.3 Confirm contact/index.html's FormSubmit form works end to end (submit a real test
-        message, confirm it lands in workitlikeapr01@gmail.com)
+        message, confirm it lands in YOUR_SUPPORT_GMAIL_ADDRESS)
 
 ============================================================
 STEP 7 — MARKETING / LAUNCH
@@ -141,4 +141,4 @@ STEP 8 — GO LIVE
         unfinished checkout page)
 [ ] 8.3 Announce it — you're live.
 
-Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.
+Questions or stuck on any step? Email YOUR_SUPPORT_GMAIL_ADDRESS or use the /contact/ page.

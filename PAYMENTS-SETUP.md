@@ -343,7 +343,7 @@ When a customer pays via **Paddle**, the flow is also fully automatic — the sa
 ### EmailJS Setup (required for emails to send)
 
 1. Go to **[emailjs.com](https://www.emailjs.com)** → Sign up free
-2. Email Services → Add Service → Gmail → connect `workitlikeapr01@gmail.com`
+2. Email Services → Add Service → Gmail → connect `YOUR_SUPPORT_GMAIL_ADDRESS`
 3. Create template `oli_welcome` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
 4. Create template `oli_renewal` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
 5. Create template `oli_reset` (full copy-paste HTML in `EMAILJS-TEMPLATES.md`)
@@ -358,7 +358,7 @@ When a customer pays via **Paddle**, the flow is also fully automatic — the sa
    };
    ```
 
-**Testing:** before going live, use the EmailJS dashboard to send a test email and confirm it arrives in `workitlikeapr01@gmail.com`.
+**Testing:** before going live, use the EmailJS dashboard to send a test email and confirm it arrives in `YOUR_SUPPORT_GMAIL_ADDRESS`.
 
 ---
 

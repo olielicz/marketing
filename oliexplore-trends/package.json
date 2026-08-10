@@ -4,7 +4,7 @@
   "private": true,
   "description": "Trend Radar aggregator for OliExplore — auto-refreshing feed of trending memes/GIFs (GIPHY) and trending video (YouTube). Zero npm dependencies.",
   "type": "module",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=18"
   },

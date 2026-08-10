@@ -31,6 +31,21 @@
 (function () {
   'use strict';
 
+  /* FIX (masked-email pass): this file previously hardcoded the real
+     support address as a plaintext literal in 3 places (console
+     watermark, print-block message, DevTools-warning overlay). It now
+     reads it from window.OliContact (shared/contact-email.js) when that
+     script happens to be loaded on the page, and falls back to a
+     generic "use the Contact page" message otherwise — no hard
+     dependency, since not every page that loads security.js also loads
+     contact-email.js today. */
+  function supportContactLine() {
+    if (window.OliContact && typeof window.OliContact.getSupportEmail === 'function') {
+      return window.OliContact.getSupportEmail();
+    }
+    return 'our Contact page (see the footer)';
+  }
+
   /* ── 1. Right-click disable ─────────────────────────────────────────── */
   document.addEventListener('contextmenu', function (e) {
     // Allow right-click on inputs, textareas, selects so usability isn't broken
@@ -137,7 +152,7 @@
     console.log('%cThis software is proprietary. Copying, reproducing or distributing ' +
       'any part without written permission is a violation of copyright law.',
       'color:#9b96b8;font-size:12px');
-    console.log('%cSecurity concerns? workitlikeapr01@gmail.com', 'color:#6C47FF;font-size:12px');
+    console.log('%cSecurity concerns? ' + supportContactLine(), 'color:#6C47FF;font-size:12px');
   }, 800);
 
   /* ── 6. Image drag prevention ───────────────────────────────────────── */
@@ -153,7 +168,7 @@
           '<div style="padding:40px;font-family:sans-serif;text-align:center">' +
           '<h2>© Oli Tools by WorkItLikeAPro</h2>' +
           '<p>Printing this page is not permitted.<br>' +
-          'Contact workitlikeapr01@gmail.com for licensing.</p></div>';
+          'Contact ' + supportContactLine() + ' for licensing.</p></div>';
       }
     });
   }
@@ -168,7 +183,7 @@
       '<h2>© Oli Tools — Proprietary Software</h2>' +
       '<p>This content is protected by copyright.<br>' +
       'Unauthorised copying, reproduction or distribution is prohibited.</p>' +
-      '<p style="font-size:12px;margin-top:4px">workitlikeapr01@gmail.com</p>' +
+      '<p style="font-size:12px;margin-top:4px">' + supportContactLine() + '</p>' +
       '<button onclick="document.getElementById(\'oli-security-overlay\').remove()">Close</button>';
     document.body.appendChild(overlay);
   }

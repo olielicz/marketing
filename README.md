@@ -5,7 +5,7 @@ Each tool solves one expensive business problem at a fraction of the cost.
 Each product is sold, hosted, and logged into **completely separately**.
 
 **Live site:** `https://olielicz.github.io/marketing/` (after merging PR #2 + enabling Pages)
-**Contact:** workitlikeapr01@gmail.com
+**Contact:** YOUR_SUPPORT_GMAIL_ADDRESS
 
 ---
 
@@ -90,7 +90,7 @@ privacy/index.html              ← GDPR Privacy Policy (covers all 6 tools)
 terms/index.html                ← Terms of Service (Queensland, Australia)
 security/index.html             ← Trust & Security Center
 support/index.html              ← Troubleshooting (per-tool FAQs)
-contact/index.html              ← Contact form → workitlikeapr01@gmail.com
+contact/index.html              ← Contact form → YOUR_SUPPORT_GMAIL_ADDRESS
 assets/README.md                ← Product image URLs for PayPal dashboard
 ```
 
@@ -145,7 +145,7 @@ assets/README.md                ← Product image URLs for PayPal dashboard
 ### EmailJS Setup (required for automatic login emails)
 
 1. Sign up free at **[emailjs.com](https://emailjs.com)** (200 emails/mo free)
-2. Add service: Gmail → connect `workitlikeapr01@gmail.com`
+2. Add service: Gmail → connect `YOUR_SUPPORT_GMAIL_ADDRESS`
 3. Create 2 templates: `oli_welcome`, `oli_notice` (the free EmailJS plan caps at 2 templates — `oli_notice` is reused for both password resets and renewal reminders; see `EMAILJS-TEMPLATES.md` and `PAYMENTS-SETUP.md`)
 4. Open `shared/auth.js` lines 7–13 → paste your Public Key + Service ID
 

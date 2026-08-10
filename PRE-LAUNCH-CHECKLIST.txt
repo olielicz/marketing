@@ -68,7 +68,7 @@ requests and confusion on day one if not fixed.
 
 2a. Create a free EmailJS account (200 emails/month free)
     → emailjs.com → sign up
-    → Connect your Gmail (workitlikeapr01@gmail.com)
+    → Connect your Gmail (YOUR_SUPPORT_GMAIL_ADDRESS)
     → Create 3 email templates: "oli_welcome", "oli_renewal", "oli_reset"
       (exact template content is already written for you — ask me and
       I'll give you the copy-paste text for each)
@@ -108,11 +108,11 @@ STEP 4 — CONFIRM YOUR CONTACT FORM ACTUALLY WORKS
 
 Your contact form uses a free service called FormSubmit. The FIRST time
 anyone submits it, FormSubmit sends a confirmation email to
-workitlikeapr01@gmail.com that you must click to activate it — otherwise
+YOUR_SUPPORT_GMAIL_ADDRESS that you must click to activate it — otherwise
 messages silently go nowhere.
 
 4a. Go to your contact page right now and submit a test message to yourself
-4b. Check workitlikeapr01@gmail.com for a FormSubmit confirmation email
+4b. Check YOUR_SUPPORT_GMAIL_ADDRESS for a FormSubmit confirmation email
 4c. Click "Confirm" in that email
 4d. Submit a second test message and confirm it actually arrives
 

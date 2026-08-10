@@ -1,6 +1,6 @@
 OLIFLOW AUTOMATION ENGINE — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
-Contact email: workitlikeapr01@gmail.com
+Contact email: YOUR_SUPPORT_GMAIL_ADDRESS
 Product: OliFlow Automation Engine (self-hosted workflow builder + REST API)
 Price: Subscription — Solo $35/mo or $312/yr, Pro $59/mo or $528/yr, Business $99/mo or $888/yr — up to 5 device activations per license
 Repos bundled: project-3, auto-tools
@@ -15,7 +15,7 @@ STEP 1 — GET THE CODE READY
         should pass as of the last check)
 [ ] 1.2 Confirm auto-tools' template pack validator passes:
         cd auto-tools && python3 scripts/validate_repo.py
-[ ] 1.3 Confirm project-3 has a LICENSE file (MIT) and now has SECURITY.md — both already added
+[ ] 1.3 Confirm project-3 has a LICENSE file (proprietary, all-rights-reserved — moved off MIT) and now has SECURITY.md — both already added
 [ ] 1.4 Test at least 2-3 of the prebuilt templates from auto-tools import correctly into
         a fresh project-3 instance before advertising the template pack as a selling point
 
@@ -78,7 +78,7 @@ STEP 5 — EMAIL (waitlist + delivery)
 [ ] 5.4 Automation -> workflow -> Trigger: "contact added to OliFlow Waitlist" -> load the
         5 emails from email-sequence-oliflow-engine.md with noted delays
 [ ] 5.5 Turn the workflow ON
-[ ] 5.6 Confirm workitlikeapr01@gmail.com is the inbox you check for buyer replies and
+[ ] 5.6 Confirm YOUR_SUPPORT_GMAIL_ADDRESS is the inbox you check for buyer replies and
         contact-page submissions (first submission triggers a one-time FormSubmit.co
         confirmation email — click "Confirm" once)
 
@@ -111,4 +111,4 @@ STEP 8 — GO LIVE
         are fully live and tested
 [ ] 8.3 Announce it — you're live.
 
-Questions or stuck on any step? Email workitlikeapr01@gmail.com or use the /contact/ page.
+Questions or stuck on any step? Email YOUR_SUPPORT_GMAIL_ADDRESS or use the /contact/ page.

@@ -1,0 +1,5 @@
+Contact: https://olielicz.github.io/marketing/contact/
+Preferred-Languages: en
+Canonical: https://olielicz.github.io/marketing/.well-known/security.txt
+Policy: https://olielicz.github.io/marketing/security/
+Expires: 2027-08-10T00:00:00.000Z
