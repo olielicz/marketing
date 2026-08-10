@@ -1,9 +1,16 @@
 # OliSalesTrack Live Sync Server
 
 A small, self-hosted webhook-ingestion service that replaces OliSalesTrack's CSV-export/import workflow
-with **live, real-time sync** from Stripe, PayPal, and Shopify. This directly addresses the disadvantage
-called out in `competitor-comparison.md` and the OliSalesTrack landing page FAQ: *"No live API integrations
-yet — Baremetrics/HubSpot connect directly to Stripe, onboarding friction is higher."*
+with **live, real-time sync** from Stripe, PayPal, Shopify, WooCommerce, and Amazon. This directly addresses
+the disadvantage called out in `competitor-comparison.md` and the OliSalesTrack landing page FAQ: *"No live
+API integrations yet — Baremetrics/HubSpot connect directly to Stripe, onboarding friction is higher."*
+
+Every normalized sale/refund record also carries a **`paymentMethod`** field (`card`, `paypal_balance`,
+`klarna`, `apple_pay`, `google_pay`, `amazon_pay`, `other`, or `unknown`) — extracted only from fields each
+provider's own payload already includes (Stripe's `payment_method_details`/`payment_method_types`, PayPal's
+`payment_source`, WooCommerce's `payment_method` slug), never guessed. Klarna, Apple Pay, and Google Pay are
+**not** separate providers here — they're payment methods that flow through Stripe or PayPal as the actual
+processor, so this field is how OliSalesTrack tells them apart from a plain card charge.
 
 ---
 
@@ -71,6 +78,16 @@ Fill in `.env`:
    `PAYMENT.SALE.COMPLETED` and `PAYMENT.SALE.REFUNDED`, then copy the generated webhook's ID and your
    app's Client ID/Secret. Set `PAYPAL_API_BASE` to the live API (`https://api-m.paypal.com`) once you're
    out of sandbox testing.
+5. **`WOOCOMMERCE_WEBHOOK_SECRET`** — WooCommerce Admin → Settings → Advanced → Webhooks → Add webhook,
+   pointing at `https://your-deployed-url/webhooks/woocommerce`, topic `Order updated` (and `Order refunded`
+   if your WooCommerce version splits that out), then copy the webhook's **Secret**.
+6. **`AMAZON_CLIENT_ID` / `AMAZON_CLIENT_SECRET` / `AMAZON_REFRESH_TOKEN` / `AMAZON_MARKETPLACE_ID`** —
+   register an SP-API application in Amazon's [Developer Central](https://developer.amazonservices.com/),
+   complete the Login-With-Amazon (LWA) authorization flow to get a long-lived refresh token, and note your
+   target marketplace's ID. Unlike the other four providers, **Amazon has no webhook endpoint** here — it's
+   polled on a timer instead (default every 5 minutes, `AMAZON_POLL_INTERVAL_MS`) since Amazon's real-time
+   order notifications require its own SQS/EventBridge infrastructure rather than a simple signed webhook —
+   see `server/amazon.js`'s header comment for the full reasoning.
 
 Start it:
 
@@ -117,8 +134,10 @@ available as a fallback for historical backfill or providers not covered here.
 |---|---|---|
 | `POST /webhooks/stripe` | Stripe signature (`Stripe-Signature` header) | Ingest a Stripe event |
 | `POST /webhooks/shopify` | Shopify signature (`X-Shopify-Hmac-Sha256` header) | Ingest a Shopify webhook |
+| `POST /webhooks/woocommerce` | WooCommerce signature (`X-WC-Webhook-Signature` header) | Ingest a WooCommerce order/refund webhook |
 | `POST /webhooks/paypal` | PayPal signature (verified via PayPal's own API) | Ingest a PayPal event |
-| `GET /api/events` | `ACCESS_TOKEN` (Bearer) | Pull normalized sale/refund records, optional `?since=` and `?provider=` filters |
+| — (none — polled) | Amazon LWA refresh token | Amazon orders/refunds are pulled from the SP-API Orders API on a timer, not pushed via a webhook — see `server/amazon.js` |
+| `GET /api/events` | `ACCESS_TOKEN` (Bearer) | Pull normalized sale/refund records, optional `?since=`, `?provider=` (now also `woocommerce`/`amazon`) filters |
 | `GET /api/health` | none (public) | Health check |
 
 Full request/response shapes and the normalization rules for each provider are documented as comments

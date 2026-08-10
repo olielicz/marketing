@@ -12,25 +12,30 @@
      olielicz/SalesTrack "refund-tracker" app has been vendored in as
      ../app/, and it genuinely implements all of those (Pearson
      correlation, category-ROI expense tracking, a monthly P&L table,
-     Shopify/WooCommerce/Stripe CSV import, and 10-provider dispute-
-     portal deep-links) — all computed client-side in your browser. It
-     has ALSO been wired to pull live-synced events straight from the
-     real olisalestrack-sync backend (see ../app/README-PROVENANCE.md
-     and the "Live Sync" section inside the app), bridging the
-     live-webhook-sync half of this product with the correlation/
-     expense/P&L half into one coherent tool. Still NOT real, and not
-     claimed below: AI-generated business insights, PDF export, and
-     multiple business profiles — see the Explicit Scope note in the
-     features section. -->
+     CSV import via manual column mapping, and dispute-portal deep-links
+     for the 10 processors that have one) — all computed client-side in
+     your browser. It has ALSO been wired to pull live-synced events
+     straight from the real olisalestrack-sync backend (see
+     ../app/README-PROVENANCE.md and the "Live Sync" section inside the
+     app), bridging the live-webhook-sync half of this product with the
+     correlation/expense/P&L half into one coherent tool. Still NOT
+     real, and not claimed below: AI-generated business insights, PDF
+     export, and multiple business profiles — see the Explicit Scope
+     note in the features section.
+     UPDATE: live sync now also covers WooCommerce (webhook) and Amazon
+     (polled via SP-API), plus every synced sale/refund is tagged with a
+     real payment method (card/PayPal balance/Klarna/Apple Pay/Google
+     Pay/Amazon Pay), extracted only from fields each provider's own
+     payload already includes. -->
 <title>OliSalesTrack — Sales, Refunds, Correlation &amp; Expense Tracking</title>
-<meta name="description" content="Live sales/refund sync from Stripe, PayPal &amp; Shopify webhooks, plus a real correlation analysis, expense tracking, and P&amp;L dashboard. From $24/mo.">
+<meta name="description" content="Live sales/refund sync from Stripe, PayPal, Shopify, WooCommerce &amp; Amazon, plus a real correlation analysis, expense tracking, and P&amp;L dashboard. From $24/mo.">
 <meta property="og:title" content="OliSalesTrack — Live Sync + Correlation &amp; Expense Tracking"/>
-<meta property="og:description" content="Real-time sales/refund totals synced live from your payment processors' own webhooks, plus a real correlation-analysis, expense-tracking, and P&amp;L dashboard. From $24/mo."/>
+<meta property="og:description" content="Real-time sales/refund totals synced live from Stripe, PayPal, Shopify, WooCommerce &amp; Amazon, plus a real correlation-analysis, expense-tracking, and P&amp;L dashboard. From $24/mo."/>
 <meta property="og:url" content="https://olielicz.github.io/marketing/olisalestrack/"/>
 <meta property="og:image" content="https://olielicz.github.io/marketing/assets/og/olisalestrack.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="OliSalesTrack — Live Sync + Correlation &amp; Expense Tracking"/>
-<meta name="twitter:description" content="Real-time sales/refund totals synced live from your payment processors' own webhooks, plus a real correlation-analysis, expense-tracking, and P&amp;L dashboard. From $24/mo."/>
+<meta name="twitter:description" content="Real-time sales/refund totals synced live from Stripe, PayPal, Shopify, WooCommerce &amp; Amazon, plus a real correlation-analysis, expense-tracking, and P&amp;L dashboard. From $24/mo."/>
 <meta name="twitter:image" content="https://olielicz.github.io/marketing/assets/og/olisalestrack.png"/>
 <link rel="canonical" href="https://olielicz.github.io/marketing/olisalestrack/"/>
 <script type="application/ld+json">
@@ -40,7 +45,7 @@
   "name": "OliSalesTrack",
   "url": "https://olielicz.github.io/marketing/olisalestrack/",
   "image": "https://olielicz.github.io/marketing/assets/og/olisalestrack.png",
-  "description": "OliSalesTrack syncs sales and refunds live from Stripe, PayPal, and Shopify webhooks, and includes a real correlation-analysis, expense-tracking, CSV-import, and P&L dashboard.",
+  "description": "OliSalesTrack syncs sales and refunds live from Stripe, PayPal, Shopify, WooCommerce, and Amazon, and includes a real correlation-analysis, expense-tracking, CSV-import, and P&L dashboard.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
   "offers": {
@@ -140,7 +145,7 @@
        for full context. Restored, honestly, now that real code backs
        it. -->
   <h1>Sales &amp; refunds, synced live.<br><span class="hl">Correlation &amp; expenses, tracked for real.</span></h1>
-  <p class="sub-headline">OliSalesTrack syncs sales and refunds automatically the moment they happen — straight from Stripe, PayPal, or Shopify's own webhooks, verified and de-duplicated. Layer in real correlation analysis (Pearson r), expense tracking with category ROI, and a monthly P&amp;L table — no manual CSV exports required, though CSV import (Shopify/WooCommerce/Stripe) is there if you want it. Baremetrics charges $49/mo. Ours starts at $24/mo.</p>
+  <p class="sub-headline">OliSalesTrack syncs sales and refunds automatically the moment they happen — straight from Stripe, PayPal, Shopify, and WooCommerce's own webhooks (plus Amazon, polled from the SP-API), verified and de-duplicated, each one tagged with its real payment method (card, PayPal balance, Klarna, Apple Pay, Google Pay, or Amazon Pay). Layer in real correlation analysis (Pearson r), expense tracking with category ROI, and a monthly P&amp;L table — no manual CSV exports required, though CSV import is there if you want it. Baremetrics charges $49/mo. Ours starts at $24/mo.</p>
   <div class="hero-ctas">
     <a href="./buy/" class="cta-btn">Start Free Trial — $24/mo after</a>
     <a href="./app/" class="cta-btn ghost">Try the app free ↓</a>
@@ -201,12 +206,13 @@
     <h2 class="section-title">Everything that's actually real, no more</h2>
     <p class="section-sub">Live sync you can trust, real correlation and expense analysis, and honest totals — not features we haven't built yet.</p>
     <div class="grid3">
-      <div class="card"><span class="icon">🔌</span><h3>Real Webhook Sync</h3><p>Genuine, verified webhook integration with Stripe, PayPal, and Shopify — real HMAC/signature verification rejects anything unsigned or forged before it ever reaches your dashboard.</p></div>
+      <div class="card"><span class="icon">🔌</span><h3>Real Webhook Sync</h3><p>Genuine, verified webhook integration with Stripe, PayPal, Shopify, and WooCommerce — real HMAC/signature verification rejects anything unsigned or forged before it ever reaches your dashboard. Amazon orders sync too, polled directly from Amazon's own Selling Partner API.</p></div>
       <div class="card"><span class="icon">⚡</span><h3>Live, Not Batched</h3><p>Sales and refunds appear the moment your processor sends the webhook — no scheduled sync job, no waiting for a nightly batch.</p></div>
       <div class="card"><span class="icon">📐</span><h3>Real Correlation Analysis</h3><p>A genuine Pearson correlation coefficient between sales and refunds, computed live in the <a href="./app/">app</a> from your actual synced/imported data — not a made-up number.</p></div>
       <div class="card"><span class="icon">🧮</span><h3>Expense Tracking</h3><p>Log real expenses by category and see category-level ROI against your sales — a true net picture, not just sales minus refunds.</p></div>
-      <div class="card"><span class="icon">📄</span><h3>P&amp;L Table + CSV Import</h3><p>A real monthly profit &amp; loss table, plus CSV import with automatic column-mapping for Shopify, WooCommerce, and Stripe exports.</p></div>
-      <div class="card"><span class="icon">⚖️</span><h3>Dispute Portal Shortcuts</h3><p>One-click deep links into the real dispute portals for PayPal, Stripe, Klarna, Shopify Payments, Square, Amazon Pay, Afterpay, Adyen, Authorize.Net, and Braintree.</p></div>
+      <div class="card"><span class="icon">📄</span><h3>P&amp;L Table + CSV Import</h3><p>A real monthly profit &amp; loss table, plus CSV import that works with any spreadsheet via manual column mapping (Shopify's own export column names are auto-detected).</p></div>
+      <div class="card"><span class="icon">💳</span><h3>Real Payment-Method Tagging</h3><p>Every synced sale and refund is tagged with the actual payment method used — card, PayPal balance, Klarna, Apple Pay, Google Pay, or Amazon Pay — extracted from each provider's own webhook payload, never guessed.</p></div>
+      <div class="card"><span class="icon">⚖️</span><h3>Dispute Portal Shortcuts</h3><p>One-click deep links into the real dispute portals for PayPal, Stripe, Klarna, Shopify Payments, Square, Amazon Pay, Afterpay, Adyen, Authorize.Net, and Braintree. Apple Pay and Google Pay refunds are tagged too — they route disputes through whichever processor actually handled the charge, so we say so honestly instead of linking to a portal that doesn't exist for them.</p></div>
       <div class="card"><span class="icon">🔒</span><h3>Real Owner Login</h3><p>A genuine authenticated dashboard — not a public link — protecting your real transaction data.</p></div>
       <div class="card"><span class="icon">🛠️</span><h3>Explicit Scope</h3><p>AI-generated business insights, PDF export, and multiple business profiles are <strong>not built yet</strong>. We'd rather tell you that upfront than sell a feature that doesn't exist — see our <a href="../support/">support page</a> for the current, honest feature list.</p></div>
     </div>
@@ -224,7 +230,7 @@
       <table class="compare-table">
         <thead><tr><th>Tool</th><th>Price</th><th>Live Webhook Sync</th><th>Refund Tracking</th><th>Correlation Analysis</th></tr></thead>
         <tbody>
-          <tr><td class="ours">🏆 OliSalesTrack</td><td class="ours">$24/mo or $204/yr</td><td>✅ Stripe, PayPal, Shopify</td><td>✅ Built-in</td><td>✅ Built-in</td></tr>
+          <tr><td class="ours">🏆 OliSalesTrack</td><td class="ours">$24/mo or $204/yr</td><td>✅ Stripe, PayPal, Shopify, WooCommerce, Amazon</td><td>✅ Built-in</td><td>✅ Built-in</td></tr>
           <tr><td>Baremetrics</td><td>$49+/mo</td><td>✅ Stripe only</td><td>✅ Partial</td><td>❌ No</td></tr>
           <tr><td>Pipedrive</td><td>$14+/seat/mo</td><td>❌ No</td><td>❌ No</td><td>❌ No</td></tr>
           <tr><td>HubSpot CRM</td><td>Free–$90+/mo</td><td>❌ No</td><td>❌ No</td><td>❌ No</td></tr>
@@ -251,7 +257,7 @@
              Still NOT claimed: AI business insights, PDF export,
              multiple business profiles (genuinely not built). -->
         <ul class="price-features">
-          <li><span class="c">✓</span> Live sync with Stripe, PayPal &amp; Shopify</li>
+          <li><span class="c">✓</span> Live sync with Stripe, PayPal, Shopify, WooCommerce &amp; Amazon</li>
           <li><span class="c">✓</span> Verified webhook signatures</li>
           <li><span class="c">✓</span> Real-time sales &amp; refund totals</li>
           <li><span class="c">✓</span> Correlation analysis (Pearson r)</li>
@@ -270,7 +276,7 @@
         <ul class="price-features">
           <li><span class="c">✓</span> Everything in Monthly</li>
           <li><span class="c">✓</span> Save $84 vs monthly billing</li>
-          <li><span class="c">✓</span> Live sync with Stripe, PayPal &amp; Shopify</li>
+          <li><span class="c">✓</span> Live sync with Stripe, PayPal, Shopify, WooCommerce &amp; Amazon</li>
           <li><span class="c">✓</span> Priority email support</li>
         </ul>
         <a href="./buy/" class="cta-btn" style="width:100%;display:block;text-align:center;padding:12px">Get Yearly</a>
@@ -313,8 +319,8 @@
     <p>Three real, live numbers: Total Sales, Total Refunds, and Net Revenue (sales minus refunds — no cost-of-goods or processor fees deducted), plus a flat list of every synced transaction. Open the full <a href="./app/">app</a> for the deeper view: correlation analysis, expense tracking with category ROI, a monthly P&amp;L table, CSV import, and dispute-portal shortcuts — it also pulls in the same live-synced events shown here.</p>
   </div>
   <div class="faq-item">
-    <h4>Can I connect Shopify, Stripe, or PayPal directly?</h4>
-    <p>Yes — live webhook sync is real and verified (no manual CSV export/import needed). Sales and refunds sync in automatically as they happen, straight from Stripe, PayPal, or Shopify's own webhook events, with real signature verification rejecting anything forged or unsigned. See it in the <a href="./dashboard/">live dashboard</a> once you're subscribed.</p>
+    <h4>Can I connect Shopify, Stripe, PayPal, WooCommerce, or Amazon directly?</h4>
+    <p>Yes — live sync is real and verified (no manual CSV export/import needed). Sales and refunds sync in automatically as they happen, straight from Stripe, PayPal, Shopify, and WooCommerce's own webhook events (with real signature verification rejecting anything forged or unsigned), and Amazon orders sync in on a short polling interval from Amazon's own Selling Partner API. See it in the <a href="./dashboard/">live dashboard</a> once you're subscribed.</p>
   </div>
   <!-- FIX: added a more visible contact touchpoint at the end of the
        FAQ - deep-links to the shared contact form with this tool

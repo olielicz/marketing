@@ -15,13 +15,25 @@
  */
 import { createServer } from "node:http";
 import { appendEvents, listEvents } from "./store.js";
-import { normalizeStripeEvent, normalizeShopifyEvent, normalizePaypalEvent } from "./normalize.js";
-import { verifyStripeSignature, verifyShopifySignature, verifyPaypalSignature } from "./verify.js";
+import {
+  normalizeStripeEvent,
+  normalizeShopifyEvent,
+  normalizePaypalEvent,
+  normalizeWooCommerceEvent,
+} from "./normalize.js";
+import {
+  verifyStripeSignature,
+  verifyShopifySignature,
+  verifyPaypalSignature,
+  verifyWooCommerceSignature,
+} from "./verify.js";
 import { requireAdmin } from "./adminAuth.js";
+import { startAmazonPolling } from "./amazon.js";
 
 const PORT = Number(process.env.PORT) || 4200;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || "";
 const SHOPIFY_WEBHOOK_SECRET = process.env.SHOPIFY_WEBHOOK_SECRET || "";
+const WOOCOMMERCE_WEBHOOK_SECRET = process.env.WOOCOMMERCE_WEBHOOK_SECRET || "";
 const PAYPAL_WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID || "";
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "";
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || "";
@@ -38,9 +50,15 @@ if (!STRIPE_WEBHOOK_SECRET) {
 if (!SHOPIFY_WEBHOOK_SECRET) {
   console.warn("⚠️  SHOPIFY_WEBHOOK_SECRET not set — POST /webhooks/shopify will reject all requests.");
 }
+if (!WOOCOMMERCE_WEBHOOK_SECRET) {
+  console.warn("⚠️  WOOCOMMERCE_WEBHOOK_SECRET not set — POST /webhooks/woocommerce will reject all requests.");
+}
 if (!PAYPAL_WEBHOOK_ID || !PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
   console.warn("⚠️  PayPal credentials incomplete — POST /webhooks/paypal will reject all requests.");
 }
+// Amazon has no webhook route to warn about here — see amazon.js's
+// startAmazonPolling(), which prints its own warning if unconfigured and is
+// started at the bottom of this file.
 
 function readRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -105,7 +123,7 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { ok: true });
     }
 
-    // GET /api/events?since=ISO_DATE&provider=stripe|paypal|shopify  [auth required]
+    // GET /api/events?since=ISO_DATE&provider=stripe|paypal|shopify|woocommerce|amazon  [auth required]
     // -> [{ id, provider, type, amountCents, currency, occurredAt, description }, ...]
     // OliSalesTrack calls this on a poll/refresh instead of asking the user to export a CSV.
     if (req.method === "GET" && url.pathname === "/api/events") {
@@ -154,6 +172,26 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { ok: true, inserted: inserted.length });
     }
 
+    // POST /webhooks/woocommerce — verified with X-WC-Webhook-Signature
+    // header. Topic comes from X-WC-Webhook-Topic (e.g. "order.updated").
+    if (req.method === "POST" && url.pathname === "/webhooks/woocommerce") {
+      const rawBody = await readRawBody(req);
+      const sigHeader = req.headers["x-wc-webhook-signature"];
+      if (!verifyWooCommerceSignature(rawBody, sigHeader, WOOCOMMERCE_WEBHOOK_SECRET)) {
+        return send(res, 401, { error: "invalid_signature" });
+      }
+      let payload;
+      try {
+        payload = JSON.parse(rawBody);
+      } catch {
+        return send(res, 400, { error: "invalid_json" });
+      }
+      const topic = req.headers["x-wc-webhook-topic"] || "";
+      const records = normalizeWooCommerceEvent(topic, payload);
+      const inserted = await appendEvents(records);
+      return send(res, 200, { ok: true, inserted: inserted.length });
+    }
+
     // POST /webhooks/paypal — verified via PayPal's verify-webhook-signature API
     if (req.method === "POST" && url.pathname === "/webhooks/paypal") {
       const rawBody = await readRawBody(req);
@@ -187,3 +225,7 @@ const server = createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`OliSalesTrack Sync Server listening on http://localhost:${PORT}`);
 });
+
+// Amazon has no webhook route (see amazon.js's header comment for why) —
+// it's polled on a timer instead, started here alongside the HTTP server.
+startAmazonPolling();

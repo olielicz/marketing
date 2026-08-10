@@ -148,6 +148,8 @@
         <option value="stripe">Stripe</option>
         <option value="paypal">PayPal</option>
         <option value="shopify">Shopify</option>
+        <option value="woocommerce">WooCommerce</option>
+        <option value="amazon">Amazon</option>
       </select>
       <input type="date" id="sinceDate" />
       <button id="applyFilterBtn" class="primary">Apply</button>
@@ -156,8 +158,9 @@
     </div>
 
     <div id="emptyState" style="display:none;">
-      No events yet. Connect Stripe/PayPal/Shopify webhooks to your olisalestrack-sync
-      deployment — see <code>olisalestrack-sync/README.md</code> — and they'll show up here automatically.
+      No events yet. Connect Stripe/PayPal/Shopify/WooCommerce webhooks (or Amazon SP-API polling)
+      to your olisalestrack-sync deployment — see <code>olisalestrack-sync/README.md</code> — and
+      they'll show up here automatically.
     </div>
 
     <table class="events" id="eventsTable" style="display:none;">
@@ -166,6 +169,7 @@
           <th>Date</th>
           <th>Type</th>
           <th>Provider</th>
+          <th>Payment Method</th>
           <th>Description</th>
           <th style="text-align:right;">Amount</th>
         </tr>

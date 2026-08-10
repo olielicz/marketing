@@ -46,6 +46,24 @@ export function verifyShopifySignature(rawBody, signatureHeader, secret) {
 }
 
 /**
+ * Verifies a WooCommerce webhook signature (the "X-WC-Webhook-Signature"
+ * header) — WooCommerce uses the exact same scheme as Shopify: a
+ * base64-encoded HMAC-SHA256 of the raw request body, using the webhook's
+ * configured secret (WooCommerce Admin -> Settings -> Advanced -> Webhooks
+ * -> your webhook -> Secret). Kept as its own named function (rather than
+ * just reusing verifyShopifySignature directly at the call site) so a
+ * provider-specific change later doesn't silently affect the other.
+ * See: https://woocommerce.github.io/woocommerce-rest-api-docs/#webhooks
+ */
+export function verifyWooCommerceSignature(rawBody, signatureHeader, secret) {
+  if (!secret) return false;
+  if (!signatureHeader) return false;
+
+  const expected = createHmac("sha256", secret).update(rawBody, "utf8").digest("base64");
+  return safeCompare(expected, signatureHeader);
+}
+
+/**
  * Verifies a PayPal webhook by calling PayPal's own verify-webhook-signature
  * API (PayPal doesn't use a simple local-HMAC scheme like Stripe/Shopify —
  * their signatures are verified server-side against PayPal's own service).
@@ -100,4 +118,32 @@ function safeCompare(a, b) {
   const bufB = Buffer.from(b, "utf8");
   if (bufA.length !== bufB.length) return false;
   return timingSafeEqual(bufA, bufB);
+}
+
+/**
+ * Exchanges an Amazon Login-With-Amazon (LWA) refresh token for a short-lived
+ * SP-API access token. Amazon's Selling Partner API has no "webhook +
+ * shared-secret HMAC" scheme like Stripe/Shopify/WooCommerce — order/refund
+ * notifications are delivered via SQS/EventBridge (Amazon's own managed
+ * notification infrastructure, not a plain HTTP POST this service could
+ * receive and verify the same way), so this service instead POLLS the
+ * SP-API Orders API on a timer (see amazon.js's pollAmazonOrders) using this
+ * access token, rather than exposing a POST /webhooks/amazon endpoint.
+ * See: https://developer-docs.amazon.com/sp-api/docs/connecting-to-the-selling-partner-api
+ */
+export async function getAmazonAccessToken({ clientId, clientSecret, refreshToken }) {
+  if (!clientId || !clientSecret || !refreshToken) return null;
+  const res = await fetch("https://api.amazon.com/auth/o2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: clientId,
+      client_secret: clientSecret,
+    }).toString(),
+  });
+  if (!res.ok) return null;
+  const { access_token } = await res.json();
+  return access_token || null;
 }
