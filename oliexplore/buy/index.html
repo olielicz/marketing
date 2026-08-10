@@ -115,6 +115,13 @@
     </a>
     <div class="paypal-wrap">
       <div id="paypal-button-container"></div>
+      <!-- Apple Pay / Google Pay via PayPal's wallet-funding buttons
+           (shared/paypal-sdk.js's renderWalletButtons()) — each one only
+           renders if the buyer's device/browser actually supports it and
+           the PayPal Business account has that wallet enabled. Empty and
+           invisible otherwise, so no layout gap when unavailable. -->
+      <div id="applepay-button-container" class="wallet-btn-slot"></div>
+      <div id="googlepay-button-container" class="wallet-btn-slot"></div>
       <div id="paypal-success-box" class="success-box">
         🎉 <strong>Trial started!</strong> Login details are being sent to your email.
       </div>

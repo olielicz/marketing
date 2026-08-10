@@ -62,6 +62,12 @@ STEP 3 — PAYMENTS (Stripe + PayPal)
 [ ] 3.9 Test both in Stripe test mode (card 4242 4242 4242 4242) and PayPal Sandbox
         before switching either to live/production
 [ ] 3.10 Commit + push the updated oliops/buy/index.html
+[ ] 3.11 (EXTERNAL SITE, optional but quick) Turn on Apple Pay + Google Pay in
+         Paddle Dashboard -> Checkout -> Checkout settings (zero code changes needed —
+         see PAYMENTS-SETUP.md Part 2c). For PayPal, the wallet buttons on
+         oliops/buy/index.html already work automatically once PayPal's own account
+         settings enable them (see PAYMENTS-SETUP.md Part 1c) — test on a real
+         Apple/Android device before launch.
 
 ============================================================
 STEP 4 — LICENSING (serial codes / 5-device limit)
