@@ -63,7 +63,7 @@
   // the value below has already been replaced with a real Client ID
   // following the setup steps above. If you ever need to rotate it,
   // just paste the new one in directly.
-  var PAYPAL_CLIENT_ID = 'AReeYev_eodCOTJ1KDm-9q3I2YKEd7QyNecK3MgS2JUm92oIAIJGyCLrF_uSA4yWVwBYd32qdWvHd1R5';
+  var BAAn_HKbNpyGn0x2maSh7wxU1jv-1-8j1EnoocjVeN629XbbM5uDmKoi4_1n8ZGFtkNlD-aEULbzQJ9AWA = 'AReeYev_eodCOTJ1KDm-9q3I2YKEd7QyNecK3MgS2JUm92oIAIJGyCLrF_uSA4yWVwBYd32qdWvHd1R5';
 
   // ── REPLACE EACH WITH YOUR REAL PAYPAL SUBSCRIPTION PLAN ID (starts with P-) ──
   // Structure: PLAN_IDS[toolKey][tierKey][period]. Tier keys must match
