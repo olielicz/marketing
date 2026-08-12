@@ -63,38 +63,58 @@
   // the value below has already been replaced with a real Client ID
   // following the setup steps above. If you ever need to rotate it,
   // just paste the new one in directly.
-  var BAAn_HKbNpyGn0x2maSh7wxU1jv-1-8j1EnoocjVeN629XbbM5uDmKoi4_1n8ZGFtkNlD-aEULbzQJ9AWA = 'AReeYev_eodCOTJ1KDm-9q3I2YKEd7QyNecK3MgS2JUm92oIAIJGyCLrF_uSA4yWVwBYd32qdWvHd1R5';
+  // FIX: a direct GitHub-web-editor paste accidentally landed the real
+  // Client ID string into the VARIABLE NAME slot instead of the value
+  // slot here ("var BAAn_HKb...=...") which is invalid JS syntax (a
+  // variable name can't start with a digit-adjacent identifier like that
+  // and definitely can't contain "-") — this broke EVERY buy page's
+  // PayPal button silently (script failed to parse at all, so nothing
+  // downstream ever ran). Restored the correct variable name
+  // (PAYPAL_CLIENT_ID, referenced throughout the rest of this file) with
+  // the real Client ID as its STRING VALUE.
+  var PAYPAL_CLIENT_ID = 'BAAn_HKbNpyGn0x2maSh7wxU1jv-1-8j1EnoocjVeN629XbbM5uDmKoi4_1n8ZGFtkNlD-aEULbzQJ9AWA';
 
   // ── REPLACE EACH WITH YOUR REAL PAYPAL SUBSCRIPTION PLAN ID (starts with P-) ──
   // Structure: PLAN_IDS[toolKey][tierKey][period]. Tier keys must match
   // the `key` field on each buy page's PLANS array exactly.
   var PLAN_IDS = {
+    // FIX: oli-locator's tier keys used to say 'solo-agent'/'team' here,
+    // but the real buy page (oli-locator/buy/index.html) uses
+    // 'starter'/'pro'/'agency' — a leftover from before this tool's
+    // real-estate-to-home-improvement pivot. Every Plan ID below now
+    // matches the buy page's actual PLANS array `key` values exactly.
+    // NOTE: OliOps Pro/Agency yearly Plan IDs are still not yet created
+    // in PayPal — only their monthly plans exist so far. A customer who
+    // picks Pro/Agency + Yearly on this tool's buy page will see the
+    // "not configured yet, try a different plan" notice until those 2
+    // remaining Plans are created and their IDs pasted in here.
     'oliops': {
-      'starter': { monthly: 'YOUR_OLIOPS_STARTER_MONTHLY_PLAN_ID', yearly: 'YOUR_OLIOPS_STARTER_YEARLY_PLAN_ID' },
-      'pro':     { monthly: 'YOUR_OLIOPS_PRO_MONTHLY_PLAN_ID',     yearly: 'YOUR_OLIOPS_PRO_YEARLY_PLAN_ID' },
-      'agency':  { monthly: 'YOUR_OLIOPS_AGENCY_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PLAN_ID' },
+      'starter': { monthly: 'P-3N291216V7826815WNJ6KACY', yearly: 'P-9KD592261N427482RNJ6KC5A' },
+      'pro':     { monthly: 'P-9DU699227M384522FNJ6KD6Q', yearly: 'YOUR_OLIOPS_PRO_YEARLY_PLAN_ID' },
+      'agency':  { monthly: 'P-41V37494LF614412LNJ6KEWQ', yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PLAN_ID' },
     },
     'olicommerce': {
-      'basic':  { monthly: 'YOUR_OLICOMMERCE_BASIC_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLICOMMERCE_BASIC_YEARLY_PLAN_ID' },
-      'growth': { monthly: 'YOUR_OLICOMMERCE_GROWTH_MONTHLY_PLAN_ID', yearly: 'YOUR_OLICOMMERCE_GROWTH_YEARLY_PLAN_ID' },
-      'scale':  { monthly: 'YOUR_OLICOMMERCE_SCALE_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLICOMMERCE_SCALE_YEARLY_PLAN_ID' },
+      'basic':  { monthly: 'P-25D62501R5814440JNJ6LAKY', yearly: 'P-8V88286420538974HNJ6KHYY' },
+      'growth': { monthly: 'P-3S161667JV5935337NJ6KIPI', yearly: 'P-9NR15195XS343952PNJ6M4BQ' },
+      'scale':  { monthly: 'P-84Y46921M76805325NJ6M5IQ', yearly: 'P-0BX440109U185682XNJ6M54Q' },
     },
     'oliflow': {
-      'solo':     { monthly: 'YOUR_OLIFLOW_SOLO_MONTHLY_PLAN_ID',     yearly: 'YOUR_OLIFLOW_SOLO_YEARLY_PLAN_ID' },
-      'pro':      { monthly: 'YOUR_OLIFLOW_PRO_MONTHLY_PLAN_ID',      yearly: 'YOUR_OLIFLOW_PRO_YEARLY_PLAN_ID' },
-      'business': { monthly: 'YOUR_OLIFLOW_BUSINESS_MONTHLY_PLAN_ID', yearly: 'YOUR_OLIFLOW_BUSINESS_YEARLY_PLAN_ID' },
+      'solo':     { monthly: 'P-1FM06987821925203NJ6LBRQ', yearly: 'P-07R59574SM1652430NJ6KL7Y' },
+      'pro':      { monthly: 'P-6R420156RP9701514NJ6KMTQ', yearly: 'P-8YW1421880771535CNJ6NA7Q' },
+      'business': { monthly: 'P-42F54725KR499934SNJ6NB7A', yearly: 'P-01W32418PT899134RNJ6NCRQ' },
     },
     'oliexplore': {
-      'creator': { monthly: 'YOUR_OLIEXPLORE_CREATOR_MONTHLY_PLAN_ID', yearly: 'YOUR_OLIEXPLORE_CREATOR_YEARLY_PLAN_ID' },
-      'team':    { monthly: 'YOUR_OLIEXPLORE_TEAM_MONTHLY_PLAN_ID',    yearly: 'YOUR_OLIEXPLORE_TEAM_YEARLY_PLAN_ID' },
-      'agency':  { monthly: 'YOUR_OLIEXPLORE_AGENCY_MONTHLY_PLAN_ID',  yearly: 'YOUR_OLIEXPLORE_AGENCY_YEARLY_PLAN_ID' },
+      'creator': { monthly: 'P-1A5191437N183045FNJ6LCSY', yearly: 'P-1P5332946V222861KNJ6KOXY' },
+      'team':    { monthly: 'P-4EJ56860FH4847509NJ6KPLI', yearly: 'P-5KS78915C8682593WNJ6NEAQ' },
+      'agency':  { monthly: 'P-99Y398811X7090011NJ6NERA', yearly: 'P-22K38904JY412620YNJ6NFEI' },
     },
     'oli-locator': {
-      'solo-agent': { monthly: 'YOUR_LOCATOR_SOLO_AGENT_MONTHLY_PLAN_ID', yearly: 'YOUR_LOCATOR_SOLO_AGENT_YEARLY_PLAN_ID' },
-      'team':       { monthly: 'YOUR_LOCATOR_TEAM_MONTHLY_PLAN_ID',      yearly: 'YOUR_LOCATOR_TEAM_YEARLY_PLAN_ID' },
+      'starter': { monthly: 'P-35C140926C288902NNJ6LFJA', yearly: 'P-3WD21959BA9702710NJ6KTPI' },
+      'pro':     { monthly: 'P-87X70415T08958438NJ6KUDI', yearly: 'P-4SF181793K0108213NJ6KUUQ' },
+      'agency':  { monthly: 'P-5H7818616K551313UNJ6KVJY', yearly: 'P-7UR64720XJ6646900NJ6KV7I' },
     },
     'olisalestrack': {
-      'pro': { monthly: 'YOUR_OLISALESTRACK_PRO_MONTHLY_PLAN_ID', yearly: 'YOUR_OLISALESTRACK_PRO_YEARLY_PLAN_ID' },
+      'pro': { monthly: 'P-7F257770FJ0099246NJ6K4MI', yearly: 'P-9DX408126H2693826NJ6K47I' },
     },
   };
 
