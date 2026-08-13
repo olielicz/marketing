@@ -45,7 +45,8 @@ actually see their numbers).
 1. Deploy `../../admin-auth` and create your one owner account (see its
    README). Note its URL.
 2. Deploy `../../olisalestrack-sync` and connect it to your real
-   Stripe/PayPal/Shopify webhooks (see its README). Note its URL.
+   Stripe/PayPal/Shopify/WooCommerce webhooks + Amazon polling (see its
+   README). Note its URL.
 3. Deploy this `dashboard/` folder as a static site (or just open
    `index.html` directly, or serve it with any static file host —
    Netlify, GitHub Pages, `python3 -m http.server`, etc.)

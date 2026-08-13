@@ -34,6 +34,22 @@ of OliCommerce.
   error, rate limit), the system automatically falls back to the plain
   template and tells you so — it never blocks sending, and never
   pretends a template email came from AI.
+- ✅ **Real multi-store support (Scale tier's actual differentiator)** —
+  a full product/pricing audit found that OliCommerce's 3 tiers (Basic
+  $29/Growth $49/Scale $89) were pure marketing text: the backend was
+  architecturally single-store, so Scale's advertised "for multi-store
+  operations and agencies" gave a customer nothing they couldn't already
+  do on Basic. Fixed for real: `POST /api/stores` lets an owner connect
+  multiple stores, each with its OWN webhook secret (so an incoming
+  webhook is matched to the correct store, not lumped into one global
+  pile), and every cart/product is now scoped by `storeId`. How many
+  stores you can connect is capped by your REAL license tier — verified
+  against the shared licensing service (`../../licensing`), never a
+  number the client claims on its own: Basic = 1 store, Growth = 3
+  stores, Scale = 10 stores (see `../../licensing/server/tierLimits.js`'s
+  `COM` entry). `POST /api/license/activate` verifies a real license key
+  and unlocks the corresponding cap. See `test/multiStore.test.js` for
+  the full enforcement test suite.
 - ✅ **AI Support Assistant** (`server/supportAssistant.js`) — the same
   honest, three-tier pattern as `../oliops-backend`'s: a real
   knowledge-base matcher (zero config, always available), an optional

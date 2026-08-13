@@ -105,6 +105,42 @@ export async function deactivateThisDevice({ product, licenseKey, licenseServerU
   }
 }
 
+/**
+ * Adds a staff/team seat (OliOps/OliFlow), a connected store (OliCommerce),
+ * or a connected social account (OliExplore) under this license — see
+ * server/tierLimits.js for what "user" means for each specific product.
+ * Call this from the product's own "invite teammate" / "connect a store" /
+ * "connect an account" flow, AFTER your own in-app permission check (e.g.
+ * "only an owner/admin can invite") — this function only enforces the
+ * numeric seat CAP that came with the license, not who's allowed to call it.
+ */
+export async function addLicenseUser({ product, licenseKey, userId, email, role, licenseServerUrl }) {
+  try {
+    const { status, body } = await fetchJson(`${licenseServerUrl}/api/users/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ licenseKey, userId, email, role }),
+    });
+    if (status === 200 && body?.ok) return { ok: true, usersUsed: body.usersUsed, maxUsers: body.maxUsers };
+    return { ok: false, reason: body?.reason || "unknown_error", usersUsed: body?.usersUsed, maxUsers: body?.maxUsers };
+  } catch (err) {
+    return { ok: false, reason: "network_error", message: err.message };
+  }
+}
+
+export async function removeLicenseUser({ licenseKey, userId, licenseServerUrl }) {
+  try {
+    const { status, body } = await fetchJson(`${licenseServerUrl}/api/users/remove`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ licenseKey, userId }),
+    });
+    return status === 200 ? { ok: true, ...body } : { ok: false, reason: body?.reason || "unknown_error" };
+  } catch (err) {
+    return { ok: false, reason: "network_error", message: err.message };
+  }
+}
+
 let cachedPublicKeyPem = null;
 async function getPublicKeyPem(licenseServerUrl) {
   if (cachedPublicKeyPem) return cachedPublicKeyPem;

@@ -12,6 +12,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
+import { TIER_LIMITS, resolveTierLimits } from "./tierLimits.js";
 
 const DATA_DIR = process.env.OLI_LICENSE_DATA_DIR || path.join(process.cwd(), "data");
 const DB_FILE = path.join(DATA_DIR, "licenses.json");
@@ -43,20 +44,39 @@ function writeDb(db) {
   return writeQueue;
 }
 
-export async function createLicense({ key, product, email, maxDevices, note }) {
+/**
+ * FIX: tier-based real enforcement. Every one of the 4 self-hosted products
+ * (OliOps/OliCommerce/OliFlow/OliExplore) sells 3 priced tiers (e.g.
+ * Starter/Pro/Agency) but, before this change, every license everywhere
+ * used the exact same DEFAULT_MAX_DEVICES regardless of what a customer
+ * paid — there was no `tier` concept on a license at all, so "Pro" and
+ * "Agency" were pure marketing text with nothing enforced server-side.
+ *
+ * `tier` is now a REQUIRED field on every license, and `maxDevices` /
+ * `maxUsers` are looked up from TIER_LIMITS (tierLimits.js) for that
+ * product+tier — an explicit `maxDevices`/`maxUsers` override is still
+ * accepted (e.g. for a hand-negotiated enterprise deal) but the normal
+ * path is "buy Pro, get Pro's real limits," not "buy Pro, get whatever
+ * the global default happens to be today."
+ */
+export async function createLicense({ key, product, tier, email, maxDevices, maxUsers, note }) {
   const db = readDb();
   if (db.licenses[key]) {
     throw new Error(`License key ${key} already exists`);
   }
+  const limits = resolveTierLimits(product, tier);
   db.licenses[key] = {
     key,
-    product, // "OPS" | "COM" | "FLW" | "CNT" | "ALL"
+    product, // "OPS" | "COM" | "FLW" | "EXP" | "ALL"
+    tier: limits.tier, // e.g. "starter" | "pro" | "agency" — drives the real limits below
     email: email || null,
     note: note || null,
-    maxDevices,
+    maxDevices: Number(maxDevices) > 0 ? Number(maxDevices) : limits.maxDevices,
+    maxUsers: Number(maxUsers) > 0 ? Number(maxUsers) : limits.maxUsers,
     createdAt: new Date().toISOString(),
     revoked: false,
     devices: {}, // deviceId -> { activatedAt, lastSeenAt }
+    users: {}, // userId -> { email, role, addedAt } — staff/team seats under this license (see maxUsers)
   };
   await writeDb(db);
   return db.licenses[key];
@@ -113,6 +133,50 @@ export async function deactivateDevice({ key, deviceId }) {
   const lic = db.licenses[key];
   if (!lic) return { ok: false, reason: "not_found" };
   delete lic.devices[deviceId];
+  await writeDb(db);
+  return { ok: true, license: lic };
+}
+
+/**
+ * Adds a staff/team seat (OliOps/OliFlow), a connected store (OliCommerce),
+ * or a connected social account (OliExplore) under a license — the exact
+ * meaning of "user" is product-specific (see tierLimits.js's per-product
+ * comments) but the enforcement mechanism is identical everywhere: count
+ * how many distinct userId values are already registered, and refuse a
+ * NEW one once `maxUsers` is reached. Re-adding an already-registered
+ * userId is always allowed (e.g. the product re-syncing on startup),
+ * exactly mirroring activateDevice()'s existing behavior for devices.
+ * Returns { ok: true, license } or { ok: false, reason }.
+ * reason is one of: "not_found" | "revoked" | "user_limit_reached"
+ */
+export async function addUser({ key, userId, email, role }) {
+  const db = readDb();
+  const lic = db.licenses[key];
+  if (!lic) return { ok: false, reason: "not_found" };
+  if (lic.revoked) return { ok: false, reason: "revoked" };
+  if (!lic.users) lic.users = {}; // back-compat for licenses created before this field existed
+
+  const alreadyRegistered = Object.prototype.hasOwnProperty.call(lic.users, userId);
+  const distinctUserCount = Object.keys(lic.users).length;
+
+  if (!alreadyRegistered && distinctUserCount >= lic.maxUsers) {
+    return { ok: false, reason: "user_limit_reached", license: lic };
+  }
+
+  lic.users[userId] = {
+    email: email || lic.users[userId]?.email || null,
+    role: role || lic.users[userId]?.role || "member",
+    addedAt: lic.users[userId]?.addedAt || new Date().toISOString(),
+  };
+  await writeDb(db);
+  return { ok: true, license: lic };
+}
+
+export async function removeUser({ key, userId }) {
+  const db = readDb();
+  const lic = db.licenses[key];
+  if (!lic) return { ok: false, reason: "not_found" };
+  if (lic.users) delete lic.users[userId];
   await writeDb(db);
   return { ok: true, license: lic };
 }

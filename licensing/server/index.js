@@ -14,13 +14,23 @@ import {
   revokeLicense,
   activateDevice,
   deactivateDevice,
+  addUser,
+  removeUser,
 } from "./store.js";
 import { getPublicKeyPem, signToken } from "./keys.js";
 import { generateSerialCode, isWellFormedSerialCode, productCodeFromSerialCode, PRODUCT_CODES } from "./licenseKey.js";
 import { requireAdmin } from "./adminAuth.js";
+import { tierKeysFor } from "./tierLimits.js";
 
 const PORT = Number(process.env.PORT) || 4100;
-const DEFAULT_MAX_DEVICES = Number(process.env.OLI_LICENSE_DEFAULT_MAX_DEVICES) || 5;
+// FIX: DEFAULT_MAX_DEVICES used to be the SAME number for every tier of
+// every product — Starter, Pro, and Agency all got whatever this one
+// global env var said (default 5), which is exactly the "tiers are pure
+// marketing text" problem this file now fixes. createLicense() now looks
+// up real, product+tier-specific limits from tierLimits.js instead; this
+// constant is kept only as the last-resort fallback inside
+// resolveTierLimits() when an unrecognized tier is passed (see that
+// file), never as the normal path.
 // NOTE: admin authentication (requireAdmin, imported above) now verifies
 // against the shared admin-auth service (../admin-auth) by default instead
 // of a static ADMIN_TOKEN shared secret. See adminAuth.js and
@@ -78,8 +88,11 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { publicKeyPem: getPublicKeyPem() });
     }
 
-    // POST /api/licenses  { product, email?, maxDevices?, note? }  [admin]
-    // -> { key, product, maxDevices }
+    // POST /api/licenses  { product, tier, email?, maxDevices?, maxUsers?, note? }  [admin]
+    // -> full license record, with maxDevices/maxUsers now REAL per-tier
+    // numbers (see tierLimits.js) rather than one global default for
+    // every tier. `tier` is required — this is the fix for tiers being
+    // pure marketing text with nothing enforced server-side.
     if (req.method === "POST" && url.pathname === "/api/licenses") {
       if (!(await requireAdmin(req))) return send(res, 401, { error: "unauthorized" });
       const body = await readJsonBody(req);
@@ -87,7 +100,13 @@ const server = createServer(async (req, res) => {
       if (!PRODUCT_CODES.includes(product)) {
         return send(res, 400, { error: `product must be one of: ${PRODUCT_CODES.join(", ")}` });
       }
-      const maxDevices = Number(body.maxDevices) > 0 ? Number(body.maxDevices) : DEFAULT_MAX_DEVICES;
+      if (product !== "ALL") {
+        const validTiers = tierKeysFor(product);
+        const tier = String(body.tier || "").toLowerCase();
+        if (!validTiers.includes(tier)) {
+          return send(res, 400, { error: `tier is required for ${product} and must be one of: ${validTiers.join(", ")}` });
+        }
+      }
       let key;
       // Regenerate on the (astronomically unlikely) chance of a collision.
       for (let attempt = 0; attempt < 5; attempt++) {
@@ -98,7 +117,15 @@ const server = createServer(async (req, res) => {
         }
       }
       if (!key) return send(res, 500, { error: "failed to generate a unique license key, try again" });
-      const license = await createLicense({ key, product, email: body.email, maxDevices, note: body.note });
+      const license = await createLicense({
+        key,
+        product,
+        tier: body.tier,
+        email: body.email,
+        maxDevices: body.maxDevices,
+        maxUsers: body.maxUsers,
+        note: body.note,
+      });
       return send(res, 201, license);
     }
 
@@ -157,18 +184,29 @@ const server = createServer(async (req, res) => {
         });
       }
 
+      // FIX: the signed token now carries tier + maxUsers (not just
+      // maxDevices) so a product's OWN backend can enforce its
+      // real per-tier seat/store/account cap purely from the token it
+      // already has cached, without needing a live round-trip to this
+      // license server for every seat-add/store-connect/account-connect
+      // action. verifyTokenOffline() in the client already verifies the
+      // signature the same way it does today — this just adds fields.
       const token = signToken({
         licenseKey,
         deviceId,
         product: result.license.product,
+        tier: result.license.tier,
+        maxUsers: result.license.maxUsers,
         issuedAt: new Date().toISOString(),
       });
 
       return send(res, 200, {
         ok: true,
         token,
+        tier: result.license.tier,
         devicesUsed: Object.keys(result.license.devices).length,
         maxDevices: result.license.maxDevices,
+        maxUsers: result.license.maxUsers,
       });
     }
 
@@ -185,6 +223,49 @@ const server = createServer(async (req, res) => {
         ok: true,
         devicesUsed: Object.keys(result.license.devices).length,
         maxDevices: result.license.maxDevices,
+      });
+    }
+
+    // POST /api/users/add  { licenseKey, userId, email?, role? }  [public —
+    // same "anyone holding the serial code" model as /api/activate; the
+    // PRODUCT's own login/admin screen is what actually decides who's
+    // allowed to invite a teammate, this just enforces the seat COUNT]
+    // -> { ok, usersUsed?, maxUsers?, reason? }
+    if (req.method === "POST" && url.pathname === "/api/users/add") {
+      const body = await readJsonBody(req);
+      const licenseKey = String(body.licenseKey || "").trim().toUpperCase();
+      const userId = String(body.userId || "").trim();
+      if (!isWellFormedSerialCode(licenseKey)) return send(res, 400, { ok: false, reason: "invalid_format" });
+      if (!userId) return send(res, 400, { ok: false, reason: "invalid_user_id" });
+
+      const result = await addUser({ key: licenseKey, userId, email: body.email, role: body.role });
+      if (!result.ok) {
+        const status = result.reason === "not_found" ? 404 : result.reason === "revoked" ? 403 : 409;
+        return send(res, status, {
+          ok: false,
+          reason: result.reason,
+          usersUsed: result.license ? Object.keys(result.license.users || {}).length : undefined,
+          maxUsers: result.license ? result.license.maxUsers : undefined,
+        });
+      }
+      return send(res, 200, {
+        ok: true,
+        usersUsed: Object.keys(result.license.users).length,
+        maxUsers: result.license.maxUsers,
+      });
+    }
+
+    // POST /api/users/remove  { licenseKey, userId }  [public]
+    if (req.method === "POST" && url.pathname === "/api/users/remove") {
+      const body = await readJsonBody(req);
+      const licenseKey = String(body.licenseKey || "").trim().toUpperCase();
+      const userId = String(body.userId || "").trim();
+      const result = await removeUser({ key: licenseKey, userId });
+      if (!result.ok) return send(res, 404, { ok: false, reason: result.reason });
+      return send(res, 200, {
+        ok: true,
+        usersUsed: Object.keys(result.license.users || {}).length,
+        maxUsers: result.license.maxUsers,
       });
     }
 
