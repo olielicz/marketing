@@ -159,7 +159,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="line"><span id="sumPlan">Solo</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
       <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$35/mo</span></div>
-      <ul class="included">
+      <ul class="included" id="planFeatureList">
       <li>All 48 node types</li>
       <li>Unlimited workflow runs</li>
       <li>Visual drag & drop builder</li>
@@ -167,6 +167,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <li>AI/GPT-4 nodes built-in</li>
       <li>CRM pipeline automation</li>
       <li>Execution logs & analytics</li>
+      <li id="planSeatCount">1 user (just you)</li>
       </ul>
     </div>
 
@@ -241,7 +242,13 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
 // exactly) so the correct-amount fix below can tell the SDKs exactly
 // which tier x billing-period the customer has selected.
 const TOOL_KEY = 'oliflow';
-const PLANS = [{"key":"solo","name":"Solo","mo":"35","yr":"312","yr_mo":"26"},{"key":"pro","name":"Pro","mo":"59","yr":"528","yr_mo":"44"},{"key":"business","name":"Business","mo":"99","yr":"888","yr_mo":"74"}];
+// FIX: added a real `seats` field per tier (matches the actual,
+// license-server-enforced maxUsers in ../../licensing/server/
+// tierLimits.js's FLW block, and project-3/src/routes/team.js's real
+// seat cap - see that repo's README "Real multi-user/team support"
+// section) so this page's feature list states the genuine number
+// instead of previously omitting team size from this page entirely.
+const PLANS = [{"key":"solo","name":"Solo","mo":"35","yr":"312","yr_mo":"26","seats":1},{"key":"pro","name":"Pro","mo":"59","yr":"528","yr_mo":"44","seats":5},{"key":"business","name":"Business","mo":"99","yr":"888","yr_mo":"74","seats":25}];
 let selectedPlan = 0;
 let isYearly = false;
 
@@ -275,6 +282,11 @@ function updateSummary() {
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
+  // FIX: seat count now reflects the real, per-tier, license-enforced
+  // number (see the PLANS array's `seats` field above) instead of the
+  // feature list never mentioning team size at all.
+  document.getElementById('planSeatCount').textContent =
+    plan.seats === 1 ? '1 user (just you)' : `Up to ${plan.seats} team members`;
 
   // FIX: see oliops/buy/index.html's comment on this same fix - this is
   // what makes the Paddle/PayPal buttons actually charge whichever

@@ -133,7 +133,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="plan-price-monthly">$29<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$264<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-0">$<span class="pm">29</span>/month · <span class="py" style="display:none">$264/yr = $<span>22</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For single Shopify stores</div>
+      <div class="plan-desc">1 connected Shopify store</div>
     </div>
     <div class="plan-card " data-idx="1" onclick="selectPlan(1)">
 
@@ -142,7 +142,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="plan-price-monthly">$49<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$444<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-1">$<span class="pm">49</span>/month · <span class="py" style="display:none">$444/yr = $<span>37</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For stores with higher cart volume</div>
+      <div class="plan-desc">Up to 3 connected stores</div>
     </div>
     <div class="plan-card " data-idx="2" onclick="selectPlan(2)">
 
@@ -150,7 +150,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="plan-price-monthly">$89<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$804<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-2">$<span class="pm">89</span>/month · <span class="py" style="display:none">$804/yr = $<span>67</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For multi-store operations and agencies</div>
+      <div class="plan-desc">Up to 10 connected stores — multi-store &amp; agencies</div>
     </div>
   </div>
 
@@ -172,6 +172,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <li>Supplier CSV forwarding on paid orders</li>
       <li>AI Support Assistant (for you, the merchant)</li>
       <li>Shopify webhook integration</li>
+      <li id="planStoreCount">1 connected store</li>
       <li>All future updates included</li>
       <li>Priority email support</li>
       </ul>
@@ -248,7 +249,13 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
 // exactly) so the correct-amount fix below can tell the SDKs exactly
 // which tier x billing-period the customer has selected.
 const TOOL_KEY = 'olicommerce';
-const PLANS = [{"key":"basic","name":"Basic","mo":"29","yr":"264","yr_mo":"22"},{"key":"growth","name":"Growth","mo":"49","yr":"444","yr_mo":"37"},{"key":"scale","name":"Scale","mo":"89","yr":"804","yr_mo":"67"}];
+// FIX: added a real `stores` field per tier (matches the actual,
+// license-server-enforced maxStores in olicommerce-backend's real
+// multi-store support - see ../../olicommerce-backend/server/store.js
+// and its README's "Real multi-store support" section) so this page's
+// feature list states the genuine connected-store count instead of
+// never mentioning it at all.
+const PLANS = [{"key":"basic","name":"Basic","mo":"29","yr":"264","yr_mo":"22","stores":1},{"key":"growth","name":"Growth","mo":"49","yr":"444","yr_mo":"37","stores":3},{"key":"scale","name":"Scale","mo":"89","yr":"804","yr_mo":"67","stores":10}];
 let selectedPlan = 0;
 let isYearly = false;
 
@@ -284,6 +291,11 @@ function updateSummary() {
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
+  // FIX: connected-store count now reflects the real, per-tier,
+  // license-enforced number (see the PLANS array's `stores` field
+  // above) instead of never being shown on this page at all.
+  document.getElementById('planStoreCount').textContent =
+    plan.stores === 1 ? '1 connected store' : `Up to ${plan.stores} connected stores`;
 
   // FIX: see oliops/buy/index.html's comment on this same fix - this is
   // what makes the Paddle/PayPal buttons actually charge whichever

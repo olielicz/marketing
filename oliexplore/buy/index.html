@@ -75,21 +75,21 @@
       <div class="plan-price-monthly">$27<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$252<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-0">$<span class="pm">27</span>/month · <span class="py" style="display:none">$252/yr = $<span>21</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">Solo creators &amp; single-brand accounts</div>
+      <div class="plan-desc">Up to 5 connected accounts</div>
     </div>
     <div class="plan-card" data-plan="1" onclick="selectPlan(1)">
       <div class="plan-name">Team</div>
       <div class="plan-price-monthly">$49<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$468<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-1">$<span class="pm">49</span>/month · <span class="py" style="display:none">$468/yr = $<span>39</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">Small teams managing a few client accounts</div>
+      <div class="plan-desc">Up to 15 connected accounts</div>
     </div>
     <div class="plan-card" data-plan="2" onclick="selectPlan(2)">
       <div class="plan-name">Agency</div>
       <div class="plan-price-monthly">$89<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$828<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-2">$<span class="pm">89</span>/month · <span class="py" style="display:none">$828/yr = $<span>69</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">Agencies managing many client accounts</div>
+      <div class="plan-desc">Up to 40 connected accounts</div>
     </div>
   </div>
 
@@ -98,6 +98,7 @@
     <div class="summary-row"><span>Billing</span><span id="sumBilling">$27/mo</span></div>
     <div class="summary-row"><span>Cycle</span><span id="sumCycle">Monthly (billed every month)</span></div>
     <div class="summary-total"><span id="sumLabel">Due today (14-day free trial)</span><span id="sumTotal">$0 today, then $27/mo</span></div>
+    <div class="summary-row"><span>Connected accounts</span><span id="sumAccounts">Up to 5</span></div>
 
     <div class="field-row">
       <label for="emailInput">Email address</label>
@@ -151,7 +152,12 @@
 // exactly) so the correct-amount fix below can tell the SDKs exactly
 // which tier x billing-period the customer has selected.
 const TOOL_KEY = 'oliexplore';
-const PLANS = [{"key":"creator","name":"Creator","mo":"27","yr":"252","yr_mo":"21"},{"key":"team","name":"Team","mo":"49","yr":"468","yr_mo":"39"},{"key":"agency","name":"Agency","mo":"89","yr":"828","yr_mo":"69"}];
+// FIX: added a real `accounts` field per tier (matches the actual,
+// license-server-enforced maxAccounts in oliexplore/js/services/
+// license.js and js/store.js's real connectAccount() cap - see that
+// repo's README "Real tier enforcement" section) so this page's summary
+// states the genuine connected-account count.
+const PLANS = [{"key":"creator","name":"Creator","mo":"27","yr":"252","yr_mo":"21","accounts":5},{"key":"team","name":"Team","mo":"49","yr":"468","yr_mo":"39","accounts":15},{"key":"agency","name":"Agency","mo":"89","yr":"828","yr_mo":"69","accounts":40}];
 let selectedPlan = 0;
 let isYearly = false;
 
@@ -188,6 +194,10 @@ function updateSummary() {
   document.getElementById('sumCycle').textContent = cycleLabel;
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (14-day free trial)';
+  // FIX: connected-account count now reflects the real, per-tier,
+  // license-enforced number (see the PLANS array's `accounts` field
+  // above) instead of never being shown in the checkout summary.
+  document.getElementById('sumAccounts').textContent = `Up to ${plan.accounts}`;
 
   // FIX: see oliops/buy/index.html's comment on this same fix - this is
   // what makes the Paddle/PayPal buttons actually charge whichever

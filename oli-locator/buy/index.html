@@ -135,7 +135,7 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="plan-price-monthly">$29<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$290<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-0">$<span class="pm">29</span>/month · <span class="py" style="display:none">$290/yr = $<span>24</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For solo trades testing the waters — 1 country</div>
+      <div class="plan-desc">For solo trades testing the waters — 1 country, 100 searches/mo</div>
     </div>
     <div class="plan-card selected" data-idx="1" onclick="selectPlan(1)">
       <div class="pop-tag">⭐ Most Popular</div>
@@ -143,14 +143,14 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="plan-price-monthly">$79<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$790<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-1">$<span class="pm">79</span>/month · <span class="py" style="display:none">$790/yr = $<span>66</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For busy contractors — all 3 countries, unlimited search</div>
+      <div class="plan-desc">For busy contractors — all 3 countries, unlimited search, 1 seat</div>
     </div>
     <div class="plan-card " data-idx="2" onclick="selectPlan(2)">
       <div class="plan-name">Agency</div>
       <div class="plan-price-monthly">$199<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="plan-price-yearly" style="display:none">$1990<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
       <div class="plan-period" id="period-2">$<span class="pm">199</span>/month · <span class="py" style="display:none">$1990/yr = $<span>166</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For teams &amp; lead resellers — up to 10 seats + API</div>
+      <div class="plan-desc">For teams &amp; lead resellers — all 3 countries, up to 10 seats + real API key</div>
     </div>
   </div>
 
@@ -160,13 +160,17 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
       <div class="line"><span id="sumPlan">Pro</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
       <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$79/mo</span></div>
-      <ul class="included">
-      <li>Lead generation across 11 trades — USA, UK &amp; Australia</li>
+      <ul class="included" id="planFeatureList">
+      <li>Lead generation across 11 trades</li>
       <li>Opt-in "Request a Quote" Inbox + saved searches</li>
       <li>Call center — use your own phone app</li>
       <li>Unlimited devices (login-based)</li>
       <li>Cancel anytime, no contract</li>
       <li>Priority support</li>
+      <li id="planCountryCount">All 3 countries — USA, UK &amp; Australia</li>
+      <li id="planQuotaCount">Unlimited lead searches</li>
+      <li id="planSeatCount">1 seat (just you)</li>
+      <li id="planApiKeyLine" style="display:none">Real API key + integrations</li>
       </ul>
     </div>
 
@@ -245,7 +249,16 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
 // Agent"/"Team" real-estate-framed tiers no longer correspond to
 // anything the real app offers.
 const TOOL_KEY = 'oli-locator';
-const PLANS = [{"key":"starter","name":"Starter","mo":"29","yr":"290","yr_mo":"24"},{"key":"pro","name":"Pro","mo":"79","yr":"790","yr_mo":"66"},{"key":"agency","name":"Agency","mo":"199","yr":"1990","yr_mo":"166"}];
+// FIX: added real `countries`/`quota`/`seats`/`apiKey` fields per tier
+// (matches the actual, server-enforced limits in lead-gen's
+// lib/tierLimits.js - see that repo's README "Real per-tier
+// enforcement" section) so this page's feature list states the genuine
+// numbers instead of a single static list shown for every tier.
+const PLANS = [
+  {"key":"starter","name":"Starter","mo":"29","yr":"290","yr_mo":"24","countries":1,"quota":100,"seats":1,"apiKey":false},
+  {"key":"pro","name":"Pro","mo":"79","yr":"790","yr_mo":"66","countries":3,"quota":null,"seats":1,"apiKey":false},
+  {"key":"agency","name":"Agency","mo":"199","yr":"1990","yr_mo":"166","countries":3,"quota":null,"seats":10,"apiKey":true}
+];
 let selectedPlan = 1;
 let isYearly = false;
 
@@ -279,6 +292,18 @@ function updateSummary() {
   document.getElementById('sumTotal').textContent = `$0 today, then $${price}${period}`;
   document.getElementById('sumLabel').textContent = 'Due today (7-day free trial)';
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
+
+  // FIX: feature list now reflects the real, per-tier, server-enforced
+  // numbers (see the PLANS array's countries/quota/seats/apiKey fields
+  // above) instead of a single static list shown for every tier
+  // regardless of which one is actually selected.
+  document.getElementById('planCountryCount').textContent =
+    plan.countries === 1 ? '1 country (your first search locks it in)' : 'All 3 countries — USA, UK & Australia';
+  document.getElementById('planQuotaCount').textContent =
+    plan.quota == null ? 'Unlimited lead searches' : `Up to ${plan.quota} lead searches / month`;
+  document.getElementById('planSeatCount').textContent =
+    plan.seats === 1 ? '1 seat (just you)' : `Up to ${plan.seats} team seats`;
+  document.getElementById('planApiKeyLine').style.display = plan.apiKey ? '' : 'none';
 
   // FIX: see oliops/buy/index.html's comment on this same fix - this is
   // what makes the Paddle/PayPal buttons actually charge whichever
