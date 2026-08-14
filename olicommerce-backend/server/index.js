@@ -38,6 +38,7 @@ import {
   listCarts, getCart, upsertCart, markCartStatus, recordRecoveryEmailSent, deleteCart,
   listSupportTickets, getSupportTicket, createSupportTicket, updateSupportTicketStatus, deleteSupportTicket,
   listProducts, getProduct, createProduct, updateProduct, deleteProduct,
+  getLicense, setLicense, listStores, getStore, getStoreByWebhookSecret, createStore, deleteStore,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { generateRecoveryEmail } from "./recoveryEmail.js";
@@ -61,8 +62,55 @@ const STORE_NAME = process.env.OLICOMMERCE_STORE_NAME || "your store";
 // PHP, CAD, JPY, ...) and every price the storefront assistant quotes,
 // plus recoveryEmail.js's cart-abandonment emails below, switches to it.
 const STORE_CURRENCY = process.env.OLICOMMERCE_STORE_CURRENCY || "USD";
+// FIX: OLICOMMERCE_WEBHOOK_SECRET (one global secret for the whole
+// deployment) is now the LEGACY/back-compat path for a single-store
+// install created before multi-store support existed. Every NEW store
+// created via POST /api/stores gets its own real, distinct webhook
+// secret (see store.js's createStore()) — see
+// resolveStoreFromWebhookSecret() below for how an incoming webhook is
+// matched to the right store.
 const WEBHOOK_SHARED_SECRET = process.env.OLICOMMERCE_WEBHOOK_SECRET || "";
 const SUPPLIER_EMAIL = process.env.OLICOMMERCE_SUPPLIER_EMAIL || "";
+const LICENSE_SERVER_URL = process.env.OLI_LICENSE_SERVER_URL || "";
+
+async function verifyLicenseWithServer(licenseKey, deviceId) {
+  if (!LICENSE_SERVER_URL) {
+    throw new Error("OLI_LICENSE_SERVER_URL is not configured on this deployment — real store limits cannot be verified. Set it to your licensing service's URL.");
+  }
+  const res = await fetch(`${LICENSE_SERVER_URL}/api/activate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ licenseKey, deviceId, product: "COM" }),
+  });
+  const body = await res.json().catch(() => null);
+  return { ok: res.ok && body?.ok, body };
+}
+
+/**
+ * Given an incoming webhook's provided secret, figures out WHICH connected
+ * store this webhook belongs to. Real per-store secrets take priority;
+ * falls back to the legacy global WEBHOOK_SHARED_SECRET (treated as
+ * storeId: null, i.e. "the original, pre-multi-store deployment") so an
+ * existing single-store integration isn't broken by this change.
+ *
+ * If NO stores have been created yet AND no legacy WEBHOOK_SHARED_SECRET
+ * is configured, this preserves the original, pre-multi-store behavior:
+ * the webhook is unsecured (any secret, including none, is accepted, and
+ * every cart lands with storeId: null) — this is the same "secure once
+ * you configure a secret, open by default for easy local getting-started"
+ * behavior this endpoint always had, just now expressed through the
+ * store-resolution path instead of a single global check.
+ */
+async function resolveStoreFromWebhookSecret(providedSecret) {
+  const store = providedSecret ? await getStoreByWebhookSecret(providedSecret) : null;
+  if (store) return { ok: true, storeId: store.id };
+  if (WEBHOOK_SHARED_SECRET) {
+    return providedSecret === WEBHOOK_SHARED_SECRET ? { ok: true, storeId: null } : { ok: false };
+  }
+  const anyStoresExist = (await listStores()).length > 0;
+  if (!anyStoresExist) return { ok: true, storeId: null }; // no secret configured anywhere yet — open, matches pre-multi-store default
+  return { ok: false }; // stores DO exist with their own secrets, but the provided one didn't match any of them
+}
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -203,13 +251,17 @@ const server = createServer(async (req, res) => {
     // human — matches how Shopify/Stripe/PayPal webhooks are typically
     // verified elsewhere in this repo (see ../olisalestrack-sync).
     if (req.method === "POST" && url.pathname === "/api/webhooks/cart-abandoned") {
-      if (WEBHOOK_SHARED_SECRET) {
-        const providedSecret = req.headers["x-webhook-secret"] || url.searchParams.get("secret") || "";
-        if (providedSecret !== WEBHOOK_SHARED_SECRET) return send(res, 401, { error: "invalid_secret" });
-      }
+      // FIX: was a single global secret check with no notion of WHICH
+      // connected store the webhook came from — every cart from every
+      // store landed in one undifferentiated pile. Now resolves the
+      // real store via its own per-store secret (see createStore()),
+      // and stamps the resulting cart with that store's id.
+      const providedSecret = req.headers["x-webhook-secret"] || url.searchParams.get("secret") || "";
+      const resolved = await resolveStoreFromWebhookSecret(providedSecret);
+      if (!resolved.ok) return send(res, 401, { error: "invalid_secret" });
       const body = await readJsonBody(req);
       if (!body.externalId) return send(res, 400, { error: "externalId is required (your platform's own cart/checkout id, used to de-duplicate repeated webhook fires)" });
-      const { cart, isNew } = await upsertCart(body);
+      const { cart, isNew } = await upsertCart({ ...body, storeId: resolved.storeId });
       return send(res, isNew ? 201 : 200, { ok: true, cart, isNew });
     }
 
@@ -403,11 +455,71 @@ const server = createServer(async (req, res) => {
     const auth = await requireAuth(req);
     if (!auth) return send(res, 401, { error: "unauthorized" });
 
+    /* --------------------- Stores (real multi-store enforcement) --------------------- */
+    // This is the actual mechanism behind Scale tier's "multi-store
+    // operations" claim: how many stores an owner can connect is capped
+    // by their REAL license's maxStores (looked up from the shared
+    // licensing service — see ../../licensing/server/tierLimits.js's COM
+    // entry — never a number the client can claim on its own).
+
+    if (req.method === "GET" && url.pathname === "/api/license") {
+      return send(res, 200, { license: await getLicense(), storeCount: (await listStores()).length });
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/license/activate") {
+      const body = await readJsonBody(req);
+      const licenseKey = String(body.licenseKey || "").trim();
+      if (!licenseKey) return send(res, 400, { error: "licenseKey is required" });
+      let verify;
+      try {
+        verify = await verifyLicenseWithServer(licenseKey, "olicommerce-instance");
+      } catch (err) {
+        return send(res, 500, { error: err.message });
+      }
+      if (!verify.ok) return send(res, 400, { error: `License could not be activated: ${verify.body?.reason || "unknown error"}` });
+      // NOTE: OliCommerce repurposes the license's `maxUsers` field as
+      // "max connected stores" (see tierLimits.js's COM comment) — same
+      // field, product-specific meaning, exactly like OliExplore does
+      // for "max connected social accounts."
+      const license = await setLicense({ licenseKey, tier: verify.body.tier, maxStores: verify.body.maxUsers });
+      return send(res, 200, { ok: true, license });
+    }
+
+    if (req.method === "GET" && url.pathname === "/api/stores") {
+      return send(res, 200, { stores: await listStores() });
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/stores") {
+      const license = await getLicense();
+      const maxStores = license ? license.maxStores : 1; // unlicensed default: 1 store, matching the entry-level Basic tier
+      const currentStores = await listStores();
+      if (currentStores.length >= maxStores) {
+        return send(res, 403, {
+          error: `Your ${license?.tier || "current"} plan allows up to ${maxStores} connected store${maxStores === 1 ? "" : "s"}, and you're already using all of them. Upgrade your plan or disconnect a store to connect a new one.`,
+          maxStores,
+          currentStores: currentStores.length,
+        });
+      }
+      const body = await readJsonBody(req);
+      const store = await createStore({ name: body.name, currency: body.currency });
+      return send(res, 201, {
+        store,
+        setupInstructions: `Point this store's Shopify/WooCommerce abandoned-checkout webhook at this server's /api/webhooks/cart-abandoned with header X-Webhook-Secret: ${store.webhookSecret} (or ?secret=${store.webhookSecret} as a query param).`,
+      });
+    }
+
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/stores/")) {
+      const id = url.pathname.split("/")[3];
+      const deleted = await deleteStore(id);
+      return send(res, deleted ? 200 : 404, { ok: deleted });
+    }
+
     /* -------------------------------- Carts -------------------------------- */
 
     if (req.method === "GET" && url.pathname === "/api/carts") {
       const status = url.searchParams.get("status") || undefined;
-      return send(res, 200, { carts: await listCarts({ status }) });
+      const storeId = url.searchParams.get("storeId") || undefined;
+      return send(res, 200, { carts: await listCarts({ status, storeId }) });
     }
     if (req.method === "DELETE" && url.pathname.startsWith("/api/carts/")) {
       const id = url.pathname.split("/")[3];

@@ -380,6 +380,10 @@
       <p style="margin:0; color:var(--sub); font-size:15px;">Your purchase includes one serial code, activatable on up to 5 devices at a time — plenty for a store owner plus a couple of staff machines. Deactivate an old device anytime to free a slot for a new one. To be upfront: this count is enforced by a separate, real licensing service that ships alongside OliCommerce; if you self-host the core app without also running that licensing service, the 5-device number is a fair-use policy we're asking you to honor rather than a technical wall.</p>
     </div>
     <div class="faq-item" style="border-bottom:1px solid var(--line); padding:20px 0;">
+      <h4 style="margin:0 0 8px; font-size:16px;">How many stores can I connect?</h4>
+      <p style="margin:0; color:var(--sub); font-size:15px;">Real, per-tier limits, each with its own webhook secret and fully isolated data: <strong>Basic includes 1 connected store, Growth includes up to 3, and Scale includes up to 10</strong> — this is genuinely enforced server-side (a real <code>POST /api/stores</code> call is refused with a 403 once you're at your plan's cap, not just a marketing number). See the <a href="./buy/">pricing page</a> for the full tier breakdown.</p>
+    </div>
+    <div class="faq-item" style="border-bottom:1px solid var(--line); padding:20px 0;">
       <h4 style="margin:0 0 8px; font-size:16px;">Is this a subscription or a one-time payment?</h4>
       <p style="margin:0; color:var(--sub); font-size:15px;">It's a subscription — from $29/month (or $264/year), including every future update. First 14 days are free, and you can cancel anytime with no penalty.</p>
     </div>

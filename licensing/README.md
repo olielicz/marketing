@@ -99,14 +99,44 @@ the HTTP API — without it, anyone could mint their own valid serial codes.
 ## Generating a serial code for a customer
 
 ```bash
-node scripts/generate-license.js --product oliops --email customer@example.com --max-devices 5
-# → OLI-OPS-7F3K-9QZX-M
+node scripts/generate-license.js --product oliops --tier pro --email customer@example.com
+# → OLI-OPS-7F3K-9QZX-M   (tier: pro, maxDevices: 5, maxUsers: 5)
 ```
 
-Product codes: `oliops`, `olicommerce`, `oliflow`, `oliexplore`. Omit `--max-devices` to use the default (5).
+Product codes: `oliops`, `olicommerce`, `oliflow`, `oliexplore`. **`--tier` is required** for all 4 (see
+`server/tierLimits.js` for the exact, real limits each tier gets — device-activation cap AND a
+`maxUsers` cap, whose exact meaning is product-specific: staff seats for OliOps/OliFlow, connected stores
+for OliCommerce, connected social accounts for OliExplore):
+
+| Product | Tiers |
+|---|---|
+| `oliops` | `starter` (3 devices, 1 user) · `pro` (5 devices, 5 users) · `agency` (10 devices, 20 users) |
+| `olicommerce` | `basic` (2 devices, 1 store) · `growth` (4 devices, 3 stores) · `scale` (10 devices, 10 stores) |
+| `oliflow` | `solo` (2 devices, 1 user) · `pro` (5 devices, 5 users) · `business` (15 devices, 25 users) |
+| `oliexplore` | `creator` (5 devices, 5 accounts) · `team` (5 devices, 15 accounts) · `agency` (5 devices, 40 accounts) |
+
+These numbers are the single source of truth in `server/tierLimits.js` and match the real prices already
+set up in PayPal/Paddle (see `PAYMENTS-SETUP.md`) — if a tier's price/name ever changes there, update
+`tierLimits.js` too. `--max-devices`/`--max-users` can still override the tier's default for a one-off
+hand-negotiated deal, but the normal path is "buy Pro, get Pro's real limits."
 
 Pass `--product all` to generate a single serial code that activates **any** of the 4 products — useful if
-you ever want to sell an "everything bundle."
+you ever want to sell an "everything bundle." `--tier` isn't required for `all` since it's not sold at a
+specific tiered price point.
+
+### Adding a staff seat / connected store / connected social account
+
+```bash
+curl -X POST https://your-license-server/api/users/add \
+  -H "Content-Type: application/json" \
+  -d '{"licenseKey":"OLI-OPS-7F3K-9QZX-M","userId":"jane@example.com","email":"jane@example.com","role":"member"}'
+```
+Refused with `{"ok":false,"reason":"user_limit_reached"}` once the license's real `maxUsers` cap (from its
+tier) is reached — this is the mechanism that makes "Agency: up to 20 team seats" (or "Scale: up to 10
+connected stores," or "Agency: up to 40 connected accounts") an actually-enforced claim instead of
+marketing text. See `client/oli-license-client.js`'s `addLicenseUser()`/`removeLicenseUser()` for the
+product-side helper functions, and each product's own README for exactly where this is wired into its
+"invite a teammate" / "connect a store" / "connect an account" flow.
 
 ---
 

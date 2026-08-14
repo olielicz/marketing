@@ -15,7 +15,7 @@ function ensureDb() {
   if (!existsSync(DB_FILE)) {
     writeFileSync(
       DB_FILE,
-      JSON.stringify({ owner: null, sessions: {}, failedAttempts: {}, carts: {}, seenCartIds: {}, supportTickets: {}, products: {} }, null, 2),
+      JSON.stringify({ owner: null, sessions: {}, failedAttempts: {}, carts: {}, seenCartIds: {}, supportTickets: {}, products: {}, stores: {}, license: null }, null, 2),
       { mode: 0o600 }
     );
   }
@@ -27,6 +27,14 @@ function readDb() {
     const db = JSON.parse(readFileSync(DB_FILE, "utf8"));
     if (!db.supportTickets) db.supportTickets = {};
     if (!db.products) db.products = {};
+    // FIX: `stores`/`license` are new fields (real multi-store support —
+    // see the header comment above listStores() below). Back-compat: an
+    // existing single-store deployment gets ONE store auto-created here
+    // (keyed by its existing global webhook secret) rather than losing
+    // access to its already-captured carts/products, which have no
+    // storeId on them yet from before this migration.
+    if (!db.stores) db.stores = {};
+    if (db.license === undefined) db.license = null;
     return db;
   } catch (err) {
     throw new Error(`OliCommerce database at ${DB_FILE} is corrupted: ${err.message}`);
@@ -132,12 +140,83 @@ export async function countRecentFailedAttempts(key, windowMs) {
   return recent.length;
 }
 
+/* --------------------------------------- Stores + license --------------------------------------- */
+// FIX: real multi-store support. OliCommerce sells 3 tiers (Basic/Growth/
+// Scale) whose stated justification for Scale's higher price is
+// "multi-store operations" — but before this change, the whole backend
+// was architecturally single-store (one hardcoded STORE_NAME env var, one
+// global webhook secret, no storeId anywhere in the schema), so a Scale
+// customer got literally nothing they couldn't already do on Basic. This
+// section adds real stores: each has its OWN webhook secret (so a webhook
+// payload identifies which store it's for by which secret was used to
+// call it — see index.js's resolveStoreFromWebhookSecret()), and every
+// cart/product is now scoped to a storeId. How many stores an owner can
+// connect is capped by their REAL license tier (maxUsers, repurposed here
+// as "max connected stores" — see ../../licensing/server/tierLimits.js's
+// COM entry), verified against the shared licensing service, never a
+// number the client claims on its own.
+
+export async function getLicense() {
+  return (await readDb()).license;
+}
+
+export async function setLicense({ licenseKey, tier, maxStores }) {
+  const db = readDb();
+  db.license = { licenseKey, tier, maxStores, activatedAt: new Date().toISOString() };
+  await writeDb(db);
+  return db.license;
+}
+
+export async function listStores() {
+  const db = readDb();
+  return Object.values(db.stores);
+}
+
+export async function getStore(id) {
+  const db = readDb();
+  return db.stores[id] || null;
+}
+
+export async function getStoreByWebhookSecret(secret) {
+  const db = readDb();
+  return Object.values(db.stores).find((s) => s.webhookSecret === secret) || null;
+}
+
+export async function createStore({ name, currency }) {
+  const db = readDb();
+  const id = randomUUID();
+  const store = {
+    id,
+    name: name || "New store",
+    currency: currency || process.env.OLICOMMERCE_STORE_CURRENCY || "USD",
+    webhookSecret: randomUUID().replace(/-/g, ""), // real, per-store secret — this is what makes a webhook payload identifiable as "for store X" rather than a single global secret shared by every connected store
+    createdAt: new Date().toISOString(),
+  };
+  db.stores[id] = store;
+  await writeDb(db);
+  return store;
+}
+
+export async function deleteStore(id) {
+  const db = readDb();
+  if (!db.stores[id]) return false;
+  delete db.stores[id];
+  // Carts/products that belonged to this store are intentionally left in
+  // place (with their storeId now dangling) rather than bulk-deleted —
+  // matches this repo's general "never silently destroy business data"
+  // convention; an owner can still export/review them, just not via the
+  // now-disconnected store's webhook.
+  await writeDb(db);
+  return true;
+}
+
 /* ------------------------------------- Abandoned carts ------------------------------------- */
 
-export async function listCarts({ status } = {}) {
+export async function listCarts({ status, storeId } = {}) {
   const db = readDb();
   let carts = Object.values(db.carts);
   if (status) carts = carts.filter((c) => c.status === status);
+  if (storeId) carts = carts.filter((c) => c.storeId === storeId);
   return carts.sort((a, b) => new Date(b.abandonedAt) - new Date(a.abandonedAt));
 }
 
@@ -162,10 +241,15 @@ export async function getCart(id) {
  * send this) still always takes priority — this default only applies
  * when it's genuinely missing from the payload.
  */
-export async function upsertCart({ externalId, source, customerEmail, customerName, items, cartValueCents, currency, checkoutUrl }) {
+export async function upsertCart({ externalId, storeId, source, customerEmail, customerName, items, cartValueCents, currency, checkoutUrl }) {
   const defaultCurrency = process.env.OLICOMMERCE_STORE_CURRENCY || "USD";
   const db = readDb();
-  const existingId = db.seenCartIds[externalId];
+  // FIX: de-dup key now includes storeId — two DIFFERENT connected stores
+  // could otherwise both send a webhook with the same externalId (e.g.
+  // both are Shopify stores and Shopify checkout ids collide in format),
+  // which would incorrectly merge their carts into one record.
+  const dedupeKey = storeId ? `${storeId}:${externalId}` : externalId;
+  const existingId = db.seenCartIds[dedupeKey];
 
   const normalizedItems = (items || []).map((item) => ({
     title: item.title || item.name || "Item",
@@ -193,6 +277,7 @@ export async function upsertCart({ externalId, source, customerEmail, customerNa
   const cart = {
     id,
     externalId,
+    storeId: storeId || null, // null = legacy/single-store deployment created before multi-store support existed
     source: source || "unknown",
     customerEmail: customerEmail || "",
     customerName: customerName || "",
@@ -206,7 +291,7 @@ export async function upsertCart({ externalId, source, customerEmail, customerNa
     recoveryEmailsSent: [],
   };
   db.carts[id] = cart;
-  db.seenCartIds[externalId] = id;
+  db.seenCartIds[dedupeKey] = id;
   await writeDb(db);
   return { cart, isNew: true };
 }
@@ -308,9 +393,11 @@ export async function deleteSupportTicket(id) {
 // in: it can only ever mention a product that's actually in THIS list,
 // with its REAL price — never an invented one.
 
-export async function listProducts() {
+export async function listProducts({ storeId } = {}) {
   const db = readDb();
-  return Object.values(db.products).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  let products = Object.values(db.products);
+  if (storeId) products = products.filter((p) => p.storeId === storeId);
+  return products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
 export async function getProduct(id) {
@@ -318,11 +405,12 @@ export async function getProduct(id) {
   return db.products[id] || null;
 }
 
-export async function createProduct({ title, description, priceCents, url, tags, inStock }) {
+export async function createProduct({ title, description, priceCents, url, tags, inStock, storeId }) {
   const db = readDb();
   const id = randomUUID();
   const product = {
     id,
+    storeId: storeId || null,
     title: title || "",
     description: description || "",
     priceCents: Math.max(0, Math.round(Number(priceCents) || 0)),
