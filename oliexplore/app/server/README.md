@@ -72,7 +72,7 @@ website call your worker — fine for a first test, but you should restrict
 it once things work:
 
 1. Edit `wrangler.toml`, set `ALLOWED_ORIGIN` to your GitHub Pages origin,
-   e.g. `https://olielicz.github.io` (no trailing slash or path).
+   e.g. `https://workitlikeapro.com` (no trailing slash or path).
 2. Redeploy: `npx wrangler deploy`.
 
 ## Local testing

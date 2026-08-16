@@ -2,7 +2,7 @@
 # Handles clean URLs and enforces HTTPS
 
 # Force HTTPS
-http://olielicz.github.io/marketing/* https://olielicz.github.io/marketing/:splat 301!
+http://workitlikeapro.com/* https://workitlikeapro.com/:splat 301!
 
 # Short tool redirects (if using a custom domain like olitools.com)
 # /oliops           /oliops/           301

@@ -4,7 +4,7 @@ A portfolio of **6 business tools** built by **WorkItLikeAPro**.
 Each tool solves one expensive business problem at a fraction of the cost.
 Each product is sold, hosted, and logged into **completely separately**.
 
-**Live site:** `https://olielicz.github.io/marketing/` (after merging PR #2 + enabling Pages)
+**Live site:** `https://workitlikeapro.com/` (custom domain via GitHub Pages or Cloudflare)
 **Contact:** YOUR_SUPPORT_GMAIL_ADDRESS
 
 ---

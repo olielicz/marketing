@@ -21,7 +21,7 @@ Comparison of free and cheap hosting options with step-by-step setup for each.
 ## OPTION 1 — GitHub Pages (Already Set Up ✅)
 
 **Cost:** Free forever
-**URL:** `https://olielicz.github.io/marketing/`
+**URL:** `https://workitlikeapro.com/`
 **Custom domain:** Free (e.g. `olitools.com` — ~$12/yr domain only)
 
 ### Current status
@@ -37,7 +37,7 @@ You're already on GitHub Pages. Merge PR #2 to go live.
    A     @    185.199.109.153
    A     @    185.199.110.153
    A     @    185.199.111.153
-   CNAME www  olielicz.github.io
+   CNAME www  workitlikeapro.com
    ```
 5. Tick **"Enforce HTTPS"** in GitHub Pages settings
 6. Wait up to 24 hours for DNS propagation
