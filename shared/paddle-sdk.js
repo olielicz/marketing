@@ -43,10 +43,10 @@
   // client-side JS, but it only works against Paddle's Sandbox
   // environment (fake cards, no real charges) until you swap it and
   // PADDLE_ENVIRONMENT below for their Production/live equivalents.
-  var PADDLE_CLIENT_TOKEN = 'test_056b269ee889a1058fd9aea03f7';
+  var PADDLE_CLIENT_TOKEN = 'live_6a4cb1b8145d5f44128c3d9f2df';
 
   // ── Set to 'sandbox' while testing, 'production' once you go live ────
-  var PADDLE_ENVIRONMENT = 'sandbox';
+  var PADDLE_ENVIRONMENT = 'production';
 
   // ── REPLACE EACH WITH YOUR REAL PADDLE PRICE ID (starts with pri_) ───
   // Structure: PRICE_IDS[toolKey][tierKey][period] — every tier × billing

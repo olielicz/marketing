@@ -205,12 +205,16 @@
       return;
     }
 
-    // Build SDK URL. `enable-funding=applepay,googlepay` is required for
-    // the wallet buttons in renderWalletButtons() below to become
-    // eligible at all — without it, window.paypal.FUNDING.APPLEPAY /
-    // GOOGLEPAY buttons always report isEligible() === false regardless
-    // of the buyer's device/browser support.
-    var sdkSrc = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + '&currency=USD&enable-funding=applepay,googlepay';
+    // Build SDK URL. Note: enable-funding=applepay,googlepay was removed
+    // because requesting these funding sources in the SDK load itself
+    // causes the ENTIRE SDK to fail to load if the merchant account
+    // hasn't been onboarded for PayPal Expanded Checkout (which is
+    // required for Apple Pay/Google Pay via PayPal and isn't available
+    // for all countries, including the Philippines). The wallet buttons
+    // in renderWalletButtons() below will simply not render if the
+    // funding sources aren't available — they gracefully degrade via
+    // isEligible() checks without needing enable-funding in the URL.
+    var sdkSrc = 'https://www.paypal.com/sdk/js?client-id=' + PAYPAL_CLIENT_ID + '&currency=USD';
     if (product.recurring) {
       sdkSrc += '&vault=true&intent=subscription';
     }
