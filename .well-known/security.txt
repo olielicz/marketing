@@ -1,5 +1,5 @@
-Contact: https://olielicz.github.io/marketing/contact/
+Contact: https://workitlikeapro.com/contact/
 Preferred-Languages: en
-Canonical: https://olielicz.github.io/marketing/.well-known/security.txt
-Policy: https://olielicz.github.io/marketing/security/
+Canonical: https://workitlikeapro.com/.well-known/security.txt
+Policy: https://workitlikeapro.com/security/
 Expires: 2027-08-10T00:00:00.000Z

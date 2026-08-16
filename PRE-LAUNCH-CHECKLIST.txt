@@ -84,20 +84,13 @@ requests and confusion on day one if not fixed.
 STEP 3 — DECIDE YOUR DOMAIN (can be done in parallel with Steps 1-2)
 ================================================================================
 
-Right now your site only lives at: olielicz.github.io/marketing/
-That works and is free — you do NOT have to buy a domain to launch.
-
-If you want a real domain (recommended for trust/credibility, e.g.
-workitlikeapro.com):
-
-3a. Buy the domain (~$10-15/year, Namecheap or similar — this is the
-    only step in this entire checklist that isn't free)
-3b. Point it at GitHub Pages (instructions already in HOSTING-GUIDE.md)
-3c. Tell me once it's live — several files have hardcoded URLs pointing
-    to olielicz.github.io/marketing/ (redirect links, PayPal product
-    URLs, Stripe redirect URLs) that need updating to match your real
-    domain. I can find and update all of them once you confirm the
-    domain.
+DONE — real domain is live: workitlikeapro.com, deployed on a Contabo
+VPS (nginx + PM2 + real HTTPS via Let's Encrypt), not GitHub Pages.
+Every file that used to hardcode the old temporary GitHub Pages URL
+(canonical links, Open Graph/Twitter meta tags, JSON-LD structured
+data, sitemap.xml, robots.txt, contact/index.html's FormSubmit
+redirect, .well-known/security.txt) has been updated to point at
+https://workitlikeapro.com/ instead.
 
 ⏱️ Realistic time: 20 minutes to buy + up to 24 hours for DNS to propagate.
    You can launch without this and add it later — it is NOT a blocker.

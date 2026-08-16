@@ -15,4 +15,4 @@ Disallow: /*.yaml$
 Disallow: /nginx/
 Disallow: /ecosystem.config.cjs
 
-Sitemap: https://olielicz.github.io/marketing/sitemap.xml
+Sitemap: https://workitlikeapro.com/sitemap.xml
