@@ -29,10 +29,10 @@
   # - Allows scripts from same origin + specific trusted CDNs only
   # - Blocks inline script injection (XSS protection)
   # - Blocks loading resources from unknown origins
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.paypal.com https://www.paypalobjects.com https://sibforms.com https://formsubmit.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://sibforms.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.emailjs.com https://formsubmit.co https://www.paypal.com; frame-src https://www.paypal.com https://www.sandbox.paypal.com; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co https://1aab3e8b.sibforms.com;
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.paypal.com https://www.paypalobjects.com https://cdn.paddle.com https://sandbox-cdn.paddle.com https://sibforms.com https://formsubmit.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://sibforms.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.emailjs.com https://formsubmit.co https://www.paypal.com https://www.sandbox.paypal.com https://checkout.paddle.com https://sandbox-checkout.paddle.com; frame-src https://www.paypal.com https://www.sandbox.paypal.com https://checkout.paddle.com https://sandbox-checkout.paddle.com; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co https://1aab3e8b.sibforms.com;
 
   # Disable browser features we don't use
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self "https://www.paypal.com"), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self "https://www.paypal.com" "https://checkout.paddle.com"), usb=()
 
   # Prevent browsers from caching sensitive pages
   Cache-Control: public, max-age=3600
