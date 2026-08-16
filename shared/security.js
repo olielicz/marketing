@@ -119,24 +119,17 @@
   document.head.appendChild(style);
 
   /* ── 4. DevTools detection ──────────────────────────────────────────── */
+  /* FIX: DevTools detection via window size difference is unreliable —
+     browser extensions, sidebars, bookmarks bar, display scaling, and
+     even some OS configurations (e.g. Windows taskbar, macOS stage
+     manager) create false positives that punish legitimate users with
+     an intrusive overlay they didn't cause. Disabled entirely.
+     The console watermark (section 5) and keyboard shortcut blocking
+     (section 2) remain active as non-intrusive signals that the code
+     is proprietary. The overlay is kept but only triggered by explicit
+     keyboard shortcuts (F12, Ctrl+Shift+I/J/C) — never by a passive
+     size check running on a timer. */
   var devtoolsOpen = false;
-  var threshold    = 160; // px — height/width difference that suggests DevTools is open
-
-  function checkDevTools() {
-    var widthDiff  = window.outerWidth  - window.innerWidth;
-    var heightDiff = window.outerHeight - window.innerHeight;
-    var open = widthDiff > threshold || heightDiff > threshold;
-    if (open && !devtoolsOpen) {
-      devtoolsOpen = true;
-      showWarning();
-    } else if (!open && devtoolsOpen) {
-      devtoolsOpen = false;
-      removeWarning();
-    }
-  }
-
-  // Check periodically (non-blocking)
-  setInterval(checkDevTools, 1500);
 
   /* ── 5. Console copyright watermark ─────────────────────────────────── */
   setTimeout(function () {
