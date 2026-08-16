@@ -35,7 +35,7 @@
   .card.action { border-left: 4px solid var(--accent); }
 </style>
 
-<meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
+<meta name="copyright" content="© 2026 WorkItLikeAPro — All Rights Reserved"/>
 <meta name="author" content="WorkItLikeAPro"/>
 </head>
 <body>
@@ -53,7 +53,7 @@
 
 <section class="hero wrap">
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: July 2025 · Applies to OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliExplore, Oli-Locator, and OliSalesTrack (together, "Oli Tools," "we," "us")</p>
+  <p class="updated">Last updated: August 2026 · Applies to OliOps Suite, OliCommerce Stack, OliFlow Automation Engine, OliExplore, Oli-Locator, and OliSalesTrack (together, "Oli Tools," "we," "us")</p>
 
   <div class="toc">
     <strong>Jump to:</strong>
@@ -82,7 +82,7 @@
     <tr><td>OliExplore (self-hosted)</td><td>Account email/password (hashed); if you connect real social accounts, an OAuth access token per platform (never your password) used to collect/publish posts on your behalf</td><td><strong>You</strong> — stored on your own infrastructure; OliExplore never sees or stores your platform passwords</td></tr>
     <tr><td>Oli-Locator (hosted SaaS)</td><td>Account email/password (hashed), leads you enter, property search activity</td><td><strong>Us</strong> — stored on our hosting provider's infrastructure, since this is a hosted product</td></tr>
     <tr><td>Website / waitlist forms (this marketing site)</td><td>Email address if you join a waitlist; nothing if you just browse</td><td><strong>Us</strong> (via Brevo, our email provider) — see section 4</td></tr>
-    <tr><td>Purchases</td><td>Name, email, and payment details — handled entirely by Stripe/PayPal, not stored by us</td><td>Stripe/PayPal — see section 4</td></tr>
+    <tr><td>Purchases</td><td>Name, email, and payment details — handled entirely by Paddle, PayPal, or Stripe (when activated), not stored by us</td><td>Paddle/PayPal/Stripe — see section 4</td></tr>
     <tr><td>OliSalesTrack (browser-based)</td><td>Your sales, refund, and expense records — stored locally in your browser only</td><td><strong>You</strong> — nothing sent to our servers; all processing happens in your browser locally</td></tr>
   </table>
 </section>
@@ -109,7 +109,8 @@
   <table>
     <tr><th>Provider</th><th>What they see</th><th>Why</th></tr>
     <tr><td>Brevo (email)</td><td>Your email address, if you join a waitlist</td><td>Sending you the emails you signed up for</td></tr>
-    <tr><td>Stripe</td><td>Name, email, payment card details</td><td>Processing your purchase — we never see or store your full card number</td></tr>
+    <tr><td>Paddle (Merchant of Record)</td><td>Name, email, payment card details</td><td>Processing your purchase — Paddle acts as the Merchant of Record (legally sells on our behalf), handles international sales tax/VAT, and never shares your full card number with us</td></tr>
+    <tr><td>Stripe (when activated)</td><td>Name, email, payment card details</td><td>Processing your purchase — we never see or store your full card number</td></tr>
     <tr><td>PayPal</td><td>Name, email, PayPal account details</td><td>Processing your purchase</td></tr>
     <tr><td>Hosting provider (for Oli-Locator and any managed-hosting add-ons)</td><td>Whatever data your account holds</td><td>Running the servers the hosted product runs on</td></tr>
   </table>
@@ -148,7 +149,7 @@
 
 <section class="wrap" id="international">
   <h2>8. International data transfers</h2>
-  <p>If you're located outside the country where our hosting providers or payment processors operate, your data may be transferred internationally to process your request or payment. Stripe and PayPal are both certified under recognized international data transfer frameworks (e.g. EU-U.S. Data Privacy Framework where applicable) — see their respective privacy policies for specifics, as they are independent data controllers for payment processing.</p>
+  <p>If you're located outside the country where our hosting providers or payment processors operate, your data may be transferred internationally to process your request or payment. Paddle, Stripe, and PayPal are all certified under recognized international data transfer frameworks (e.g. EU-U.S. Data Privacy Framework where applicable) — see their respective privacy policies for specifics, as they are independent data controllers for payment processing. Paddle, as a Merchant of Record, is the legal seller in your transaction and has its own comprehensive privacy policy covering its role.</p>
 </section>
 
 <section class="wrap" id="children">
@@ -171,7 +172,7 @@
 </section>
 
 <footer class="oli-footer"><div class="wrap">
-  💎 Oli Tools · <a href="../security/">Security</a> · <a href="../terms/">Terms</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
+  💎 Oli Tools · <a href="../security/">Security</a> · <a href="../terms/">Terms</a> · <a href="../refund-policy/">Refund Policy</a> · <a href="../support/">Support</a> · <a href="../contact/">Contact</a> · <a href="../">All Tools</a>
 </div></footer>
 
 <script src="../shared/contact-email.js"></script>
