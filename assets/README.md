@@ -3,7 +3,7 @@
 Upload your product images here. Once pushed to GitHub and Pages is enabled,
 each image is accessible at:
 
-  https://olielicz.github.io/marketing/assets/<filename>
+  https://workitlikeapro.com/assets/<filename>
 
 ## Oli-Locator Product Image
 
@@ -14,7 +14,7 @@ oli-locator-product.png
 
 Then use this URL in the PayPal product form:
 ```
-https://olielicz.github.io/marketing/assets/oli-locator-product.png
+https://workitlikeapro.com/assets/oli-locator-product.png
 ```
 
 ## Recommended image specs (PayPal)

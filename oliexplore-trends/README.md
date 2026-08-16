@@ -70,7 +70,7 @@ Fill in `.env`:
 
 1. **`GIPHY_API_KEY`** — [developers.giphy.com](https://developers.giphy.com/) → Create Account → Create App → copy the API key. Beta keys are rate-limited to 100 calls/hour, which comfortably covers a 5-minute auto-refresh (12 calls/hour) with room for manual refreshes.
 2. **`YOUTUBE_API_KEY`** — [console.cloud.google.com](https://console.cloud.google.com/) → create/select a project → enable "YouTube Data API v3" → Credentials → Create API key.
-3. **`ALLOWED_ORIGIN`** — set to your real deployed domain once live (e.g. `https://olielicz.github.io`), not `*`, to avoid an open CORS policy.
+3. **`ALLOWED_ORIGIN`** — set to your real deployed domain once live (e.g. `https://workitlikeapro.com`), not `*`, to avoid an open CORS policy.
 
 Start it:
 

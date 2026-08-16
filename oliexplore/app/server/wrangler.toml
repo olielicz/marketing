@@ -7,7 +7,7 @@ main = "worker.js"
 compatibility_date = "2024-11-01"
 
 # Set this to your GitHub Pages origin once deployed, e.g.
-# "https://olielicz.github.io" (no trailing slash, no path).
+# "https://workitlikeapro.com" (no trailing slash, no path).
 # Using "*" works for testing but allows any site to call your proxy.
 [vars]
 ALLOWED_ORIGIN = "*"

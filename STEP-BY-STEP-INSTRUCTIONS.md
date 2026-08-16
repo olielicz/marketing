@@ -29,13 +29,13 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 3. Under **"Build and deployment" → "Source,"** select **GitHub Actions** (NOT "Deploy from a branch") — this option now appears since the repo is public
 4. Go to the **Actions** tab → you should see "Deploy landing pages to GitHub Pages" already available, or click **Run workflow** to trigger it manually
 5. Wait 1-2 minutes, then your pages will be live at clean URLs:
-   - `https://olielicz.github.io/marketing/` — the hub page linking to all 6
-   - `https://olielicz.github.io/marketing/oliops/`
-   - `https://olielicz.github.io/marketing/olicommerce/`
-   - `https://olielicz.github.io/marketing/oliflow/`
-   - `https://olielicz.github.io/marketing/oliexplore/`
-   - `https://olielicz.github.io/marketing/oli-locator/`
-   - `https://olielicz.github.io/marketing/olisalestrack/`
+   - `https://workitlikeapro.com/` — the hub page linking to all 6
+   - `https://workitlikeapro.com/oliops/`
+   - `https://workitlikeapro.com/olicommerce/`
+   - `https://workitlikeapro.com/oliflow/`
+   - `https://workitlikeapro.com/oliexplore/`
+   - `https://workitlikeapro.com/oli-locator/`
+   - `https://workitlikeapro.com/olisalestrack/`
 6. **Optional but recommended:** buy a cheap domain later ($10-15/yr from Namecheap/Porkbun) and point subdomains at each page (e.g., `oliops.yourdomain.com`) once you have traction — not required to launch.
 
 ### Option B: Vercel (works with a private repo, no visibility change needed)
@@ -107,7 +107,7 @@ A workflow file (`.github/workflows/deploy-pages.yml`) is already in this repo a
 **Goal:** track visitors and conversions on all 6 pages.
 
 1. Go to [plausible.io](https://plausible.io) (free 14-day trial, no credit card) OR [Google Analytics](https://analytics.google.com) (free forever, more setup)
-2. Create a new site/property for your domain (one property can track the hub + all 6 sub-pages if they're on the same domain, e.g. `olielicz.github.io`)
+2. Create a new site/property for your domain (one property can track the hub + all 6 sub-pages if they're on the same domain, e.g. `workitlikeapro.com`)
 3. Copy the tracking script snippet
 4. Paste it into the `<head>` section of `index.html` and all 6 product `index.html` files (`oliops/`, `olicommerce/`, `oliflow/`, `oliexplore/`, `oli-locator/`, `olisalestrack/`), right before `</head>`
 5. Push the updated files
