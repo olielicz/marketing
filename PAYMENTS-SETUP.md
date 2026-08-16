@@ -133,7 +133,7 @@ same structure as OliOps); OliSalesTrack needs 2):
    - Name: e.g. `OliOps Suite`, `Oli-Locator`, `OliSalesTrack Pro`, etc.
    - Type: `SERVICE` · Category: `SOFTWARE`
    - Home URL: the tool's live marketing page, e.g.
-     `https://olielicz.github.io/marketing/oli-locator/`
+     `https://workitlikeapro.com/oli-locator/`
 2. Under that product, click **Create Plan** once per tier × billing
    period, e.g. for Oli-Locator:
    - `Oli-Locator Starter Monthly` → **$29.00 USD/month**
@@ -338,7 +338,7 @@ Stripe-supported business entity set up).
 2. Click **+ New** → Add a product using the same tier table from Part 2 above
 3. In **After payment** settings → choose **Redirect to URL** → enter:
    ```
-   https://olielicz.github.io/marketing/account/
+   https://workitlikeapro.com/account/
    ```
 4. Copy the generated URL (e.g. `https://buy.stripe.com/xxxxxxxxxxxx`)
 5. Open the matching `buy/index.html` and replace the placeholder in the

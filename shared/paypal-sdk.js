@@ -83,15 +83,10 @@
     // 'starter'/'pro'/'agency' — a leftover from before this tool's
     // real-estate-to-home-improvement pivot. Every Plan ID below now
     // matches the buy page's actual PLANS array `key` values exactly.
-    // NOTE: OliOps Pro/Agency yearly Plan IDs are still not yet created
-    // in PayPal — only their monthly plans exist so far. A customer who
-    // picks Pro/Agency + Yearly on this tool's buy page will see the
-    // "not configured yet, try a different plan" notice until those 2
-    // remaining Plans are created and their IDs pasted in here.
     'oliops': {
       'starter': { monthly: 'P-3N291216V7826815WNJ6KACY', yearly: 'P-9KD592261N427482RNJ6KC5A' },
-      'pro':     { monthly: 'P-9DU699227M384522FNJ6KD6Q', yearly: 'YOUR_OLIOPS_PRO_YEARLY_PLAN_ID' },
-      'agency':  { monthly: 'P-41V37494LF614412LNJ6KEWQ', yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PLAN_ID' },
+      'pro':     { monthly: 'P-9DU699227M384522FNJ6KD6Q', yearly: 'P-6RF855986S398903TNJ6UO3Y' },
+      'agency':  { monthly: 'P-41V37494LF614412LNJ6KEWQ', yearly: 'P-2FG46533FM095752BNJ6UP2Y' },
     },
     'olicommerce': {
       'basic':  { monthly: 'P-25D62501R5814440JNJ6LAKY', yearly: 'P-8V88286420538974HNJ6KHYY' },

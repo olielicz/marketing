@@ -58,31 +58,39 @@
   // match the `key` field on each buy page's PLANS array exactly.
   var PRICE_IDS = {
     'oliops': {
-      'starter': { monthly: 'pri_01kzhd6dc91dc4vgzk754xhtye', yearly: 'pri_01kzhd7gcx4ra6fdkmgjjtyj56' },
-      'pro':     { monthly: 'YOUR_OLIOPS_PRO_MONTHLY_PRICE_ID',     yearly: 'YOUR_OLIOPS_PRO_YEARLY_PRICE_ID' },
-      'agency':  { monthly: 'YOUR_OLIOPS_AGENCY_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLIOPS_AGENCY_YEARLY_PRICE_ID' },
+      'starter': { monthly: 'pri_01kzxxjsx8ywm3a2tq4fgfm8jg', yearly: 'pri_01kzxxp0wkfqsd9b6gcq7v35gp' },
+      'pro':     { monthly: 'pri_01kzxxqw07g9cbhj2d3jzvey95', yearly: 'pri_01kzxxt7v12tbe83nkjwdzzc4n' },
+      'agency':  { monthly: 'pri_01kzxxxqzs9c7q8wzt64t8x45j', yearly: 'pri_01kzxxz4yegyr6fqhk4fbr6hna' },
     },
     'olicommerce': {
-      'basic':  { monthly: 'YOUR_OLICOMMERCE_BASIC_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLICOMMERCE_BASIC_YEARLY_PRICE_ID' },
-      'growth': { monthly: 'YOUR_OLICOMMERCE_GROWTH_MONTHLY_PRICE_ID', yearly: 'YOUR_OLICOMMERCE_GROWTH_YEARLY_PRICE_ID' },
-      'scale':  { monthly: 'YOUR_OLICOMMERCE_SCALE_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLICOMMERCE_SCALE_YEARLY_PRICE_ID' },
+      'basic':  { monthly: 'pri_01kzxy472d6t47fkfrs2ycmdvc', yearly: 'pri_01kzxy6jcverv7jbb6d54zh2t8' },
+      'growth': { monthly: 'pri_01kzxy84eb8b17fhq1bqpf9472', yearly: 'pri_01kzxya5cj0hnarcb40a5yf766' },
+      'scale':  { monthly: 'pri_01kzxybp5r42e83zgnezvpzyrb', yearly: 'pri_01kzxyd1a7ah578dyv1gy6wek6' },
     },
     'oliflow': {
-      'solo':     { monthly: 'YOUR_OLIFLOW_SOLO_MONTHLY_PRICE_ID',     yearly: 'YOUR_OLIFLOW_SOLO_YEARLY_PRICE_ID' },
-      'pro':      { monthly: 'YOUR_OLIFLOW_PRO_MONTHLY_PRICE_ID',      yearly: 'YOUR_OLIFLOW_PRO_YEARLY_PRICE_ID' },
-      'business': { monthly: 'YOUR_OLIFLOW_BUSINESS_MONTHLY_PRICE_ID', yearly: 'YOUR_OLIFLOW_BUSINESS_YEARLY_PRICE_ID' },
+      'solo':     { monthly: 'pri_01kzxyjn8cab02kggtnbpm8srj', yearly: 'pri_01kzxyn0rs6awwtcz7d6sbq9sm' },
+      'pro':      { monthly: 'pri_01kzxyp9cbcvzstpp3ea37kyct', yearly: 'pri_01kzxyqtthpw9j7g82brxergxa' },
+      'business': { monthly: 'pri_01kzxysgs9262q20nyqvje1ssa', yearly: 'pri_01kzxyv6fzrskzy82cj6qsa6xw' },
     },
     'oliexplore': {
-      'creator': { monthly: 'YOUR_OLIEXPLORE_CREATOR_MONTHLY_PRICE_ID', yearly: 'YOUR_OLIEXPLORE_CREATOR_YEARLY_PRICE_ID' },
-      'team':    { monthly: 'YOUR_OLIEXPLORE_TEAM_MONTHLY_PRICE_ID',    yearly: 'YOUR_OLIEXPLORE_TEAM_YEARLY_PRICE_ID' },
-      'agency':  { monthly: 'YOUR_OLIEXPLORE_AGENCY_MONTHLY_PRICE_ID',  yearly: 'YOUR_OLIEXPLORE_AGENCY_YEARLY_PRICE_ID' },
+      'creator': { monthly: 'pri_01kzxyymt03xvrxm5mcgg878cc', yearly: 'pri_01kzxz0d1fzq5d9y610rk96mee' },
+      'team':    { monthly: 'pri_01kzxz1veb79f4dr8ennwh4gwq', yearly: 'pri_01kzxz3kf4tz3j0c77kfej225p' },
+      'agency':  { monthly: 'pri_01kzxz5kvdebtz7sw4g3hd38fs', yearly: 'pri_01kzy06dxc08syf1wfcj38ktsv' },
     },
+    // FIX: tier keys used to say 'solo-agent'/'team' here, but the real
+    // buy page (oli-locator/buy/index.html) uses 'starter'/'pro'/
+    // 'agency' - same stale-key bug already fixed in paypal-sdk.js's
+    // PLAN_IDS.oli-locator (see that file's comment). A customer
+    // selecting any oli-locator tier would previously have hit the
+    // "not configured yet" notice on the Paddle button no matter what,
+    // since none of these keys could ever match window.OliSelectedPlan.
     'oli-locator': {
-      'solo-agent': { monthly: 'YOUR_LOCATOR_SOLO_AGENT_MONTHLY_PRICE_ID', yearly: 'YOUR_LOCATOR_SOLO_AGENT_YEARLY_PRICE_ID' },
-      'team':       { monthly: 'YOUR_LOCATOR_TEAM_MONTHLY_PRICE_ID',      yearly: 'YOUR_LOCATOR_TEAM_YEARLY_PRICE_ID' },
+      'starter': { monthly: 'pri_01kzy0aj83ere3n4eftw6f6z5p', yearly: 'pri_01kzy0cccfw0pmxdked160pnr6' },
+      'pro':     { monthly: 'pri_01kzy0dygywnvv3txbcc2w84yq', yearly: 'pri_01kzy0fkmtyet84h3fcbcj11j9' },
+      'agency':  { monthly: 'pri_01kzy0h6z66hmk0maq61kk3snm', yearly: 'pri_01kzy0jkq7emzezsynb2yxws3h' },
     },
     'olisalestrack': {
-      'pro': { monthly: 'YOUR_OLISALESTRACK_PRO_MONTHLY_PRICE_ID', yearly: 'YOUR_OLISALESTRACK_PRO_YEARLY_PRICE_ID' },
+      'pro': { monthly: 'pri_01kzy0ppdx65c9v2jf5rdys4y8', yearly: 'pri_01kzy0rft668n63ecn8zdg2rvr' },
     },
   };
 
