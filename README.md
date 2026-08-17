@@ -5,7 +5,7 @@ Each tool solves one expensive business problem at a fraction of the cost.
 Each product is sold, hosted, and logged into **completely separately**.
 
 **Live site:** `https://workitlikeapro.com/` (custom domain via GitHub Pages or Cloudflare)
-**Contact:** YOUR_SUPPORT_GMAIL_ADDRESS
+**Contact:** contact@workitlikeapro.com
 
 ---
 

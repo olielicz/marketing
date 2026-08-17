@@ -28,8 +28,8 @@
 
   /* ── The real address, reconstructed from parts (never one literal
      string) ──────────────────────────────────────────────────────── */
-  var USER = ['w', 'o', 'r', 'k', 'i', 't', 'l', 'i', 'k', 'e', 'a', 'p', 'r', '0', '1'].join('');
-  var DOMAIN = ['g', 'm', 'a', 'i', 'l'].join('') + '.' + ['c', 'o', 'm'].join('');
+  var USER = ['c', 'o', 'n', 't', 'a', 'c', 't'].join('');
+  var DOMAIN = ['w', 'o', 'r', 'k', 'i', 't', 'l', 'i', 'k', 'e', 'a', 'p', 'r', 'o'].join('') + '.' + ['c', 'o', 'm'].join('');
 
   function getSupportEmail() {
     return USER + '@' + DOMAIN;
@@ -49,7 +49,7 @@
    * still use it). See FORMSUBMIT_SETUP.md at the repo root for the
    * exact one-time steps.
    */
-  var FORMSUBMIT_HASH = '2d8e81984fd8772dc363c21d61443ee6';
+  var FORMSUBMIT_HASH = '';
 
   function getFormAction() {
     var target = FORMSUBMIT_HASH || getSupportEmail();
