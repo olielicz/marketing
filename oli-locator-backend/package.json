@@ -1,0 +1,13 @@
+{
+  "name": "oli-locator-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Home-improvement lead finder backend covering USA, UK, and Australia. Zero npm dependencies.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server/index.js",
+    "create-owner": "node scripts/create-owner.js"
+  }
+}

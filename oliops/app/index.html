@@ -122,6 +122,10 @@ tr:last-child td{border-bottom:none;}
       <button class="active" data-view="contacts">Contacts</button>
       <button data-view="tasks">Tasks</button>
       <button data-view="invoices">Invoices</button>
+      <button data-view="employees">Employees</button>
+      <button data-view="payroll">Payroll</button>
+      <button data-view="expenses">Expenses</button>
+      <button data-view="reports">Reports</button>
       <button data-view="support">🤖 AI Support</button>
     </nav>
 
@@ -141,6 +145,43 @@ tr:last-child td{border-bottom:none;}
     <section class="view" id="view-invoices">
       <div class="view-head"><h2>Invoices</h2><button class="btn" onclick="openInvoiceModal()">+ Create Invoice</button></div>
       <div id="invoicesTableWrap"></div>
+    </section>
+
+    <!-- EMPLOYEES -->
+    <section class="view" id="view-employees">
+      <div class="view-head"><h2>Employees</h2><button class="btn" onclick="openEmployeeModal()">+ Add Employee</button></div>
+      <div id="employeesTableWrap"></div>
+    </section>
+
+    <!-- PAYROLL -->
+    <section class="view" id="view-payroll">
+      <div class="view-head">
+        <h2>Payroll</h2>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="month" id="payrollMonth" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;"/>
+          <button class="btn" onclick="calculatePayroll()">Calculate Payroll</button>
+        </div>
+      </div>
+      <div id="payrollTableWrap"></div>
+    </section>
+
+    <!-- EXPENSES -->
+    <section class="view" id="view-expenses">
+      <div class="view-head"><h2>Expenses</h2><button class="btn" onclick="openExpenseModal()">+ Add Expense</button></div>
+      <div id="expensesTableWrap"></div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="view" id="view-reports">
+      <div class="view-head">
+        <h2>Reports</h2>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="date" id="reportFrom" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;"/>
+          <input type="date" id="reportTo" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;"/>
+          <button class="btn" onclick="generateReport()">Generate Report</button>
+        </div>
+      </div>
+      <div id="reportsWrap"></div>
     </section>
 
     <!-- AI SUPPORT -->
@@ -221,6 +262,49 @@ tr:last-child td{border-bottom:none;}
     <div style="display:flex;gap:8px;justify-content:flex-end;">
       <button class="btn secondary" onclick="closeModal('invoiceModal')">Cancel</button>
       <button class="btn" onclick="submitInvoice()">Create Invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Employee Modal -->
+<div class="modal-overlay" id="employeeModal">
+  <div class="modal">
+    <h3>Add Employee</h3>
+    <div class="err-banner" id="employeeErr"></div>
+    <div class="field"><label>Name *</label><input id="e-name"/></div>
+    <div class="field"><label>Role</label><input id="e-role"/></div>
+    <div class="field"><label>Pay type *</label><select id="e-payType"><option value="hourly">Hourly</option><option value="salary">Salary</option></select></div>
+    <div class="field" id="e-hourlyField"><label>Hourly rate (cents) *</label><input id="e-hourlyRateCents" type="number" min="0" placeholder="e.g. 2500 = $25.00/hr"/></div>
+    <div class="field" id="e-salaryField" style="display:none;"><label>Monthly salary (cents) *</label><input id="e-monthlySalaryCents" type="number" min="0" placeholder="e.g. 500000 = $5,000/mo"/></div>
+    <div class="field"><label>Withholding rate (%)</label><input id="e-withholdingRatePct" type="number" min="0" max="100" step="0.01" placeholder="e.g. 20"/></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('employeeModal')">Cancel</button>
+      <button class="btn" onclick="submitEmployee()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Modal -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal">
+    <h3>Add Expense</h3>
+    <div class="err-banner" id="expenseErr"></div>
+    <div class="field"><label>Date *</label><input id="ex-date" type="date"/></div>
+    <div class="field"><label>Category *</label><select id="ex-category">
+      <option value="Inventory">Inventory</option>
+      <option value="Shipping">Shipping</option>
+      <option value="Ads/Marketing">Ads/Marketing</option>
+      <option value="Software/SaaS">Software/SaaS</option>
+      <option value="Payment fees">Payment fees</option>
+      <option value="Rent/Utilities">Rent/Utilities</option>
+      <option value="Insurance">Insurance</option>
+      <option value="Other">Other</option>
+    </select></div>
+    <div class="field"><label>Description *</label><input id="ex-description"/></div>
+    <div class="field"><label>Amount (cents) *</label><input id="ex-amountCents" type="number" min="0" placeholder="e.g. 4999 = $49.99"/></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('expenseModal')">Cancel</button>
+      <button class="btn" onclick="submitExpense()">Save</button>
     </div>
   </div>
 </div>

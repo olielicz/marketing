@@ -39,12 +39,18 @@ const els = {};
 ['loginScreen','app','loginForm','loginBtn','loginError','settingsToggle','configFields','backendUrl','saveConfigBtn',
  'whoami','logoutBtn','contactsTableWrap','tasksTableWrap','invoicesTableWrap',
  'contactModal','taskModal','invoiceModal','contactErr','taskErr','invoiceErr','itemRows',
- 'chatLog','chatEmpty','chatForm','chatInput','chatSendBtn','chatUseAi','ticketsWrap'
+ 'chatLog','chatEmpty','chatForm','chatInput','chatSendBtn','chatUseAi','ticketsWrap',
+ 'employeesTableWrap','employeeModal','employeeErr',
+ 'payrollMonth','payrollTableWrap',
+ 'expensesTableWrap','expenseModal','expenseErr',
+ 'reportFrom','reportTo','reportsWrap'
 ].forEach(id => els[id] = document.getElementById(id));
 
 let cachedContacts = [];
 let cachedTasks = [];
 let cachedInvoices = [];
+let cachedEmployees = [];
+let cachedExpenses = [];
 let chatHistory = [];
 
 /* ---------------- Config UI ---------------- */
@@ -150,7 +156,20 @@ document.querySelectorAll('nav.tabs button').forEach(btn => {
 /* ---------------- Load everything ---------------- */
 async function loadAll() {
   await loadTaxSettings(); // must resolve before loadInvoices() so formatMoney() uses the real currency, not the USD default, on first render
-  await Promise.all([loadContacts(), loadTasks(), loadInvoices(), loadSupportTickets()]);
+  await Promise.all([loadContacts(), loadTasks(), loadInvoices(), loadEmployees(), loadExpenses(), loadSupportTickets()]);
+  // Default payroll month to current month
+  if (els.payrollMonth) {
+    const now = new Date();
+    els.payrollMonth.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
+  // Default report date range to current month
+  if (els.reportFrom && els.reportTo) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    els.reportFrom.value = `${y}-${m}-01`;
+    els.reportTo.value = now.toISOString().split('T')[0];
+  }
 }
 
 /** Fetches the real, owner-configured currency (and tax rate) from the
@@ -396,6 +415,194 @@ async function submitInvoice() {
 async function markPaid(id) { await apiFetch(`/api/invoices/${id}/mark-paid`, { method: 'POST' }); await loadInvoices(); }
 async function deleteInvoiceRow(id) { if (!confirm('Delete this invoice?')) return; await apiFetch(`/api/invoices/${id}`, { method: 'DELETE' }); await loadInvoices(); }
 
+/* ---------------- Employees ---------------- */
+async function loadEmployees() {
+  const res = await apiFetch('/api/employees');
+  if (!res.ok) return;
+  const data = await res.json();
+  cachedEmployees = data.employees || [];
+  renderEmployees();
+}
+function renderEmployees() {
+  if (!cachedEmployees.length) { els.employeesTableWrap.innerHTML = '<div class="empty">No employees yet. Click "+ Add Employee" to create one.</div>'; return; }
+  els.employeesTableWrap.innerHTML = `<table><thead><tr><th>Name</th><th>Role</th><th>Pay Type</th><th>Rate</th><th>Status</th><th></th></tr></thead><tbody>${
+    cachedEmployees.map(e => `<tr>
+      <td>${escapeHtml(e.name)}</td><td>${escapeHtml(e.role || '—')}</td><td>${escapeHtml(e.payType)}</td>
+      <td>${e.payType === 'hourly' ? formatMoney(e.hourlyRateCents) + '/hr' : formatMoney(e.monthlySalaryCents) + '/mo'}</td>
+      <td><span class="badge ${e.status === 'active' ? 'paid' : 'unpaid'}">${escapeHtml(e.status || 'active')}</span></td>
+      <td class="row-actions"><button onclick="deleteEmployeeRow('${e.id}')">Delete</button></td>
+    </tr>`).join('')
+  }</tbody></table>`;
+}
+function openEmployeeModal() {
+  els.employeeErr.style.display = 'none';
+  ['e-name','e-role','e-hourlyRateCents','e-monthlySalaryCents','e-withholdingRatePct'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('e-payType').value = 'hourly';
+  document.getElementById('e-hourlyField').style.display = '';
+  document.getElementById('e-salaryField').style.display = 'none';
+  els.employeeModal.classList.add('open');
+}
+// Toggle hourly/salary fields
+document.getElementById('e-payType').addEventListener('change', function() {
+  document.getElementById('e-hourlyField').style.display = this.value === 'hourly' ? '' : 'none';
+  document.getElementById('e-salaryField').style.display = this.value === 'salary' ? '' : 'none';
+});
+async function submitEmployee() {
+  const name = document.getElementById('e-name').value.trim();
+  if (!name) { els.employeeErr.textContent = 'Name is required.'; els.employeeErr.style.display = 'block'; return; }
+  const payType = document.getElementById('e-payType').value;
+  const body = {
+    name,
+    role: document.getElementById('e-role').value.trim(),
+    payType,
+    hourlyRateCents: payType === 'hourly' ? Number(document.getElementById('e-hourlyRateCents').value) || 0 : undefined,
+    monthlySalaryCents: payType === 'salary' ? Number(document.getElementById('e-monthlySalaryCents').value) || 0 : undefined,
+    withholdingRatePct: Number(document.getElementById('e-withholdingRatePct').value) || 0,
+  };
+  const res = await apiFetch('/api/employees', { method: 'POST', body: JSON.stringify(body) });
+  if (!res.ok) { const data = await res.json().catch(() => ({})); els.employeeErr.textContent = data.error || 'Failed to save employee.'; els.employeeErr.style.display = 'block'; return; }
+  closeModal('employeeModal');
+  await loadEmployees();
+}
+async function deleteEmployeeRow(id) {
+  if (!confirm('Delete this employee?')) return;
+  await apiFetch(`/api/employees/${id}`, { method: 'DELETE' });
+  await loadEmployees();
+}
+
+/* ---------------- Payroll ---------------- */
+async function calculatePayroll() {
+  const month = els.payrollMonth.value;
+  if (!month) { els.payrollTableWrap.innerHTML = '<div class="empty">Please select a month.</div>'; return; }
+  const res = await apiFetch(`/api/payroll?month=${month}`);
+  if (!res.ok) { const data = await res.json().catch(() => ({})); els.payrollTableWrap.innerHTML = `<div class="empty">${escapeHtml(data.error || 'Failed to calculate payroll.')}</div>`; return; }
+  const data = await res.json();
+  renderPayroll(data);
+}
+function renderPayroll(data) {
+  const rows = data.rows || data.payroll || [];
+  if (!rows.length) { els.payrollTableWrap.innerHTML = '<div class="empty">No payroll data for this month. Make sure employees and time entries exist.</div>'; return; }
+  let totalGross = 0, totalWithheld = 0, totalNet = 0;
+  const tbody = rows.map(r => {
+    totalGross += r.grossPayCents || 0;
+    totalWithheld += r.withheldCents || 0;
+    totalNet += r.netPayCents || 0;
+    return `<tr>
+      <td>${escapeHtml(r.employeeName || r.name)}</td>
+      <td>${r.hoursLogged != null ? r.hoursLogged : '—'}</td>
+      <td>${formatMoney(r.grossPayCents)}</td>
+      <td>${formatMoney(r.withheldCents)}</td>
+      <td>${formatMoney(r.netPayCents)}</td>
+    </tr>`;
+  }).join('');
+  els.payrollTableWrap.innerHTML = `<table><thead><tr><th>Employee</th><th>Hours Logged</th><th>Gross Pay</th><th>Withheld</th><th>Net Pay</th></tr></thead><tbody>${tbody}
+    <tr style="font-weight:800;background:#f8f8fb;">
+      <td>Totals</td><td></td>
+      <td>${formatMoney(totalGross)}</td>
+      <td>${formatMoney(totalWithheld)}</td>
+      <td>${formatMoney(totalNet)}</td>
+    </tr>
+  </tbody></table>`;
+}
+
+/* ---------------- Expenses ---------------- */
+async function loadExpenses() {
+  const res = await apiFetch('/api/expenses');
+  if (!res.ok) return;
+  const data = await res.json();
+  cachedExpenses = data.expenses || [];
+  renderExpenses();
+}
+function renderExpenses() {
+  if (!cachedExpenses.length) { els.expensesTableWrap.innerHTML = '<div class="empty">No expenses yet. Click "+ Add Expense" to create one.</div>'; return; }
+  els.expensesTableWrap.innerHTML = `<table><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead><tbody>${
+    cachedExpenses.map(ex => `<tr>
+      <td>${ex.date ? new Date(ex.date).toLocaleDateString() : '—'}</td>
+      <td>${escapeHtml(ex.category)}</td>
+      <td>${escapeHtml(ex.description)}</td>
+      <td>${formatMoney(ex.amountCents)}</td>
+      <td class="row-actions"><button onclick="deleteExpenseRow('${ex.id}')">Delete</button></td>
+    </tr>`).join('')
+  }</tbody></table>`;
+}
+function openExpenseModal() {
+  els.expenseErr.style.display = 'none';
+  document.getElementById('ex-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('ex-category').value = 'Other';
+  document.getElementById('ex-description').value = '';
+  document.getElementById('ex-amountCents').value = '';
+  els.expenseModal.classList.add('open');
+}
+async function submitExpense() {
+  const date = document.getElementById('ex-date').value;
+  const category = document.getElementById('ex-category').value;
+  const description = document.getElementById('ex-description').value.trim();
+  const amountCents = Number(document.getElementById('ex-amountCents').value) || 0;
+  if (!description) { els.expenseErr.textContent = 'Description is required.'; els.expenseErr.style.display = 'block'; return; }
+  if (!amountCents) { els.expenseErr.textContent = 'Amount is required.'; els.expenseErr.style.display = 'block'; return; }
+  const body = { date, category, description, amountCents };
+  const res = await apiFetch('/api/expenses', { method: 'POST', body: JSON.stringify(body) });
+  if (!res.ok) { const data = await res.json().catch(() => ({})); els.expenseErr.textContent = data.error || 'Failed to save expense.'; els.expenseErr.style.display = 'block'; return; }
+  closeModal('expenseModal');
+  await loadExpenses();
+}
+async function deleteExpenseRow(id) {
+  if (!confirm('Delete this expense?')) return;
+  await apiFetch(`/api/expenses/${id}`, { method: 'DELETE' });
+  await loadExpenses();
+}
+
+/* ---------------- Reports ---------------- */
+async function generateReport() {
+  const from = els.reportFrom.value;
+  const to = els.reportTo.value;
+  if (!from || !to) { els.reportsWrap.innerHTML = '<div class="empty">Please select a date range.</div>'; return; }
+  const res = await apiFetch(`/api/reports?from=${from}&to=${to}`);
+  if (!res.ok) { const data = await res.json().catch(() => ({})); els.reportsWrap.innerHTML = `<div class="empty">${escapeHtml(data.error || 'Failed to generate report.')}</div>`; return; }
+  const data = await res.json();
+  renderReport(data);
+}
+function renderReport(data) {
+  const report = data.report || data;
+  let html = '';
+
+  // P&L Summary
+  html += `<h3 style="margin:18px 0 10px;font-size:16px;">Profit &amp; Loss Summary</h3>`;
+  html += `<table><tbody>
+    <tr><td>Revenue</td><td>${formatMoney(report.revenueCents || 0)}</td></tr>
+    <tr><td>Expenses</td><td>${formatMoney(report.expensesCents || 0)}</td></tr>
+    <tr><td>Payroll Cost</td><td>${formatMoney(report.payrollCostCents || 0)}</td></tr>
+    <tr style="font-weight:800;"><td>Net Profit</td><td>${formatMoney(report.netProfitCents || 0)}</td></tr>
+  </tbody></table>`;
+
+  // Expenses by Category
+  const byCategory = report.expensesByCategory || {};
+  const categories = Object.keys(byCategory);
+  if (categories.length) {
+    html += `<h3 style="margin:24px 0 10px;font-size:16px;">Expenses by Category</h3>`;
+    html += `<table><thead><tr><th>Category</th><th>Amount</th></tr></thead><tbody>${
+      categories.map(cat => `<tr><td>${escapeHtml(cat)}</td><td>${formatMoney(byCategory[cat])}</td></tr>`).join('')
+    }</tbody></table>`;
+  }
+
+  // Aged Receivables
+  const receivables = report.agedReceivables || [];
+  if (receivables.length) {
+    html += `<h3 style="margin:24px 0 10px;font-size:16px;">Aged Receivables</h3>`;
+    html += `<table><thead><tr><th>Invoice #</th><th>Contact</th><th>Amount</th><th>Due Date</th><th>Days Overdue</th></tr></thead><tbody>${
+      receivables.map(r => `<tr>
+        <td>${escapeHtml(r.invoiceNumber)}</td>
+        <td>${escapeHtml(r.contactName)}</td>
+        <td>${formatMoney(r.totalCents)}</td>
+        <td>${r.dueDate ? new Date(r.dueDate).toLocaleDateString() : '—'}</td>
+        <td>${r.daysOverdue != null ? r.daysOverdue : '—'}</td>
+      </tr>`).join('')
+    }</tbody></table>`;
+  }
+
+  els.reportsWrap.innerHTML = html || '<div class="empty">No report data for this date range.</div>';
+}
+
 /* ---------------- Modal helpers ---------------- */
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -415,6 +622,14 @@ window.addItemRow = addItemRow;
 window.submitInvoice = submitInvoice;
 window.markPaid = markPaid;
 window.deleteInvoiceRow = deleteInvoiceRow;
+window.openEmployeeModal = openEmployeeModal;
+window.submitEmployee = submitEmployee;
+window.deleteEmployeeRow = deleteEmployeeRow;
+window.calculatePayroll = calculatePayroll;
+window.openExpenseModal = openExpenseModal;
+window.submitExpense = submitExpense;
+window.deleteExpenseRow = deleteExpenseRow;
+window.generateReport = generateReport;
 window.closeModal = closeModal;
 
 initConfigUI();

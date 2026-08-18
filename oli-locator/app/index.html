@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oli-Locator — Home Improvement Lead Finder</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--bg:#0d0e12;--card:#1a1c22;--ink:#fff;--sub:#9b96b8;--accent:#e11d2e;--line:#2a2c34;--good:#16a34a;--warn:#d97706;--badge-bg:#2a2c34;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+
+/* ---- Login ---- */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:36px;max-width:420px;width:100%;box-shadow:0 20px 60px -20px rgba(0,0,0,.6);}
+.login-card h1{font-size:24px;margin:0 0 6px;color:var(--ink);}
+.login-card h1 span{color:var(--accent);}
+.login-card p.sub{color:var(--sub);font-size:14px;margin:0 0 24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub);}
+.field input,.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--ink);}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--accent);border-color:var(--accent);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;transition:opacity .15s;}
+.btn:hover{opacity:.9;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);}
+.btn.secondary:hover{background:var(--line);}
+.btn.block{width:100%;}
+.btn.sm{padding:6px 12px;font-size:12.5px;}
+#loginError{color:var(--accent);font-size:13.5px;margin-top:10px;display:none;}
+.settings-toggle{font-size:12.5px;color:var(--sub);text-align:center;margin-top:18px;cursor:pointer;text-decoration:underline;}
+#configFields{display:none;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line);}
+
+/* ---- App shell ---- */
+#app{display:none;}
+header.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line);}
+.logo{font-weight:800;font-size:18px;color:var(--ink);} .logo span{color:var(--accent);}
+.topbar-actions{display:flex;gap:10px;align-items:center;}
+.topbar-actions span{font-size:13px;color:var(--sub);}
+.topbar-actions button{background:none;border:1px solid var(--line);padding:7px 13px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--sub);}
+.topbar-actions button:hover{background:var(--line);color:var(--ink);}
+nav.tabs{display:flex;gap:4px;margin:18px 0;border-bottom:1px solid var(--line);overflow-x:auto;}
+nav.tabs button{background:none;border:none;padding:10px 16px;font-size:14px;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent);}
+nav.tabs button:hover:not(.active){color:var(--ink);}
+.view{display:none;padding-bottom:60px;}
+.view.active{display:block;}
+.view-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.view-head h2{font-size:18px;font-weight:800;}
+
+/* ---- Country toggles ---- */
+.country-toggles{display:flex;gap:4px;margin-bottom:14px;}
+.country-toggles button{padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--sub);font-size:13px;cursor:pointer;font-weight:600;}
+.country-toggles button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ---- Filters bar ---- */
+.filters-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.filters-bar select,.filters-bar input{padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:var(--card);color:var(--ink);font-family:inherit;}
+.filters-bar select{min-width:150px;}
+.filters-bar input{flex:1;min-width:180px;}
+
+/* ---- Lead cards ---- */
+.leads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.lead-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.lead-card .lc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.lead-card .lc-title{font-size:15px;font-weight:700;line-height:1.3;}
+.lead-card .lc-badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:var(--badge-bg);color:var(--sub);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;}
+.lead-card .lc-meta{font-size:12.5px;color:var(--sub);display:flex;flex-wrap:wrap;gap:8px;}
+.lead-card .lc-meta span{display:inline-flex;align-items:center;gap:3px;}
+.lead-card .lc-budget{font-size:13px;color:var(--ink);}
+.lead-card .lc-urgency{font-size:12px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.lc-urgency.low{background:#1a3a1a;color:#4ade80;}
+.lc-urgency.medium{background:#3a2a0a;color:#fbbf24;}
+.lc-urgency.high{background:#3a1a1a;color:#f87171;}
+.lead-card .lc-score{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--sub);}
+.lc-score-bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;}
+.lc-score-fill{height:100%;border-radius:3px;transition:width .3s;}
+.lead-card .lc-contact{font-size:13px;display:flex;flex-direction:column;gap:4px;}
+.lead-card .lc-contact a{font-size:12.5px;}
+.lead-card .lc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px solid var(--line);}
+.lead-card .lc-date{font-size:11.5px;color:var(--sub);}
+
+/* ---- Inbox ---- */
+.inbox-list{display:flex;flex-direction:column;gap:10px;}
+.inbox-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .15s;}
+.inbox-item:hover{border-color:var(--accent);}
+.inbox-item .ib-top{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.inbox-item .ib-name{font-weight:700;font-size:14px;}
+.inbox-item .ib-status{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.ib-status.new{background:#1a2a3a;color:#60a5fa;}
+.ib-status.contacted{background:#1a3a2a;color:#4ade80;}
+.ib-status.quoted{background:#3a2a0a;color:#fbbf24;}
+.ib-status.won{background:#1a3a1a;color:#22c55e;}
+.ib-status.lost{background:#3a1a1a;color:#f87171;}
+.inbox-item .ib-meta{font-size:12.5px;color:var(--sub);margin-top:4px;}
+.inbox-item .ib-details{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--sub);line-height:1.6;}
+.inbox-item.expanded .ib-details{display:block;}
+.inbox-item .ib-details p{margin-bottom:6px;}
+.inbox-item .ib-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;}
+.inbox-item .ib-actions select{padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-size:12px;}
+
+/* ---- Call Log ---- */
+.calls-table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+th,td{padding:11px 14px;text-align:left;font-size:13px;border-bottom:1px solid var(--line);}
+th{background:var(--bg);color:var(--sub);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;}
+tr:last-child td{border-bottom:none;}
+
+/* ---- Settings ---- */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:700px){.settings-grid{grid-template-columns:1fr;}}
+.settings-section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;}
+.settings-section h3{font-size:14px;margin-bottom:14px;color:var(--sub);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.trades-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.trades-grid label{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:4px 0;}
+.trades-grid input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;}
+
+/* ---- Modal ---- */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);align-items:center;justify-content:center;z-index:100;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;}
+.modal h3{font-size:16px;margin-bottom:16px;}
+
+/* ---- Loading / empty ---- */
+.empty{text-align:center;padding:60px 20px;color:var(--sub);font-size:14px;}
+.loading{text-align:center;padding:40px 20px;color:var(--sub);font-size:14px;}
+.loading::after{content:'';display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-left:8px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ---- Responsive ---- */
+@media(max-width:600px){
+  .leads-grid{grid-template-columns:1fr;}
+  .filters-bar{flex-direction:column;}
+  .filters-bar select,.filters-bar input{width:100%;}
+  .settings-grid{grid-template-columns:1fr;}
+  nav.tabs{gap:0;}
+  nav.tabs button{padding:10px 12px;font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>🛠️ Oli-<span>Locator</span></h1>
+    <p class="sub">Home improvement lead finder for solo contractors.</p>
+    <form id="loginForm" autocomplete="off">
+      <div class="field"><label for="username">Username / email</label><input type="text" id="username" required autocomplete="username"/></div>
+      <div class="field"><label for="password">Password</label><input type="password" id="password" required autocomplete="current-password"/></div>
+      <button type="submit" class="btn block" id="loginBtn">Sign In</button>
+      <div id="loginError"></div>
+    </form>
+    <div class="settings-toggle" id="settingsToggle">⚙ Configure server URL</div>
+    <div id="configFields">
+      <div class="field"><label for="backendUrl">Oli-Locator backend URL</label><input type="text" id="backendUrl" placeholder="http://localhost:4700"/></div>
+      <button type="button" class="btn secondary block" id="saveConfigBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app">
+  <div class="wrap">
+    <header class="topbar">
+      <div class="logo">🛠️ Oli-<span>Locator</span></div>
+      <div class="topbar-actions">
+        <span id="whoami"></span>
+        <button id="logoutBtn">Sign Out</button>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="active" data-view="leads">Leads</button>
+      <button data-view="inbox">Inbox</button>
+      <button data-view="calls">Call Log</button>
+      <button data-view="settings">Settings</button>
+    </nav>
+
+    <!-- ======== LEADS TAB ======== -->
+    <section class="view active" id="view-leads">
+      <div class="view-head"><h2>Find Leads</h2></div>
+      <div class="country-toggles" id="countryToggles">
+        <button class="active" data-country="US">🇺🇸 USA</button>
+        <button data-country="GB">🇬🇧 UK</button>
+        <button data-country="AU">🇦🇺 Australia</button>
+      </div>
+      <div class="filters-bar">
+        <select id="tradeFilter">
+          <option value="">All Trades</option>
+          <option value="cleaning">Cleaning</option>
+          <option value="pest-control">Pest Control</option>
+          <option value="renovation">Renovation</option>
+          <option value="roofing">Roofing</option>
+          <option value="painting">Painting</option>
+          <option value="plumbing">Plumbing</option>
+          <option value="electrical">Electrical</option>
+          <option value="landscaping">Landscaping</option>
+          <option value="hvac">HVAC</option>
+          <option value="flooring">Flooring</option>
+          <option value="handyman">Handyman</option>
+        </select>
+        <input type="text" id="citySearch" placeholder="City, ZIP, or Postcode…"/>
+        <button class="btn sm" id="searchBtn">Search</button>
+      </div>
+      <div id="leadsContent"></div>
+      <div id="leadsLoadMore" style="text-align:center;margin-top:16px;display:none;">
+        <button class="btn secondary" id="loadMoreBtn">Load More</button>
+      </div>
+    </section>
+
+    <!-- ======== INBOX TAB ======== -->
+    <section class="view" id="view-inbox">
+      <div class="view-head"><h2>Inbox — Request a Quote</h2></div>
+      <div id="inboxContent"></div>
+    </section>
+
+    <!-- ======== CALL LOG TAB ======== -->
+    <section class="view" id="view-calls">
+      <div class="view-head"><h2>Call Log</h2><button class="btn" id="logCallBtn">+ Log a Call</button></div>
+      <div class="calls-table-wrap" id="callsContent"></div>
+    </section>
+
+    <!-- ======== SETTINGS TAB ======== -->
+    <section class="view" id="view-settings">
+      <div class="view-head"><h2>Settings</h2></div>
+      <div class="settings-grid">
+        <div class="settings-section">
+          <h3>Business Info</h3>
+          <div class="field"><label>Business Name</label><input id="s-business" type="text"/></div>
+          <div class="field"><label>Phone</label><input id="s-phone" type="tel"/></div>
+          <div class="field"><label>Email</label><input id="s-email" type="email"/></div>
+        </div>
+        <div class="settings-section">
+          <h3>Default Country</h3>
+          <div class="field">
+            <select id="s-country">
+              <option value="US">🇺🇸 USA</option>
+              <option value="GB">🇬🇧 UK</option>
+              <option value="AU">🇦🇺 Australia</option>
+            </select>
+          </div>
+          <h3 style="margin-top:18px;">Preferred Trades</h3>
+          <div class="trades-grid" id="tradesCheckboxes"></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn" id="saveSettingsBtn">Save Settings</button>
+        <button class="btn secondary" id="settingsLogoutBtn">Logout</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ======== LOG CALL MODAL ======== -->
+<div class="modal-overlay" id="callModal">
+  <div class="modal">
+    <h3>Log a Call</h3>
+    <div class="field"><label>Lead / Contact Name *</label><input id="call-name" type="text"/></div>
+    <div class="field"><label>Phone Number</label><input id="call-phone" type="tel"/></div>
+    <div class="field"><label>Date</label><input id="call-date" type="date"/></div>
+    <div class="field"><label>Duration (minutes)</label><input id="call-duration" type="number" min="0" placeholder="e.g. 5"/></div>
+    <div class="field"><label>Outcome</label>
+      <select id="call-outcome">
+        <option value="no_answer">No Answer</option>
+        <option value="left_voicemail">Left Voicemail</option>
+        <option value="spoke">Spoke</option>
+        <option value="booked_job">Booked Job</option>
+      </select>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="call-notes" rows="3"></textarea></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn secondary" onclick="closeModal('callModal')">Cancel</button>
+      <button class="btn" id="submitCallBtn">Save Call</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * app.js — Oli-Locator client. Plain fetch() calls against a real
+ * oli-locator backend. No frameworks, no build step. Same architecture
+ * pattern as oliops/app/app.js — self-hosted, single-tenant.
+ */
+
+const CONFIG_KEY = 'olilocator.app.config.v1';
+const SESSION_KEY = 'olilocator.app.session.v1';
+
+function loadConfig() { try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || { backendUrl: 'http://localhost:4700' }; } catch { return { backendUrl: 'http://localhost:4700' }; } }
+function saveConfig(cfg) { localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); }
+function loadSession() { try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; } }
+function saveSession(s) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
+function normalizeUrl(u) { return String(u || '').trim().replace(/\/$/, ''); }
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
+
+const TRADES = ['Cleaning','Pest Control','Renovation','Roofing','Painting','Plumbing','Electrical','Landscaping','HVAC','Flooring','Handyman'];
+
+/* --- DOM refs --- */
+const els = {};
+['loginScreen','app','loginForm','loginBtn','loginError','settingsToggle','configFields','backendUrl','saveConfigBtn',
+ 'whoami','logoutBtn','countryToggles','tradeFilter','citySearch','searchBtn','leadsContent','leadsLoadMore','loadMoreBtn',
+ 'inboxContent','callsContent','logCallBtn','callModal',
+ 'call-name','call-phone','call-date','call-duration','call-outcome','call-notes','submitCallBtn',
+ 's-business','s-phone','s-email','s-country','tradesCheckboxes','saveSettingsBtn','settingsLogoutBtn'
+].forEach(id => els[id] = document.getElementById(id));
+
+let currentCountry = 'US';
+let currentPage = 1;
+let totalLeads = 0;
+let cachedLeads = [];
+
+/* ======================================================
+   CONFIG UI
+   ====================================================== */
+function initConfigUI() {
+  const cfg = loadConfig();
+  els.backendUrl.value = cfg.backendUrl || 'http://localhost:4700';
+}
+els.settingsToggle.addEventListener('click', () => {
+  els.configFields.style.display = els.configFields.style.display === 'none' ? 'block' : 'none';
+});
+els.saveConfigBtn.addEventListener('click', () => {
+  saveConfig({ backendUrl: normalizeUrl(els.backendUrl.value) || 'http://localhost:4700' });
+  els.configFields.style.display = 'none';
+});
+
+/* ======================================================
+   AUTH
+   ====================================================== */
+els.loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  els.loginError.style.display = 'none';
+  const cfg = loadConfig();
+  if (!cfg.backendUrl) {
+    els.loginError.textContent = 'Set your backend URL first (⚙ Configure server URL below).';
+    els.loginError.style.display = 'block';
+    els.configFields.style.display = 'block';
+    return;
+  }
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  els.loginBtn.disabled = true; els.loginBtn.textContent = 'Signing in…';
+  try {
+    const res = await fetch(`${cfg.backendUrl}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      els.loginError.textContent = data.error || 'Sign in failed.';
+      els.loginError.style.display = 'block';
+      return;
+    }
+    saveSession({ token: data.token, username });
+    document.getElementById('password').value = '';
+    showApp();
+  } catch (err) {
+    els.loginError.textContent = `Could not reach backend at ${cfg.backendUrl}: ${err.message}`;
+    els.loginError.style.display = 'block';
+  } finally {
+    els.loginBtn.disabled = false; els.loginBtn.textContent = 'Sign In';
+  }
+});
+
+function doLogout() {
+  const session = loadSession();
+  const cfg = loadConfig();
+  if (session && cfg.backendUrl) {
+    try { fetch(`${cfg.backendUrl}/api/logout`, { method: 'POST', headers: { Authorization: `Bearer ${session.token}` } }); } catch {}
+  }
+  clearSession();
+  showLogin();
+}
+els.logoutBtn.addEventListener('click', doLogout);
+els.settingsLogoutBtn.addEventListener('click', doLogout);
+
+function showApp() {
+  const session = loadSession();
+  els.loginScreen.style.display = 'none';
+  els.app.style.display = 'block';
+  els.whoami.textContent = session ? session.username : '';
+  loadAll();
+}
+function showLogin() {
+  els.app.style.display = 'none';
+  els.loginScreen.style.display = 'flex';
+}
+
+async function verifyExistingSession() {
+  const session = loadSession();
+  const cfg = loadConfig();
+  if (!session || !cfg.backendUrl) return showLogin();
+  try {
+    const res = await apiFetch('/api/settings');
+    if (res.status === 401) { clearSession(); return showLogin(); }
+    showApp();
+  } catch {
+    showLogin();
+  }
+}
+
+/* ======================================================
+   API HELPER (handles 401 globally)
+   ====================================================== */
+async function apiFetch(path, opts = {}) {
+  const cfg = loadConfig();
+  const session = loadSession();
+  const res = await fetch(`${cfg.backendUrl}${path}`, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: session ? `Bearer ${session.token}` : '',
+      ...(opts.headers || {})
+    },
+  });
+  if (res.status === 401) {
+    clearSession();
+    showLogin();
+    els.loginError.textContent = 'Your session expired. Please sign in again.';
+    els.loginError.style.display = 'block';
+  }
+  return res;
+}
+
+/* ======================================================
+   TABS
+   ====================================================== */
+document.querySelectorAll('nav.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`view-${btn.dataset.view}`).classList.add('active');
+  });
+});
+
+/* ======================================================
+   LOAD ALL DATA
+   ====================================================== */
+async function loadAll() {
+  await Promise.all([loadLeads(), loadInbox(), loadCalls(), loadSettings()]);
+}
+
+/* ======================================================
+   LEADS TAB
+   ====================================================== */
+// Country toggles
+document.querySelectorAll('#countryToggles button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#countryToggles button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCountry = btn.dataset.country;
+    currentPage = 1;
+    cachedLeads = [];
+    loadLeads();
+  });
+});
+
+// Search
+els.searchBtn.addEventListener('click', () => { currentPage = 1; cachedLeads = []; loadLeads(); });
+els.citySearch.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); currentPage = 1; cachedLeads = []; loadLeads(); } });
+els.tradeFilter.addEventListener('change', () => { currentPage = 1; cachedLeads = []; loadLeads(); });
+
+// Load more
+els.loadMoreBtn.addEventListener('click', () => { currentPage++; loadLeads(true); });
+
+async function loadLeads(append = false) {
+  if (!append) {
+    els.leadsContent.innerHTML = '<div class="loading">Loading leads…</div>';
+    els.leadsLoadMore.style.display = 'none';
+  }
+  const trade = els.tradeFilter.value;
+  const city = els.citySearch.value.trim();
+  let url = `/api/leads?country=${currentCountry}&page=${currentPage}`;
+  if (trade) url += `&trade=${encodeURIComponent(trade)}`;
+  if (city) url += `&city=${encodeURIComponent(city)}`;
+
+  try {
+    const res = await apiFetch(url);
+    if (!res.ok) { els.leadsContent.innerHTML = '<div class="empty">Failed to load leads.</div>'; return; }
+    const data = await res.json();
+    totalLeads = data.total || 0;
+    const newLeads = data.leads || [];
+    if (append) {
+      cachedLeads = [...cachedLeads, ...newLeads];
+    } else {
+      cachedLeads = newLeads;
+    }
+    renderLeads();
+  } catch (err) {
+    els.leadsContent.innerHTML = `<div class="empty">Error: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderLeads() {
+  if (!cachedLeads.length) {
+    els.leadsContent.innerHTML = '<div class="empty">No leads found. Try adjusting your filters.</div>';
+    els.leadsLoadMore.style.display = 'none';
+    return;
+  }
+  els.leadsContent.innerHTML = `<div class="leads-grid">${cachedLeads.map(lead => renderLeadCard(lead)).join('')}</div>`;
+  // Show load more if there are more
+  els.leadsLoadMore.style.display = cachedLeads.length < totalLeads ? 'block' : 'none';
+}
+
+function renderLeadCard(lead) {
+  const scoreColor = lead.leadScore >= 70 ? '#22c55e' : lead.leadScore >= 40 ? '#fbbf24' : '#f87171';
+  const countryFlag = lead.country === 'US' ? '🇺🇸' : lead.country === 'GB' ? '🇬🇧' : '🇦🇺';
+  const urgencyClass = (lead.urgency || 'low').toLowerCase();
+  const phoneLink = lead.phone ? `<a href="tel:${escapeHtml(lead.phone)}">📞 ${escapeHtml(lead.phone)}</a>` : '';
+  const emailLink = lead.email ? `<a href="mailto:${escapeHtml(lead.email)}">✉️ ${escapeHtml(lead.email)}</a>` : '';
+  const postedDate = lead.postedDate ? new Date(lead.postedDate).toLocaleDateString() : '';
+
+  return `
+    <div class="lead-card">
+      <div class="lc-top">
+        <div class="lc-title">${escapeHtml(lead.title || 'Untitled Job')}</div>
+        <span class="lc-badge">${escapeHtml(lead.trade || '')}</span>
+      </div>
+      <div class="lc-meta">
+        <span>${countryFlag} ${escapeHtml(lead.city || '')}${lead.city && lead.country ? ', ' + lead.country : ''}</span>
+        <span class="lc-urgency ${urgencyClass}">${urgencyClass.charAt(0).toUpperCase() + urgencyClass.slice(1)}</span>
+      </div>
+      ${lead.budgetMin != null || lead.budgetMax != null ? `<div class="lc-budget">💰 $${(lead.budgetMin||0).toLocaleString()} – $${(lead.budgetMax||0).toLocaleString()}</div>` : ''}
+      <div class="lc-score">
+        <span>Score: ${lead.leadScore ?? '—'}</span>
+        <div class="lc-score-bar"><div class="lc-score-fill" style="width:${lead.leadScore || 0}%;background:${scoreColor};"></div></div>
+      </div>
+      <div class="lc-contact">
+        <strong>${escapeHtml(lead.customerName || '')}</strong>
+        ${phoneLink}
+        ${emailLink}
+      </div>
+      <div class="lc-footer">
+        <span class="lc-date">${postedDate ? '📅 ' + postedDate : ''}</span>
+        <button class="btn sm" onclick="saveLead('${escapeHtml(lead.id || '')}')">Save Lead</button>
+      </div>
+    </div>`;
+}
+
+async function saveLead(id) {
+  if (!id) return;
+  try {
+    const res = await apiFetch(`/api/leads/${id}/save`, { method: 'POST' });
+    if (res.ok) {
+      alert('Lead saved!');
+    } else {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || 'Failed to save lead.');
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+window.saveLead = saveLead;
+
+/* ======================================================
+   INBOX TAB
+   ====================================================== */
+async function loadInbox() {
+  els.inboxContent.innerHTML = '<div class="loading">Loading inbox…</div>';
+  try {
+    const res = await apiFetch('/api/inbox');
+    if (!res.ok) { els.inboxContent.innerHTML = '<div class="empty">Failed to load inbox.</div>'; return; }
+    const data = await res.json();
+    renderInbox(data.submissions || []);
+  } catch (err) {
+    els.inboxContent.innerHTML = `<div class="empty">Error: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderInbox(submissions) {
+  if (!submissions.length) {
+    els.inboxContent.innerHTML = '<div class="empty">No quote requests yet.</div>';
+    return;
+  }
+  els.inboxContent.innerHTML = `<div class="inbox-list">${submissions.map(sub => {
+    const statusClass = (sub.status || 'new').toLowerCase();
+    const submitted = sub.submittedDate ? new Date(sub.submittedDate).toLocaleDateString() : '';
+    return `
+      <div class="inbox-item" data-id="${escapeHtml(sub.id || '')}" onclick="toggleInboxItem(this)">
+        <div class="ib-top">
+          <span class="ib-name">${escapeHtml(sub.homeownerName || 'Unknown')}</span>
+          <span class="ib-status ${statusClass}">${escapeHtml(sub.status || 'new')}</span>
+        </div>
+        <div class="ib-meta">${escapeHtml(sub.trade || '')} · ${escapeHtml(sub.location || '')}${submitted ? ' · ' + submitted : ''}</div>
+        <div class="ib-details">
+          <p><strong>Email:</strong> ${sub.email ? `<a href="mailto:${escapeHtml(sub.email)}">${escapeHtml(sub.email)}</a>` : '—'}</p>
+          <p><strong>Phone:</strong> ${sub.phone ? `<a href="tel:${escapeHtml(sub.phone)}">${escapeHtml(sub.phone)}</a>` : '—'}</p>
+          <p><strong>Trade:</strong> ${escapeHtml(sub.trade || '—')}</p>
+          <p><strong>Description:</strong> ${escapeHtml(sub.description || '—')}</p>
+          <p><strong>Location:</strong> ${escapeHtml(sub.location || '—')}</p>
+          <div class="ib-actions">
+            <label style="font-size:12px;color:var(--sub);">Status:</label>
+            <select onchange="updateInboxStatus('${escapeHtml(sub.id || '')}', this.value)" onclick="event.stopPropagation()">
+              <option value="new" ${sub.status === 'new' ? 'selected' : ''}>New</option>
+              <option value="contacted" ${sub.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+              <option value="quoted" ${sub.status === 'quoted' ? 'selected' : ''}>Quoted</option>
+              <option value="won" ${sub.status === 'won' ? 'selected' : ''}>Won</option>
+              <option value="lost" ${sub.status === 'lost' ? 'selected' : ''}>Lost</option>
+            </select>
+            ${sub.phone ? `<a href="tel:${escapeHtml(sub.phone)}" class="btn sm secondary" onclick="event.stopPropagation()">📞 Call</a>` : ''}
+            ${sub.email ? `<a href="mailto:${escapeHtml(sub.email)}" class="btn sm secondary" onclick="event.stopPropagation()">✉️ Email</a>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('')}</div>`;
+}
+
+function toggleInboxItem(el) { el.classList.toggle('expanded'); }
+window.toggleInboxItem = toggleInboxItem;
+
+async function updateInboxStatus(id, status) {
+  if (!id) return;
+  try {
+    await apiFetch(`/api/inbox/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+  } catch {}
+}
+window.updateInboxStatus = updateInboxStatus;
+
+/* ======================================================
+   CALL LOG TAB
+   ====================================================== */
+async function loadCalls() {
+  els.callsContent.innerHTML = '<div class="loading">Loading call log…</div>';
+  try {
+    const res = await apiFetch('/api/calls');
+    if (!res.ok) { els.callsContent.innerHTML = '<div class="empty">Failed to load calls.</div>'; return; }
+    const data = await res.json();
+    renderCalls(data.calls || []);
+  } catch (err) {
+    els.callsContent.innerHTML = `<div class="empty">Error: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderCalls(calls) {
+  if (!calls.length) {
+    els.callsContent.innerHTML = '<div class="empty">No calls logged yet. Click "+ Log a Call" to add one.</div>';
+    return;
+  }
+  const outcomeLabels = { no_answer: 'No Answer', left_voicemail: 'Left Voicemail', spoke: 'Spoke', booked_job: 'Booked Job' };
+  els.callsContent.innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Lead Name</th><th>Phone</th><th>Duration</th><th>Outcome</th><th>Notes</th></tr></thead>
+    <tbody>${calls.map(c => `<tr>
+      <td>${c.date ? new Date(c.date).toLocaleDateString() : '—'}</td>
+      <td>${escapeHtml(c.leadName || '')}</td>
+      <td>${c.phone ? `<a href="tel:${escapeHtml(c.phone)}">${escapeHtml(c.phone)}</a>` : '—'}</td>
+      <td>${c.duration ? c.duration + ' min' : '—'}</td>
+      <td>${escapeHtml(outcomeLabels[c.outcome] || c.outcome || '—')}</td>
+      <td>${escapeHtml(c.notes || '')}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// Log call modal
+els.logCallBtn.addEventListener('click', () => {
+  ['call-name','call-phone','call-duration','call-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('call-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('call-outcome').value = 'no_answer';
+  els.callModal.classList.add('open');
+});
+
+els.submitCallBtn.addEventListener('click', async () => {
+  const leadName = document.getElementById('call-name').value.trim();
+  if (!leadName) { alert('Lead name is required.'); return; }
+  const body = {
+    leadName,
+    phone: document.getElementById('call-phone').value.trim(),
+    date: document.getElementById('call-date').value || new Date().toISOString().split('T')[0],
+    duration: Number(document.getElementById('call-duration').value) || null,
+    outcome: document.getElementById('call-outcome').value,
+    notes: document.getElementById('call-notes').value.trim()
+  };
+  try {
+    const res = await apiFetch('/api/calls', { method: 'POST', body: JSON.stringify(body) });
+    if (!res.ok) { const data = await res.json().catch(() => ({})); alert(data.error || 'Failed to log call.'); return; }
+    closeModal('callModal');
+    await loadCalls();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+
+/* ======================================================
+   SETTINGS TAB
+   ====================================================== */
+function initTradesCheckboxes() {
+  els.tradesCheckboxes.innerHTML = TRADES.map(t => {
+    const val = t.toLowerCase().replace(/\s+/g, '-');
+    return `<label><input type="checkbox" value="${val}" class="trade-checkbox"/> ${escapeHtml(t)}</label>`;
+  }).join('');
+}
+
+async function loadSettings() {
+  try {
+    const res = await apiFetch('/api/settings');
+    if (!res.ok) return;
+    const data = await res.json();
+    const s = data.settings || data;
+    els['s-business'].value = s.businessName || '';
+    els['s-phone'].value = s.phone || '';
+    els['s-email'].value = s.email || '';
+    els['s-country'].value = s.defaultCountry || 'US';
+    // Set preferred trades checkboxes
+    const preferredTrades = s.preferredTrades || [];
+    document.querySelectorAll('.trade-checkbox').forEach(cb => {
+      cb.checked = preferredTrades.includes(cb.value);
+    });
+  } catch {}
+}
+
+els.saveSettingsBtn.addEventListener('click', async () => {
+  const preferredTrades = [...document.querySelectorAll('.trade-checkbox:checked')].map(cb => cb.value);
+  const body = {
+    businessName: els['s-business'].value.trim(),
+    phone: els['s-phone'].value.trim(),
+    email: els['s-email'].value.trim(),
+    defaultCountry: els['s-country'].value,
+    preferredTrades
+  };
+  try {
+    const res = await apiFetch('/api/settings', { method: 'PUT', body: JSON.stringify(body) });
+    if (res.ok) {
+      alert('Settings saved!');
+    } else {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || 'Failed to save settings.');
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+});
+
+/* ======================================================
+   MODAL HELPERS
+   ====================================================== */
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+window.closeModal = closeModal;
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+/* ======================================================
+   INIT
+   ====================================================== */
+initConfigUI();
+initTradesCheckboxes();
+verifyExistingSession();
+</script>
+</body>
+</html>
