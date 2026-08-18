@@ -57,6 +57,11 @@ function setCache(key, data) {
   cache.set(key, { data, timestamp: Date.now() });
 }
 
+export function clearCache() {
+  cache.clear();
+  console.log("[Adzuna] Cache cleared");
+}
+
 /* ========================= Urgency Logic ========================= */
 
 /**
@@ -245,6 +250,8 @@ export async function filterLeads({ country, trade, city, lat, lng, radius, page
       locationSearch = "";
     }
 
+    console.log(`[Adzuna] Searching: country=${countryUpper}, trade="${searchTrade}", city="${locationSearch}", page=${page}`);
+
     const data = await fetchFromAdzuna({
       country: countryUpper,
       trade: searchTrade || "home improvement",
@@ -255,6 +262,7 @@ export async function filterLeads({ country, trade, city, lat, lng, radius, page
 
     const results = data.results || [];
     const total = data.count || results.length;
+    console.log(`[Adzuna] Got ${results.length} results (total: ${total})`);
 
     // Map results to lead format
     let leads = results.map((r) => mapResultToLead(r, searchTrade || "home improvement", countryCode));

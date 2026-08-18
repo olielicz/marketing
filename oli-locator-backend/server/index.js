@@ -91,6 +91,13 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { ok: true, ownerConfigured: Boolean(owner) });
     }
 
+    // Clear lead cache (useful after updating search config)
+    if (req.method === "POST" && url.pathname === "/api/leads/clear-cache") {
+      const { clearCache } = await import("./leadSearch.js");
+      if (clearCache) clearCache();
+      return send(res, 200, { ok: true, message: "Cache cleared" });
+    }
+
     // Login
     if (req.method === "POST" && url.pathname === "/api/login") {
       const ip = clientIp(req);
