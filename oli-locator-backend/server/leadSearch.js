@@ -127,27 +127,25 @@ function httpsGet(url) {
 
 /**
  * Fetch leads from the Adzuna API for a given country and search terms.
- * Uses search terms that target SERVICE REQUESTS (homeowners looking for tradespeople)
- * not just employment listings.
+ * Uses broad trade-category terms to maximize results.
  */
 async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }) {
   const countryCode = COUNTRY_MAP[country.toUpperCase()] || "us";
   
-  // Build search terms that find service requests, not just employment
-  // Adding "needed" / "required" / "wanted" to find people REQUESTING work
+  // Use simple, broad trade terms that return the most results
   const tradeTerms = {
-    "cleaning": "cleaning service needed",
-    "pest control": "pest control service",
-    "renovation": "renovation contractor needed",
-    "roofing": "roofer needed repair",
-    "painting": "painter needed house",
-    "plumbing": "plumber needed repair",
-    "electrical": "electrician needed",
-    "landscaping": "landscaping gardener needed",
-    "hvac": "hvac air conditioning repair",
-    "flooring": "flooring installation",
-    "handyman": "handyman repair service",
-    "home improvement": "home improvement repair service needed",
+    "cleaning": "cleaning cleaner domestic",
+    "pest control": "pest control exterminator",
+    "renovation": "renovation remodel builder",
+    "roofing": "roofing roofer",
+    "painting": "painter painting decorator",
+    "plumbing": "plumber plumbing",
+    "electrical": "electrician electrical",
+    "landscaping": "landscaping gardener garden",
+    "hvac": "hvac heating cooling",
+    "flooring": "flooring floor installer",
+    "handyman": "handyman maintenance repair",
+    "home improvement": "home improvement repair maintenance",
   };
   
   const searchTerm = tradeTerms[trade] || tradeTerms["home improvement"];
@@ -191,11 +189,11 @@ function mapResultToLead(result, searchedTrade, countryCode) {
     city,
     postcode: "",
     budget: {
-      min: result.salary_min ? Math.round(result.salary_min * 100) : 0,
-      max: result.salary_max ? Math.round(result.salary_max * 100) : 0,
+      min: result.salary_min ? Math.round(result.salary_min) : 0,
+      max: result.salary_max ? Math.round(result.salary_max) : 0,
     },
-    budgetMin: result.salary_min ? Math.round(result.salary_min * 100) : 0,
-    budgetMax: result.salary_max ? Math.round(result.salary_max * 100) : 0,
+    budgetMin: result.salary_min ? Math.round(result.salary_min) : 0,
+    budgetMax: result.salary_max ? Math.round(result.salary_max) : 0,
     urgency: determineUrgency(result.created),
     leadScore: calculateScore(result),
     customerName: result.company?.display_name || "",

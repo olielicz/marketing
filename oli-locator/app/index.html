@@ -610,7 +610,29 @@ function initMap() {
 async function searchByMapBounds(lat, lng) {
   showMapSpinner(true);
   const trade = els.tradeFilter.value;
-  let url = `/api/leads?country=${currentCountry}&lat=${lat}&lng=${lng}&radius=50&pageSize=20`;
+  
+  // Use reverse geocoding to get city name from map center coordinates
+  // (Adzuna API doesn't support lat/lng, only city names)
+  let cityName = '';
+  try {
+    const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=10&addressdetails=1`, {
+      headers: { 'User-Agent': 'OliLocator/1.0' }
+    });
+    if (geoRes.ok) {
+      const geoData = await geoRes.json();
+      cityName = geoData.address?.city || geoData.address?.town || geoData.address?.county || geoData.address?.state || '';
+    }
+  } catch (e) {
+    console.warn('Reverse geocoding failed:', e);
+  }
+
+  // Search by the resolved city name (or fall back to lat/lng which uses demo data)
+  let url = `/api/leads?country=${currentCountry}&pageSize=20`;
+  if (cityName) {
+    url += `&city=${encodeURIComponent(cityName)}`;
+  } else {
+    url += `&lat=${lat}&lng=${lng}&radius=100`;
+  }
   if (trade) url += `&trade=${encodeURIComponent(trade)}`;
 
   try {
@@ -765,7 +787,7 @@ function renderLeadCard(lead) {
         <span>${countryFlag} ${escapeHtml(lead.city || '')}${lead.city && lead.country ? ', ' + lead.country : ''}</span>
         <span class="lc-urgency ${urgencyClass}">${urgencyClass.charAt(0).toUpperCase() + urgencyClass.slice(1)}</span>
       </div>
-      ${(lead.budgetMin || lead.budgetMax || (lead.budget && (lead.budget.min || lead.budget.max))) ? `<div class="lc-budget">💰 $${((lead.budgetMin || lead.budget?.min || 0) / 100).toLocaleString()} – $${((lead.budgetMax || lead.budget?.max || 0) / 100).toLocaleString()}</div>` : ''}
+      ${(lead.budgetMin || lead.budgetMax || (lead.budget && (lead.budget.min || lead.budget.max))) ? `<div class="lc-budget">💰 $${(lead.budgetMin || lead.budget?.min || 0).toLocaleString()} – $${(lead.budgetMax || lead.budget?.max || 0).toLocaleString()}</div>` : ''}
       ${description ? `<div style="font-size:12px;color:var(--sub);line-height:1.4;">${description}</div>` : ''}
       <div class="lc-score">
         <span>Score: ${lead.leadScore ?? '—'}</span>
