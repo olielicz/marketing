@@ -131,6 +131,7 @@ tr:last-child td{border-bottom:none;}
 .loading{text-align:center;padding:40px 20px;color:var(--sub);font-size:14px;}
 .loading::after{content:'';display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-left:8px;vertical-align:middle;}
 @keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
 
 /* ---- Responsive ---- */
 @media(max-width:600px){
@@ -209,7 +210,16 @@ tr:last-child td{border-bottom:none;}
         <button class="btn sm" id="searchBtn">Search</button>
         <button class="btn sm secondary" id="toggleMapBtn">🗺️ Show Map</button>
       </div>
-      <div id="mapContainer" style="display:none;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);height:380px;"></div>
+      <div id="mapContainer" style="display:none;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);height:380px;position:relative;">
+        <div id="mapSpinner" style="display:none;position:absolute;top:12px;right:12px;z-index:1000;background:rgba(13,14,18,0.85);border-radius:8px;padding:8px 14px;font-size:12px;color:var(--sub);backdrop-filter:blur(4px);border:1px solid var(--line);">
+          <span style="display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px;"></span>Fetching leads…
+        </div>
+      </div>
+      <div id="liveIndicator" style="display:none;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="display:inline-block;width:10px;height:10px;background:#16a34a;border-radius:50%;animation:pulse 1.5s ease-in-out infinite;"></span>
+        <span style="font-size:12px;font-weight:700;color:#16a34a;letter-spacing:.05em;">LIVE</span>
+        <span id="liveSource" style="font-size:11px;color:var(--sub);margin-left:4px;"></span>
+      </div>
       <div id="leadsContent"></div>
       <div id="leadsLoadMore" style="text-align:center;margin-top:16px;display:none;">
         <button class="btn secondary" id="loadMoreBtn">Load More</button>
@@ -285,9 +295,9 @@ tr:last-child td{border-bottom:none;}
 
 <script>
 /**
- * app.js — Oli-Locator client. Plain fetch() calls against a real
- * oli-locator backend. No frameworks, no build step. Same architecture
- * pattern as oliops/app/app.js — self-hosted, single-tenant.
+ * app.js — Oli-Locator client with LIVE Adzuna API integration.
+ * Auto-searches on map navigation, shows real-time leads with relative dates,
+ * auto-refreshes every 3 minutes, and displays a live indicator.
  */
 
 const CONFIG_KEY = 'olilocator.app.config.v1';
@@ -301,6 +311,39 @@ function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
 function normalizeUrl(u) { return String(u || '').trim().replace(/\/$/, ''); }
 function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
 
+/* ======================================================
+   DEBOUNCE UTILITY
+   ====================================================== */
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+/* ======================================================
+   RELATIVE TIME UTILITY
+   ====================================================== */
+function relativeTime(dateStr) {
+  if (!dateStr) return '';
+  const now = Date.now();
+  const posted = new Date(dateStr).getTime();
+  const diffMs = now - posted;
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffWeeks = Math.floor(diffDays / 7);
+
+  if (diffMinutes < 1) return 'just now';
+  if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  if (diffWeeks < 5) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ago`;
+  return new Date(dateStr).toLocaleDateString();
+}
+
 const TRADES = ['Cleaning','Pest Control','Renovation','Roofing','Painting','Plumbing','Electrical','Landscaping','HVAC','Flooring','Handyman'];
 
 /* --- DOM refs --- */
@@ -309,13 +352,15 @@ const els = {};
  'whoami','logoutBtn','countryToggles','tradeFilter','citySearch','searchBtn','leadsContent','leadsLoadMore','loadMoreBtn',
  'inboxContent','callsContent','logCallBtn','callModal',
  'call-name','call-phone','call-date','call-duration','call-outcome','call-notes','submitCallBtn',
- 's-business','s-phone','s-email','s-country','tradesCheckboxes','saveSettingsBtn','settingsLogoutBtn'
+ 's-business','s-phone','s-email','s-country','tradesCheckboxes','saveSettingsBtn','settingsLogoutBtn',
+ 'mapSpinner','liveIndicator','liveSource'
 ].forEach(id => els[id] = document.getElementById(id));
 
 let currentCountry = 'US';
 let currentPage = 1;
 let totalLeads = 0;
 let cachedLeads = [];
+let autoRefreshInterval = null;
 
 /* ======================================================
    CONFIG UI
@@ -378,6 +423,7 @@ function doLogout() {
     try { fetch(`${cfg.backendUrl}/api/logout`, { method: 'POST', headers: { Authorization: `Bearer ${session.token}` } }); } catch {}
   }
   clearSession();
+  stopAutoRefresh();
   showLogin();
 }
 els.logoutBtn.addEventListener('click', doLogout);
@@ -389,6 +435,7 @@ function showApp() {
   els.app.style.display = 'block';
   els.whoami.textContent = session ? session.username : '';
   loadAll();
+  startAutoRefresh();
 }
 function showLogin() {
   els.app.style.display = 'none';
@@ -451,6 +498,33 @@ async function loadAll() {
 }
 
 /* ======================================================
+   AUTO-REFRESH (every 3 minutes)
+   ====================================================== */
+function startAutoRefresh() {
+  stopAutoRefresh();
+  autoRefreshInterval = setInterval(() => {
+    if (mapVisible && leafletMap) {
+      const center = leafletMap.getCenter();
+      const zoom = leafletMap.getZoom();
+      if (zoom >= 8) {
+        searchByMapBounds(center.lat, center.lng);
+      } else {
+        loadLeads();
+      }
+    } else {
+      loadLeads();
+    }
+  }, 3 * 60 * 1000); // 3 minutes
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+}
+
+/* ======================================================
    LEADS TAB
    ====================================================== */
 // Country toggles
@@ -481,7 +555,7 @@ let mapVisible = false;
 let leafletMap = null;
 let markers = [];
 
-// City coordinates for placing lead markers
+// City coordinates for placing lead markers (fallback)
 const CITY_COORDS = {
   'miami': [25.76, -80.19], 'houston': [29.76, -95.37], 'phoenix': [33.45, -112.07],
   'chicago': [41.88, -87.63], 'los angeles': [34.05, -118.24],
@@ -518,6 +592,62 @@ function initMap() {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 18
   }).addTo(leafletMap);
+
+  // Auto-search on map navigation (with 1-second debounce)
+  leafletMap.on('moveend', debounce(() => {
+    const center = leafletMap.getCenter();
+    const zoom = leafletMap.getZoom();
+    // Only search if zoomed in enough (zoom >= 8)
+    if (zoom >= 8) {
+      searchByMapBounds(center.lat, center.lng);
+    }
+  }, 1000));
+}
+
+/**
+ * Search by map bounds — fetches leads near the map center
+ */
+async function searchByMapBounds(lat, lng) {
+  showMapSpinner(true);
+  const trade = els.tradeFilter.value;
+  let url = `/api/leads?country=${currentCountry}&lat=${lat}&lng=${lng}&radius=50&pageSize=20`;
+  if (trade) url += `&trade=${encodeURIComponent(trade)}`;
+
+  try {
+    const res = await apiFetch(url);
+    if (!res.ok) { showMapSpinner(false); return; }
+    const data = await res.json();
+    totalLeads = data.total || 0;
+    cachedLeads = data.leads || [];
+    renderLeads();
+    updateMapMarkers();
+    updateLiveIndicator(data.source);
+  } catch (err) {
+    console.error('Map search error:', err);
+  } finally {
+    showMapSpinner(false);
+  }
+}
+
+function showMapSpinner(show) {
+  if (els.mapSpinner) els.mapSpinner.style.display = show ? 'flex' : 'none';
+}
+
+function updateLiveIndicator(source) {
+  if (els.liveIndicator) {
+    els.liveIndicator.style.display = 'flex';
+    if (els.liveSource) {
+      if (source === 'adzuna') {
+        els.liveSource.textContent = '— Real-time from Adzuna API';
+      } else if (source === 'cache') {
+        els.liveSource.textContent = '— Cached (refreshes every 5 min)';
+      } else if (source === 'fallback') {
+        els.liveSource.textContent = '— Demo data (API unavailable)';
+      } else {
+        els.liveSource.textContent = '';
+      }
+    }
+  }
 }
 
 function updateMapMarkers() {
@@ -529,12 +659,20 @@ function updateMapMarkers() {
   // Add markers for each lead in current results
   const bounds = [];
   cachedLeads.forEach(lead => {
-    const cityKey = (lead.city || '').toLowerCase();
-    const coords = CITY_COORDS[cityKey];
-    if (!coords) return;
-    // Add slight random offset so pins in same city don't stack exactly
-    const lat = coords[0] + (Math.random() - 0.5) * 0.02;
-    const lng = coords[1] + (Math.random() - 0.5) * 0.02;
+    let lat = lead.latitude;
+    let lng = lead.longitude;
+
+    // If no lat/lng, fall back to CITY_COORDS lookup
+    if (!lat || !lng) {
+      const cityKey = (lead.city || '').toLowerCase().split(',')[0].trim();
+      const coords = CITY_COORDS[cityKey];
+      if (coords) {
+        lat = coords[0] + (Math.random() - 0.5) * 0.02;
+        lng = coords[1] + (Math.random() - 0.5) * 0.02;
+      } else {
+        return; // skip if no coords at all
+      }
+    }
 
     const urgencyColor = lead.urgency === 'high' ? '#ef4444' : lead.urgency === 'medium' ? '#f59e0b' : '#22c55e';
     const icon = L.divIcon({
@@ -547,28 +685,18 @@ function updateMapMarkers() {
     const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
     marker.bindPopup(`
       <div style="font-family:system-ui;font-size:13px;max-width:220px;">
-        <strong>${lead.title || 'Job'}</strong><br>
-        <span style="color:#666;">${lead.trade || ''} · ${lead.city}, ${lead.country}</span><br>
+        <strong>${escapeHtml(lead.title || 'Job')}</strong><br>
+        <span style="color:#666;">${escapeHtml(lead.trade || '')} · ${escapeHtml(lead.city || '')}</span><br>
         <span style="color:#333;">Score: ${lead.leadScore}/100</span><br>
-        ${lead.customerName ? `<strong>${lead.customerName}</strong><br>` : ''}
-        ${lead.customerPhone ? `<a href="tel:${lead.customerPhone}">📞 ${lead.customerPhone}</a>` : ''}
+        ${lead.customerName ? `<strong>${escapeHtml(lead.customerName)}</strong><br>` : ''}
+        ${lead.postedAt ? `<span style="color:#888;">Posted ${relativeTime(lead.postedAt)}</span>` : ''}
       </div>
     `);
     markers.push(marker);
     bounds.push([lat, lng]);
   });
 
-  // Fit map to show all markers, or center on country if no leads
-  if (bounds.length > 0) {
-    if (bounds.length === 1) {
-      leafletMap.setView(bounds[0], 12);
-    } else {
-      leafletMap.fitBounds(bounds, { padding: [30, 30] });
-    }
-  } else {
-    const countryView = COUNTRY_CENTER[currentCountry] || COUNTRY_CENTER.US;
-    leafletMap.setView(countryView.center, countryView.zoom);
-  }
+  // Don't auto-fit bounds if searching by map — let user control the view
 }
 
 // Load more
@@ -579,9 +707,10 @@ async function loadLeads(append = false) {
     els.leadsContent.innerHTML = '<div class="loading">Loading leads…</div>';
     els.leadsLoadMore.style.display = 'none';
   }
+  showMapSpinner(true);
   const trade = els.tradeFilter.value;
   const city = els.citySearch.value.trim();
-  let url = `/api/leads?country=${currentCountry}&page=${currentPage}`;
+  let url = `/api/leads?country=${currentCountry}&page=${currentPage}&pageSize=20`;
   if (trade) url += `&trade=${encodeURIComponent(trade)}`;
   if (city) url += `&city=${encodeURIComponent(city)}`;
 
@@ -598,14 +727,17 @@ async function loadLeads(append = false) {
     }
     renderLeads();
     if (mapVisible) updateMapMarkers();
+    updateLiveIndicator(data.source);
   } catch (err) {
     els.leadsContent.innerHTML = `<div class="empty">Error: ${escapeHtml(err.message)}</div>`;
+  } finally {
+    showMapSpinner(false);
   }
 }
 
 function renderLeads() {
   if (!cachedLeads.length) {
-    els.leadsContent.innerHTML = '<div class="empty">No leads found. Try adjusting your filters.</div>';
+    els.leadsContent.innerHTML = '<div class="empty">No leads found. Try adjusting your filters or zoom into the map.</div>';
     els.leadsLoadMore.style.display = 'none';
     return;
   }
@@ -616,11 +748,12 @@ function renderLeads() {
 
 function renderLeadCard(lead) {
   const scoreColor = lead.leadScore >= 70 ? '#22c55e' : lead.leadScore >= 40 ? '#fbbf24' : '#f87171';
-  const countryFlag = lead.country === 'US' ? '🇺🇸' : lead.country === 'GB' ? '🇬🇧' : '🇦🇺';
+  const countryFlag = lead.country === 'US' ? '🇺🇸' : lead.country === 'GB' ? '🇬🇧' : lead.country === 'AU' ? '🇦🇺' : '🌍';
   const urgencyClass = (lead.urgency || 'low').toLowerCase();
-  const phoneLink = lead.phone ? `<a href="tel:${escapeHtml(lead.phone)}">📞 ${escapeHtml(lead.phone)}</a>` : '';
-  const emailLink = lead.email ? `<a href="mailto:${escapeHtml(lead.email)}">✉️ ${escapeHtml(lead.email)}</a>` : '';
-  const postedDate = lead.postedDate ? new Date(lead.postedDate).toLocaleDateString() : '';
+  const phoneLink = lead.customerPhone ? `<a href="tel:${escapeHtml(lead.customerPhone)}">📞 ${escapeHtml(lead.customerPhone)}</a>` : '';
+  const emailLink = lead.customerEmail ? `<a href="mailto:${escapeHtml(lead.customerEmail)}">✉️ ${escapeHtml(lead.customerEmail)}</a>` : '';
+  const postedTimeAgo = relativeTime(lead.postedAt || lead.postedDate);
+  const description = lead.description ? escapeHtml(lead.description).slice(0, 120) + (lead.description.length > 120 ? '…' : '') : '';
 
   return `
     <div class="lead-card">
@@ -632,7 +765,8 @@ function renderLeadCard(lead) {
         <span>${countryFlag} ${escapeHtml(lead.city || '')}${lead.city && lead.country ? ', ' + lead.country : ''}</span>
         <span class="lc-urgency ${urgencyClass}">${urgencyClass.charAt(0).toUpperCase() + urgencyClass.slice(1)}</span>
       </div>
-      ${lead.budgetMin != null || lead.budgetMax != null ? `<div class="lc-budget">💰 $${(lead.budgetMin||0).toLocaleString()} – $${(lead.budgetMax||0).toLocaleString()}</div>` : ''}
+      ${(lead.budgetMin || lead.budgetMax || (lead.budget && (lead.budget.min || lead.budget.max))) ? `<div class="lc-budget">💰 $${((lead.budgetMin || lead.budget?.min || 0) / 100).toLocaleString()} – $${((lead.budgetMax || lead.budget?.max || 0) / 100).toLocaleString()}</div>` : ''}
+      ${description ? `<div style="font-size:12px;color:var(--sub);line-height:1.4;">${description}</div>` : ''}
       <div class="lc-score">
         <span>Score: ${lead.leadScore ?? '—'}</span>
         <div class="lc-score-bar"><div class="lc-score-fill" style="width:${lead.leadScore || 0}%;background:${scoreColor};"></div></div>
@@ -643,7 +777,7 @@ function renderLeadCard(lead) {
         ${emailLink}
       </div>
       <div class="lc-footer">
-        <span class="lc-date">${postedDate ? '📅 ' + postedDate : ''}</span>
+        <span class="lc-date">${postedTimeAgo ? '🕐 ' + postedTimeAgo : ''}</span>
         <button class="btn sm" onclick="saveLead('${escapeHtml(lead.id || '')}')">Save Lead</button>
       </div>
     </div>`;
