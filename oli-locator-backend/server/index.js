@@ -168,14 +168,17 @@ const server = createServer(async (req, res) => {
 
     /* ========================= Leads ========================= */
 
-    // Search leads with filters
+    // Search leads with filters (supports map-based lat/lng/radius search)
     if (req.method === "GET" && url.pathname === "/api/leads") {
       const country = url.searchParams.get("country") || "US";
       const trade = url.searchParams.get("trade") || "";
       const city = url.searchParams.get("city") || "";
+      const lat = url.searchParams.get("lat") ? Number(url.searchParams.get("lat")) : undefined;
+      const lng = url.searchParams.get("lng") ? Number(url.searchParams.get("lng")) : undefined;
+      const radius = url.searchParams.get("radius") ? Number(url.searchParams.get("radius")) : undefined;
       const page = Number(url.searchParams.get("page")) || 1;
-      const pageSize = Number(url.searchParams.get("pageSize")) || 10;
-      const result = await filterLeads({ country, trade, city, page, pageSize });
+      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
+      const result = await filterLeads({ country, trade, city, lat, lng, radius, page, pageSize });
       return send(res, 200, result);
     }
 
