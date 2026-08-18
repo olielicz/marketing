@@ -391,8 +391,12 @@ export async function getSavedLeads() {
   return savedIds.map((id) => db.leads[id]).filter(Boolean);
 }
 
-export async function saveLead(id) {
+export async function saveLead(id, leadData) {
   const db = readDb();
+  // If the lead doesn't exist locally (e.g. it came from Adzuna API), store it first
+  if (!db.leads[id] && leadData) {
+    db.leads[id] = { ...leadData, id, savedAt: new Date().toISOString() };
+  }
   if (!db.leads[id]) return null;
   if (!db.savedLeads.includes(id)) {
     db.savedLeads.push(id);

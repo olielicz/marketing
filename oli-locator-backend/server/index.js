@@ -188,10 +188,11 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { leads: saved });
     }
 
-    // Save a lead
+    // Save a lead (accepts lead data in body for live API leads not in local store)
     if (req.method === "POST" && /^\/api\/leads\/[^/]+\/save$/.test(url.pathname)) {
       const id = url.pathname.split("/")[3];
-      const lead = await saveLead(id);
+      const body = await readJsonBody(req);
+      const lead = await saveLead(id, body.lead || body);
       if (!lead) return send(res, 404, { error: "Lead not found" });
       return send(res, 200, { ok: true, lead });
     }

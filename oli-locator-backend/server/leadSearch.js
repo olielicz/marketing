@@ -127,10 +127,30 @@ function httpsGet(url) {
 
 /**
  * Fetch leads from the Adzuna API for a given country and search terms.
+ * Uses search terms that target SERVICE REQUESTS (homeowners looking for tradespeople)
+ * not just employment listings.
  */
 async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }) {
   const countryCode = COUNTRY_MAP[country.toUpperCase()] || "us";
-  const searchTerm = trade || "home improvement";
+  
+  // Build search terms that find service requests, not just employment
+  // Adding "needed" / "required" / "wanted" to find people REQUESTING work
+  const tradeTerms = {
+    "cleaning": "cleaning service needed",
+    "pest control": "pest control service",
+    "renovation": "renovation contractor needed",
+    "roofing": "roofer needed repair",
+    "painting": "painter needed house",
+    "plumbing": "plumber needed repair",
+    "electrical": "electrician needed",
+    "landscaping": "landscaping gardener needed",
+    "hvac": "hvac air conditioning repair",
+    "flooring": "flooring installation",
+    "handyman": "handyman repair service",
+    "home improvement": "home improvement repair service needed",
+  };
+  
+  const searchTerm = tradeTerms[trade] || tradeTerms["home improvement"];
   const locationTerm = city || "";
 
   // Build the API URL
@@ -142,6 +162,7 @@ async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }
     what: searchTerm,
     results_per_page: String(Math.min(50, pageSize)),
     "content-type": "application/json",
+    sort_by: "date",
   });
 
   if (locationTerm) {

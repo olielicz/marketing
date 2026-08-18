@@ -785,8 +785,13 @@ function renderLeadCard(lead) {
 
 async function saveLead(id) {
   if (!id) return;
+  // Find the lead in cached results to send its data to the backend
+  const lead = cachedLeads.find(l => String(l.id) === String(id));
   try {
-    const res = await apiFetch(`/api/leads/${id}/save`, { method: 'POST' });
+    const res = await apiFetch(`/api/leads/${id}/save`, {
+      method: 'POST',
+      body: JSON.stringify({ lead: lead || { id } })
+    });
     if (res.ok) {
       alert('Lead saved!');
     } else {
