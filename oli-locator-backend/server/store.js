@@ -14,8 +14,8 @@ const DB_FILE = path.join(DATA_DIR, "oli-locator.json");
 /* ========================= Demo Lead Data ========================= */
 
 const TRADES = [
-  "cleaning", "plumbing", "electrical", "roofing", "painting",
-  "landscaping", "carpentry", "hvac", "flooring", "fencing", "renovation"
+  "cleaning", "pest-control", "renovation", "roofing", "painting",
+  "plumbing", "electrical", "landscaping", "hvac", "flooring", "handyman"
 ];
 
 function generateDemoLeads() {
@@ -52,10 +52,10 @@ function generateDemoLeads() {
     { title: "Replace aging shingle roof on 2-story colonial", trade: "roofing", budget: { min: 800000, max: 1500000 }, urgency: "medium", score: 78 },
     { title: "Interior painting — 3 bedrooms and hallway", trade: "painting", budget: { min: 150000, max: 300000 }, urgency: "medium", score: 71 },
     { title: "Full backyard landscaping with irrigation system", trade: "landscaping", budget: { min: 500000, max: 1200000 }, urgency: "low", score: 55 },
-    { title: "Build custom walk-in closet shelving", trade: "carpentry", budget: { min: 200000, max: 450000 }, urgency: "medium", score: 82 },
+    { title: "Build custom walk-in closet shelving", trade: "handyman", budget: { min: 200000, max: 450000 }, urgency: "medium", score: 82 },
     { title: "AC unit replacement — central air for 2400 sqft home", trade: "hvac", budget: { min: 500000, max: 900000 }, urgency: "high", score: 95 },
     { title: "Install hardwood flooring in living room and dining room", trade: "flooring", budget: { min: 400000, max: 700000 }, urgency: "medium", score: 73 },
-    { title: "Install 6-foot privacy fence around backyard", trade: "fencing", budget: { min: 300000, max: 600000 }, urgency: "low", score: 60 },
+    { title: "Install 6-foot privacy fence around backyard", trade: "handyman", budget: { min: 300000, max: 600000 }, urgency: "low", score: 60 },
     { title: "Bathroom renovation — complete gut and rebuild", trade: "renovation", budget: { min: 1500000, max: 2500000 }, urgency: "medium", score: 85 },
     { title: "Post-construction cleanup for new addition", trade: "cleaning", budget: { min: 40000, max: 80000 }, urgency: "high", score: 90 },
     { title: "Unclog main sewer line and camera inspection", trade: "plumbing", budget: { min: 25000, max: 50000 }, urgency: "high", score: 94 },
@@ -63,7 +63,7 @@ function generateDemoLeads() {
     { title: "Repair storm damage — missing shingles on north side", trade: "roofing", budget: { min: 200000, max: 500000 }, urgency: "high", score: 91 },
     { title: "Exterior house painting including trim and shutters", trade: "painting", budget: { min: 400000, max: 700000 }, urgency: "low", score: 58 },
     { title: "Weekly lawn maintenance contract needed", trade: "landscaping", budget: { min: 15000, max: 30000 }, urgency: "low", score: 45 },
-    { title: "Replace rotted deck boards and refinish", trade: "carpentry", budget: { min: 300000, max: 600000 }, urgency: "medium", score: 70 },
+    { title: "Replace rotted deck boards and refinish", trade: "handyman", budget: { min: 300000, max: 600000 }, urgency: "medium", score: 70 },
     { title: "Furnace tune-up and duct cleaning", trade: "hvac", budget: { min: 20000, max: 50000 }, urgency: "medium", score: 62 },
     { title: "Kitchen renovation — cabinets, counters, backsplash", trade: "renovation", budget: { min: 2000000, max: 4000000 }, urgency: "low", score: 68 },
   ];
@@ -120,10 +120,10 @@ function generateDemoLeads() {
     { title: "Flat roof replacement on rear extension", trade: "roofing", budget: { min: 200000, max: 400000 }, urgency: "medium", score: 80 },
     { title: "Paint entire 3-bed semi interior — neutral colours", trade: "painting", budget: { min: 100000, max: 200000 }, urgency: "low", score: 63 },
     { title: "Garden redesign with new patio and planting scheme", trade: "landscaping", budget: { min: 300000, max: 600000 }, urgency: "low", score: 52 },
-    { title: "Fit bespoke built-in wardrobes for master bedroom", trade: "carpentry", budget: { min: 150000, max: 300000 }, urgency: "medium", score: 76 },
+    { title: "Fit bespoke built-in wardrobes for master bedroom", trade: "handyman", budget: { min: 150000, max: 300000 }, urgency: "medium", score: 76 },
     { title: "Boiler replacement — combi swap for 4-bed house", trade: "hvac", budget: { min: 250000, max: 450000 }, urgency: "high", score: 93 },
     { title: "Lay engineered oak flooring throughout ground floor", trade: "flooring", budget: { min: 200000, max: 400000 }, urgency: "medium", score: 69 },
-    { title: "Erect close-board fencing — 20m boundary", trade: "fencing", budget: { min: 150000, max: 300000 }, urgency: "low", score: 57 },
+    { title: "Erect close-board fencing — 20m boundary", trade: "pest-control", budget: { min: 150000, max: 300000 }, urgency: "low", score: 57 },
     { title: "Loft conversion into home office with Velux windows", trade: "renovation", budget: { min: 2000000, max: 4000000 }, urgency: "medium", score: 84 },
     { title: "Commercial office deep clean — 5000 sqft", trade: "cleaning", budget: { min: 50000, max: 100000 }, urgency: "high", score: 87 },
     { title: "Install underfloor heating in new bathroom", trade: "plumbing", budget: { min: 150000, max: 300000 }, urgency: "medium", score: 72 },
@@ -182,10 +182,10 @@ function generateDemoLeads() {
     { title: "Re-roof Colorbond — single storey brick home", trade: "roofing", budget: { min: 1000000, max: 1800000 }, urgency: "medium", score: 79 },
     { title: "Repaint exterior weatherboard house — prep and 2 coats", trade: "painting", budget: { min: 400000, max: 700000 }, urgency: "medium", score: 72 },
     { title: "Native garden design and install with drip irrigation", trade: "landscaping", budget: { min: 500000, max: 1000000 }, urgency: "low", score: 53 },
-    { title: "Build timber deck with pergola — 40sqm", trade: "carpentry", budget: { min: 1200000, max: 2000000 }, urgency: "medium", score: 83 },
+    { title: "Build timber deck with pergola — 40sqm", trade: "handyman", budget: { min: 1200000, max: 2000000 }, urgency: "medium", score: 83 },
     { title: "Ducted air conditioning install — 4-bed house", trade: "hvac", budget: { min: 800000, max: 1400000 }, urgency: "high", score: 94 },
     { title: "Polish and seal concrete floors throughout house", trade: "flooring", budget: { min: 300000, max: 600000 }, urgency: "low", score: 59 },
-    { title: "Colorbond fencing — full property boundary 50m", trade: "fencing", budget: { min: 500000, max: 900000 }, urgency: "medium", score: 70 },
+    { title: "Colorbond fencing — full property boundary 50m", trade: "pest-control", budget: { min: 500000, max: 900000 }, urgency: "medium", score: 70 },
     { title: "Full bathroom reno — remove asbestos, retile, new fittings", trade: "renovation", budget: { min: 2000000, max: 3500000 }, urgency: "medium", score: 86 },
     { title: "Regular weekly house cleaning — ongoing contract", trade: "cleaning", budget: { min: 15000, max: 25000 }, urgency: "low", score: 48 },
     { title: "Fix blocked stormwater drain and relining", trade: "plumbing", budget: { min: 200000, max: 450000 }, urgency: "high", score: 88 },
