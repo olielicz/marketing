@@ -137,20 +137,20 @@ function httpsGet(url) {
 async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }) {
   const countryCode = COUNTRY_MAP[country.toUpperCase()] || "us";
   
-  // Use simple, broad trade terms that return the most results
+  // Use simple SINGLE trade terms — Adzuna's multi-word search requires ALL words to match
   const tradeTerms = {
-    "cleaning": "cleaning cleaner domestic",
-    "pest control": "pest control exterminator",
-    "renovation": "renovation remodel builder",
-    "roofing": "roofing roofer",
-    "painting": "painter painting decorator",
-    "plumbing": "plumber plumbing",
-    "electrical": "electrician electrical",
-    "landscaping": "landscaping gardener garden",
-    "hvac": "hvac heating cooling",
-    "flooring": "flooring floor installer",
-    "handyman": "handyman maintenance repair",
-    "home improvement": "home improvement repair maintenance",
+    "cleaning": "cleaner",
+    "pest control": "pest",
+    "renovation": "renovation",
+    "roofing": "roofer",
+    "painting": "painter",
+    "plumbing": "plumber",
+    "electrical": "electrician",
+    "landscaping": "landscaper",
+    "hvac": "hvac",
+    "flooring": "flooring",
+    "handyman": "handyman",
+    "home improvement": "maintenance",
   };
   
   const searchTerm = tradeTerms[trade] || tradeTerms["home improvement"];
