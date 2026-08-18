@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Oli-Locator — Home Improvement Lead Finder</title>
 <meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--bg:#0d0e12;--card:#1a1c22;--ink:#fff;--sub:#9b96b8;--accent:#e11d2e;--line:#2a2c34;--good:#16a34a;--warn:#d97706;--badge-bg:#2a2c34;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -205,11 +207,9 @@ tr:last-child td{border-bottom:none;}
         </select>
         <input type="text" id="citySearch" placeholder="City, ZIP, or Postcode…"/>
         <button class="btn sm" id="searchBtn">Search</button>
-        <button class="btn sm secondary" id="toggleMapBtn">🗺️ Map</button>
+        <button class="btn sm secondary" id="toggleMapBtn">🗺️ Show Map</button>
       </div>
-      <div id="mapContainer" style="display:none;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);height:360px;position:relative;">
-        <iframe id="mapFrame" style="width:100%;height:100%;border:none;" src="about:blank"></iframe>
-      </div>
+      <div id="mapContainer" style="display:none;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);height:380px;"></div>
       <div id="leadsContent"></div>
       <div id="leadsLoadMore" style="text-align:center;margin-top:16px;display:none;">
         <button class="btn secondary" id="loadMoreBtn">Load More</button>
@@ -461,6 +461,10 @@ document.querySelectorAll('#countryToggles button').forEach(btn => {
     currentCountry = btn.dataset.country;
     currentPage = 1;
     cachedLeads = [];
+    if (leafletMap) {
+      const cv = COUNTRY_CENTER[currentCountry] || COUNTRY_CENTER.US;
+      leafletMap.setView(cv.center, cv.zoom);
+    }
     loadLeads();
   });
 });
@@ -472,58 +476,99 @@ els.tradeFilter.addEventListener('change', () => { currentPage = 1; cachedLeads 
 
 // Map toggle
 const mapContainer = document.getElementById('mapContainer');
-const mapFrame = document.getElementById('mapFrame');
 const toggleMapBtn = document.getElementById('toggleMapBtn');
 let mapVisible = false;
+let leafletMap = null;
+let markers = [];
+
+// City coordinates for placing lead markers
+const CITY_COORDS = {
+  'miami': [25.76, -80.19], 'houston': [29.76, -95.37], 'phoenix': [33.45, -112.07],
+  'chicago': [41.88, -87.63], 'los angeles': [34.05, -118.24],
+  'london': [51.51, -0.13], 'manchester': [53.48, -2.24], 'birmingham': [52.49, -1.89],
+  'leeds': [53.80, -1.55], 'bristol': [51.45, -2.59],
+  'sydney': [-33.87, 151.21], 'melbourne': [-37.81, 144.96], 'brisbane': [-27.47, 153.03],
+  'perth': [-31.95, 115.86], 'adelaide': [-34.93, 138.60]
+};
+
+const COUNTRY_CENTER = {
+  US: { center: [39.8, -98.6], zoom: 4 },
+  UK: { center: [54.0, -2.5], zoom: 6 },
+  AU: { center: [-25.3, 134.8], zoom: 4 }
+};
 
 toggleMapBtn.addEventListener('click', () => {
   mapVisible = !mapVisible;
   mapContainer.style.display = mapVisible ? 'block' : 'none';
-  toggleMapBtn.textContent = mapVisible ? '📋 List' : '🗺️ Map';
-  if (mapVisible) updateMap();
+  toggleMapBtn.textContent = mapVisible ? '🗺️ Hide Map' : '🗺️ Show Map';
+  if (mapVisible) {
+    if (!leafletMap) {
+      initMap();
+    } else {
+      leafletMap.invalidateSize();
+    }
+    updateMapMarkers();
+  }
 });
 
-function updateMap() {
-  const city = els.citySearch.value.trim();
-  const countryNames = { US: 'USA', UK: 'United Kingdom', AU: 'Australia' };
-  const query = city ? `${city}, ${countryNames[currentCountry] || ''}` : (countryNames[currentCountry] || 'World');
-  const bbox = !city ? getCountryBbox(currentCountry) : '';
-  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=` +
-    (city ? '' : '') + `${bbox ? '' : '&query=' + encodeURIComponent(query)}`;
-  // Use a simple approach: show the map centered on the searched location
-  const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${getSearchBbox(currentCountry, city)}&layer=mapnik`;
-  mapFrame.src = mapUrl;
+function initMap() {
+  const countryView = COUNTRY_CENTER[currentCountry] || COUNTRY_CENTER.US;
+  leafletMap = L.map(mapContainer).setView(countryView.center, countryView.zoom);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(leafletMap);
 }
 
-function getSearchBbox(country, city) {
-  // Default bounding boxes per country
-  const defaults = {
-    US: '-125.0,24.0,-66.0,50.0',
-    UK: '-8.0,49.5,2.0,59.0',
-    AU: '112.0,-44.0,154.0,-10.0'
-  };
-  if (!city) return defaults[country] || defaults.US;
-  // If city is searched, use a tighter bbox (will be approximate)
-  const cityCoords = {
-    'miami': '-80.3,25.7,-80.1,25.85', 'houston': '-95.5,29.6,-95.2,29.9',
-    'phoenix': '-112.2,33.3,-111.9,33.6', 'chicago': '-87.8,41.7,-87.5,42.0',
-    'los angeles': '-118.4,33.9,-118.1,34.15', 'la': '-118.4,33.9,-118.1,34.15',
-    'london': '-0.3,51.4,0.05,51.6', 'manchester': '-2.35,53.4,-2.15,53.55',
-    'birmingham': '-1.95,52.4,-1.8,52.55', 'leeds': '-1.6,53.75,-1.45,53.85',
-    'bristol': '-2.65,51.4,-2.5,51.5', 'sydney': '151.1,-33.95,151.3,-33.8',
-    'melbourne': '144.85,-37.85,145.05,-37.75', 'brisbane': '153.0,-27.55,153.15,-27.4',
-    'perth': '115.8,-32.0,115.95,-31.9', 'adelaide': '138.55,-35.0,138.7,-34.85'
-  };
-  const key = city.toLowerCase();
-  for (const [name, bbox] of Object.entries(cityCoords)) {
-    if (key.includes(name)) return bbox;
+function updateMapMarkers() {
+  if (!leafletMap) return;
+  // Clear existing markers
+  markers.forEach(m => leafletMap.removeLayer(m));
+  markers = [];
+
+  // Add markers for each lead in current results
+  const bounds = [];
+  cachedLeads.forEach(lead => {
+    const cityKey = (lead.city || '').toLowerCase();
+    const coords = CITY_COORDS[cityKey];
+    if (!coords) return;
+    // Add slight random offset so pins in same city don't stack exactly
+    const lat = coords[0] + (Math.random() - 0.5) * 0.02;
+    const lng = coords[1] + (Math.random() - 0.5) * 0.02;
+
+    const urgencyColor = lead.urgency === 'high' ? '#ef4444' : lead.urgency === 'medium' ? '#f59e0b' : '#22c55e';
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:12px;height:12px;background:${urgencyColor};border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4);"></div>`,
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+
+    const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
+    marker.bindPopup(`
+      <div style="font-family:system-ui;font-size:13px;max-width:220px;">
+        <strong>${lead.title || 'Job'}</strong><br>
+        <span style="color:#666;">${lead.trade || ''} · ${lead.city}, ${lead.country}</span><br>
+        <span style="color:#333;">Score: ${lead.leadScore}/100</span><br>
+        ${lead.customerName ? `<strong>${lead.customerName}</strong><br>` : ''}
+        ${lead.customerPhone ? `<a href="tel:${lead.customerPhone}">📞 ${lead.customerPhone}</a>` : ''}
+      </div>
+    `);
+    markers.push(marker);
+    bounds.push([lat, lng]);
+  });
+
+  // Fit map to show all markers, or center on country if no leads
+  if (bounds.length > 0) {
+    if (bounds.length === 1) {
+      leafletMap.setView(bounds[0], 12);
+    } else {
+      leafletMap.fitBounds(bounds, { padding: [30, 30] });
+    }
+  } else {
+    const countryView = COUNTRY_CENTER[currentCountry] || COUNTRY_CENTER.US;
+    leafletMap.setView(countryView.center, countryView.zoom);
   }
-  return defaults[country] || defaults.US;
-}
-
-function getCountryBbox(country) {
-  const defaults = { US: '-125.0,24.0,-66.0,50.0', UK: '-8.0,49.5,2.0,59.0', AU: '112.0,-44.0,154.0,-10.0' };
-  return defaults[country] || defaults.US;
 }
 
 // Load more
@@ -552,7 +597,7 @@ async function loadLeads(append = false) {
       cachedLeads = newLeads;
     }
     renderLeads();
-    if (mapVisible) updateMap();
+    if (mapVisible) updateMapMarkers();
   } catch (err) {
     els.leadsContent.innerHTML = `<div class="empty">Error: ${escapeHtml(err.message)}</div>`;
   }
