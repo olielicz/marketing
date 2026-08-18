@@ -1,10 +1,15 @@
 /**
  * Lead search/filter engine for Oli-Locator.
- * Fetches LIVE leads from the Adzuna Jobs API and maps them to
+ * Fetches LIVE leads from multiple free job APIs and maps them to
  * the lead format expected by the frontend.
- * 
+ *
+ * Data Sources:
+ * - Adzuna Jobs API (for US, UK, AU country-specific searches)
+ * - Remotive API (for remote freelance/agency jobs, no key needed)
+ * - Jobicy API (for remote freelance/agency jobs, no key needed)
+ *
  * Uses Node's built-in https module (no npm dependencies).
- * Implements a 5-minute in-memory cache to avoid hitting the 250/day API limit.
+ * Implements a 5-minute in-memory cache to avoid hitting API limits.
  */
 import https from "node:https";
 import { listLeads } from "./store.js";
@@ -21,11 +26,77 @@ const COUNTRY_MAP = {
   AU: "au",
 };
 
-// Trades to search for
-const VALID_TRADES = [
-  "cleaning", "pest control", "renovation", "roofing", "painting",
-  "plumbing", "electrical", "landscaping", "hvac", "flooring", "handyman"
-];
+// Freelance/agency category → Adzuna search terms
+const tradeTerms = {
+  "web development": "web developer",
+  "web-development": "web developer",
+  "mobile development": "mobile developer",
+  "mobile-development": "mobile developer",
+  "ui ux design": "designer",
+  "ui-ux-design": "designer",
+  "digital marketing": "marketing",
+  "digital-marketing": "marketing",
+  "content writing": "content writer",
+  "content-writing": "content writer",
+  "video animation": "video editor",
+  "video-animation": "video editor",
+  "virtual assistant": "virtual assistant",
+  "virtual-assistant": "virtual assistant",
+  "data entry": "data entry",
+  "data-entry": "data entry",
+  "accounting": "accountant",
+  "sales": "sales",
+  "customer support": "customer support",
+  "customer-support": "customer support",
+};
+
+// Remotive API category mapping
+const REMOTIVE_CATEGORY_MAP = {
+  "web development": "software-dev",
+  "web-development": "software-dev",
+  "mobile development": "software-dev",
+  "mobile-development": "software-dev",
+  "ui ux design": "design",
+  "ui-ux-design": "design",
+  "digital marketing": "marketing",
+  "digital-marketing": "marketing",
+  "content writing": "writing",
+  "content-writing": "writing",
+  "video animation": "design",
+  "video-animation": "design",
+  "virtual assistant": "all-others",
+  "virtual-assistant": "all-others",
+  "data entry": "data",
+  "data-entry": "data",
+  "accounting": "all-others",
+  "sales": "sales",
+  "customer support": "customer-support",
+  "customer-support": "customer-support",
+};
+
+// Jobicy API tag mapping
+const JOBICY_TAG_MAP = {
+  "web development": "javascript",
+  "web-development": "javascript",
+  "mobile development": "react",
+  "mobile-development": "react",
+  "ui ux design": "design",
+  "ui-ux-design": "design",
+  "digital marketing": "marketing",
+  "digital-marketing": "marketing",
+  "content writing": "marketing",
+  "content-writing": "marketing",
+  "video animation": "design",
+  "video-animation": "design",
+  "virtual assistant": "customer-support",
+  "virtual-assistant": "customer-support",
+  "data entry": "data-science",
+  "data-entry": "data-science",
+  "accounting": "data-science",
+  "sales": "marketing",
+  "customer support": "customer-support",
+  "customer-support": "customer-support",
+};
 
 /* ========================= In-Memory Cache (5-minute TTL) ========================= */
 
@@ -59,7 +130,7 @@ function setCache(key, data) {
 
 export function clearCache() {
   cache.clear();
-  console.log("[Adzuna] Cache cleared");
+  console.log("[Cache] Cache cleared");
 }
 
 /* ========================= Urgency Logic ========================= */
@@ -89,20 +160,82 @@ function determineUrgency(createdDate) {
  * - has location = +20
  * - recent (< 2 days) = +30
  */
-function calculateScore(result) {
+function calculateScoreFromFields({ hasSalary, hasDescription, hasLocation, createdDate }) {
   let score = 0;
-  if (result.salary_min || result.salary_max) score += 30;
-  if (result.description && result.description.length > 20) score += 20;
-  if (result.location && (result.location.display_name || (result.location.area && result.location.area.length > 0))) score += 20;
-  if (result.created) {
-    const daysAgo = (Date.now() - new Date(result.created).getTime()) / (1000 * 60 * 60 * 24);
+  if (hasSalary) score += 30;
+  if (hasDescription) score += 20;
+  if (hasLocation) score += 20;
+  if (createdDate) {
+    const daysAgo = (Date.now() - new Date(createdDate).getTime()) / (1000 * 60 * 60 * 24);
     if (daysAgo < 2) score += 30;
     else if (daysAgo < 7) score += 15;
   }
   return Math.min(100, score);
 }
 
-/* ========================= Adzuna API Call ========================= */
+/**
+ * Calculate lead score for an Adzuna result (legacy format).
+ */
+function calculateScore(result) {
+  return calculateScoreFromFields({
+    hasSalary: !!(result.salary_min || result.salary_max),
+    hasDescription: !!(result.description && result.description.length > 20),
+    hasLocation: !!(result.location && (result.location.display_name || (result.location.area && result.location.area.length > 0))),
+    createdDate: result.created,
+  });
+}
+
+/* ========================= Salary Parsing ========================= */
+
+/**
+ * Parse salary string from Remotive (e.g., "$50,000 - $80,000", "50k-80k", etc.)
+ */
+function parseSalary(salaryStr, type) {
+  if (!salaryStr) return 0;
+  const cleaned = salaryStr.replace(/[,$]/g, "").toLowerCase();
+  // Try to find numbers
+  const numbers = cleaned.match(/(\d+\.?\d*)\s*k?/g);
+  if (!numbers || numbers.length === 0) return 0;
+
+  const parsed = numbers.map((n) => {
+    const num = parseFloat(n.replace(/k/i, ""));
+    return n.toLowerCase().includes("k") ? num * 1000 : num;
+  });
+
+  if (type === "min") return Math.round(parsed[0] || 0);
+  if (type === "max") return Math.round(parsed[parsed.length - 1] || parsed[0] || 0);
+  return 0;
+}
+
+/* ========================= Category Mapping Helpers ========================= */
+
+function mapRemotiveCategory(category) {
+  if (!category) return "general";
+  const lower = category.toLowerCase();
+  if (lower.includes("software") || lower.includes("dev")) return "web development";
+  if (lower.includes("design")) return "ui ux design";
+  if (lower.includes("marketing")) return "digital marketing";
+  if (lower.includes("writing")) return "content writing";
+  if (lower.includes("customer")) return "customer support";
+  if (lower.includes("data")) return "data entry";
+  if (lower.includes("sales")) return "sales";
+  return "general";
+}
+
+function mapJobicyTag(jobIndustry) {
+  if (!jobIndustry) return "general";
+  const lower = (Array.isArray(jobIndustry) ? jobIndustry.join(" ") : jobIndustry).toLowerCase();
+  if (lower.includes("software") || lower.includes("dev") || lower.includes("engineering")) return "web development";
+  if (lower.includes("design")) return "ui ux design";
+  if (lower.includes("marketing")) return "digital marketing";
+  if (lower.includes("writing") || lower.includes("content")) return "content writing";
+  if (lower.includes("customer") || lower.includes("support")) return "customer support";
+  if (lower.includes("data")) return "data entry";
+  if (lower.includes("sales")) return "sales";
+  return "general";
+}
+
+/* ========================= HTTPS GET Helper ========================= */
 
 /**
  * Make an HTTPS GET request using Node's built-in https module.
@@ -118,42 +251,28 @@ function httpsGet(url) {
           if (res.statusCode >= 200 && res.statusCode < 300) {
             resolve(JSON.parse(data));
           } else {
-            reject(new Error(`Adzuna API returned status ${res.statusCode}: ${data.slice(0, 200)}`));
+            reject(new Error(`API returned status ${res.statusCode}: ${data.slice(0, 200)}`));
           }
         } catch (e) {
-          reject(new Error(`Failed to parse Adzuna response: ${e.message}`));
+          reject(new Error(`Failed to parse API response: ${e.message}`));
         }
       });
     });
-    req.on("error", (e) => reject(new Error(`Adzuna API request failed: ${e.message}`)));
-    req.setTimeout(10000, () => { req.destroy(); reject(new Error("Adzuna API request timed out")); });
+    req.on("error", (e) => reject(new Error(`API request failed: ${e.message}`)));
+    req.setTimeout(10000, () => { req.destroy(); reject(new Error("API request timed out")); });
   });
 }
 
+/* ========================= Adzuna API ========================= */
+
 /**
  * Fetch leads from the Adzuna API for a given country and search terms.
- * Uses broad trade-category terms to maximize results.
  */
 async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }) {
   const countryCode = COUNTRY_MAP[country.toUpperCase()] || "us";
-  
-  // Use simple SINGLE trade terms — Adzuna's multi-word search requires ALL words to match
-  const tradeTerms = {
-    "cleaning": "cleaner",
-    "pest control": "pest",
-    "renovation": "renovation",
-    "roofing": "roofer",
-    "painting": "painter",
-    "plumbing": "plumber",
-    "electrical": "electrician",
-    "landscaping": "landscaper",
-    "hvac": "hvac",
-    "flooring": "flooring",
-    "handyman": "handyman",
-    "home improvement": "maintenance",
-  };
-  
-  const searchTerm = tradeTerms[trade] || tradeTerms["home improvement"];
+
+  // Use the freelance/agency category search terms
+  const searchTerm = tradeTerms[trade] || "developer";
   const locationTerm = city || "";
 
   // Build the API URL
@@ -174,8 +293,111 @@ async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }
 
   url += `?${params.toString()}`;
 
+  console.log(`[Adzuna] Fetching: ${url.replace(ADZUNA_APP_KEY, "***")}`);
   const data = await httpsGet(url);
   return data;
+}
+
+/* ========================= Remotive API ========================= */
+
+/**
+ * Fetch remote jobs from the Remotive API (free, no key needed).
+ * URL: https://remotive.com/api/remote-jobs?category=CATEGORY&limit=20
+ */
+async function fetchFromRemotive({ trade, pageSize = 20 }) {
+  const category = REMOTIVE_CATEGORY_MAP[trade] || "software-dev";
+  const limit = Math.min(50, pageSize);
+  const url = `https://remotive.com/api/remote-jobs?category=${encodeURIComponent(category)}&limit=${limit}`;
+
+  console.log(`[Remotive] Fetching: ${url}`);
+  const data = await httpsGet(url);
+  return data;
+}
+
+/**
+ * Map a Remotive job to our lead format.
+ */
+function mapRemotiveJobToLead(job) {
+  const budgetMin = parseSalary(job.salary, "min");
+  const budgetMax = parseSalary(job.salary, "max");
+
+  return {
+    id: String(job.id),
+    title: job.title || "Untitled Job",
+    trade: mapRemotiveCategory(job.category),
+    country: "REMOTE",
+    city: job.candidate_required_location || "Remote",
+    postcode: "",
+    budget: { min: budgetMin, max: budgetMax },
+    budgetMin,
+    budgetMax,
+    urgency: determineUrgency(job.publication_date),
+    leadScore: calculateScoreFromFields({
+      hasSalary: !!(budgetMin || budgetMax),
+      hasDescription: !!(job.description && job.description.length > 20),
+      hasLocation: !!(job.candidate_required_location),
+      createdDate: job.publication_date,
+    }),
+    customerName: job.company_name || "",
+    customerPhone: "",
+    customerEmail: "",
+    postedAt: job.publication_date || null,
+    postedDate: job.publication_date || null,
+    description: job.description?.slice(0, 300) || "",
+    latitude: null,
+    longitude: null,
+  };
+}
+
+/* ========================= Jobicy API ========================= */
+
+/**
+ * Fetch remote jobs from the Jobicy API (free, no key needed).
+ * URL: https://jobicy.com/api/v2/remote-jobs?count=20&tag=CATEGORY
+ */
+async function fetchFromJobicy({ trade, pageSize = 20 }) {
+  const tag = JOBICY_TAG_MAP[trade] || "javascript";
+  const count = Math.min(50, pageSize);
+  const url = `https://jobicy.com/api/v2/remote-jobs?count=${count}&tag=${encodeURIComponent(tag)}`;
+
+  console.log(`[Jobicy] Fetching: ${url}`);
+  const data = await httpsGet(url);
+  return data;
+}
+
+/**
+ * Map a Jobicy job to our lead format.
+ */
+function mapJobicyJobToLead(job) {
+  const budgetMin = job.annualSalaryMin || 0;
+  const budgetMax = job.annualSalaryMax || 0;
+
+  return {
+    id: String(job.id),
+    title: job.jobTitle || "Untitled Job",
+    trade: mapJobicyTag(job.jobIndustry),
+    country: "REMOTE",
+    city: job.jobGeo || "Remote",
+    postcode: "",
+    budget: { min: budgetMin, max: budgetMax },
+    budgetMin,
+    budgetMax,
+    urgency: determineUrgency(job.pubDate),
+    leadScore: calculateScoreFromFields({
+      hasSalary: !!(budgetMin || budgetMax),
+      hasDescription: !!(job.jobDescription && job.jobDescription.length > 20),
+      hasLocation: !!(job.jobGeo),
+      createdDate: job.pubDate,
+    }),
+    customerName: job.companyName || "",
+    customerPhone: "",
+    customerEmail: "",
+    postedAt: job.pubDate || null,
+    postedDate: job.pubDate || null,
+    description: job.jobDescription?.slice(0, 300) || "",
+    latitude: null,
+    longitude: null,
+  };
 }
 
 /* ========================= Map Adzuna Result to Lead Format ========================= */
@@ -212,12 +434,66 @@ function mapResultToLead(result, searchedTrade, countryCode) {
   };
 }
 
+/* ========================= Deduplication ========================= */
+
+/**
+ * Deduplicate leads by title + company name (case-insensitive).
+ */
+function deduplicateLeads(leads) {
+  const seen = new Set();
+  return leads.filter((lead) => {
+    const key = `${(lead.title || "").toLowerCase().trim()}|${(lead.customerName || "").toLowerCase().trim()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/* ========================= Fetch Remote Leads (Remotive + Jobicy) ========================= */
+
+/**
+ * Fetch from both Remotive and Jobicy APIs, merge and deduplicate results.
+ */
+async function fetchRemoteLeads({ trade, pageSize = 20 }) {
+  const results = [];
+  const errors = [];
+
+  // Fetch from Remotive
+  try {
+    const remotiveData = await fetchFromRemotive({ trade, pageSize });
+    const remotiveJobs = remotiveData.jobs || [];
+    console.log(`[Remotive] Got ${remotiveJobs.length} results`);
+    const remotiveLeads = remotiveJobs.map(mapRemotiveJobToLead);
+    results.push(...remotiveLeads);
+  } catch (err) {
+    console.error(`[Remotive API Error] ${err.message}`);
+    errors.push(`Remotive: ${err.message}`);
+  }
+
+  // Fetch from Jobicy
+  try {
+    const jobicyData = await fetchFromJobicy({ trade, pageSize });
+    const jobicyJobs = jobicyData.jobs || [];
+    console.log(`[Jobicy] Got ${jobicyJobs.length} results`);
+    const jobicyLeads = jobicyJobs.map(mapJobicyJobToLead);
+    results.push(...jobicyLeads);
+  } catch (err) {
+    console.error(`[Jobicy API Error] ${err.message}`);
+    errors.push(`Jobicy: ${err.message}`);
+  }
+
+  // Deduplicate by title + company
+  const deduplicated = deduplicateLeads(results);
+
+  return { leads: deduplicated, errors };
+}
+
 /* ========================= Main Filter Function ========================= */
 
 /**
  * @param {Object} params
- * @param {string} params.country - Required. "US", "UK", or "AU"
- * @param {string} [params.trade] - Optional trade filter
+ * @param {string} params.country - Required. "US", "UK", "AU", or "REMOTE"
+ * @param {string} [params.trade] - Optional trade/category filter
  * @param {string} [params.city] - Optional city/location search
  * @param {number} [params.lat] - Optional latitude for map-based search
  * @param {number} [params.lng] - Optional longitude for map-based search
@@ -228,10 +504,9 @@ function mapResultToLead(result, searchedTrade, countryCode) {
  */
 export async function filterLeads({ country, trade, city, lat, lng, radius, page = 1, pageSize = 10 }) {
   const countryUpper = (country || "US").toUpperCase();
-  const countryCode = COUNTRY_MAP[countryUpper] || "us";
 
   // Normalize trade for search
-  let searchTrade = trade ? trade.replace(/-/g, " ") : "";
+  let searchTrade = trade ? trade.replace(/-/g, " ").toLowerCase() : "";
 
   // Build cache key
   const cacheKey = getCacheKey({ country: countryUpper, trade: searchTrade, city, lat, lng, radius, page, pageSize });
@@ -239,54 +514,93 @@ export async function filterLeads({ country, trade, city, lat, lng, radius, page
   // Check cache first
   const cached = getCached(cacheKey);
   if (cached) {
+    console.log(`[Cache] Hit for key: ${cacheKey.slice(0, 80)}...`);
     return { ...cached, source: "cache" };
   }
 
   try {
-    // If lat/lng provided, use city as location or construct a location string
-    let locationSearch = city || "";
-    if (!locationSearch && lat && lng) {
-      // Adzuna doesn't directly support lat/lng, use general search for the country
-      locationSearch = "";
-    }
+    let leads = [];
+    let total = 0;
+    let source = "";
 
-    console.log(`[Adzuna] Searching: country=${countryUpper}, trade="${searchTrade}", city="${locationSearch}", page=${page}`);
+    if (countryUpper === "REMOTE") {
+      // ===== REMOTE: Call both Remotive and Jobicy =====
+      console.log(`[Search] REMOTE mode: trade="${searchTrade}", page=${page}`);
 
-    const data = await fetchFromAdzuna({
-      country: countryUpper,
-      trade: searchTrade || "home improvement",
-      city: locationSearch,
-      page,
-      pageSize: Math.min(50, pageSize),
-    });
-
-    const results = data.results || [];
-    const total = data.count || results.length;
-    console.log(`[Adzuna] Got ${results.length} results (total: ${total})`);
-
-    // Map results to lead format
-    let leads = results.map((r) => mapResultToLead(r, searchTrade || "home improvement", countryCode));
-
-    // If lat/lng provided, filter by radius (approximate)
-    if (lat && lng && radius) {
-      const radiusKm = Number(radius);
-      leads = leads.filter((lead) => {
-        if (!lead.latitude || !lead.longitude) return true; // keep leads without coords
-        const dist = haversineDistance(lat, lng, lead.latitude, lead.longitude);
-        return dist <= radiusKm;
+      const { leads: remoteLeads, errors } = await fetchRemoteLeads({
+        trade: searchTrade || "web development",
+        pageSize: Math.min(50, pageSize * 2), // fetch more to account for dedup
       });
+
+      leads = remoteLeads;
+      total = leads.length;
+      source = "remotive+jobicy";
+
+      if (errors.length > 0) {
+        console.warn(`[Search] Some sources failed: ${errors.join("; ")}`);
+      }
+    } else {
+      // ===== COUNTRY-SPECIFIC: Call Adzuna only =====
+      const countryCode = COUNTRY_MAP[countryUpper] || "us";
+      let locationSearch = city || "";
+      if (!locationSearch && lat && lng) {
+        locationSearch = "";
+      }
+
+      console.log(`[Adzuna] Searching: country=${countryUpper}, trade="${searchTrade}", city="${locationSearch}", page=${page}`);
+
+      const data = await fetchFromAdzuna({
+        country: countryUpper,
+        trade: searchTrade || "",
+        city: locationSearch,
+        page,
+        pageSize: Math.min(50, pageSize),
+      });
+
+      const results = data.results || [];
+      total = data.count || results.length;
+      console.log(`[Adzuna] Got ${results.length} results (total: ${total})`);
+
+      leads = results.map((r) => mapResultToLead(r, searchTrade || "general", countryCode));
+      source = "adzuna";
+
+      // If lat/lng provided, filter by radius (approximate)
+      if (lat && lng && radius) {
+        const radiusKm = Number(radius);
+        leads = leads.filter((lead) => {
+          if (!lead.latitude || !lead.longitude) return true;
+          const dist = haversineDistance(lat, lng, lead.latitude, lead.longitude);
+          return dist <= radiusKm;
+        });
+      }
     }
 
     // Sort by leadScore descending
     leads.sort((a, b) => b.leadScore - a.leadScore);
 
+    // Paginate (for REMOTE results which are fetched all at once)
+    const safePage = Math.max(1, page);
+    const safePageSize = Math.max(1, Math.min(50, pageSize));
+    let paginatedLeads = leads;
+    let totalPages = 1;
+
+    if (countryUpper === "REMOTE") {
+      totalPages = Math.ceil(leads.length / safePageSize);
+      const start = (safePage - 1) * safePageSize;
+      paginatedLeads = leads.slice(start, start + safePageSize);
+      total = leads.length;
+    } else {
+      totalPages = Math.ceil(total / safePageSize);
+      paginatedLeads = leads;
+    }
+
     const result = {
-      leads,
+      leads: paginatedLeads,
       total,
-      page: Math.max(1, page),
-      pageSize,
-      totalPages: Math.ceil(total / pageSize),
-      source: "adzuna",
+      page: safePage,
+      pageSize: safePageSize,
+      totalPages,
+      source,
     };
 
     // Cache the result
@@ -294,7 +608,7 @@ export async function filterLeads({ country, trade, city, lat, lng, radius, page
 
     return result;
   } catch (err) {
-    console.error(`[Adzuna API Error] ${err.message}`);
+    console.error(`[API Error] ${err.message}`);
 
     // Fallback to local demo data
     try {

@@ -1,0 +1,967 @@
+{
+  "owner": null,
+  "sessions": {},
+  "failedAttempts": {},
+  "leads": {
+    "eadad565-f0bd-4a5f-bfd5-d8c64cc47be5": {
+      "id": "eadad565-f0bd-4a5f-bfd5-d8c64cc47be5",
+      "title": "Deep clean 4-bedroom house before move-in",
+      "trade": "cleaning",
+      "country": "US",
+      "city": "Miami",
+      "postcode": "33101",
+      "budget": {
+        "min": 30000,
+        "max": 50000
+      },
+      "urgency": "high",
+      "leadScore": 92,
+      "customerName": "Maria Gonzalez",
+      "customerPhone": "+15960468799",
+      "customerEmail": "maria.gonzalez@email.com",
+      "postedAt": "2026-08-05T05:15:38.907Z",
+      "description": "Deep clean 4-bedroom house before move-in. Looking for a reliable professional in the Miami area. Budget is flexible for the right contractor."
+    },
+    "0fbdc6df-6aaf-4e78-8527-52ab537a5527": {
+      "id": "0fbdc6df-6aaf-4e78-8527-52ab537a5527",
+      "title": "Fix leaking kitchen faucet and replace garbage disposal",
+      "trade": "plumbing",
+      "country": "US",
+      "city": "Miami",
+      "postcode": "33125",
+      "budget": {
+        "min": 15000,
+        "max": 35000
+      },
+      "urgency": "high",
+      "leadScore": 88,
+      "customerName": "James Smith",
+      "customerPhone": "+12220527178",
+      "customerEmail": "james.smith@email.com",
+      "postedAt": "2026-08-13T13:08:06.499Z",
+      "description": "Fix leaking kitchen faucet and replace garbage disposal. Looking for a reliable professional in the Miami area. Budget is flexible for the right contractor."
+    },
+    "3e928750-8f76-47aa-a85c-1eeb9dbe6236": {
+      "id": "3e928750-8f76-47aa-a85c-1eeb9dbe6236",
+      "title": "Rewire basement for home theater setup",
+      "trade": "electrical",
+      "country": "US",
+      "city": "Houston",
+      "postcode": "77001",
+      "budget": {
+        "min": 200000,
+        "max": 400000
+      },
+      "urgency": "low",
+      "leadScore": 65,
+      "customerName": "David Wilson",
+      "customerPhone": "+14071506639",
+      "customerEmail": "david.wilson@email.com",
+      "postedAt": "2026-08-07T06:45:12.743Z",
+      "description": "Rewire basement for home theater setup. Looking for a reliable professional in the Houston area. Budget is flexible for the right contractor."
+    },
+    "b87b09ad-5b46-43e7-91f5-10b9e489c326": {
+      "id": "b87b09ad-5b46-43e7-91f5-10b9e489c326",
+      "title": "Replace aging shingle roof on 2-story colonial",
+      "trade": "roofing",
+      "country": "US",
+      "city": "Houston",
+      "postcode": "77055",
+      "budget": {
+        "min": 800000,
+        "max": 1500000
+      },
+      "urgency": "medium",
+      "leadScore": 78,
+      "customerName": "Jennifer Brown",
+      "customerPhone": "+19204244101",
+      "customerEmail": "jennifer.brown@email.com",
+      "postedAt": "2026-08-09T20:24:26.957Z",
+      "description": "Replace aging shingle roof on 2-story colonial. Looking for a reliable professional in the Houston area. Budget is flexible for the right contractor."
+    },
+    "823ae470-f315-448a-8157-5475c483b5bd": {
+      "id": "823ae470-f315-448a-8157-5475c483b5bd",
+      "title": "Interior painting — 3 bedrooms and hallway",
+      "trade": "painting",
+      "country": "US",
+      "city": "Phoenix",
+      "postcode": "85001",
+      "budget": {
+        "min": 150000,
+        "max": 300000
+      },
+      "urgency": "medium",
+      "leadScore": 71,
+      "customerName": "Robert Taylor",
+      "customerPhone": "+12971259453",
+      "customerEmail": "robert.taylor@email.com",
+      "postedAt": "2026-08-06T00:37:24.030Z",
+      "description": "Interior painting — 3 bedrooms and hallway. Looking for a reliable professional in the Phoenix area. Budget is flexible for the right contractor."
+    },
+    "b64a311b-99d4-4a07-9da3-a8c832185637": {
+      "id": "b64a311b-99d4-4a07-9da3-a8c832185637",
+      "title": "Full backyard landscaping with irrigation system",
+      "trade": "landscaping",
+      "country": "US",
+      "city": "Phoenix",
+      "postcode": "85004",
+      "budget": {
+        "min": 500000,
+        "max": 1200000
+      },
+      "urgency": "low",
+      "leadScore": 55,
+      "customerName": "Emily Davis",
+      "customerPhone": "+19626360903",
+      "customerEmail": "emily.davis@email.com",
+      "postedAt": "2026-08-06T11:16:26.256Z",
+      "description": "Full backyard landscaping with irrigation system. Looking for a reliable professional in the Phoenix area. Budget is flexible for the right contractor."
+    },
+    "3cc49cda-75d9-46f4-a2b1-bb6750a24023": {
+      "id": "3cc49cda-75d9-46f4-a2b1-bb6750a24023",
+      "title": "Build custom walk-in closet shelving",
+      "trade": "handyman",
+      "country": "US",
+      "city": "Chicago",
+      "postcode": "60601",
+      "budget": {
+        "min": 200000,
+        "max": 450000
+      },
+      "urgency": "medium",
+      "leadScore": 82,
+      "customerName": "Michael Johnson",
+      "customerPhone": "+18164761367",
+      "customerEmail": "michael.johnson@email.com",
+      "postedAt": "2026-08-18T04:29:16.987Z",
+      "description": "Build custom walk-in closet shelving. Looking for a reliable professional in the Chicago area. Budget is flexible for the right contractor."
+    },
+    "eadf163d-8d92-400e-9c24-080a68ebc29e": {
+      "id": "eadf163d-8d92-400e-9c24-080a68ebc29e",
+      "title": "AC unit replacement — central air for 2400 sqft home",
+      "trade": "hvac",
+      "country": "US",
+      "city": "Chicago",
+      "postcode": "60614",
+      "budget": {
+        "min": 500000,
+        "max": 900000
+      },
+      "urgency": "high",
+      "leadScore": 95,
+      "customerName": "Sarah Miller",
+      "customerPhone": "+15472529057",
+      "customerEmail": "sarah.miller@email.com",
+      "postedAt": "2026-08-15T18:46:36.260Z",
+      "description": "AC unit replacement — central air for 2400 sqft home. Looking for a reliable professional in the Chicago area. Budget is flexible for the right contractor."
+    },
+    "dd5d1db7-9ca5-483c-9c27-51208abda4b4": {
+      "id": "dd5d1db7-9ca5-483c-9c27-51208abda4b4",
+      "title": "Install hardwood flooring in living room and dining room",
+      "trade": "flooring",
+      "country": "US",
+      "city": "Los Angeles",
+      "postcode": "90001",
+      "budget": {
+        "min": 400000,
+        "max": 700000
+      },
+      "urgency": "medium",
+      "leadScore": 73,
+      "customerName": "Carlos Rodriguez",
+      "customerPhone": "+18159967054",
+      "customerEmail": "carlos.rodriguez@email.com",
+      "postedAt": "2026-08-08T10:01:48.134Z",
+      "description": "Install hardwood flooring in living room and dining room. Looking for a reliable professional in the Los Angeles area. Budget is flexible for the right contractor."
+    },
+    "1425ae92-7617-4a27-ba55-a440bc91f968": {
+      "id": "1425ae92-7617-4a27-ba55-a440bc91f968",
+      "title": "Install 6-foot privacy fence around backyard",
+      "trade": "handyman",
+      "country": "US",
+      "city": "Los Angeles",
+      "postcode": "90024",
+      "budget": {
+        "min": 300000,
+        "max": 600000
+      },
+      "urgency": "low",
+      "leadScore": 60,
+      "customerName": "Amanda White",
+      "customerPhone": "+19629840421",
+      "customerEmail": "amanda.white@email.com",
+      "postedAt": "2026-08-10T12:15:25.965Z",
+      "description": "Install 6-foot privacy fence around backyard. Looking for a reliable professional in the Los Angeles area. Budget is flexible for the right contractor."
+    },
+    "3237e344-8ac3-42fa-8d27-6fa55d103851": {
+      "id": "3237e344-8ac3-42fa-8d27-6fa55d103851",
+      "title": "Bathroom renovation — complete gut and rebuild",
+      "trade": "renovation",
+      "country": "US",
+      "city": "Miami",
+      "postcode": "33130",
+      "budget": {
+        "min": 1500000,
+        "max": 2500000
+      },
+      "urgency": "medium",
+      "leadScore": 85,
+      "customerName": "Thomas Lee",
+      "customerPhone": "+13198157570",
+      "customerEmail": "thomas.lee@email.com",
+      "postedAt": "2026-08-08T23:59:47.149Z",
+      "description": "Bathroom renovation — complete gut and rebuild. Looking for a reliable professional in the Miami area. Budget is flexible for the right contractor."
+    },
+    "494ec651-6478-4096-85cb-0f715bfb47c1": {
+      "id": "494ec651-6478-4096-85cb-0f715bfb47c1",
+      "title": "Post-construction cleanup for new addition",
+      "trade": "cleaning",
+      "country": "US",
+      "city": "Houston",
+      "postcode": "77002",
+      "budget": {
+        "min": 40000,
+        "max": 80000
+      },
+      "urgency": "high",
+      "leadScore": 90,
+      "customerName": "Jessica Martinez",
+      "customerPhone": "+16399012661",
+      "customerEmail": "jessica.martinez@email.com",
+      "postedAt": "2026-08-10T14:30:28.919Z",
+      "description": "Post-construction cleanup for new addition. Looking for a reliable professional in the Houston area. Budget is flexible for the right contractor."
+    },
+    "e17325b6-9f94-419c-b94d-b8dcbf19e1b9": {
+      "id": "e17325b6-9f94-419c-b94d-b8dcbf19e1b9",
+      "title": "Unclog main sewer line and camera inspection",
+      "trade": "plumbing",
+      "country": "US",
+      "city": "Phoenix",
+      "postcode": "85008",
+      "budget": {
+        "min": 25000,
+        "max": 50000
+      },
+      "urgency": "high",
+      "leadScore": 94,
+      "customerName": "Daniel Anderson",
+      "customerPhone": "+12031931967",
+      "customerEmail": "daniel.anderson@email.com",
+      "postedAt": "2026-08-07T18:40:28.308Z",
+      "description": "Unclog main sewer line and camera inspection. Looking for a reliable professional in the Phoenix area. Budget is flexible for the right contractor."
+    },
+    "1897cef7-3ba6-4303-b4b1-25450ce7c791": {
+      "id": "1897cef7-3ba6-4303-b4b1-25450ce7c791",
+      "title": "Install EV charger in garage",
+      "trade": "electrical",
+      "country": "US",
+      "city": "Chicago",
+      "postcode": "60622",
+      "budget": {
+        "min": 100000,
+        "max": 200000
+      },
+      "urgency": "medium",
+      "leadScore": 77,
+      "customerName": "Rachel Garcia",
+      "customerPhone": "+18736770746",
+      "customerEmail": "rachel.garcia@email.com",
+      "postedAt": "2026-08-08T02:24:46.240Z",
+      "description": "Install EV charger in garage. Looking for a reliable professional in the Chicago area. Budget is flexible for the right contractor."
+    },
+    "3d196f84-ddbc-4780-8380-43c48d95d562": {
+      "id": "3d196f84-ddbc-4780-8380-43c48d95d562",
+      "title": "Repair storm damage — missing shingles on north side",
+      "trade": "roofing",
+      "country": "US",
+      "city": "Los Angeles",
+      "postcode": "90036",
+      "budget": {
+        "min": 200000,
+        "max": 500000
+      },
+      "urgency": "high",
+      "leadScore": 91,
+      "customerName": "Kevin Thomas",
+      "customerPhone": "+14028273897",
+      "customerEmail": "kevin.thomas@email.com",
+      "postedAt": "2026-08-07T12:27:13.017Z",
+      "description": "Repair storm damage — missing shingles on north side. Looking for a reliable professional in the Los Angeles area. Budget is flexible for the right contractor."
+    },
+    "04caf1ba-2135-4bad-919c-58a7b36bd64c": {
+      "id": "04caf1ba-2135-4bad-919c-58a7b36bd64c",
+      "title": "Exterior house painting including trim and shutters",
+      "trade": "painting",
+      "country": "US",
+      "city": "Miami",
+      "postcode": "33139",
+      "budget": {
+        "min": 400000,
+        "max": 700000
+      },
+      "urgency": "low",
+      "leadScore": 58,
+      "customerName": "Laura Jackson",
+      "customerPhone": "+19293811231",
+      "customerEmail": "laura.jackson@email.com",
+      "postedAt": "2026-08-12T14:26:58.070Z",
+      "description": "Exterior house painting including trim and shutters. Looking for a reliable professional in the Miami area. Budget is flexible for the right contractor."
+    },
+    "2ea33885-8c4f-44b2-95a8-bd062fbd7292": {
+      "id": "2ea33885-8c4f-44b2-95a8-bd062fbd7292",
+      "title": "Weekly lawn maintenance contract needed",
+      "trade": "landscaping",
+      "country": "US",
+      "city": "Houston",
+      "postcode": "77019",
+      "budget": {
+        "min": 15000,
+        "max": 30000
+      },
+      "urgency": "low",
+      "leadScore": 45,
+      "customerName": "Brian Harris",
+      "customerPhone": "+17780132416",
+      "customerEmail": "brian.harris@email.com",
+      "postedAt": "2026-08-09T08:58:16.126Z",
+      "description": "Weekly lawn maintenance contract needed. Looking for a reliable professional in the Houston area. Budget is flexible for the right contractor."
+    },
+    "73802e24-1ccb-441b-b29f-92d23a49b288": {
+      "id": "73802e24-1ccb-441b-b29f-92d23a49b288",
+      "title": "Replace rotted deck boards and refinish",
+      "trade": "handyman",
+      "country": "US",
+      "city": "Phoenix",
+      "postcode": "85016",
+      "budget": {
+        "min": 300000,
+        "max": 600000
+      },
+      "urgency": "medium",
+      "leadScore": 70,
+      "customerName": "Nicole Clark",
+      "customerPhone": "+16476837738",
+      "customerEmail": "nicole.clark@email.com",
+      "postedAt": "2026-08-10T04:26:11.944Z",
+      "description": "Replace rotted deck boards and refinish. Looking for a reliable professional in the Phoenix area. Budget is flexible for the right contractor."
+    },
+    "4926b415-f78d-4100-9c1f-86050318f357": {
+      "id": "4926b415-f78d-4100-9c1f-86050318f357",
+      "title": "Furnace tune-up and duct cleaning",
+      "trade": "hvac",
+      "country": "US",
+      "city": "Chicago",
+      "postcode": "60657",
+      "budget": {
+        "min": 20000,
+        "max": 50000
+      },
+      "urgency": "medium",
+      "leadScore": 62,
+      "customerName": "Steven Lewis",
+      "customerPhone": "+13213653759",
+      "customerEmail": "steven.lewis@email.com",
+      "postedAt": "2026-08-09T02:06:12.408Z",
+      "description": "Furnace tune-up and duct cleaning. Looking for a reliable professional in the Chicago area. Budget is flexible for the right contractor."
+    },
+    "f110979a-5303-46ec-abce-4e9b35c2d685": {
+      "id": "f110979a-5303-46ec-abce-4e9b35c2d685",
+      "title": "Kitchen renovation — cabinets, counters, backsplash",
+      "trade": "renovation",
+      "country": "US",
+      "city": "Los Angeles",
+      "postcode": "90046",
+      "budget": {
+        "min": 2000000,
+        "max": 4000000
+      },
+      "urgency": "low",
+      "leadScore": 68,
+      "customerName": "Megan Robinson",
+      "customerPhone": "+18982751161",
+      "customerEmail": "megan.robinson@email.com",
+      "postedAt": "2026-08-09T20:16:58.769Z",
+      "description": "Kitchen renovation — cabinets, counters, backsplash. Looking for a reliable professional in the Los Angeles area. Budget is flexible for the right contractor."
+    },
+    "75116b07-8a86-4af3-80ab-97978704fa4d": {
+      "id": "75116b07-8a86-4af3-80ab-97978704fa4d",
+      "title": "End of tenancy deep clean — 2-bed flat",
+      "trade": "cleaning",
+      "country": "UK",
+      "city": "London",
+      "postcode": "SW1A 1AA",
+      "budget": {
+        "min": 15000,
+        "max": 30000
+      },
+      "urgency": "high",
+      "leadScore": 89,
+      "customerName": "Oliver Williams",
+      "customerPhone": "+447656583606",
+      "customerEmail": "oliver.williams@email.co.uk",
+      "postedAt": "2026-08-11T04:40:10.571Z",
+      "description": "End of tenancy deep clean — 2-bed flat. Seeking a qualified tradesperson in the London area. Happy to discuss budget."
+    },
+    "d6100fef-e724-4322-a9fc-0c3229ce98e8": {
+      "id": "d6100fef-e724-4322-a9fc-0c3229ce98e8",
+      "title": "Fix burst pipe in bathroom ceiling",
+      "trade": "plumbing",
+      "country": "UK",
+      "city": "London",
+      "postcode": "EC1A 1BB",
+      "budget": {
+        "min": 10000,
+        "max": 25000
+      },
+      "urgency": "high",
+      "leadScore": 96,
+      "customerName": "Charlotte Davies",
+      "customerPhone": "+447299903303",
+      "customerEmail": "charlotte.davies@email.co.uk",
+      "postedAt": "2026-08-12T09:56:53.760Z",
+      "description": "Fix burst pipe in bathroom ceiling. Seeking a qualified tradesperson in the London area. Happy to discuss budget."
+    },
+    "aebec067-1201-489b-86c4-57916fc2da7b": {
+      "id": "aebec067-1201-489b-86c4-57916fc2da7b",
+      "title": "Consumer unit upgrade to latest regulations",
+      "trade": "electrical",
+      "country": "UK",
+      "city": "London",
+      "postcode": "W1D 3AF",
+      "budget": {
+        "min": 40000,
+        "max": 80000
+      },
+      "urgency": "medium",
+      "leadScore": 74,
+      "customerName": "Jack Thompson",
+      "customerPhone": "+447169068331",
+      "customerEmail": "jack.thompson@email.co.uk",
+      "postedAt": "2026-08-13T16:07:34.235Z",
+      "description": "Consumer unit upgrade to latest regulations. Seeking a qualified tradesperson in the London area. Happy to discuss budget."
+    },
+    "6aeb7d62-d7e6-4ed9-b1c8-fb5d672bbe1f": {
+      "id": "6aeb7d62-d7e6-4ed9-b1c8-fb5d672bbe1f",
+      "title": "Flat roof replacement on rear extension",
+      "trade": "roofing",
+      "country": "UK",
+      "city": "Manchester",
+      "postcode": "M1 1AE",
+      "budget": {
+        "min": 200000,
+        "max": 400000
+      },
+      "urgency": "medium",
+      "leadScore": 80,
+      "customerName": "Amelia Evans",
+      "customerPhone": "+447033635372",
+      "customerEmail": "amelia.evans@email.co.uk",
+      "postedAt": "2026-08-05T13:37:47.497Z",
+      "description": "Flat roof replacement on rear extension. Seeking a qualified tradesperson in the Manchester area. Happy to discuss budget."
+    },
+    "dbf6e632-8eaf-4e5b-807b-4ab1d42d125d": {
+      "id": "dbf6e632-8eaf-4e5b-807b-4ab1d42d125d",
+      "title": "Paint entire 3-bed semi interior — neutral colours",
+      "trade": "painting",
+      "country": "UK",
+      "city": "Manchester",
+      "postcode": "M3 4FP",
+      "budget": {
+        "min": 100000,
+        "max": 200000
+      },
+      "urgency": "low",
+      "leadScore": 63,
+      "customerName": "Harry Roberts",
+      "customerPhone": "+447215499484",
+      "customerEmail": "harry.roberts@email.co.uk",
+      "postedAt": "2026-08-17T23:18:34.007Z",
+      "description": "Paint entire 3-bed semi interior — neutral colours. Seeking a qualified tradesperson in the Manchester area. Happy to discuss budget."
+    },
+    "f7032a39-5304-41b8-872a-cb2f581faab5": {
+      "id": "f7032a39-5304-41b8-872a-cb2f581faab5",
+      "title": "Garden redesign with new patio and planting scheme",
+      "trade": "landscaping",
+      "country": "UK",
+      "city": "Manchester",
+      "postcode": "M15 4QG",
+      "budget": {
+        "min": 300000,
+        "max": 600000
+      },
+      "urgency": "low",
+      "leadScore": 52,
+      "customerName": "Sophie Walker",
+      "customerPhone": "+447103018840",
+      "customerEmail": "sophie.walker@email.co.uk",
+      "postedAt": "2026-08-10T19:07:36.854Z",
+      "description": "Garden redesign with new patio and planting scheme. Seeking a qualified tradesperson in the Manchester area. Happy to discuss budget."
+    },
+    "8b9e0704-0a74-4807-9abb-44a86d716432": {
+      "id": "8b9e0704-0a74-4807-9abb-44a86d716432",
+      "title": "Fit bespoke built-in wardrobes for master bedroom",
+      "trade": "handyman",
+      "country": "UK",
+      "city": "Birmingham",
+      "postcode": "B1 1BB",
+      "budget": {
+        "min": 150000,
+        "max": 300000
+      },
+      "urgency": "medium",
+      "leadScore": 76,
+      "customerName": "George Wright",
+      "customerPhone": "+447319298833",
+      "customerEmail": "george.wright@email.co.uk",
+      "postedAt": "2026-08-18T19:20:14.376Z",
+      "description": "Fit bespoke built-in wardrobes for master bedroom. Seeking a qualified tradesperson in the Birmingham area. Happy to discuss budget."
+    },
+    "d9f70b79-699c-4a9f-b57e-5f912206ad97": {
+      "id": "d9f70b79-699c-4a9f-b57e-5f912206ad97",
+      "title": "Boiler replacement — combi swap for 4-bed house",
+      "trade": "hvac",
+      "country": "UK",
+      "city": "Birmingham",
+      "postcode": "B5 4BU",
+      "budget": {
+        "min": 250000,
+        "max": 450000
+      },
+      "urgency": "high",
+      "leadScore": 93,
+      "customerName": "Isla Johnson",
+      "customerPhone": "+447701384312",
+      "customerEmail": "isla.johnson@email.co.uk",
+      "postedAt": "2026-08-18T06:44:28.187Z",
+      "description": "Boiler replacement — combi swap for 4-bed house. Seeking a qualified tradesperson in the Birmingham area. Happy to discuss budget."
+    },
+    "7dbbfdf4-7846-4580-a95d-06aab43c82a8": {
+      "id": "7dbbfdf4-7846-4580-a95d-06aab43c82a8",
+      "title": "Lay engineered oak flooring throughout ground floor",
+      "trade": "flooring",
+      "country": "UK",
+      "city": "Leeds",
+      "postcode": "LS1 1UR",
+      "budget": {
+        "min": 200000,
+        "max": 400000
+      },
+      "urgency": "medium",
+      "leadScore": 69,
+      "customerName": "Freddie Baker",
+      "customerPhone": "+447574566338",
+      "customerEmail": "freddie.baker@email.co.uk",
+      "postedAt": "2026-08-08T01:23:51.235Z",
+      "description": "Lay engineered oak flooring throughout ground floor. Seeking a qualified tradesperson in the Leeds area. Happy to discuss budget."
+    },
+    "2127fa3f-06ad-4298-a566-4359e98ad451": {
+      "id": "2127fa3f-06ad-4298-a566-4359e98ad451",
+      "title": "Erect close-board fencing — 20m boundary",
+      "trade": "pest-control",
+      "country": "UK",
+      "city": "Leeds",
+      "postcode": "LS2 7EW",
+      "budget": {
+        "min": 150000,
+        "max": 300000
+      },
+      "urgency": "low",
+      "leadScore": 57,
+      "customerName": "Poppy Green",
+      "customerPhone": "+447271743625",
+      "customerEmail": "poppy.green@email.co.uk",
+      "postedAt": "2026-08-18T03:14:28.276Z",
+      "description": "Erect close-board fencing — 20m boundary. Seeking a qualified tradesperson in the Leeds area. Happy to discuss budget."
+    },
+    "07e59254-65d6-4f2b-8541-cd96f1442b74": {
+      "id": "07e59254-65d6-4f2b-8541-cd96f1442b74",
+      "title": "Loft conversion into home office with Velux windows",
+      "trade": "renovation",
+      "country": "UK",
+      "city": "Leeds",
+      "postcode": "LS6 3HD",
+      "budget": {
+        "min": 2000000,
+        "max": 4000000
+      },
+      "urgency": "medium",
+      "leadScore": 84,
+      "customerName": "Oscar Hall",
+      "customerPhone": "+447103845623",
+      "customerEmail": "oscar.hall@email.co.uk",
+      "postedAt": "2026-08-05T19:55:45.948Z",
+      "description": "Loft conversion into home office with Velux windows. Seeking a qualified tradesperson in the Leeds area. Happy to discuss budget."
+    },
+    "6ecd479c-b7e8-41bd-93ca-e423ffd7f248": {
+      "id": "6ecd479c-b7e8-41bd-93ca-e423ffd7f248",
+      "title": "Commercial office deep clean — 5000 sqft",
+      "trade": "cleaning",
+      "country": "UK",
+      "city": "Bristol",
+      "postcode": "BS1 1EH",
+      "budget": {
+        "min": 50000,
+        "max": 100000
+      },
+      "urgency": "high",
+      "leadScore": 87,
+      "customerName": "Mia Collins",
+      "customerPhone": "+447067350793",
+      "customerEmail": "mia.collins@email.co.uk",
+      "postedAt": "2026-08-13T23:18:13.999Z",
+      "description": "Commercial office deep clean — 5000 sqft. Seeking a qualified tradesperson in the Bristol area. Happy to discuss budget."
+    },
+    "070da691-23c9-47e7-9b1e-7ce0a1e8d27d": {
+      "id": "070da691-23c9-47e7-9b1e-7ce0a1e8d27d",
+      "title": "Install underfloor heating in new bathroom",
+      "trade": "plumbing",
+      "country": "UK",
+      "city": "Bristol",
+      "postcode": "BS2 0JA",
+      "budget": {
+        "min": 150000,
+        "max": 300000
+      },
+      "urgency": "medium",
+      "leadScore": 72,
+      "customerName": "Thomas Morris",
+      "customerPhone": "+447742504228",
+      "customerEmail": "thomas.morris@email.co.uk",
+      "postedAt": "2026-08-16T00:43:44.005Z",
+      "description": "Install underfloor heating in new bathroom. Seeking a qualified tradesperson in the Bristol area. Happy to discuss budget."
+    },
+    "f3cbd2d0-ec19-4d90-a647-7b2af965295b": {
+      "id": "f3cbd2d0-ec19-4d90-a647-7b2af965295b",
+      "title": "Full house rewire — Victorian terrace 3 floors",
+      "trade": "electrical",
+      "country": "UK",
+      "city": "Bristol",
+      "postcode": "BS8 1TH",
+      "budget": {
+        "min": 400000,
+        "max": 700000
+      },
+      "urgency": "medium",
+      "leadScore": 81,
+      "customerName": "Emily Watson",
+      "customerPhone": "+447593202204",
+      "customerEmail": "emily.watson@email.co.uk",
+      "postedAt": "2026-08-13T16:58:59.921Z",
+      "description": "Full house rewire — Victorian terrace 3 floors. Seeking a qualified tradesperson in the Bristol area. Happy to discuss budget."
+    },
+    "57a4cec5-7a15-4101-a932-28fee5dc5ef2": {
+      "id": "57a4cec5-7a15-4101-a932-28fee5dc5ef2",
+      "title": "Kitchen extension and open-plan conversion",
+      "trade": "renovation",
+      "country": "UK",
+      "city": "London",
+      "postcode": "E1 6AN",
+      "budget": {
+        "min": 3000000,
+        "max": 5000000
+      },
+      "urgency": "low",
+      "leadScore": 66,
+      "customerName": "William Turner",
+      "customerPhone": "+447867753626",
+      "customerEmail": "william.turner@email.co.uk",
+      "postedAt": "2026-08-16T18:23:19.363Z",
+      "description": "Kitchen extension and open-plan conversion. Seeking a qualified tradesperson in the London area. Happy to discuss budget."
+    },
+    "04a8d572-e176-44b6-b7da-5e54177f2892": {
+      "id": "04a8d572-e176-44b6-b7da-5e54177f2892",
+      "title": "Bond clean for 3-bed apartment in CBD",
+      "trade": "cleaning",
+      "country": "AU",
+      "city": "Sydney",
+      "postcode": "2000",
+      "budget": {
+        "min": 40000,
+        "max": 70000
+      },
+      "urgency": "high",
+      "leadScore": 91,
+      "customerName": "Liam Mitchell",
+      "customerPhone": "+61456176690",
+      "customerEmail": "liam.mitchell@email.com.au",
+      "postedAt": "2026-08-16T21:23:50.760Z",
+      "description": "Bond clean for 3-bed apartment in CBD. Looking for a licensed tradie in Sydney. Flexible on timing and budget for good work."
+    },
+    "6b89fc31-24f9-453a-b3e5-1cbe452b4fa0": {
+      "id": "6b89fc31-24f9-453a-b3e5-1cbe452b4fa0",
+      "title": "Hot water system replacement — gas to solar",
+      "trade": "plumbing",
+      "country": "AU",
+      "city": "Sydney",
+      "postcode": "2010",
+      "budget": {
+        "min": 300000,
+        "max": 550000
+      },
+      "urgency": "medium",
+      "leadScore": 75,
+      "customerName": "Olivia Taylor",
+      "customerPhone": "+61477858965",
+      "customerEmail": "olivia.taylor@email.com.au",
+      "postedAt": "2026-08-05T13:25:41.697Z",
+      "description": "Hot water system replacement — gas to solar. Looking for a licensed tradie in Sydney. Flexible on timing and budget for good work."
+    },
+    "35379db4-1720-435d-bc0a-9958f7214b3d": {
+      "id": "35379db4-1720-435d-bc0a-9958f7214b3d",
+      "title": "Install solar panels — 6.6kW system with battery",
+      "trade": "electrical",
+      "country": "AU",
+      "city": "Sydney",
+      "postcode": "2060",
+      "budget": {
+        "min": 800000,
+        "max": 1400000
+      },
+      "urgency": "low",
+      "leadScore": 64,
+      "customerName": "Noah Anderson",
+      "customerPhone": "+61492666600",
+      "customerEmail": "noah.anderson@email.com.au",
+      "postedAt": "2026-08-17T17:18:33.758Z",
+      "description": "Install solar panels — 6.6kW system with battery. Looking for a licensed tradie in Sydney. Flexible on timing and budget for good work."
+    },
+    "925e9517-4630-4902-8f79-5ea911d69e6c": {
+      "id": "925e9517-4630-4902-8f79-5ea911d69e6c",
+      "title": "Re-roof Colorbond — single storey brick home",
+      "trade": "roofing",
+      "country": "AU",
+      "city": "Melbourne",
+      "postcode": "3000",
+      "budget": {
+        "min": 1000000,
+        "max": 1800000
+      },
+      "urgency": "medium",
+      "leadScore": 79,
+      "customerName": "Ava Thompson",
+      "customerPhone": "+61494361043",
+      "customerEmail": "ava.thompson@email.com.au",
+      "postedAt": "2026-08-09T06:53:16.819Z",
+      "description": "Re-roof Colorbond — single storey brick home. Looking for a licensed tradie in Melbourne. Flexible on timing and budget for good work."
+    },
+    "511b8b7a-9020-4ae0-b412-b64148d75056": {
+      "id": "511b8b7a-9020-4ae0-b412-b64148d75056",
+      "title": "Repaint exterior weatherboard house — prep and 2 coats",
+      "trade": "painting",
+      "country": "AU",
+      "city": "Melbourne",
+      "postcode": "3004",
+      "budget": {
+        "min": 400000,
+        "max": 700000
+      },
+      "urgency": "medium",
+      "leadScore": 72,
+      "customerName": "Jack White",
+      "customerPhone": "+61479104394",
+      "customerEmail": "jack.white@email.com.au",
+      "postedAt": "2026-08-05T03:50:20.340Z",
+      "description": "Repaint exterior weatherboard house — prep and 2 coats. Looking for a licensed tradie in Melbourne. Flexible on timing and budget for good work."
+    },
+    "9d437e0c-bf40-4705-96ec-370b18dce000": {
+      "id": "9d437e0c-bf40-4705-96ec-370b18dce000",
+      "title": "Native garden design and install with drip irrigation",
+      "trade": "landscaping",
+      "country": "AU",
+      "city": "Melbourne",
+      "postcode": "3121",
+      "budget": {
+        "min": 500000,
+        "max": 1000000
+      },
+      "urgency": "low",
+      "leadScore": 53,
+      "customerName": "Chloe Martin",
+      "customerPhone": "+61469703048",
+      "customerEmail": "chloe.martin@email.com.au",
+      "postedAt": "2026-08-07T18:59:54.109Z",
+      "description": "Native garden design and install with drip irrigation. Looking for a licensed tradie in Melbourne. Flexible on timing and budget for good work."
+    },
+    "ffeaae2d-3d51-45ac-92e9-37548fcb4c08": {
+      "id": "ffeaae2d-3d51-45ac-92e9-37548fcb4c08",
+      "title": "Build timber deck with pergola — 40sqm",
+      "trade": "handyman",
+      "country": "AU",
+      "city": "Brisbane",
+      "postcode": "4000",
+      "budget": {
+        "min": 1200000,
+        "max": 2000000
+      },
+      "urgency": "medium",
+      "leadScore": 83,
+      "customerName": "William Harris",
+      "customerPhone": "+61458025883",
+      "customerEmail": "william.harris@email.com.au",
+      "postedAt": "2026-08-11T14:27:38.843Z",
+      "description": "Build timber deck with pergola — 40sqm. Looking for a licensed tradie in Brisbane. Flexible on timing and budget for good work."
+    },
+    "08372484-ebc9-442c-a50f-0a23083f3f24": {
+      "id": "08372484-ebc9-442c-a50f-0a23083f3f24",
+      "title": "Ducted air conditioning install — 4-bed house",
+      "trade": "hvac",
+      "country": "AU",
+      "city": "Brisbane",
+      "postcode": "4005",
+      "budget": {
+        "min": 800000,
+        "max": 1400000
+      },
+      "urgency": "high",
+      "leadScore": 94,
+      "customerName": "Sophie Clark",
+      "customerPhone": "+61459526712",
+      "customerEmail": "sophie.clark@email.com.au",
+      "postedAt": "2026-08-08T23:37:28.489Z",
+      "description": "Ducted air conditioning install — 4-bed house. Looking for a licensed tradie in Brisbane. Flexible on timing and budget for good work."
+    },
+    "409e7afb-c844-49d4-91af-d04db704cc4f": {
+      "id": "409e7afb-c844-49d4-91af-d04db704cc4f",
+      "title": "Polish and seal concrete floors throughout house",
+      "trade": "flooring",
+      "country": "AU",
+      "city": "Brisbane",
+      "postcode": "4101",
+      "budget": {
+        "min": 300000,
+        "max": 600000
+      },
+      "urgency": "low",
+      "leadScore": 59,
+      "customerName": "James Robinson",
+      "customerPhone": "+61425840060",
+      "customerEmail": "james.robinson@email.com.au",
+      "postedAt": "2026-08-10T06:48:01.838Z",
+      "description": "Polish and seal concrete floors throughout house. Looking for a licensed tradie in Brisbane. Flexible on timing and budget for good work."
+    },
+    "566ad105-469b-44f4-8ff2-f25814dc423a": {
+      "id": "566ad105-469b-44f4-8ff2-f25814dc423a",
+      "title": "Colorbond fencing — full property boundary 50m",
+      "trade": "pest-control",
+      "country": "AU",
+      "city": "Perth",
+      "postcode": "6000",
+      "budget": {
+        "min": 500000,
+        "max": 900000
+      },
+      "urgency": "medium",
+      "leadScore": 70,
+      "customerName": "Ella Walker",
+      "customerPhone": "+61497700466",
+      "customerEmail": "ella.walker@email.com.au",
+      "postedAt": "2026-08-09T11:41:33.148Z",
+      "description": "Colorbond fencing — full property boundary 50m. Looking for a licensed tradie in Perth. Flexible on timing and budget for good work."
+    },
+    "9f806d1b-94bb-4a4b-a6f6-ee8b64fa2760": {
+      "id": "9f806d1b-94bb-4a4b-a6f6-ee8b64fa2760",
+      "title": "Full bathroom reno — remove asbestos, retile, new fittings",
+      "trade": "renovation",
+      "country": "AU",
+      "city": "Perth",
+      "postcode": "6005",
+      "budget": {
+        "min": 2000000,
+        "max": 3500000
+      },
+      "urgency": "medium",
+      "leadScore": 86,
+      "customerName": "Cooper Lewis",
+      "customerPhone": "+61400407020",
+      "customerEmail": "cooper.lewis@email.com.au",
+      "postedAt": "2026-08-06T01:02:11.131Z",
+      "description": "Full bathroom reno — remove asbestos, retile, new fittings. Looking for a licensed tradie in Perth. Flexible on timing and budget for good work."
+    },
+    "aa9154bb-6bb8-4f15-ad65-e59cb04e4e0d": {
+      "id": "aa9154bb-6bb8-4f15-ad65-e59cb04e4e0d",
+      "title": "Regular weekly house cleaning — ongoing contract",
+      "trade": "cleaning",
+      "country": "AU",
+      "city": "Perth",
+      "postcode": "6050",
+      "budget": {
+        "min": 15000,
+        "max": 25000
+      },
+      "urgency": "low",
+      "leadScore": 48,
+      "customerName": "Grace Hall",
+      "customerPhone": "+61449288184",
+      "customerEmail": "grace.hall@email.com.au",
+      "postedAt": "2026-08-12T15:42:32.796Z",
+      "description": "Regular weekly house cleaning — ongoing contract. Looking for a licensed tradie in Perth. Flexible on timing and budget for good work."
+    },
+    "8a46426d-91f8-4cf5-b8c2-c8a833d00dbf": {
+      "id": "8a46426d-91f8-4cf5-b8c2-c8a833d00dbf",
+      "title": "Fix blocked stormwater drain and relining",
+      "trade": "plumbing",
+      "country": "AU",
+      "city": "Adelaide",
+      "postcode": "5000",
+      "budget": {
+        "min": 200000,
+        "max": 450000
+      },
+      "urgency": "high",
+      "leadScore": 88,
+      "customerName": "Bailey King",
+      "customerPhone": "+61489616190",
+      "customerEmail": "bailey.king@email.com.au",
+      "postedAt": "2026-08-11T12:05:47.816Z",
+      "description": "Fix blocked stormwater drain and relining. Looking for a licensed tradie in Adelaide. Flexible on timing and budget for good work."
+    },
+    "09e1c3b4-1668-44da-a304-574ac502c925": {
+      "id": "09e1c3b4-1668-44da-a304-574ac502c925",
+      "title": "Outdoor kitchen electrical and lighting install",
+      "trade": "electrical",
+      "country": "AU",
+      "city": "Adelaide",
+      "postcode": "5006",
+      "budget": {
+        "min": 200000,
+        "max": 400000
+      },
+      "urgency": "medium",
+      "leadScore": 67,
+      "customerName": "Zoe Wright",
+      "customerPhone": "+61467442605",
+      "customerEmail": "zoe.wright@email.com.au",
+      "postedAt": "2026-08-08T13:03:44.566Z",
+      "description": "Outdoor kitchen electrical and lighting install. Looking for a licensed tradie in Adelaide. Flexible on timing and budget for good work."
+    },
+    "0d981aaa-4f6d-4baf-9360-586a5d1899bb": {
+      "id": "0d981aaa-4f6d-4baf-9360-586a5d1899bb",
+      "title": "Granny flat build — 60sqm 1-bed attached",
+      "trade": "renovation",
+      "country": "AU",
+      "city": "Adelaide",
+      "postcode": "5034",
+      "budget": {
+        "min": 8000000,
+        "max": 15000000
+      },
+      "urgency": "low",
+      "leadScore": 61,
+      "customerName": "Riley Scott",
+      "customerPhone": "+61460892207",
+      "customerEmail": "riley.scott@email.com.au",
+      "postedAt": "2026-08-06T16:17:06.562Z",
+      "description": "Granny flat build — 60sqm 1-bed attached. Looking for a licensed tradie in Adelaide. Flexible on timing and budget for good work."
+    }
+  },
+  "savedLeads": [],
+  "inbox": {},
+  "calls": {},
+  "settings": {
+    "defaultCountry": "US",
+    "preferredTrades": [],
+    "businessName": "",
+    "businessPhone": "",
+    "businessEmail": ""
+  }
+}

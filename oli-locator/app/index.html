@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oli-Locator — Home Improvement Lead Finder</title>
+<title>Oli-Locator — Client Lead Finder</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -149,8 +149,8 @@ tr:last-child td{border-bottom:none;}
 <!-- ============ LOGIN SCREEN ============ -->
 <div id="loginScreen">
   <div class="login-card">
-    <h1>🛠️ Oli-<span>Locator</span></h1>
-    <p class="sub">Home improvement lead finder for solo contractors.</p>
+    <h1>🎯 Oli-<span>Locator</span></h1>
+    <p class="sub">Find clients actively looking for your skills.</p>
     <form id="loginForm" autocomplete="off">
       <div class="field"><label for="username">Username / email</label><input type="text" id="username" required autocomplete="username"/></div>
       <div class="field"><label for="password">Password</label><input type="password" id="password" required autocomplete="current-password"/></div>
@@ -169,7 +169,7 @@ tr:last-child td{border-bottom:none;}
 <div id="app">
   <div class="wrap">
     <header class="topbar">
-      <div class="logo">🛠️ Oli-<span>Locator</span></div>
+      <div class="logo">🎯 Oli-<span>Locator</span></div>
       <div class="topbar-actions">
         <span id="whoami"></span>
         <button id="logoutBtn">Sign Out</button>
@@ -185,28 +185,29 @@ tr:last-child td{border-bottom:none;}
 
     <!-- ======== LEADS TAB ======== -->
     <section class="view active" id="view-leads">
-      <div class="view-head"><h2>Find Leads</h2></div>
+      <div class="view-head"><h2>Find Client Leads</h2></div>
       <div class="country-toggles" id="countryToggles">
         <button class="active" data-country="US">🇺🇸 USA</button>
         <button data-country="UK">🇬🇧 UK</button>
         <button data-country="AU">🇦🇺 Australia</button>
+        <button data-country="REMOTE">🌍 Remote</button>
       </div>
       <div class="filters-bar">
         <select id="tradeFilter">
-          <option value="">All Trades</option>
-          <option value="cleaning">Cleaning</option>
-          <option value="pest-control">Pest Control</option>
-          <option value="renovation">Renovation</option>
-          <option value="roofing">Roofing</option>
-          <option value="painting">Painting</option>
-          <option value="plumbing">Plumbing</option>
-          <option value="electrical">Electrical</option>
-          <option value="landscaping">Landscaping</option>
-          <option value="hvac">HVAC</option>
-          <option value="flooring">Flooring</option>
-          <option value="handyman">Handyman</option>
+          <option value="">All Categories</option>
+          <option value="web-development">Web Development</option>
+          <option value="mobile-development">Mobile App Dev</option>
+          <option value="ui-ux-design">UI/UX Design</option>
+          <option value="digital-marketing">Digital Marketing</option>
+          <option value="content-writing">Content Writing</option>
+          <option value="video-animation">Video / Animation</option>
+          <option value="virtual-assistant">Virtual Assistant</option>
+          <option value="data-entry">Data Entry / Admin</option>
+          <option value="accounting">Accounting / Bookkeeping</option>
+          <option value="sales">Sales / BDR</option>
+          <option value="customer-support">Customer Support</option>
         </select>
-        <input type="text" id="citySearch" placeholder="City, ZIP, or Postcode…"/>
+        <input type="text" id="citySearch" placeholder="City, company, or keyword…"/>
         <button class="btn sm" id="searchBtn">Search</button>
         <button class="btn sm secondary" id="toggleMapBtn">🗺️ Show Map</button>
       </div>
@@ -228,7 +229,7 @@ tr:last-child td{border-bottom:none;}
 
     <!-- ======== INBOX TAB ======== -->
     <section class="view" id="view-inbox">
-      <div class="view-head"><h2>Inbox — Request a Quote</h2></div>
+      <div class="view-head"><h2>Inbox — Inbound Inquiries</h2></div>
       <div id="inboxContent"></div>
     </section>
 
@@ -257,7 +258,7 @@ tr:last-child td{border-bottom:none;}
               <option value="AU">🇦🇺 Australia</option>
             </select>
           </div>
-          <h3 style="margin-top:18px;">Preferred Trades</h3>
+          <h3 style="margin-top:18px;">Preferred Categories</h3>
           <div class="trades-grid" id="tradesCheckboxes"></div>
         </div>
       </div>
@@ -344,7 +345,7 @@ function relativeTime(dateStr) {
   return new Date(dateStr).toLocaleDateString();
 }
 
-const TRADES = ['Cleaning','Pest Control','Renovation','Roofing','Painting','Plumbing','Electrical','Landscaping','HVAC','Flooring','Handyman'];
+const TRADES = ['Web Development','Mobile App Dev','UI/UX Design','Digital Marketing','Content Writing','Video / Animation','Virtual Assistant','Data Entry / Admin','Accounting / Bookkeeping','Sales / BDR','Customer Support'];
 
 /* --- DOM refs --- */
 const els = {};
