@@ -383,12 +383,17 @@ function mapAUTenderStatus(status) {
 async function fetchFromEUTED({ keyword, page = 1, pageSize = 20 }) {
   const limit = Math.min(50, pageSize);
 
-  // TED API v3 requires POST with JSON body
+  // TED API v3 requires POST with JSON body and expert query syntax
+  // Expert query format: field = "value" or field ~ "value" for contains
+  const expertQuery = keyword 
+    ? `notice-title ~ "${keyword}" OR description-lot ~ "${keyword}"`
+    : `notice-type = "cn-standard"`;
+
   const body = JSON.stringify({
-    query: keyword || "services",
+    query: expertQuery,
     page: page,
     limit: limit,
-    fields: ["notice-title", "buyer-name", "publication-date", "deadline", "total-value", "notice-type", "country-origin", "description-lot"],
+    fields: ["notice-title", "buyer-name", "publication-date", "deadline", "total-value", "notice-type", "country-origin"],
   });
 
   const url = EU_TED_BASE_URL;
