@@ -178,6 +178,7 @@ tr:last-child td{border-bottom:none;}
 
     <nav class="tabs">
       <button class="active" data-view="leads">Leads</button>
+      <button data-view="contracts">🏛️ Gov Contracts</button>
       <button data-view="inbox">Inbox</button>
       <button data-view="calls">Call Log</button>
       <button data-view="settings">Settings</button>
@@ -224,6 +225,31 @@ tr:last-child td{border-bottom:none;}
       <div id="leadsContent"></div>
       <div id="leadsLoadMore" style="text-align:center;margin-top:16px;display:none;">
         <button class="btn secondary" id="loadMoreBtn">Load More</button>
+      </div>
+    </section>
+
+    <!-- ======== GOV CONTRACTS TAB ======== -->
+    <section class="view" id="view-contracts">
+      <div class="view-head"><h2>🏛️ Government Contracts & Tenders</h2></div>
+      <div class="filters-bar">
+        <select id="govCountryFilter">
+          <option value="ALL">🌍 All Countries</option>
+          <option value="US">🇺🇸 USA (SAM.gov)</option>
+          <option value="UK">🇬🇧 UK (Contracts Finder)</option>
+          <option value="AU">🇦🇺 Australia (AusTender)</option>
+          <option value="EU">🇪🇺 EU (TED)</option>
+        </select>
+        <input type="text" id="govKeywordSearch" placeholder="Search: web development, IT, cleaning, construction…"/>
+        <button class="btn sm" id="govSearchBtn">Search</button>
+      </div>
+      <div id="govLiveIndicator" style="display:none;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="display:inline-block;width:10px;height:10px;background:#16a34a;border-radius:50%;animation:pulse 1.5s ease-in-out infinite;"></span>
+        <span style="font-size:12px;font-weight:700;color:#16a34a;letter-spacing:.05em;">LIVE</span>
+        <span id="govSource" style="font-size:11px;color:var(--sub);margin-left:4px;"></span>
+      </div>
+      <div id="govContractsContent"></div>
+      <div id="govLoadMore" style="text-align:center;margin-top:16px;display:none;">
+        <button class="btn secondary" id="govLoadMoreBtn">Load More</button>
       </div>
     </section>
 
@@ -826,6 +852,102 @@ async function saveLead(id) {
   }
 }
 window.saveLead = saveLead;
+
+/* ======================================================
+   GOV CONTRACTS TAB
+   ====================================================== */
+let govPage = 1;
+let govContracts = [];
+let govTotal = 0;
+
+const govCountryFilter = document.getElementById('govCountryFilter');
+const govKeywordSearch = document.getElementById('govKeywordSearch');
+const govSearchBtn = document.getElementById('govSearchBtn');
+const govContractsContent = document.getElementById('govContractsContent');
+const govLoadMore = document.getElementById('govLoadMore');
+const govLoadMoreBtn = document.getElementById('govLoadMoreBtn');
+const govLiveIndicator = document.getElementById('govLiveIndicator');
+const govSource = document.getElementById('govSource');
+
+govSearchBtn.addEventListener('click', () => { govPage = 1; govContracts = []; loadGovContracts(); });
+govKeywordSearch.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); govPage = 1; govContracts = []; loadGovContracts(); } });
+govCountryFilter.addEventListener('change', () => { govPage = 1; govContracts = []; loadGovContracts(); });
+if (govLoadMoreBtn) govLoadMoreBtn.addEventListener('click', () => { govPage++; loadGovContracts(true); });
+
+async function loadGovContracts(append = false) {
+  if (!append) {
+    govContractsContent.innerHTML = '<div class="loading">Searching government contracts…</div>';
+    govLoadMore.style.display = 'none';
+  }
+  const country = govCountryFilter.value;
+  const keyword = govKeywordSearch.value.trim();
+  let url = `/api/contracts?country=${country}&page=${govPage}&pageSize=20`;
+  if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+
+  try {
+    const res = await apiFetch(url);
+    if (!res.ok) { govContractsContent.innerHTML = '<div class="empty">Failed to load contracts.</div>'; return; }
+    const data = await res.json();
+    govTotal = data.total || 0;
+    const newContracts = data.contracts || [];
+    if (append) {
+      govContracts = [...govContracts, ...newContracts];
+    } else {
+      govContracts = newContracts;
+    }
+    renderGovContracts();
+    // Update live indicator
+    if (govLiveIndicator) {
+      govLiveIndicator.style.display = 'flex';
+      if (govSource) govSource.textContent = `— ${data.source || 'Official government APIs'}${data.errors ? ' (some sources unavailable)' : ''}`;
+    }
+  } catch (err) {
+    govContractsContent.innerHTML = `<div class="empty">Error: ${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function renderGovContracts() {
+  if (!govContracts.length) {
+    govContractsContent.innerHTML = '<div class="empty">No contracts found. Try different keywords or select a different country.</div>';
+    govLoadMore.style.display = 'none';
+    return;
+  }
+  govContractsContent.innerHTML = `<div class="leads-grid">${govContracts.map(renderContractCard).join('')}</div>`;
+  govLoadMore.style.display = govContracts.length < govTotal ? 'block' : 'none';
+}
+
+function renderContractCard(contract) {
+  const countryFlag = contract.country === 'US' ? '🇺🇸' : contract.country === 'UK' ? '🇬🇧' : contract.country === 'AU' ? '🇦🇺' : '🇪🇺';
+  const sourceLabel = contract.source || '';
+  const deadlineStr = contract.deadline ? `⏰ Due: ${new Date(contract.deadline).toLocaleDateString()}` : '';
+  const postedStr = contract.postedDate ? relativeTime(contract.postedDate) : '';
+  const valueStr = (contract.value && (contract.value.min || contract.value.max))
+    ? `💰 ${contract.value.currency || '$'} ${(contract.value.min || 0).toLocaleString()}${contract.value.max && contract.value.max !== contract.value.min ? ' – ' + contract.value.max.toLocaleString() : ''}`
+    : '';
+  const typeColor = contract.type === 'solicitation' ? '#22c55e' : contract.type === 'presolicitation' ? '#fbbf24' : contract.type === 'award' ? '#60a5fa' : '#9b96b8';
+
+  return `
+    <div class="lead-card">
+      <div class="lc-top">
+        <div class="lc-title">${escapeHtml(contract.title)}</div>
+        <span class="lc-badge" style="background:${typeColor}22;color:${typeColor};">${escapeHtml(contract.type || 'contract')}</span>
+      </div>
+      <div class="lc-meta">
+        <span>${countryFlag} ${escapeHtml(sourceLabel)}</span>
+        ${contract.location ? `<span>📍 ${escapeHtml(contract.location)}</span>` : ''}
+      </div>
+      ${valueStr ? `<div class="lc-budget">${valueStr}</div>` : ''}
+      ${contract.description ? `<div style="font-size:12px;color:var(--sub);line-height:1.4;">${escapeHtml(contract.description).slice(0, 150)}${contract.description.length > 150 ? '…' : ''}</div>` : ''}
+      <div class="lc-contact">
+        <strong>🏢 ${escapeHtml(contract.agency || '')}</strong>
+        ${contract.category ? `<span style="font-size:12px;color:var(--sub);">📂 ${escapeHtml(contract.category)}</span>` : ''}
+      </div>
+      <div class="lc-footer">
+        <span class="lc-date">${deadlineStr || (postedStr ? '🕐 ' + postedStr : '')}</span>
+        ${contract.url ? `<a href="${escapeHtml(contract.url)}" target="_blank" rel="noopener" class="btn sm">View Details →</a>` : ''}
+      </div>
+    </div>`;
+}
 
 /* ======================================================
    INBOX TAB

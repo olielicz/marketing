@@ -18,6 +18,7 @@ import {
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { filterLeads } from "./leadSearch.js";
+import { searchGovContracts, clearGovCache } from "./govContracts.js";
 
 const PORT = Number(process.env.PORT) || 4700;
 const SESSION_TTL_MS = (Number(process.env.OLI_LOCATOR_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -95,7 +96,18 @@ const server = createServer(async (req, res) => {
     if (req.method === "POST" && url.pathname === "/api/leads/clear-cache") {
       const { clearCache } = await import("./leadSearch.js");
       if (clearCache) clearCache();
+      if (clearGovCache) clearGovCache();
       return send(res, 200, { ok: true, message: "Cache cleared" });
+    }
+
+    // Government Contracts search (public, no auth needed for browsing)
+    if (req.method === "GET" && url.pathname === "/api/contracts") {
+      const country = url.searchParams.get("country") || "ALL";
+      const keyword = url.searchParams.get("keyword") || "";
+      const page = Number(url.searchParams.get("page")) || 1;
+      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
+      const result = await searchGovContracts({ country, keyword, page, pageSize });
+      return send(res, 200, result);
     }
 
     // Login
