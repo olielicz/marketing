@@ -439,33 +439,64 @@ async function fetchFromEUTED({ keyword, page = 1, pageSize = 20 }) {
 
 /**
  * Map an EU TED notice to our contract format.
+ * TED v3 returns multilingual fields: { "eng": ["value"], "fra": ["value"], ... }
  */
 function mapEUContract(notice) {
-  const title = notice.title || notice.titles?.en || notice.titles?.fr || "Untitled Notice";
-  const description = notice.description || notice.descriptions?.en || notice.descriptions?.fr || "";
-  const buyer = notice.buyer || notice.buyers?.[0] || {};
-  const value = notice.value || notice.estimatedValue || {};
+  // Helper to extract first value from a multilingual TED field
+  function extractTedField(field) {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    // Try English first, then any other language
+    const langs = ["eng", "en", "fra", "deu", "spa", "ita", "nld", "pol", "por", "ron", "ces", "dan", "swe", "fin"];
+    for (const lang of langs) {
+      if (field[lang] && field[lang].length > 0) return field[lang][0];
+    }
+    // Fallback: just get the first available language's first value
+    const keys = Object.keys(field);
+    if (keys.length > 0 && Array.isArray(field[keys[0]]) && field[keys[0]].length > 0) {
+      return field[keys[0]][0];
+    }
+    return "";
+  }
+
+  const title = extractTedField(notice["notice-title"]);
+  const buyerName = extractTedField(notice["buyer-name"]);
+  const pubDate = notice["publication-date"] || "";
+  const deadline = notice["deadline"] || "";
+  const totalValue = notice["total-value"];
+  const noticeType = notice["notice-type"] || "";
+  const country = extractTedField(notice["country-origin"]) || "";
+  const pubNumber = notice["publication-number"] || "";
+
+  // Parse total-value (can be number, string, or multilingual object)
+  let valueAmount = 0;
+  if (typeof totalValue === "number") valueAmount = totalValue;
+  else if (typeof totalValue === "string") valueAmount = parseFloat(totalValue) || 0;
+  else if (totalValue && typeof totalValue === "object") {
+    const val = extractTedField(totalValue);
+    valueAmount = parseFloat(val) || 0;
+  }
 
   return {
-    id: notice.id || notice.noticeId || `ted-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    title: typeof title === "string" ? title : (title.en || title.fr || "Untitled"),
-    description: truncate(typeof description === "string" ? description : (description.en || description.fr || "")),
+    id: pubNumber || `ted-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    title: title || "Untitled Notice",
+    description: "",
     country: "EU",
     source: "ted",
-    agency: buyer.name || buyer.officialName || "Unknown Buyer",
+    agency: buyerName || "Unknown Buyer",
     value: {
-      min: value.lowestValue || value.amount || 0,
-      max: value.highestValue || value.amount || 0,
-      currency: value.currency || "EUR",
+      min: valueAmount,
+      max: valueAmount,
+      currency: "EUR",
     },
-    postedDate: notice.publicationDate || notice.publishedDate || null,
-    deadline: notice.deadline || notice.submissionDeadline || notice.tenderDeadline || null,
-    category: notice.cpvDescriptions?.en?.[0] || notice.cpvCodes?.[0] || notice.mainActivity || "General",
-    type: mapEUNoticeType(notice.type || notice.noticeType),
-    url: notice.id
-      ? `https://ted.europa.eu/en/notice/-/detail/${notice.id}`
+    postedDate: pubDate || null,
+    deadline: deadline || null,
+    category: country ? `EU - ${country}` : "EU Procurement",
+    type: mapEUNoticeType(noticeType),
+    url: pubNumber
+      ? `https://ted.europa.eu/en/notice/-/detail/${pubNumber}`
       : "https://ted.europa.eu",
-    location: notice.country || notice.performanceCountry || notice.buyer?.country || "",
+    location: country || "",
   };
 }
 
