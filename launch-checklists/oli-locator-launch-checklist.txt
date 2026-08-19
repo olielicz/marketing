@@ -2,7 +2,7 @@ OLI-LOCATOR — START TO FINISH LAUNCH CHECKLIST
 Company: WorkItLikeAPro
 Contact email: YOUR_SUPPORT_GMAIL_ADDRESS
 Product: Oli-Locator (hosted home-improvement lead-generation tool — leads, inbox, call center)
-Price: Subscription — Starter $29/mo or $290/yr, Pro $79/mo or $790/yr, Agency $199/mo or $1990/yr — hosted SaaS, no device cap (login-based)
+Price: Subscription — Starter $49/mo or $468/yr, Pro $129/mo or $1,188/yr, Agency $299/mo or $2,748/yr — hosted SaaS, no device cap (login-based)
 Repo: lead-gen
 
 NOTE: Oli-Locator is the ONE product on this list that is hosted, not self-hosted/downloaded.
