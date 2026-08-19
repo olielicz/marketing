@@ -357,6 +357,11 @@ tr:last-child td{border-bottom:none;}
         <button class="btn sm" onclick="copyToClipboard('pitch-linkedin')">📋 Copy LinkedIn</button>
         <button class="btn sm" onclick="copyToClipboard('pitch-whatsapp')">📋 Copy WhatsApp</button>
       </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
+        <button class="btn sm" onclick="openWhatsAppWithPitch()" style="background:#25d366;border-color:#25d366;">💬 Open WhatsApp</button>
+        <button class="btn sm" onclick="openLinkedInSearch()" style="background:#0a66c2;border-color:#0a66c2;">🔗 Find on LinkedIn</button>
+        <button class="btn sm secondary" onclick="openEmailWithPitch()">✉️ Open Email Client</button>
+      </div>
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
       <button class="btn secondary" onclick="closeModal('pitchModal')">Close</button>
@@ -1268,6 +1273,11 @@ async function generatePitch(leadId) {
   const lead = cachedLeads.find(l => String(l.id) === String(leadId));
   if (!lead) { alert('Lead not found'); return; }
 
+  // Store lead info for action buttons
+  window._currentPitchLeadPhone = lead.customerPhone || '';
+  window._currentPitchLeadEmail = lead.customerEmail || '';
+  window._currentPitchLeadCompany = lead.customerName || lead.company || '';
+
   document.getElementById('pitchModal').classList.add('open');
   document.getElementById('pitchLoading').style.display = 'block';
   document.getElementById('pitchContent').style.display = 'none';
@@ -1305,8 +1315,41 @@ function copyToClipboard(elementId) {
     el.select(); document.execCommand('copy'); alert('Copied!');
   });
 }
+
+function openWhatsAppWithPitch() {
+  const msg = document.getElementById('pitch-whatsapp').value;
+  if (!msg) { alert('Generate a pitch first'); return; }
+  // If we have a phone number for this lead, use it; otherwise open WA web with message to paste
+  const phone = window._currentPitchLeadPhone || '';
+  if (phone) {
+    window.open(`https://wa.me/${phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+  } else {
+    // Open WhatsApp web with pre-filled message (user needs to select contact)
+    window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+}
+
+function openLinkedInSearch() {
+  const company = window._currentPitchLeadCompany || '';
+  if (company) {
+    window.open(`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(company)}`, '_blank');
+  } else {
+    window.open('https://www.linkedin.com/search/results/people/', '_blank');
+  }
+}
+
+function openEmailWithPitch() {
+  const subject = document.getElementById('pitch-subject').value;
+  const body = document.getElementById('pitch-body').value;
+  const email = window._currentPitchLeadEmail || '';
+  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_self');
+}
+
 window.generatePitch = generatePitch;
 window.copyToClipboard = copyToClipboard;
+window.openWhatsAppWithPitch = openWhatsAppWithPitch;
+window.openLinkedInSearch = openLinkedInSearch;
+window.openEmailWithPitch = openEmailWithPitch;
 
 /* ======================================================
    MODAL HELPERS
