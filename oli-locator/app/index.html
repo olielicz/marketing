@@ -811,7 +811,7 @@ async function loadLeads(append = false) {
   const city = els.citySearch.value.trim();
   let url = `/api/leads?country=${currentCountry}&page=${currentPage}&pageSize=20`;
   if (trade) url += `&trade=${encodeURIComponent(trade)}`;
-  if (city) url += `&city=${encodeURIComponent(city)}`;
+  if (city) url += `&keyword=${encodeURIComponent(city)}`;
 
   try {
     const res = await apiFetch(url);

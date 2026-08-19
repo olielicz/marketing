@@ -502,14 +502,18 @@ async function fetchRemoteLeads({ trade, pageSize = 20 }) {
  * @param {number} [params.pageSize=10] - Results per page
  * @returns {Object} { leads, total, page, pageSize, totalPages, source, error? }
  */
-export async function filterLeads({ country, trade, city, lat, lng, radius, page = 1, pageSize = 10 }) {
+export async function filterLeads({ country, trade, city, keyword, lat, lng, radius, page = 1, pageSize = 10 }) {
   const countryUpper = (country || "US").toUpperCase();
 
   // Normalize trade for search
   let searchTrade = trade ? trade.replace(/-/g, " ").toLowerCase() : "";
 
+  // If keyword is provided (user typed in search box), use it as the search term
+  // This allows searching by company name, skill, or any keyword — not just city
+  const searchKeyword = keyword ? keyword.trim() : "";
+
   // Build cache key
-  const cacheKey = getCacheKey({ country: countryUpper, trade: searchTrade, city, lat, lng, radius, page, pageSize });
+  const cacheKey = getCacheKey({ country: countryUpper, trade: searchTrade, city, keyword: searchKeyword, lat, lng, radius, page, pageSize });
 
   // Check cache first
   const cached = getCached(cacheKey);
@@ -547,11 +551,11 @@ export async function filterLeads({ country, trade, city, lat, lng, radius, page
         locationSearch = "";
       }
 
-      console.log(`[Adzuna] Searching: country=${countryUpper}, trade="${searchTrade}", city="${locationSearch}", page=${page}`);
+      console.log(`[Adzuna] Searching: country=${countryUpper}, trade="${searchTrade}", city="${locationSearch}", keyword="${searchKeyword}", page=${page}`);
 
       const data = await fetchFromAdzuna({
         country: countryUpper,
-        trade: searchTrade || "",
+        trade: searchKeyword || searchTrade || "",
         city: locationSearch,
         page,
         pageSize: Math.min(50, pageSize),
