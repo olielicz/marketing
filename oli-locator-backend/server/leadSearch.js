@@ -271,8 +271,11 @@ function httpsGet(url) {
 async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }) {
   const countryCode = COUNTRY_MAP[country.toUpperCase()] || "us";
 
-  // Use the freelance/agency category search terms
-  const searchTerm = tradeTerms[trade] || "developer";
+  // If the trade matches a predefined category, use the mapped term.
+  // Otherwise, use the raw trade/keyword text DIRECTLY as the search term.
+  // This ensures user-typed keywords like "React developer" or "data entry clerk"
+  // are searched exactly as typed, not mapped to a generic fallback.
+  const searchTerm = tradeTerms[trade] || trade || "developer";
   const locationTerm = city || "";
 
   // Build the API URL
