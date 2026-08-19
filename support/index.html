@@ -273,10 +273,10 @@
   <!-- FIX: was "Real Estate CRM (Hosted)" with a "Property search
        results" FAQ below - stale from before the real-estate feature
        was removed from Oli-Locator entirely (see oli-locator/index.html's
-       fix comments). Oli-Locator is now a home-improvement lead-gen
+       fix comments). Oli-Locator is now a client lead finder
        tool covering 11 trades across USA/UK/Australia - corrected both
        the badge and the FAQ item to match. -->
-  <div class="tool-header"><h2>🛠️ Oli-Locator</h2><span class="tool-badge">Home-Improvement Lead Finder (Hosted)</span></div>
+  <div class="tool-header"><h2>🎯 Oli-Locator</h2><span class="tool-badge">3-in-1 Lead Finder for Freelancers & Agencies (Hosted)</span></div>
 
   <details class="faq-item">
     <summary class="faq-q">I can't log in <span class="arrow">▾</span></summary>
@@ -286,16 +286,23 @@
   </details>
 
   <details class="faq-item">
-    <summary class="faq-q">Tapping a lead's number doesn't open my calling app</summary>
+    <summary class="faq-q">What are the three tabs (Client Leads, Gov Contracts, Funded Startups)?</summary>
     <div class="faq-a">
-      <p>Oli-Locator opens your device's <em>default</em> calling app via a standard tap-to-call link — if nothing happens, check which app is set as your device's default dialer/calling app in your phone or browser settings. See the "Use any calling app you want" section on the <a href="../oli-locator/">Oli-Locator page</a> for how this works and how to set a default.</p>
+      <p><strong>Client Leads</strong> finds companies hiring freelancers/agencies via Adzuna (USA/UK/AU) + Remotive + Jobicy (global remote). <strong>Gov Contracts</strong> searches official government tenders from SAM.gov (USA), UK Contracts Finder, AusTender (AU), and EU TED. <strong>Funded Startups</strong> surfaces companies that just raised capital (SEC EDGAR) or are actively hiring (Hacker News). All three tabs are included on every plan.</p>
     </div>
   </details>
 
   <details class="faq-item">
-    <summary class="faq-q">Lead search results look outdated or missing</summary>
+    <summary class="faq-q">Search returns no results for a specific country or keyword</summary>
     <div class="faq-a">
-      <p>Leads refresh from live public job/demand feeds plus your own opt-in "Request a Quote" submissions — if a trade or region looks thin, that market's feed may not have new listings right now, not a bug. If an entire country or trade consistently shows no results, <a href="../contact/">let us know</a> which one so we can check the data source coverage there.</p>
+      <p>Results come from live external APIs (Adzuna, Remotive, Jobicy, SAM.gov, UK Contracts Finder, EU TED, SEC EDGAR). If a specific country or keyword shows no results: (1) try broader keywords (e.g. "developer" instead of "React developer"), (2) check that you selected the correct country tab, (3) for Remote leads, make sure you're on the 🌍 Remote toggle. Data refreshes every 5 minutes — cached results are served for performance. If a source is consistently empty, <a href="../contact/">let us know</a>.</p>
+    </div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">What's the difference between Starter, Pro, and Agency?</summary>
+    <div class="faq-a">
+      <p><strong>Starter ($49/mo)</strong>: All 3 tabs, all countries + remote, 200 searches/day, 1 seat. <strong>Pro ($129/mo)</strong>: Unlimited searches, priority cache, 1 seat. <strong>Agency ($299/mo)</strong>: Unlimited searches + up to 10 team seats (real separate logins) + API access. All limits are enforced server-side — exceeding daily searches returns a clear upgrade message.</p>
     </div>
   </details>
 
