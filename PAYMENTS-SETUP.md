@@ -136,12 +136,12 @@ same structure as OliOps); OliSalesTrack needs 2):
      `https://workitlikeapro.com/oli-locator/`
 2. Under that product, click **Create Plan** once per tier × billing
    period, e.g. for Oli-Locator:
-   - `Oli-Locator Starter Monthly` → **$29.00 USD/month**
-   - `Oli-Locator Starter Yearly` → **$290.00 USD/year**
-   - `Oli-Locator Pro Monthly` → **$79.00 USD/month**
-   - `Oli-Locator Pro Yearly` → **$790.00 USD/year**
-   - `Oli-Locator Agency Monthly` → **$199.00 USD/month**
-   - `Oli-Locator Agency Yearly` → **$1990.00 USD/year**
+   - `Oli-Locator Starter Monthly` → **$49.00 USD/month**
+   - `Oli-Locator Starter Yearly` → **$468.00 USD/year**
+   - `Oli-Locator Pro Monthly` → **$129.00 USD/month**
+   - `Oli-Locator Pro Yearly` → **$1,188.00 USD/year**
+   - `Oli-Locator Agency Monthly` → **$299.00 USD/month**
+   - `Oli-Locator Agency Yearly` → **$2,748.00 USD/year**
    - Status: **Active** → Save each
 3. Copy each **Plan ID** (starts with `P-`)
 4. Open `shared/paypal-sdk.js` and paste each into the matching
@@ -241,7 +241,7 @@ the page.
 | OliCommerce Stack | `OliCommerce Stack` | Basic $29/mo·$264/yr, Growth $49/mo·$444/yr, Scale $89/mo·$804/yr | Recurring |
 | OliFlow Engine | `OliFlow Automation Engine` | Solo $35/mo·$312/yr, Pro $59/mo·$528/yr, Business $99/mo·$888/yr | Recurring |
 | OliExplore | `OliExplore` | Creator $27/mo·$252/yr, Team $49/mo·$468/yr, Agency $89/mo·$828/yr | Recurring |
-| Oli-Locator | `Oli-Locator` | Starter $29/mo·$290/yr, Pro $79/mo·$790/yr, Agency $199/mo·$1990/yr | Recurring |
+| Oli-Locator | `Oli-Locator` | Starter $49/mo·$468/yr, Pro $129/mo·$1,188/yr, Agency $299/mo·$2,748/yr | Recurring |
 | OliSalesTrack | `OliSalesTrack Pro` | Pro $24/mo·$204/yr (single tier) | Recurring |
 
 1. Paddle Dashboard → **Catalog → Products** → **Create Product** (one per tool)
@@ -491,7 +491,7 @@ PayPal Subscriptions and Paddle's recurring billing charge the customer's card a
 | OliCommerce Stack | $29/mo or $264/yr | Monthly/Annual | `olicommerce/buy/index.html` | PayPal subscription | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
 | OliFlow Engine | $35/mo or $312/yr | Monthly/Annual | `oliflow/buy/index.html` | PayPal subscription | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
 | OliExplore | $27/mo or $252/yr | Monthly/Annual | `oliexplore/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
-| Oli-Locator | $29/mo or $290/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
+| Oli-Locator | $49/mo or $468/yr | Monthly/Annual | `oli-locator/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
 | OliSalesTrack | $24/mo or $204/yr | Monthly/Annual | `olisalestrack/buy/index.html` | PayPal subscription plan | ✅ Wallet buttons (Part 1c) | Paddle Price | ✅ Auto in overlay (Part 2c) | Payment Link (set up later) |
 
 Apple Pay / Google Pay is available on **every** tool through both

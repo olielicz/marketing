@@ -104,7 +104,7 @@
          This dict feeds real welcome/renewal-reminder emails sent to
          paying customers via EmailJS, so the stale values weren't just
          a display bug - they'd have been emailed to real customers.
-         Corrected to match the real buy-page tiers (Starter $29/mo). */
+         Corrected to match the real buy-page tiers (Starter $49/mo). */
       name:      'Oli-Locator',
       icon:      '🛠️',
       color:     '#e11d2e',
@@ -112,9 +112,9 @@
       loginUrl:  '/oli-locator/login/',
       accountUrl:'/oli-locator/account/',
       toolUrl:   '/oli-locator/',
-      price:     '$29/mo or $290/yr',
+      price:     '$49/mo or $468/yr',
       type:      'monthly',
-      tagline:   'Home-Improvement Lead Finder — USA, UK & Australia',
+      tagline:   'Client Lead Finder — USA, UK & Australia + Global Remote',
     },
     'olisalestrack': {
       name:      'OliSalesTrack',

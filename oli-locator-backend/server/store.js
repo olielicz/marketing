@@ -2,11 +2,19 @@
  * JSON-file-backed persistence for Oli-Locator. Same intentionally-simple
  * pattern as oliops-backend — a single JSON file with an in-process write
  * queue. Entities: owner, sessions, leads (pre-seeded), savedLeads, inbox,
- * calls, settings.
+ * calls, settings, subscription, teamMembers.
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+
+/* ========================= Tier Limits ========================= */
+
+export const TIER_LIMITS = {
+  starter: { maxSearchesPerDay: 200, maxTeamMembers: 0 },
+  pro: { maxSearchesPerDay: 999999, maxTeamMembers: 0 },
+  agency: { maxSearchesPerDay: 999999, maxTeamMembers: 10 },
+};
 
 const DATA_DIR = process.env.OLI_LOCATOR_DATA_DIR || path.join(process.cwd(), "data");
 const DB_FILE = path.join(DATA_DIR, "oli-locator.json");
@@ -248,6 +256,12 @@ function ensureDb() {
           businessPhone: "",
           businessEmail: "",
         },
+        subscription: {
+          tier: "pro",
+          searchesUsedToday: 0,
+          lastSearchResetDate: new Date().toISOString().slice(0, 10),
+        },
+        teamMembers: {},
       }, null, 2),
       { mode: 0o600 }
     );
@@ -264,6 +278,8 @@ function readDb() {
     if (!db.inbox) db.inbox = {};
     if (!db.calls) db.calls = {};
     if (!db.settings) db.settings = { defaultCountry: "US", preferredTrades: [], businessName: "", businessPhone: "", businessEmail: "" };
+    if (!db.subscription) db.subscription = { tier: "pro", searchesUsedToday: 0, lastSearchResetDate: new Date().toISOString().slice(0, 10) };
+    if (!db.teamMembers) db.teamMembers = {};
     return db;
   } catch (err) {
     throw new Error(`Oli-Locator database at ${DB_FILE} is corrupted: ${err.message}`);
@@ -498,4 +514,114 @@ export async function updateSettings(patch) {
   db.settings = current;
   await writeDb(db);
   return current;
+}
+
+
+/* ========================= Subscription / Tier Enforcement ========================= */
+
+function todayUTC() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export async function getSubscription() {
+  const db = readDb();
+  const sub = db.subscription;
+  // Auto-reset daily counter if the date has changed (midnight UTC reset)
+  const today = todayUTC();
+  if (sub.lastSearchResetDate !== today) {
+    sub.searchesUsedToday = 0;
+    sub.lastSearchResetDate = today;
+    await writeDb(db);
+  }
+  return { ...sub };
+}
+
+export async function updateSubscription(tier) {
+  const validTiers = ["starter", "pro", "agency"];
+  if (!validTiers.includes(tier)) throw new Error(`Invalid tier: ${tier}. Must be one of: ${validTiers.join(", ")}`);
+  const db = readDb();
+  db.subscription.tier = tier;
+  await writeDb(db);
+  return { ...db.subscription };
+}
+
+export async function recordSearch() {
+  const db = readDb();
+  const today = todayUTC();
+  // Reset counter if new day
+  if (db.subscription.lastSearchResetDate !== today) {
+    db.subscription.searchesUsedToday = 0;
+    db.subscription.lastSearchResetDate = today;
+  }
+  db.subscription.searchesUsedToday += 1;
+  await writeDb(db);
+  return db.subscription.searchesUsedToday;
+}
+
+export async function canSearch() {
+  const db = readDb();
+  const today = todayUTC();
+  // Reset counter if new day
+  if (db.subscription.lastSearchResetDate !== today) {
+    db.subscription.searchesUsedToday = 0;
+    db.subscription.lastSearchResetDate = today;
+    await writeDb(db);
+  }
+  const tier = db.subscription.tier;
+  const limits = TIER_LIMITS[tier] || TIER_LIMITS.starter;
+  const used = db.subscription.searchesUsedToday;
+  const remaining = Math.max(0, limits.maxSearchesPerDay - used);
+  return {
+    allowed: remaining > 0,
+    remaining,
+    tier,
+  };
+}
+
+/* ========================= Team Members (Agency Only) ========================= */
+
+export async function listTeamMembers() {
+  const db = readDb();
+  // Return array of team members (without password hashes for listing)
+  return Object.values(db.teamMembers).map(({ username, name, createdAt }) => ({ username, name, createdAt }));
+}
+
+export async function addTeamMember({ username, salt, hash, name }) {
+  const db = readDb();
+  const tier = db.subscription.tier;
+  if (tier !== "agency") throw new Error("Team members are only available on the Agency plan.");
+  const limits = TIER_LIMITS.agency;
+  const currentCount = Object.keys(db.teamMembers).length;
+  if (currentCount >= limits.maxTeamMembers) throw new Error(`Maximum team members reached (${limits.maxTeamMembers}). Remove a member before adding another.`);
+  const normalizedUsername = username.toLowerCase().trim();
+  if (!normalizedUsername) throw new Error("Username is required.");
+  if (db.teamMembers[normalizedUsername]) throw new Error(`Team member "${normalizedUsername}" already exists.`);
+  // Also check owner username collision
+  if (db.owner && db.owner.username.toLowerCase() === normalizedUsername) {
+    throw new Error("Username conflicts with the owner account.");
+  }
+  db.teamMembers[normalizedUsername] = {
+    username: normalizedUsername,
+    salt,
+    hash,
+    name: name || normalizedUsername,
+    createdAt: new Date().toISOString(),
+  };
+  await writeDb(db);
+  return { username: normalizedUsername, name: db.teamMembers[normalizedUsername].name, createdAt: db.teamMembers[normalizedUsername].createdAt };
+}
+
+export async function removeTeamMember(username) {
+  const db = readDb();
+  const normalizedUsername = username.toLowerCase().trim();
+  if (!db.teamMembers[normalizedUsername]) return false;
+  delete db.teamMembers[normalizedUsername];
+  await writeDb(db);
+  return true;
+}
+
+export async function getTeamMember(username) {
+  const db = readDb();
+  const normalizedUsername = username.toLowerCase().trim();
+  return db.teamMembers[normalizedUsername] || null;
 }

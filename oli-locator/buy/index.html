@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Subscribe — Oli-Locator</title>
-<meta name="description" content="Subscribe to Oli-Locator. From $29/month. Secure checkout via Stripe and PayPal."/>
+<meta name="description" content="Subscribe to Oli-Locator. From $49/month. Secure checkout via Stripe and PayPal."/>
 <meta name="robots" content="noindex"/>
 <meta name="copyright" content="© 2025 WorkItLikeAPro — All Rights Reserved"/>
 <link rel="stylesheet" href="../../shared/theme.css">
@@ -132,25 +132,25 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
   <div class="plans-grid" id="plansGrid">
     <div class="plan-card" data-idx="0" onclick="selectPlan(0)">
       <div class="plan-name">Starter</div>
-      <div class="plan-price-monthly">$29<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
-      <div class="plan-price-yearly" style="display:none">$290<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
-      <div class="plan-period" id="period-0">$<span class="pm">29</span>/month · <span class="py" style="display:none">$290/yr = $<span>24</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For solo trades testing the waters — 1 country, 100 searches/mo</div>
+      <div class="plan-price-monthly">$49<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$468<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-0">$<span class="pm">49</span>/month · <span class="py" style="display:none">$468/yr = $<span>39</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">All features, 200 searches/day cap — 1 seat only</div>
     </div>
     <div class="plan-card selected" data-idx="1" onclick="selectPlan(1)">
       <div class="pop-tag">⭐ Most Popular</div>
       <div class="plan-name">Pro</div>
-      <div class="plan-price-monthly">$79<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
-      <div class="plan-price-yearly" style="display:none">$790<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
-      <div class="plan-period" id="period-1">$<span class="pm">79</span>/month · <span class="py" style="display:none">$790/yr = $<span>66</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For busy contractors — all 3 countries, unlimited search, 1 seat</div>
+      <div class="plan-price-monthly">$129<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$1188<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-1">$<span class="pm">129</span>/month · <span class="py" style="display:none">$1,188/yr = $<span>99</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">Unlimited searches, priority cache — 1 seat</div>
     </div>
     <div class="plan-card " data-idx="2" onclick="selectPlan(2)">
       <div class="plan-name">Agency</div>
-      <div class="plan-price-monthly">$199<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
-      <div class="plan-price-yearly" style="display:none">$1990<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
-      <div class="plan-period" id="period-2">$<span class="pm">199</span>/month · <span class="py" style="display:none">$1990/yr = $<span>166</span>/mo · </span>billed monthly</div>
-      <div class="plan-desc">For teams &amp; lead resellers — all 3 countries, up to 10 seats + real API key</div>
+      <div class="plan-price-monthly">$299<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="plan-price-yearly" style="display:none">$2748<span style="font-size:.9rem;font-weight:600;color:var(--sub)">/yr</span></div>
+      <div class="plan-period" id="period-2">$<span class="pm">299</span>/month · <span class="py" style="display:none">$2,748/yr = $<span>229</span>/mo · </span>billed monthly</div>
+      <div class="plan-desc">Up to 10 team seats (real separate logins) + API access + unlimited searches</div>
     </div>
   </div>
 
@@ -159,25 +159,24 @@ input:checked+.toggle-slider::before{transform:translateX(20px);}
     <div class="summary-card">
       <div class="line"><span id="sumPlan">Pro</span><span id="sumBilling">billed monthly</span></div>
       <div class="line"><span>Billing cycle</span><span id="sumCycle">Monthly</span></div>
-      <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$79/mo</span></div>
+      <div class="total"><span id="sumLabel">Due today</span><span id="sumTotal">$129/mo</span></div>
       <ul class="included" id="planFeatureList">
-      <li>Lead generation across 11 trades</li>
-      <li>Opt-in "Request a Quote" Inbox + saved searches</li>
-      <li>Call center — use your own phone app</li>
+      <li>All 3 tabs: Client Leads, Gov Contracts, Funded Startups</li>
+      <li>All countries + Global Remote</li>
+      <li>Save leads + Inbox + Call Log</li>
       <li>Unlimited devices (login-based)</li>
       <li>Cancel anytime, no contract</li>
       <li>Priority support</li>
-      <li id="planCountryCount">All 3 countries — USA, UK &amp; Australia</li>
-      <li id="planQuotaCount">Unlimited lead searches</li>
+      <li id="planQuotaCount">Unlimited searches/day</li>
       <li id="planSeatCount">1 seat (just you)</li>
-      <li id="planApiKeyLine" style="display:none">Real API key + integrations</li>
+      <li id="planApiKeyLine" style="display:none">API access (Bearer token for programmatic use)</li>
       </ul>
     </div>
 
     <!-- Payment -->
     <div class="pay-card">
       <h2>Pay securely</h2>
-      <div class="due-now" id="dueNow" style="color:var(--accent);">$79<span style="font-size:1rem;font-weight:600;color:var(--sub)">/mo</span></div>
+      <div class="due-now" id="dueNow" style="color:var(--accent);">$129<span style="font-size:1rem;font-weight:600;color:var(--sub)">/mo</span></div>
       <div class="email-field">
         <label for="buyerEmail">Your Email Address</label>
         <input type="email" id="buyerEmail" placeholder="you@company.com" required
@@ -255,9 +254,9 @@ const TOOL_KEY = 'oli-locator';
 // enforcement" section) so this page's feature list states the genuine
 // numbers instead of a single static list shown for every tier.
 const PLANS = [
-  {"key":"starter","name":"Starter","mo":"29","yr":"290","yr_mo":"24","countries":1,"quota":100,"seats":1,"apiKey":false},
-  {"key":"pro","name":"Pro","mo":"79","yr":"790","yr_mo":"66","countries":3,"quota":null,"seats":1,"apiKey":false},
-  {"key":"agency","name":"Agency","mo":"199","yr":"1990","yr_mo":"166","countries":3,"quota":null,"seats":10,"apiKey":true}
+  {"key":"starter","name":"Starter","mo":"49","yr":"468","yr_mo":"39","quota":200,"seats":1,"apiKey":false},
+  {"key":"pro","name":"Pro","mo":"129","yr":"1188","yr_mo":"99","quota":null,"seats":1,"apiKey":false},
+  {"key":"agency","name":"Agency","mo":"299","yr":"2748","yr_mo":"229","quota":null,"seats":10,"apiKey":true}
 ];
 let selectedPlan = 1;
 let isYearly = false;
@@ -294,15 +293,13 @@ function updateSummary() {
   document.getElementById('dueNow').innerHTML = `$0 <span style="font-size:1rem;font-weight:600;color:var(--sub)">today</span>`;
 
   // FIX: feature list now reflects the real, per-tier, server-enforced
-  // numbers (see the PLANS array's countries/quota/seats/apiKey fields
+  // numbers (see the PLANS array's quota/seats/apiKey fields
   // above) instead of a single static list shown for every tier
   // regardless of which one is actually selected.
-  document.getElementById('planCountryCount').textContent =
-    plan.countries === 1 ? '1 country (your first search locks it in)' : 'All 3 countries — USA, UK & Australia';
   document.getElementById('planQuotaCount').textContent =
-    plan.quota == null ? 'Unlimited lead searches' : `Up to ${plan.quota} lead searches / month`;
+    plan.quota == null ? 'Unlimited searches/day (no cap)' : `Up to ${plan.quota} searches/day (resets at midnight UTC)`;
   document.getElementById('planSeatCount').textContent =
-    plan.seats === 1 ? '1 seat (just you)' : `Up to ${plan.seats} team seats`;
+    plan.seats === 1 ? '1 seat (just you)' : `Up to ${plan.seats} team seats (real separate logins, shared data)`;
   document.getElementById('planApiKeyLine').style.display = plan.apiKey ? '' : 'none';
 
   // FIX: see oliops/buy/index.html's comment on this same fix - this is

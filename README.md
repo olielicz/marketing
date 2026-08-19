@@ -17,7 +17,7 @@ Each product is sold, hosted, and logged into **completely separately**.
 | 🛒 **OliCommerce Stack** | $29/mo or $264/yr | Self-hosted | `/olicommerce/login/` | `/olicommerce/account/` |
 | ⚙️ **OliFlow Automation Engine** | $35/mo or $312/yr | Self-hosted | `/oliflow/login/` | `/oliflow/account/` |
 | 🧭 **OliExplore** | $27/mo or $252/yr | Self-hosted | `/oliexplore/login/` | `/oliexplore/account/` |
-| 🏡 **Oli-Locator** | $29/mo or $290/yr | Hosted SaaS | `/oli-locator/login/` | `/oli-locator/account/` |
+| 🏡 **Oli-Locator** | $49/mo or $468/yr | Hosted SaaS | `/oli-locator/login/` | `/oli-locator/account/` |
 | 📊 **OliSalesTrack** | $24/mo or $204/yr | Hosted SaaS | `/olisalestrack/login/` | `/olisalestrack/account/` |
 
 ---
@@ -245,7 +245,7 @@ See **`HOSTING-GUIDE.md`** for full step-by-step setup on all 6 platforms.
 | OliCommerce | `olicommerce/buy/index.html` | $29/mo or $264/yr | PayPal subscription | Paddle Price | Later |
 | OliFlow | `oliflow/buy/index.html` | $35/mo or $312/yr | PayPal subscription | Paddle Price | Later |
 | OliExplore | `oliexplore/buy/index.html` | $27/mo or $252/yr | PayPal subscription | Paddle Price | Later |
-| Oli-Locator | `oli-locator/buy/index.html` | $29/mo or $290/yr | PayPal subscription plan | Paddle Price | Later |
+| Oli-Locator | `oli-locator/buy/index.html` | $49/mo or $468/yr | PayPal subscription plan | Paddle Price | Later |
 | OliSalesTrack | `olisalestrack/buy/index.html` | $24/mo or $204/yr | PayPal subscription plan | Paddle Price | Later |
 
 See `PAYMENTS-SETUP.md` for the full step-by-step.

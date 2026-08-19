@@ -15,6 +15,9 @@ import {
   listInbox, createInboxSubmission, updateInboxStatus,
   listCalls, createCall,
   getSettings, updateSettings,
+  getSubscription, updateSubscription, recordSearch, canSearch,
+  listTeamMembers, addTeamMember, removeTeamMember, getTeamMember,
+  TIER_LIMITS,
 } from "./store.js";
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { filterLeads } from "./leadSearch.js";
@@ -102,25 +105,6 @@ const server = createServer(async (req, res) => {
       return send(res, 200, { ok: true, message: "All caches cleared" });
     }
 
-    // Government Contracts search (public, no auth needed for browsing)
-    if (req.method === "GET" && url.pathname === "/api/contracts") {
-      const country = url.searchParams.get("country") || "ALL";
-      const keyword = url.searchParams.get("keyword") || "";
-      const page = Number(url.searchParams.get("page")) || 1;
-      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
-      const result = await searchGovContracts({ country, keyword, page, pageSize });
-      return send(res, 200, result);
-    }
-
-    // Funded Startups search (public, no auth needed for browsing)
-    if (req.method === "GET" && url.pathname === "/api/startups") {
-      const keyword = url.searchParams.get("keyword") || "startup";
-      const page = Number(url.searchParams.get("page")) || 1;
-      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
-      const result = await searchFundedStartups({ keyword, page, pageSize });
-      return send(res, 200, result);
-    }
-
     // Login
     if (req.method === "POST" && url.pathname === "/api/login") {
       const ip = clientIp(req);
@@ -137,9 +121,27 @@ const server = createServer(async (req, res) => {
       const owner = await getOwner();
       if (!owner) return send(res, 503, { ok: false, error: "No owner account has been created yet. Run scripts/create-owner.js first." });
 
-      const usernameMatches = username === owner.username.toLowerCase();
-      const passwordMatches = usernameMatches && verifyPassword(password, owner.salt, owner.hash);
-      if (!usernameMatches || !passwordMatches) {
+      // Check owner account first
+      const ownerMatches = username === owner.username.toLowerCase();
+      let authenticated = false;
+      let loginAs = "owner";
+      let loginUsername = owner.username;
+
+      if (ownerMatches) {
+        authenticated = verifyPassword(password, owner.salt, owner.hash);
+      } else {
+        // Check team members (Agency tier)
+        const teamMember = await getTeamMember(username);
+        if (teamMember) {
+          authenticated = verifyPassword(password, teamMember.salt, teamMember.hash);
+          if (authenticated) {
+            loginAs = "team_member";
+            loginUsername = teamMember.username;
+          }
+        }
+      }
+
+      if (!authenticated) {
         await recordFailedAttempt(lockoutKey);
         return send(res, 401, { ok: false, error: "Invalid username or password." });
       }
@@ -148,9 +150,9 @@ const server = createServer(async (req, res) => {
       const sessionId = newSessionId();
       const expiresAt = new Date(Date.now() + SESSION_TTL_MS).toISOString();
       await createSession({ sessionId, expiresAt, ip, userAgent: req.headers["user-agent"] });
-      await recordSuccessfulLogin({ ip });
-      const token = signSessionToken({ sessionId, username: owner.username, issuedAt: new Date().toISOString() });
-      return send(res, 200, { ok: true, token, expiresAt });
+      if (loginAs === "owner") await recordSuccessfulLogin({ ip });
+      const token = signSessionToken({ sessionId, username: loginUsername, role: loginAs, issuedAt: new Date().toISOString() });
+      return send(res, 200, { ok: true, token, expiresAt, role: loginAs, username: loginUsername });
     }
 
     // Logout (graceful — works even with invalid/expired token)
@@ -195,6 +197,122 @@ const server = createServer(async (req, res) => {
     // Everything below requires a valid session
     const auth = await requireAuth(req);
     if (!auth) return send(res, 401, { error: "unauthorized" });
+
+    /* ========================= Subscription ========================= */
+
+    // GET /api/subscription — view current tier and usage
+    if (req.method === "GET" && url.pathname === "/api/subscription") {
+      const sub = await getSubscription();
+      const limits = TIER_LIMITS[sub.tier] || TIER_LIMITS.starter;
+      return send(res, 200, { subscription: { ...sub, limits } });
+    }
+
+    // PUT /api/subscription — update tier (owner only)
+    if (req.method === "PUT" && url.pathname === "/api/subscription") {
+      if (auth.role && auth.role !== "owner") {
+        return send(res, 403, { error: "Only the account owner can change the subscription tier." });
+      }
+      const body = await readJsonBody(req);
+      if (!body.tier) return send(res, 400, { error: "tier is required (starter, pro, or agency)" });
+      try {
+        const sub = await updateSubscription(body.tier);
+        const limits = TIER_LIMITS[sub.tier] || TIER_LIMITS.starter;
+        return send(res, 200, { subscription: { ...sub, limits } });
+      } catch (err) {
+        return send(res, 400, { error: err.message });
+      }
+    }
+
+    /* ========================= Team Members (Agency Only) ========================= */
+
+    // GET /api/team — list team members
+    if (req.method === "GET" && url.pathname === "/api/team") {
+      const sub = await getSubscription();
+      if (sub.tier !== "agency") {
+        return send(res, 403, { error: "Team members are only available on the Agency plan. Upgrade to access this feature." });
+      }
+      const members = await listTeamMembers();
+      return send(res, 200, { teamMembers: members, maxMembers: TIER_LIMITS.agency.maxTeamMembers });
+    }
+
+    // POST /api/team — add team member (owner only)
+    if (req.method === "POST" && url.pathname === "/api/team") {
+      if (auth.role && auth.role !== "owner") {
+        return send(res, 403, { error: "Only the account owner can add team members." });
+      }
+      const sub = await getSubscription();
+      if (sub.tier !== "agency") {
+        return send(res, 403, { error: "Team members are only available on the Agency plan. Upgrade to access this feature." });
+      }
+      const body = await readJsonBody(req);
+      if (!body.username || !body.password) {
+        return send(res, 400, { error: "username and password are required" });
+      }
+      if (String(body.password).length < 12) {
+        return send(res, 400, { error: "Password must be at least 12 characters." });
+      }
+      const { salt, hash } = hashPassword(body.password);
+      try {
+        const member = await addTeamMember({
+          username: body.username,
+          salt,
+          hash,
+          name: body.name || body.username,
+        });
+        return send(res, 201, { teamMember: member });
+      } catch (err) {
+        return send(res, 400, { error: err.message });
+      }
+    }
+
+    // DELETE /api/team/:username — remove team member (owner only)
+    if (req.method === "DELETE" && url.pathname.startsWith("/api/team/")) {
+      if (auth.role && auth.role !== "owner") {
+        return send(res, 403, { error: "Only the account owner can remove team members." });
+      }
+      const username = decodeURIComponent(url.pathname.split("/")[3]);
+      if (!username) return send(res, 400, { error: "username is required in URL path" });
+      const removed = await removeTeamMember(username);
+      if (!removed) return send(res, 404, { error: "Team member not found" });
+      return send(res, 200, { ok: true, removed: username });
+    }
+
+    /* ========================= Search Quota Enforcement ========================= */
+
+    // Check search quota before leads, contracts, and startups endpoints
+    const isSearchEndpoint =
+      (req.method === "GET" && url.pathname === "/api/leads") ||
+      (req.method === "GET" && url.pathname === "/api/contracts") ||
+      (req.method === "GET" && url.pathname === "/api/startups");
+
+    if (isSearchEndpoint) {
+      const searchCheck = await canSearch();
+      if (!searchCheck.allowed) {
+        return send(res, 429, { error: "Daily search limit reached. Upgrade to Pro for unlimited searches.", remaining: 0, tier: searchCheck.tier });
+      }
+      await recordSearch();
+    }
+
+    /* ========================= Government Contracts ========================= */
+
+    if (req.method === "GET" && url.pathname === "/api/contracts") {
+      const country = url.searchParams.get("country") || "ALL";
+      const keyword = url.searchParams.get("keyword") || "";
+      const page = Number(url.searchParams.get("page")) || 1;
+      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
+      const result = await searchGovContracts({ country, keyword, page, pageSize });
+      return send(res, 200, result);
+    }
+
+    /* ========================= Funded Startups ========================= */
+
+    if (req.method === "GET" && url.pathname === "/api/startups") {
+      const keyword = url.searchParams.get("keyword") || "startup";
+      const page = Number(url.searchParams.get("page")) || 1;
+      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
+      const result = await searchFundedStartups({ keyword, page, pageSize });
+      return send(res, 200, result);
+    }
 
     /* ========================= Leads ========================= */
 
