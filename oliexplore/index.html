@@ -55,7 +55,7 @@
      the row wrap cleanly (with vertical spacing) instead of overlapping,
      and tightened spacing slightly so it's less likely to wrap at all
      on common desktop widths. */
-  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; position:sticky; top:0; z-index:60; background:rgba(13,14,18,0.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-dark); flex-wrap:wrap; gap:10px; }
+  header.nav { display:flex; align-items:center; justify-content:space-between; padding:20px 0; position:sticky; top:0; z-index:60; background:rgba(15,23,42,0.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-dark); flex-wrap:wrap; gap:10px; }
   .logo { font-weight:800; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:6px; color:#fff; }
   .logo span { color:var(--accent-bright); }
   header.nav nav { display:flex; align-items:center; flex-wrap:wrap; gap:14px 16px; justify-content:flex-end; }
@@ -66,7 +66,7 @@
   nav a.buy-now:hover { filter: brightness(1.08); }
   .hero { padding:72px 0 40px; text-align:center; position:relative; overflow:hidden; }
   .hero-surface { position:relative; overflow:hidden; padding-bottom:1px; }
-  .hero-surface:before { content:""; position:absolute; top:-180px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse at center, rgba(225,29,46,0.24), transparent 70%); pointer-events:none; }
+  .hero-surface:before { content:""; position:absolute; top:-180px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse at center, rgba(6,182,212,0.24), transparent 70%); pointer-events:none; }
   h1 { font-size:52px; line-height:1.1; margin:0 0 20px; letter-spacing:-0.025em; font-weight:800; color:#fff; }
   .sub-headline { font-size:20px; color:var(--sub-invert); max-width:680px; margin:0 auto 36px; }
   .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:18px; }
@@ -76,7 +76,7 @@
   section { padding:64px 0; }
   .section-title { text-align:center; margin-bottom:10px; font-size:34px; letter-spacing:-0.02em; font-weight:800; }
   .section-sub { text-align:center; color:var(--sub); max-width:640px; margin:0 auto 12px; font-size:17px; }
-  .gem-banner { background:linear-gradient(160deg, #14161b, #0d0e12); color:#fff; border-radius:20px; padding:44px; text-align:center; box-shadow: var(--glow-red-soft); }
+  .gem-banner { background:linear-gradient(160deg, #1e293b, #0f172a); color:#fff; border-radius:20px; padding:44px; text-align:center; box-shadow: var(--glow-red-soft); }
   .gem-banner .gem-icon { font-size:40px; margin-bottom:14px; }
   .gem-banner h2 { font-size:28px; margin:0 0 12px; letter-spacing:-0.01em; }
   .gem-banner p { color:var(--sub-invert); max-width:600px; margin:0 auto; font-size:16.5px; }
@@ -145,7 +145,7 @@
   <div class="logo">🧭 Oli<span>Explore</span></div>
   <nav>
     <a href="./login/" style="font-weight:600;">Sign In</a>
-    <a href="./account/" style="font-weight:700;background:rgba(225,29,46,0.14);padding:6px 14px;border-radius:8px;">My Account</a>
+    <a href="./account/" style="font-weight:700;background:rgba(6,182,212,0.14);padding:6px 14px;border-radius:8px;">My Account</a>
     <!-- FIX: added a link to the real, working app (vendored from the
          real oliexplore repo - see app/README-PROVENANCE.md) - this was
          previously missing, so "Collect. Recycle. Publish." had no

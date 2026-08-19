@@ -1,58 +1,48 @@
 /* ============================================================
-   Oli Tools — shared design system (black + red, professional)
+   Oli Tools — shared design system (Deep Navy + Teal)
    ============================================================
    Single source of truth for the visual identity across all 6
-   tools + the root marketing site. Previously every page (25
-   HTML files) hardcoded its own :root block with a different
-   accent color per tool (indigo, green, orange, teal, blue,
-   purple) and dozens of duplicated inline hex values — this file
-   replaces that with one deliberate, cohesive brand: a premium
-   dark hero/nav/footer treatment with a refined red accent,
-   set against clean, readable light content sections (the same
-   pattern used by Stripe/Linear/Vercel-style SaaS marketing
-   sites) rather than a loud, all-red page that would read as
-   aggressive rather than professional.
+   tools + the root marketing site. Premium dark navy background
+   with vibrant teal accents — professional, modern, and easy on
+   the eyes.
 
    Usage: <link rel="stylesheet" href="../shared/theme.css"> (or
    "../../shared/theme.css" from a buy/login/account page's
-   deeper nesting) BEFORE a page's own <style> block, so the
-   page's own rules can still add page-specific layout without
-   needing to redeclare color tokens.
+   deeper nesting) BEFORE a page's own <style> block.
    ============================================================ */
 
 :root {
-  /* Core neutrals */
-  --ink: #0d0e12;          /* near-black text/hero background */
-  --ink-soft: #16181d;     /* secondary dark surface (cards on dark bg) */
-  --sub: #5a6472;          /* secondary/body text on light backgrounds */
-  --sub-invert: #a8adb8;   /* secondary text on dark backgrounds */
-  --bg: #fafafa;           /* page background (light sections) */
+  /* Core neutrals — deep navy palette */
+  --ink: #0f172a;          /* darkest navy (hero/nav/footer bg) */
+  --ink-soft: #1e293b;     /* secondary dark surface (cards on dark bg) */
+  --sub: #64748b;          /* secondary/body text on light backgrounds */
+  --sub-invert: #94a3b8;   /* secondary text on dark backgrounds */
+  --bg: #f8fafc;           /* page background (light sections) */
   --card: #ffffff;         /* card background (light sections) */
-  --line: #e7e9ee;         /* light hairline borders */
-  --line-dark: rgba(255,255,255,0.08); /* hairline borders on dark bg */
+  --line: #e2e8f0;         /* light hairline borders */
+  --line-dark: rgba(148,163,184,0.12); /* hairline borders on dark bg */
 
-  /* Brand accent — a deep, confident red (not a pure/aggressive
-     red) paired with black for gradients and glow effects. */
-  --accent: #e11d2e;       /* primary red */
-  --accent2: #a10e1f;      /* deep red, gradient end / hover */
-  --accent-bright: #ff3b4e; /* brighter red for glows/highlights on dark bg */
-  --accent-dark: #8f0c1a;  /* darkest red, active/pressed states */
-  --accent-wash: #fdecee;  /* very light red tint, for badges/highlights on light bg */
+  /* Brand accent — vibrant teal/cyan */
+  --accent: #06b6d4;       /* primary teal */
+  --accent2: #0891b2;      /* deeper teal, gradient end / hover */
+  --accent-bright: #22d3ee; /* brighter cyan for glows/highlights on dark bg */
+  --accent-dark: #0e7490;  /* darkest teal, active/pressed states */
+  --accent-wash: #ecfeff;  /* very light teal tint, for badges on light bg */
 
-  /* Status colors — kept as universal UX convention (green=good,
-     red=bad) rather than forced into the brand palette, since
-     overriding "success = green" would hurt usability more than
-     it would help brand consistency. */
-  --good: #16a34a;
-  --good-wash: #ecfdf3;
-  --bad: #dc2626;
-  --warn: #d97706;
+  /* Status colors */
+  --good: #10b981;
+  --good-wash: #ecfdf5;
+  --bad: #ef4444;
+  --warn: #f59e0b;
 
   /* Elevation / effects */
-  --shadow-card: 0 1px 3px rgba(13,14,18,0.06);
-  --shadow-card-hover: 0 20px 40px -16px rgba(13,14,18,0.16);
-  --glow-red: 0 0 0 1px rgba(225,29,46,0.15), 0 18px 40px -12px rgba(225,29,46,0.45);
-  --glow-red-soft: 0 8px 24px -8px rgba(225,29,46,0.35);
+  --shadow-card: 0 1px 3px rgba(15,23,42,0.06);
+  --shadow-card-hover: 0 20px 40px -16px rgba(15,23,42,0.16);
+  --glow-accent: 0 0 0 1px rgba(6,182,212,0.2), 0 18px 40px -12px rgba(6,182,212,0.35);
+  --glow-accent-soft: 0 8px 24px -8px rgba(6,182,212,0.3);
+  /* Legacy aliases for pages still using --glow-red* */
+  --glow-red: var(--glow-accent);
+  --glow-red-soft: var(--glow-accent-soft);
 
   --radius: 14px;
   --radius-sm: 8px;
@@ -65,29 +55,27 @@
   color: var(--ink);
   background: var(--bg);
 }
-.oli-theme a, body a { color: var(--accent); }
+.oli-theme a, body a { color: var(--accent-dark); }
 .oli-theme a:hover, body a:hover { color: var(--accent2); }
 
 /* ------------------------------------------------------------
-   Dark hero / nav / footer surface — the "black" half of the
-   brand. Used for the top nav bar, hero section, and footer, so
-   every page opens and closes on the same premium dark note
-   regardless of which tool it is.
+   Dark hero / nav / footer surface — premium deep navy with
+   subtle teal radial gradients.
 ------------------------------------------------------------ */
 .oli-dark-surface {
-  background: radial-gradient(120% 140% at 15% -10%, rgba(225,29,46,0.20), transparent 55%),
-              radial-gradient(100% 120% at 100% 0%, rgba(161,14,31,0.16), transparent 50%),
-              linear-gradient(180deg, #0d0e12 0%, #14161b 100%);
-  color: #f5f5f7;
+  background: radial-gradient(120% 140% at 15% -10%, rgba(6,182,212,0.15), transparent 55%),
+              radial-gradient(100% 120% at 100% 0%, rgba(8,145,178,0.12), transparent 50%),
+              linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  color: #f1f5f9;
 }
 .oli-dark-surface .sub, .oli-dark-surface p { color: var(--sub-invert); }
-.oli-dark-surface a { color: #ffb3ba; }
+.oli-dark-surface a { color: var(--accent-bright); }
 
 /* Nav (dark, sticky) */
 .oli-nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 0; position: sticky; top: 0; z-index: 60;
-  background: rgba(13,14,18,0.82); backdrop-filter: blur(10px);
+  background: rgba(15,23,42,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line-dark);
 }
 .oli-nav .logo { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: #fff; display: flex; align-items: center; gap: 8px; }
@@ -98,81 +86,69 @@
 .oli-nav nav a.buy-now {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff !important; padding: 9px 18px; border-radius: var(--radius-sm);
-  box-shadow: var(--glow-red-soft);
+  box-shadow: var(--glow-accent-soft);
 }
-.oli-nav nav a.buy-now:hover { filter: brightness(1.08); }
+.oli-nav nav a.buy-now:hover { filter: brightness(1.1); }
 
-/* Primary CTA button — red gradient with a real glow, the
-   signature "fancy" touch used across every tool's hero/pricing. */
+/* Primary CTA button — teal gradient with a soft glow */
 .cta-btn {
   display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff !important; padding: 15px 28px; border-radius: 11px;
   font-weight: 700; text-decoration: none; font-size: 15.5px; border: none; cursor: pointer;
-  box-shadow: var(--glow-red);
+  box-shadow: var(--glow-accent);
   transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
-.cta-btn:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 0 0 1px rgba(225,29,46,0.2), 0 26px 48px -14px rgba(225,29,46,0.55); }
+.cta-btn:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 0 0 1px rgba(6,182,212,0.25), 0 26px 48px -14px rgba(6,182,212,0.45); }
 .cta-btn.ghost {
-  background: transparent; border: 1.5px solid rgba(255,255,255,0.22); color: #fff !important; box-shadow: none;
+  background: transparent; border: 1.5px solid rgba(148,163,184,0.3); color: #fff !important; box-shadow: none;
 }
-.cta-btn.ghost:hover { background: rgba(255,255,255,0.06); transform: none; }
-.cta-btn.on-light { box-shadow: var(--glow-red-soft); }
+.cta-btn.ghost:hover { background: rgba(148,163,184,0.08); transform: none; }
+.cta-btn.on-light { box-shadow: var(--glow-accent-soft); }
 .cta-btn.on-light.ghost { border: 1.5px solid var(--line); color: var(--ink) !important; }
 .cta-btn.on-light.ghost:hover { background: var(--accent-wash); }
 
 /* Eyebrow pill (hero badge) */
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(225,29,46,0.14); color: #ff8f98;
+  background: rgba(6,182,212,0.12); color: var(--accent-bright);
   font-size: 13.5px; font-weight: 700; padding: 8px 16px; border-radius: 999px;
-  margin-bottom: 22px; border: 1px solid rgba(225,29,46,0.28);
+  margin-bottom: 22px; border: 1px solid rgba(6,182,212,0.25);
 }
-.eyebrow.on-light { background: var(--accent-wash); color: var(--accent2); border-color: #fbd0d5; }
+.eyebrow.on-light { background: var(--accent-wash); color: var(--accent-dark); border-color: #a5f3fc; }
 
 /* Gradient headline highlight */
 .hl {
-  background: linear-gradient(135deg, #ff5a63, var(--accent));
+  background: linear-gradient(135deg, var(--accent-bright), var(--accent));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
 /* ------------------------------------------------------------
-   Light content sections — cards, pricing, FAQ. Kept bright and
-   clean for readability; red only appears as an accent (borders,
-   icons, checkmarks-on-hover, the featured-plan card) rather than
-   as the dominant fill, matching the "touch of red" brief.
+   Light content sections
 ------------------------------------------------------------ */
 .card {
   background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px;
   transition: transform .18s, box-shadow .18s, border-color .18s;
 }
-.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); border-color: #f6c9cd; }
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); border-color: #a5f3fc; }
 .card .icon { font-size: 30px; margin-bottom: 14px; display: block; }
 
 .price-card.featured {
   border: 2px solid var(--accent); background: linear-gradient(165deg, #fff, var(--accent-wash));
-  box-shadow: var(--glow-red-soft);
+  box-shadow: var(--glow-accent-soft);
 }
 .price-card .tag {
   background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff;
 }
 
-/* Section backgrounds sometimes need a dark "banner" mid-page
-   (feature callouts, comparisons) — reuse the same dark surface
-   token so those moments feel intentional, not randomly colored. */
 .dark-banner {
-  background: linear-gradient(160deg, #14161b, #0d0e12);
+  background: linear-gradient(160deg, #1e293b, #0f172a);
   color: #fff; border-radius: 20px; padding: 44px;
 }
 .dark-banner .sub, .dark-banner p { color: var(--sub-invert); }
 
-/* Checkmarks / good indicators stay green (universal convention);
-   red is reserved for brand chrome, not repurposed for "success". */
 .check-good::before { content: "✓ "; color: var(--good); font-weight: 800; }
 
-/* Apple Pay / Google Pay wallet-button slots on buy pages (see
-   shared/paypal-sdk.js's renderWalletButtons()). Collapses to zero height
-   when empty (buyer's device doesn't support the wallet, or it isn't
-   enabled on the PayPal Business account) so there's no visible gap. */
+/* Wallet button slots */
 .wallet-btn-slot { margin-top: 8px; }
 .wallet-btn-slot:empty { margin-top: 0; }
 

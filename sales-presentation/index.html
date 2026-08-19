@@ -7,8 +7,8 @@
 <meta name="robots" content="noindex,nofollow"/>
 <style>
   :root {
-    --ink:#0d0e12; --sub:#8b93a3; --bg:#0d0e12; --card:#171a21; --line:#262a33;
-    --accent:#e11d2e; --accent2:#a10e1f; --bright:#ff3b4e; --good:#22c55e; --warn:#fbbf24; --white:#f5f5f7;
+    --ink:#0f172a; --sub:#8b93a3; --bg:#0f172a; --card:#171a21; --line:#262a33;
+    --accent:#06b6d4; --accent2:#0891b2; --bright:#22d3ee; --good:#22c55e; --warn:#fbbf24; --white:#f5f5f7;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--white); overflow: hidden; }
@@ -16,9 +16,9 @@
   .slide {
     position: absolute; inset: 0; display: none; flex-direction: column;
     padding: 48px 72px 150px; overflow-y: auto;
-    background: radial-gradient(120% 140% at 15% -10%, rgba(225,29,46,0.14), transparent 55%),
-                radial-gradient(100% 120% at 100% 0%, rgba(161,14,31,0.10), transparent 50%),
-                linear-gradient(180deg, #0d0e12 0%, #14161b 100%);
+    background: radial-gradient(120% 140% at 15% -10%, rgba(6,182,212,0.14), transparent 55%),
+                radial-gradient(100% 120% at 100% 0%, rgba(8,145,178,0.10), transparent 50%),
+                linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
   }
   .slide.active { display: flex; }
   .kicker { color: var(--bright); font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
@@ -43,13 +43,13 @@
   .pill { display: inline-flex; align-items: center; gap: 6px; background: #ffffff10; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 700; margin: 3px 4px 3px 0; }
   .pill.good { color: #4ade80; border-color: #16653480; }
   .pill.warn { color: #fbbf24; border-color: #92620080; }
-  .pill.red { color: #ff8f98; border-color: rgba(225,29,46,0.35); background: rgba(225,29,46,0.12); }
+  .pill.red { color: #67e8f9; border-color: rgba(6,182,212,0.35); background: rgba(6,182,212,0.12); }
   .big-number { font-size: 56px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--accent), var(--bright)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .center { text-align: center; margin: auto; }
   .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
   .logo-title { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
   .logo-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 22px; }
-  .cta-btn { display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff !important; padding: 14px 26px; border-radius: 11px; font-weight: 700; text-decoration: none; font-size: 15px; box-shadow: 0 18px 40px -12px rgba(225,29,46,0.55); }
+  .cta-btn { display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff !important; padding: 14px 26px; border-radius: 11px; font-weight: 700; text-decoration: none; font-size: 15px; box-shadow: 0 18px 40px -12px rgba(6,182,212,0.55); }
 
   .nav {
     position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
@@ -372,12 +372,12 @@
     <div class="kicker">The recommendation — tailored to you</div>
     <h2>Five of six tools have a direct use case in your business today</h2>
     <div class="grid2">
-      <div class="card" style="border-color:#8f0c1a;">
+      <div class="card" style="border-color:#155e75;">
         <h3>🛒 For your ecommerce store</h3>
         <p><strong style="color:#fff;">OliCommerce Stack</strong> — stop losing carts, right now.<br/>
         <strong style="color:#fff;">OliSalesTrack</strong> — see your real profit margin, not just revenue.</p>
       </div>
-      <div class="card" style="border-color:#8f0c1a;">
+      <div class="card" style="border-color:#155e75;">
         <h3>🏢 For your agency</h3>
         <p><strong style="color:#fff;">OliOps Suite</strong> — one back office for clients, invoicing, payroll.<br/>
         <strong style="color:#fff;">OliFlow</strong> — automate client workflows without a metered bill.<br/>
