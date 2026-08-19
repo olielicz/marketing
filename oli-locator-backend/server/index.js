@@ -19,6 +19,7 @@ import {
 import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSignature, newSessionId } from "./auth.js";
 import { filterLeads } from "./leadSearch.js";
 import { searchGovContracts, clearGovCache } from "./govContracts.js";
+import { searchFundedStartups, clearStartupCache } from "./fundedStartups.js";
 
 const PORT = Number(process.env.PORT) || 4700;
 const SESSION_TTL_MS = (Number(process.env.OLI_LOCATOR_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -97,7 +98,8 @@ const server = createServer(async (req, res) => {
       const { clearCache } = await import("./leadSearch.js");
       if (clearCache) clearCache();
       if (clearGovCache) clearGovCache();
-      return send(res, 200, { ok: true, message: "Cache cleared" });
+      if (clearStartupCache) clearStartupCache();
+      return send(res, 200, { ok: true, message: "All caches cleared" });
     }
 
     // Government Contracts search (public, no auth needed for browsing)
@@ -107,6 +109,15 @@ const server = createServer(async (req, res) => {
       const page = Number(url.searchParams.get("page")) || 1;
       const pageSize = Number(url.searchParams.get("pageSize")) || 20;
       const result = await searchGovContracts({ country, keyword, page, pageSize });
+      return send(res, 200, result);
+    }
+
+    // Funded Startups search (public, no auth needed for browsing)
+    if (req.method === "GET" && url.pathname === "/api/startups") {
+      const keyword = url.searchParams.get("keyword") || "startup";
+      const page = Number(url.searchParams.get("page")) || 1;
+      const pageSize = Number(url.searchParams.get("pageSize")) || 20;
+      const result = await searchFundedStartups({ keyword, page, pageSize });
       return send(res, 200, result);
     }
 
