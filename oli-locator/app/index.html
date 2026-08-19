@@ -342,6 +342,28 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
+<!-- ======== AI PITCH MODAL ======== -->
+<div class="modal-overlay" id="pitchModal">
+  <div class="modal">
+    <h3>✉️ AI-Generated Outreach</h3>
+    <div id="pitchLoading" class="loading">Generating personalized pitch...</div>
+    <div id="pitchContent" style="display:none;">
+      <div class="field"><label>Email Subject</label><input id="pitch-subject" readonly style="background:var(--bg);"/></div>
+      <div class="field"><label>Email Body</label><textarea id="pitch-body" rows="6" readonly style="background:var(--bg);"></textarea></div>
+      <div class="field"><label>LinkedIn Message</label><textarea id="pitch-linkedin" rows="3" readonly style="background:var(--bg);"></textarea></div>
+      <div class="field"><label>WhatsApp Message</label><input id="pitch-whatsapp" readonly style="background:var(--bg);"/></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <button class="btn sm" onclick="copyToClipboard('pitch-body')">📋 Copy Email</button>
+        <button class="btn sm" onclick="copyToClipboard('pitch-linkedin')">📋 Copy LinkedIn</button>
+        <button class="btn sm" onclick="copyToClipboard('pitch-whatsapp')">📋 Copy WhatsApp</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn secondary" onclick="closeModal('pitchModal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /**
  * app.js — Oli-Locator client with LIVE Adzuna API integration.
@@ -849,7 +871,12 @@ function renderLeadCard(lead) {
       </div>
       <div class="lc-footer">
         <span class="lc-date">${postedTimeAgo ? '🕐 ' + postedTimeAgo : ''}</span>
-        <button class="btn sm" onclick="saveLead('${escapeHtml(lead.id || '')}')">Save Lead</button>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+          <button class="btn sm" onclick="saveLead('${escapeHtml(lead.id || '')}')">Save Lead</button>
+          ${lead.customerPhone ? `<a href="https://wa.me/${lead.customerPhone.replace(/[^0-9]/g,'')}" target="_blank" class="btn sm secondary" title="WhatsApp" style="font-size:11px;">💬 WA</a>` : ''}
+          ${lead.customerPhone ? `<a href="tel:${lead.customerPhone}" class="btn sm secondary" title="Call" style="font-size:11px;">📞 Call</a>` : ''}
+          <button class="btn sm" onclick="generatePitch('${escapeHtml(lead.id || '')}')" style="font-size:11px;">✉️ AI Pitch</button>
+        </div>
       </div>
     </div>`;
 }
@@ -1233,6 +1260,53 @@ els.saveSettingsBtn.addEventListener('click', async () => {
     alert('Error: ' + err.message);
   }
 });
+
+/* ======================================================
+   AI PITCH GENERATION
+   ====================================================== */
+async function generatePitch(leadId) {
+  const lead = cachedLeads.find(l => String(l.id) === String(leadId));
+  if (!lead) { alert('Lead not found'); return; }
+
+  document.getElementById('pitchModal').classList.add('open');
+  document.getElementById('pitchLoading').style.display = 'block';
+  document.getElementById('pitchContent').style.display = 'none';
+
+  try {
+    const res = await apiFetch('/api/outreach/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        leadTitle: lead.title,
+        leadCompany: lead.customerName || lead.company || '',
+        leadDescription: lead.description || '',
+        userBusinessName: 'My Business',
+        userSkill: els.tradeFilter?.value || 'professional services'
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Failed to generate pitch'); closeModal('pitchModal'); return; }
+
+    document.getElementById('pitch-subject').value = data.subject || '';
+    document.getElementById('pitch-body').value = data.body || '';
+    document.getElementById('pitch-linkedin').value = data.linkedinMessage || '';
+    document.getElementById('pitch-whatsapp').value = data.whatsappMessage || '';
+    document.getElementById('pitchLoading').style.display = 'none';
+    document.getElementById('pitchContent').style.display = 'block';
+  } catch (err) {
+    alert('Error: ' + err.message);
+    closeModal('pitchModal');
+  }
+}
+
+function copyToClipboard(elementId) {
+  const el = document.getElementById(elementId);
+  const text = el.value || el.textContent;
+  navigator.clipboard.writeText(text).then(() => alert('Copied!')).catch(() => {
+    el.select(); document.execCommand('copy'); alert('Copied!');
+  });
+}
+window.generatePitch = generatePitch;
+window.copyToClipboard = copyToClipboard;
 
 /* ======================================================
    MODAL HELPERS

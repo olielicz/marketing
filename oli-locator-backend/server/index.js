@@ -23,6 +23,7 @@ import { verifyPassword, hashPassword, signSessionToken, verifySessionTokenSigna
 import { filterLeads } from "./leadSearch.js";
 import { searchGovContracts, clearGovCache } from "./govContracts.js";
 import { searchFundedStartups, clearStartupCache } from "./fundedStartups.js";
+import { generateOutreach } from "./aiOutreach.js";
 
 const PORT = Number(process.env.PORT) || 4700;
 const SESSION_TTL_MS = (Number(process.env.OLI_LOCATOR_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -400,6 +401,29 @@ const server = createServer(async (req, res) => {
       const body = await readJsonBody(req);
       const settings = await updateSettings(body);
       return send(res, 200, { settings });
+    }
+
+    /* ========================= AI Outreach ========================= */
+
+    // POST /api/outreach/generate — generate personalized outreach for a lead
+    if (req.method === "POST" && url.pathname === "/api/outreach/generate") {
+      const body = await readJsonBody(req);
+      if (!body.leadTitle && !body.leadCompany) {
+        return send(res, 400, { error: "leadTitle or leadCompany is required" });
+      }
+      try {
+        const result = await generateOutreach({
+          leadTitle: body.leadTitle || "",
+          leadCompany: body.leadCompany || "",
+          leadDescription: body.leadDescription || "",
+          userBusinessName: body.userBusinessName || "",
+          userSkill: body.userSkill || "",
+        });
+        return send(res, 200, result);
+      } catch (err) {
+        console.error(`[outreach] Error generating outreach:`, err.message);
+        return send(res, 500, { error: "Failed to generate outreach content" });
+      }
     }
 
     /* ========================= 404 ========================= */
