@@ -9,7 +9,7 @@ import { request } from "node:https";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
+const GROQ_MODEL = "openai/gpt-oss-120b";
 const TIMEOUT_MS = 5000;
 
 /**
