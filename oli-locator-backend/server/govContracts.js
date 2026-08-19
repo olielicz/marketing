@@ -21,8 +21,8 @@ const SAM_API_KEY = "SAM-c6c1eaf7-46e7-45ba-ac74-90a55e041b97";
 
 const SAM_BASE_URL = "https://api.sam.gov/opportunities/v2/search";
 const UK_CF_BASE_URL = "https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/Search";
-const AUSTENDER_BASE_URL = "https://api.tenders.gov.au/ocds/findByDates/contractNotice";
-const EU_TED_BASE_URL = "https://ted.europa.eu/api/v3.0/notices/search";
+const AUSTENDER_RSS_URL = "https://www.tenders.gov.au/atm/rss";
+const EU_TED_BASE_URL = "https://api.ted.europa.eu/v3/notices/search";
 
 // NAICS code → description mapping (common codes)
 const NAICS_DESCRIPTIONS = {
@@ -147,7 +147,15 @@ function httpsGet(url, options = {}) {
 /* ========================= Date Helpers ========================= */
 
 function formatDate(date) {
-  return date.toISOString().split("T")[0]; // YYYY-MM-DD
+  return date.toISOString().split("T")[0]; // YYYY-MM-DD for UK/general
+}
+
+function formatDateUS(date) {
+  // SAM.gov requires MM/dd/yyyy format
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  const y = date.getFullYear();
+  return `${m}/${d}/${y}`;
 }
 
 function daysAgo(n) {
@@ -171,8 +179,8 @@ function truncate(str, maxLen = 300) {
 async function fetchFromSAM({ keyword, page = 1, pageSize = 20 }) {
   const limit = Math.min(100, pageSize);
   const offset = (page - 1) * limit;
-  const postedFrom = formatDate(daysAgo(30));
-  const postedTo = formatDate(new Date());
+  const postedFrom = formatDateUS(daysAgo(30));
+  const postedTo = formatDateUS(new Date());
 
   const params = new URLSearchParams({
     api_key: SAM_API_KEY,
@@ -284,17 +292,108 @@ function mapUKTenderStatus(status) {
 /* ========================= AusTender (Australia) ========================= */
 
 /**
- * Fetch from AusTender (OCDS format).
+ * Fetch from AusTender via RSS feed (free, no auth needed).
+ * The OCDS API now requires authentication, so we use the public RSS feed.
  */
 async function fetchFromAusTender({ keyword, page = 1, pageSize = 20 }) {
-  const startDate = formatDate(daysAgo(30));
-  const endDate = formatDate(new Date());
+  const url = AUSTENDER_RSS_URL;
+  console.log(`[AusTender] Fetching RSS: ${url}`);
 
-  const url = `${AUSTENDER_BASE_URL}?startDate=${startDate}&endDate=${endDate}`;
-  console.log(`[AusTender] Fetching: ${url}`);
+  // RSS returns XML — parse it manually (no dependencies)
+  const rawXml = await httpsGetRaw(url);
+  const items = parseRSSItems(rawXml, keyword, pageSize);
+  return { releases: items };
+}
 
-  const data = await httpsGet(url);
-  return data;
+/**
+ * Raw HTTPS GET that returns text (not JSON) — for RSS/XML feeds.
+ */
+function httpsGetRaw(url) {
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(url);
+    const lib = parsedUrl.protocol === "http:" ? http : https;
+
+    const reqOptions = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: "GET",
+      headers: {
+        "Accept": "application/rss+xml, application/xml, text/xml",
+        "User-Agent": "Oli-Locator-GovContracts/1.0",
+      },
+    };
+
+    const req = lib.request(reqOptions, (res) => {
+      let data = "";
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(data);
+        } else {
+          reject(new Error(`AusTender RSS returned status ${res.statusCode}: ${data.slice(0, 200)}`));
+        }
+      });
+    });
+
+    req.on("error", (e) => reject(new Error(`AusTender request failed: ${e.message}`)));
+    req.setTimeout(15000, () => { req.destroy(); reject(new Error("AusTender request timed out")); });
+    req.end();
+  });
+}
+
+/**
+ * Simple XML RSS parser — extracts <item> elements from RSS XML.
+ * No dependencies, just regex parsing.
+ */
+function parseRSSItems(xml, keyword, maxItems = 20) {
+  const items = [];
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+  let match;
+
+  while ((match = itemRegex.exec(xml)) !== null && items.length < maxItems * 2) {
+    const itemXml = match[1];
+    const title = extractXmlTag(itemXml, "title");
+    const description = extractXmlTag(itemXml, "description");
+    const link = extractXmlTag(itemXml, "link");
+    const pubDate = extractXmlTag(itemXml, "pubDate");
+    const category = extractXmlTag(itemXml, "category");
+
+    items.push({
+      tender: {
+        title: title || "Untitled Tender",
+        description: description || "",
+        status: "active",
+      },
+      buyer: { name: category || "Australian Government" },
+      date: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
+      id: link || `au-${items.length}`,
+      ocid: link || "",
+    });
+  }
+
+  // Filter by keyword if provided
+  if (keyword) {
+    const kw = keyword.toLowerCase();
+    return items.filter(item => {
+      const searchable = `${item.tender.title} ${item.tender.description} ${item.buyer.name}`.toLowerCase();
+      return searchable.includes(kw);
+    }).slice(0, maxItems);
+  }
+
+  return items.slice(0, maxItems);
+}
+
+function extractXmlTag(xml, tag) {
+  const cdataRegex = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>`, "i");
+  const cdataMatch = xml.match(cdataRegex);
+  if (cdataMatch) return cdataMatch[1].trim();
+
+  const simpleRegex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i");
+  const simpleMatch = xml.match(simpleRegex);
+  if (simpleMatch) return simpleMatch[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim();
+
+  return "";
 }
 
 /**
@@ -341,18 +440,18 @@ function mapAUTenderStatus(status) {
 /* ========================= EU TED (Tenders Electronic Daily) ========================= */
 
 /**
- * Fetch from EU TED API.
+ * Fetch from EU TED API (correct endpoint: api.ted.europa.eu/v3/).
  */
 async function fetchFromEUTED({ keyword, page = 1, pageSize = 20 }) {
   const limit = Math.min(50, pageSize);
   const offset = (page - 1) * limit;
 
+  // EU TED v3 uses 'q' param with their expert query syntax
+  // Simple keyword search: just pass the keyword directly
   const params = new URLSearchParams({
-    q: keyword || "",
+    q: keyword || "services",
     limit: String(limit),
-    offset: String(offset),
-    sortField: "publication-date",
-    sortOrder: "DESC",
+    page: String(page),
   });
 
   const url = `${EU_TED_BASE_URL}?${params.toString()}`;
