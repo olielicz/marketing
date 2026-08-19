@@ -360,6 +360,7 @@ tr:last-child td{border-bottom:none;}
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
         <button class="btn sm" onclick="openWhatsAppWithPitch()" style="background:#25d366;border-color:#25d366;">💬 Open WhatsApp</button>
         <button class="btn sm" onclick="openLinkedInSearch()" style="background:#0a66c2;border-color:#0a66c2;">🔗 Find on LinkedIn</button>
+        <button class="btn sm" onclick="initiateAICall()" style="background:#8b5cf6;border-color:#8b5cf6;">🎙️ AI Call</button>
         <button class="btn sm secondary" onclick="openEmailWithPitch()">✉️ Open Email Client</button>
       </div>
     </div>
@@ -1344,6 +1345,32 @@ function openEmailWithPitch() {
   const email = window._currentPitchLeadEmail || '';
   window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_self');
 }
+
+async function initiateAICall() {
+  const phone = window._currentPitchLeadPhone;
+  if (!phone) { alert('This lead has no phone number. AI calls require a phone number.'); return; }
+  
+  if (!confirm('This will make a real AI voice call to ' + phone + '. The AI will introduce your business and ask if they have time to chat. Continue?')) return;
+  
+  try {
+    const res = await apiFetch('/api/voice/call', {
+      method: 'POST',
+      body: JSON.stringify({
+        phoneNumber: phone,
+        leadTitle: document.getElementById('pitch-subject').value.split(' at ')[0] || 'the position',
+        leadCompany: window._currentPitchLeadCompany || '',
+        userBusinessName: 'WorkItLikeAPro',
+        userSkill: els.tradeFilter?.value || 'professional services'
+      })
+    });
+    const data = await res.json();
+    if (data.error) { alert('Call failed: ' + data.error); return; }
+    alert('📞 AI call initiated! Call ID: ' + (data.callId || 'unknown') + '\nStatus: ' + (data.status || 'queued'));
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+window.initiateAICall = initiateAICall;
 
 window.generatePitch = generatePitch;
 window.copyToClipboard = copyToClipboard;

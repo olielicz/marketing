@@ -24,6 +24,7 @@ import { filterLeads } from "./leadSearch.js";
 import { searchGovContracts, clearGovCache } from "./govContracts.js";
 import { searchFundedStartups, clearStartupCache } from "./fundedStartups.js";
 import { generateOutreach } from "./aiOutreach.js";
+import { initiateCall, getCallStatus } from "./vapiVoice.js";
 
 const PORT = Number(process.env.PORT) || 4700;
 const SESSION_TTL_MS = (Number(process.env.OLI_LOCATOR_SESSION_TTL_HOURS) || 12) * 60 * 60 * 1000;
@@ -424,6 +425,23 @@ const server = createServer(async (req, res) => {
         console.error(`[outreach] Error generating outreach:`, err.message);
         return send(res, 500, { error: "Failed to generate outreach content" });
       }
+    }
+
+    /* ========================= Voice Calls (Vapi AI) ========================= */
+
+    // POST /api/voice/call — initiate an AI voice call to a lead
+    if (req.method === "POST" && url.pathname === "/api/voice/call") {
+      const body = await readJsonBody(req);
+      if (!body.phoneNumber) return send(res, 400, { error: "phoneNumber is required" });
+      const result = await initiateCall(body);
+      return send(res, result.error ? 400 : 200, result);
+    }
+
+    // GET /api/voice/call/:id — get call status
+    if (req.method === "GET" && url.pathname.startsWith("/api/voice/call/")) {
+      const callId = url.pathname.split("/")[4];
+      const result = await getCallStatus(callId);
+      return send(res, result.error ? 400 : 200, result);
     }
 
     /* ========================= 404 ========================= */
