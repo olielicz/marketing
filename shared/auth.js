@@ -75,7 +75,7 @@
     },
     'oliflow': {
       name:      'OliFlow Automation Engine',
-      icon:      '⚙️',
+      icon:      '⚡',
       color:     '#c21526',
       bg:        '#fdecee',
       loginUrl:  '/oliflow/login/',
@@ -106,7 +106,7 @@
          a display bug - they'd have been emailed to real customers.
          Corrected to match the real buy-page tiers (Starter $49/mo). */
       name:      'Oli-Locator',
-      icon:      '🛠️',
+      icon:      '🎯',
       color:     '#e11d2e',
       bg:        '#fdecee',
       loginUrl:  '/oli-locator/login/',
