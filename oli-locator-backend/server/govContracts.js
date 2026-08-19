@@ -388,7 +388,7 @@ async function fetchFromEUTED({ keyword, page = 1, pageSize = 20 }) {
     query: keyword || "services",
     page: page,
     limit: limit,
-    fields: ["notice-id", "publication-date", "notice-title", "buyer-name", "total-value", "deadline-receipt-tender", "notice-type", "place-of-performance", "cpv-description"],
+    fields: ["notice-title", "buyer-name", "publication-date", "deadline", "total-value", "notice-type", "country-origin", "description-lot"],
   });
 
   const url = EU_TED_BASE_URL;
