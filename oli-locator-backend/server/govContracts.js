@@ -443,18 +443,27 @@ async function fetchFromEUTED({ keyword, page = 1, pageSize = 20 }) {
  */
 function mapEUContract(notice) {
   // Helper to extract first value from a multilingual TED field
+  // TED returns two formats:
+  //   - Strings: { "lav": "text", "eng": "text" }
+  //   - Arrays: { "lav": ["text"], "eng": ["text"] }
   function extractTedField(field) {
     if (!field) return "";
     if (typeof field === "string") return field;
-    // Try English first, then any other language
-    const langs = ["eng", "en", "fra", "deu", "spa", "ita", "nld", "pol", "por", "ron", "ces", "dan", "swe", "fin"];
+    // Try English first, then common languages
+    const langs = ["eng", "en", "ENG", "fra", "deu", "spa", "ita", "nld", "pol", "por", "ron", "ces", "dan", "swe", "fin", "lav", "hun", "gle", "ell", "hrv", "slk", "mlt", "est"];
     for (const lang of langs) {
-      if (field[lang] && field[lang].length > 0) return field[lang][0];
+      if (field[lang]) {
+        const val = field[lang];
+        if (typeof val === "string") return val;
+        if (Array.isArray(val) && val.length > 0) return val[0];
+      }
     }
-    // Fallback: just get the first available language's first value
+    // Fallback: just get the first available key's value
     const keys = Object.keys(field);
-    if (keys.length > 0 && Array.isArray(field[keys[0]]) && field[keys[0]].length > 0) {
-      return field[keys[0]][0];
+    if (keys.length > 0) {
+      const val = field[keys[0]];
+      if (typeof val === "string") return val;
+      if (Array.isArray(val) && val.length > 0) return val[0];
     }
     return "";
   }
@@ -489,13 +498,13 @@ function mapEUContract(notice) {
       max: valueAmount,
       currency: "EUR",
     },
-    postedDate: pubDate || null,
-    deadline: deadline || null,
+    postedDate: pubDate ? pubDate.split("+")[0] : null,
+    deadline: deadline ? (typeof deadline === "string" ? deadline.split("+")[0] : "") : null,
     category: country ? `EU - ${country}` : "EU Procurement",
     type: mapEUNoticeType(noticeType),
-    url: pubNumber
+    url: (notice.links?.pdf?.ENG) || (pubNumber
       ? `https://ted.europa.eu/en/notice/-/detail/${pubNumber}`
-      : "https://ted.europa.eu",
+      : "https://ted.europa.eu"),
     location: country || "",
   };
 }
