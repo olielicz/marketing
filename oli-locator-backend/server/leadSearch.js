@@ -287,7 +287,7 @@ async function fetchFromAdzuna({ country, trade, city, page = 1, pageSize = 20 }
     what: searchTerm,
     results_per_page: String(Math.min(50, pageSize)),
     "content-type": "application/json",
-    sort_by: "date",
+    sort_by: "relevance",
   });
 
   if (locationTerm) {
