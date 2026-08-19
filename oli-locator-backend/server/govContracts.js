@@ -21,7 +21,6 @@ const SAM_API_KEY = "SAM-c6c1eaf7-46e7-45ba-ac74-90a55e041b97";
 
 const SAM_BASE_URL = "https://api.sam.gov/opportunities/v2/search";
 const UK_CF_BASE_URL = "https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/Search";
-const AUSTENDER_RSS_URL = "https://www.tenders.gov.au/atm/rss";
 const EU_TED_BASE_URL = "https://api.ted.europa.eu/v3/notices/search";
 
 // NAICS code → description mapping (common codes)
@@ -292,112 +291,51 @@ function mapUKTenderStatus(status) {
 /* ========================= AusTender (Australia) ========================= */
 
 /**
- * Fetch from AusTender via RSS feed (free, no auth needed).
- * The OCDS API now requires authentication, so we use the public RSS feed.
+ * Fetch from AusTender via Adzuna AU (government keyword).
+ * The official AusTender RSS/OCDS APIs are blocked from VPS IPs (CloudFront 403).
+ * Adzuna AU with "government" appended returns real public sector opportunities.
  */
 async function fetchFromAusTender({ keyword, page = 1, pageSize = 20 }) {
-  const url = AUSTENDER_RSS_URL;
-  console.log(`[AusTender] Fetching RSS: ${url}`);
+  const searchTerm = keyword ? `${keyword} government` : "government tender";
+  const countryCode = "au";
+  const pageNum = Math.max(1, page);
 
-  // RSS returns XML — parse it manually (no dependencies)
-  const rawXml = await httpsGetRaw(url);
-  const items = parseRSSItems(rawXml, keyword, pageSize);
-  return { releases: items };
-}
-
-/**
- * Raw HTTPS GET that returns text (not JSON) — for RSS/XML feeds.
- */
-function httpsGetRaw(url) {
-  return new Promise((resolve, reject) => {
-    const parsedUrl = new URL(url);
-    const lib = parsedUrl.protocol === "http:" ? http : https;
-
-    const reqOptions = {
-      hostname: parsedUrl.hostname,
-      port: parsedUrl.port,
-      path: parsedUrl.pathname + parsedUrl.search,
-      method: "GET",
-      headers: {
-        "Accept": "application/rss+xml, application/xml, text/xml",
-        "User-Agent": "Oli-Locator-GovContracts/1.0",
-      },
-    };
-
-    const req = lib.request(reqOptions, (res) => {
-      let data = "";
-      res.on("data", (chunk) => { data += chunk; });
-      res.on("end", () => {
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(data);
-        } else {
-          reject(new Error(`AusTender RSS returned status ${res.statusCode}: ${data.slice(0, 200)}`));
-        }
-      });
-    });
-
-    req.on("error", (e) => reject(new Error(`AusTender request failed: ${e.message}`)));
-    req.setTimeout(15000, () => { req.destroy(); reject(new Error("AusTender request timed out")); });
-    req.end();
+  const params = new URLSearchParams({
+    app_id: "9df86203",
+    app_key: "c20c11fc4dcdb46f2c43f9c5412acbef",
+    what: searchTerm,
+    results_per_page: String(Math.min(50, pageSize)),
+    "content-type": "application/json",
+    sort_by: "date",
   });
+
+  const url = `https://api.adzuna.com/v1/api/jobs/${countryCode}/search/${pageNum}?${params.toString()}`;
+  console.log(`[AusTender/Adzuna] Fetching: ${url.replace("c20c11fc4dcdb46f2c43f9c5412acbef", "***")}`);
+
+  const data = await httpsGet(url);
+  
+  // Map Adzuna results to OCDS-like format expected by mapAUContract
+  const releases = (data.results || []).map((r) => ({
+    tender: {
+      title: r.title || "Untitled",
+      description: r.description || "",
+      status: "active",
+      value: { amount: r.salary_min || 0, currency: "AUD" },
+    },
+    buyer: { name: r.company?.display_name || "Australian Government" },
+    date: r.created || new Date().toISOString(),
+    id: String(r.id || ""),
+    ocid: r.redirect_url || "",
+    _location: r.location?.display_name || "",
+    _latitude: r.latitude,
+    _longitude: r.longitude,
+  }));
+
+  return { releases, count: data.count || releases.length };
 }
 
 /**
- * Simple XML RSS parser — extracts <item> elements from RSS XML.
- * No dependencies, just regex parsing.
- */
-function parseRSSItems(xml, keyword, maxItems = 20) {
-  const items = [];
-  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
-  let match;
-
-  while ((match = itemRegex.exec(xml)) !== null && items.length < maxItems * 2) {
-    const itemXml = match[1];
-    const title = extractXmlTag(itemXml, "title");
-    const description = extractXmlTag(itemXml, "description");
-    const link = extractXmlTag(itemXml, "link");
-    const pubDate = extractXmlTag(itemXml, "pubDate");
-    const category = extractXmlTag(itemXml, "category");
-
-    items.push({
-      tender: {
-        title: title || "Untitled Tender",
-        description: description || "",
-        status: "active",
-      },
-      buyer: { name: category || "Australian Government" },
-      date: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
-      id: link || `au-${items.length}`,
-      ocid: link || "",
-    });
-  }
-
-  // Filter by keyword if provided
-  if (keyword) {
-    const kw = keyword.toLowerCase();
-    return items.filter(item => {
-      const searchable = `${item.tender.title} ${item.tender.description} ${item.buyer.name}`.toLowerCase();
-      return searchable.includes(kw);
-    }).slice(0, maxItems);
-  }
-
-  return items.slice(0, maxItems);
-}
-
-function extractXmlTag(xml, tag) {
-  const cdataRegex = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>`, "i");
-  const cdataMatch = xml.match(cdataRegex);
-  if (cdataMatch) return cdataMatch[1].trim();
-
-  const simpleRegex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i");
-  const simpleMatch = xml.match(simpleRegex);
-  if (simpleMatch) return simpleMatch[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim();
-
-  return "";
-}
-
-/**
- * Map an AusTender release to our contract format.
+ * Map an AusTender/Adzuna release to our contract format.
  */
 function mapAUContract(release) {
   const tender = release.tender || {};
@@ -419,12 +357,12 @@ function mapAUContract(release) {
     },
     postedDate: release.date || null,
     deadline: tenderPeriod.endDate || null,
-    category: tender.classification?.description || tender.mainProcurementCategory || "General",
+    category: tender.classification?.description || tender.mainProcurementCategory || "Government",
     type: mapAUTenderStatus(tender.status),
     url: release.ocid
-      ? `https://www.tenders.gov.au/Search/SearchATM?keyword=${encodeURIComponent(tender.title || "")}`
+      ? (release.ocid.startsWith("http") ? release.ocid : `https://www.tenders.gov.au`)
       : "https://www.tenders.gov.au",
-    location: tender.deliveryAddresses?.[0]?.region || buyer.address?.region || "",
+    location: release._location || tender.deliveryAddresses?.[0]?.region || buyer.address?.region || "",
   };
 }
 
@@ -440,25 +378,58 @@ function mapAUTenderStatus(status) {
 /* ========================= EU TED (Tenders Electronic Daily) ========================= */
 
 /**
- * Fetch from EU TED API (correct endpoint: api.ted.europa.eu/v3/).
+ * Fetch from EU TED API (requires POST, not GET).
  */
 async function fetchFromEUTED({ keyword, page = 1, pageSize = 20 }) {
   const limit = Math.min(50, pageSize);
-  const offset = (page - 1) * limit;
 
-  // EU TED v3 uses 'q' param with their expert query syntax
-  // Simple keyword search: just pass the keyword directly
-  const params = new URLSearchParams({
-    q: keyword || "services",
-    limit: String(limit),
-    page: String(page),
+  // TED API v3 requires POST with JSON body
+  const body = JSON.stringify({
+    query: keyword || "services",
+    page: page,
+    limit: limit,
+    fields: ["notice-id", "publication-date", "notice-title", "buyer-name", "total-value", "deadline-receipt-tender", "notice-type", "place-of-performance", "cpv-description"],
   });
 
-  const url = `${EU_TED_BASE_URL}?${params.toString()}`;
-  console.log(`[EU TED] Fetching: ${url}`);
+  const url = EU_TED_BASE_URL;
+  console.log(`[EU TED] POST to: ${url} with query="${keyword}"`);
 
-  const data = await httpsGet(url);
-  return data;
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(url);
+    const reqOptions = {
+      hostname: parsedUrl.hostname,
+      port: 443,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "User-Agent": "Oli-Locator-GovContracts/1.0",
+        "Content-Length": Buffer.byteLength(body),
+      },
+    };
+
+    const req = https.request(reqOptions, (res) => {
+      let data = "";
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => {
+        try {
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(JSON.parse(data));
+          } else {
+            reject(new Error(`EU TED returned status ${res.statusCode}: ${data.slice(0, 300)}`));
+          }
+        } catch (e) {
+          reject(new Error(`Failed to parse EU TED response: ${e.message}`));
+        }
+      });
+    });
+
+    req.on("error", (e) => reject(new Error(`EU TED request failed: ${e.message}`)));
+    req.setTimeout(15000, () => { req.destroy(); reject(new Error("EU TED request timed out")); });
+    req.write(body);
+    req.end();
+  });
 }
 
 /**
